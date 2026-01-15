@@ -1,0 +1,34 @@
+# Fichiers système
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*~
+
+# Fichiers de backup
+*.bak
+*.backup
+*.swp
+*.swo
+
+# Fichiers LyX temporaires
+*.lyx~
+
+# Dossiers de cache
+.cache/
+__pycache__/
+
+# Fichiers de log
+*.log
+
+# Fichiers de configuration IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Fichiers générés
+*.pdf.tmp
+*.md.tmp

@@ -17,9 +17,9 @@
 
 ## Options (avec visuels)
 - **Essences de bois** : merisier, noyer, érable sycomore  
-  ![Merisier](https://github.com/labodezao/stages-lutherie/blob/main/comm/cherrywood.png)  
-  ![Noyer](https://github.com/labodezao/stages-lutherie/blob/main/comm/walnut.png)  
-  ![Érable sycomore](https://github.com/labodezao/stages-lutherie/blob/main/comm/maple.png)
+  ![Échantillon de bois de merisier montrant sa couleur brun-rouge caractéristique](https://github.com/labodezao/stages-lutherie/blob/main/comm/cherrywood.png)  
+  ![Échantillon de bois de noyer montrant sa couleur brun foncé riche](https://github.com/labodezao/stages-lutherie/blob/main/comm/walnut.png)  
+  ![Échantillon de bois d'érable sycomore montrant sa couleur claire et son grain fin](https://github.com/labodezao/stages-lutherie/blob/main/comm/maple.png)
 
 - **Main droite** : 21 boutons (2 rangées) ou 33 boutons (3 rangées) ; layouts Heim / Milleret-Pignol / personnalisé* ; tonalités G/C, D/G, A/D ; accordage sec / demi-sec ; marquage tactile / visuel / sans  
   - Layouts (ajouter diagrammes) : Heim, Milleret-Pignol, 3 rangées / 18 basses
@@ -30,12 +30,12 @@
   _(insérer gros plans des boutons)_
 
 - **Grilles décoratives** : >100 modèles numérotés  
-  ![Grilles décoratives](https://github.com/labodezao/stages-lutherie/blob/main/comm/visuels%20grille.png)
+  ![Collection de grilles décoratives d'accordéon montrant divers motifs traditionnels et modernes](https://github.com/labodezao/stages-lutherie/blob/main/comm/visuels%20grille.png)
 
 - **Soufflets** : couleurs noir, rouge, bleu, vert, orange, mixte ; coins standard / renforcés / métal brossé / personnalisé*  
   _Visuels soufflets (exemples Jour 5) :_  
-  ![Soufflets ensemble 1](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(7).jpg)  
-  ![Soufflets ensemble 2](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(26).jpg)
+  ![Soufflets d'accordéon en cours d'assemblage montrant les plis en carton traditionnel](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(7).jpg)  
+  ![Plusieurs soufflets colorés exposés montrant la variété des couleurs disponibles](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(26).jpg)
 
 - **Anches** : tipo a mano, a mano (+)
 
@@ -47,32 +47,32 @@
 
 ## Processus (photos étape par étape)
 - **Soufflets, collage, mise en presse** :  
-  ![Collage soufflets](https://github.com/labodezao/stages-lutherie/blob/main/comm/Collage_20220425_180111.jpg)
+  ![Soufflets d'accordéon en cours de collage et d'assemblage, montrant les plis en carton et la technique de pressage](https://github.com/labodezao/stages-lutherie/blob/main/comm/Collage_20220425_180111.jpg)
 
 - **Montage leviers / mécaniques** :  
-  ![Mécaniques](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20(3).jpg)
+  ![Gros plan de l'assemblage des mécaniques d'accordéon, montrant leviers, ressorts et mécanismes de boutons](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20(3).jpg)
 
 - **Alignement boutons / clavier** :  
-  ![Alignement](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20bis.jpg)
+  ![Vue détaillée de l'alignement des boutons et du montage du clavier avec outils de précision](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20bis.jpg)
 
 - **Grilles & finitions** :  
-  ![Montage grilles](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%206%20(8).jpg)
+  ![Montage de la grille décorative sur l'accordéon avec positionnement soigneux](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%206%20(8).jpg)
 
 - **Anches / accordage fin** :  
-  ![Anches](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%207%20(23).jpg)
+  ![Processus d'installation et d'accordage des anches, montrant le travail de précision sur les anches d'accordéon](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%207%20(23).jpg)
 
 - **Instruments terminés / portraits** :  
-  ![Portraits finaux](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg)
+  ![Portrait de groupe des participants du stage présentant fièrement leurs accordéons artisanaux terminés](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg)
 
 ## Ambiance & atelier
 - **Atelier & travail du bois** :  
-  ![Atelier bois](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%202%20(29).jpg)
+  ![Intérieur de l'atelier montrant les postes de travail et outils pour la fabrication d'accordéons](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%202%20(29).jpg)
 
 - **Moments conviviaux / soirée** :  
-  ![Ambiance](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%208.jpg)
+  ![Participants profitant d'une soirée conviviale, partageant musique et expériences](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%208.jpg)
 
 - **Extérieur / pauses** :  
-  ![Extérieur](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%205.jpg)
+  ![Pause à l'extérieur avec les participants se détendant au soleil](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%205.jpg)
 
 ## Programme jour par jour (rappel)
 1. Accueil, choix finaux d'options, premiers assemblages

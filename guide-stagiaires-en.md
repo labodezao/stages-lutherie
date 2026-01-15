@@ -15,19 +15,26 @@
 - If the instrument is not finished within 10 days: you may return in a later session (€80/day for workshop + guidance)
 
 ## Options (with visuals)
-- Woods: cherry, walnut, maple sycamore  
-  _(add dedicated photos if available)_
-- Right hand: 21 buttons (2 rows) or 33 buttons (3 rows); layouts Heim / Milleret-Pignol / custom*; keys G/C, D/G, A/D; tuning dry / demi-dry; marking tactile / visual / none   
+- **Woods**: cherry, walnut, maple sycamore  
+  ![Cherry wood sample showing reddish-brown tone](https://github.com/labodezao/stages-lutherie/blob/main/comm/cherrywood.png)  
+  ![Walnut wood sample showing rich dark brown color](https://github.com/labodezao/stages-lutherie/blob/main/comm/walnut.png)  
+  ![Maple sycamore wood sample showing light creamy color with fine grain](https://github.com/labodezao/stages-lutherie/blob/main/comm/maple.png)
+
+- **Right hand**: 21 buttons (2 rows) or 33 buttons (3 rows); layouts Heim / Milleret-Pignol / custom*; keys G/C, D/G, A/D; tuning dry / demi-dry; marking tactile / visual / none   
   - Layouts (add diagrams): Heim, Milleret-Pignol, 3 rows / 18 basses
-- Left hand: 8 / 12 / 18 basses; layout Milleret-Pignol / Heim / custom*
-- Mechanics: mushroom buttons in natural wood, black nacre, or white nacre  
+
+- **Left hand**: 8 / 12 / 18 basses; layout Milleret-Pignol / Heim / custom*
+
+- **Mechanics**: mushroom buttons in natural wood, black nacre, or white nacre  
   _(insert closeups of buttons)_
-- Decorative grills: >100 numbered models  
-  ![Decorative grills](https://github.com/labodezao/stages-lutherie/blob/main/comm/visuels%20grille.png)
-- Bellows: colors black, red, blue, green, orange, mix; corners standard / reinforced / brushed metal / custom*  
+
+- **Decorative grills**: >100 numbered models  
+  ![Collection of decorative accordion grills showing various traditional and modern patterns](https://github.com/labodezao/stages-lutherie/blob/main/comm/visuels%20grille.png)
+
+- **Bellows**: colors black, red, blue, green, orange, mix; corners standard / reinforced / brushed metal / custom*  
   _Bellows visuals (Day 5 examples):_  
-  ![Bellows set 1](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(7).jpg)  
-  ![Bellows set 2](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(26).jpg)
+  ![Accordion bellows being assembled with traditional cardboard pleats](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(7).jpg)  
+  ![Multiple colored bellows displayed showing variety of available colors](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(26).jpg)
 - Reeds: tipo a mano, a mano (+)
 - Provided accessories: straps, gig bag/carrying case
 - Recommended accessories: thin gloves, safety glasses, earplugs, work clothes
@@ -35,26 +42,33 @@
 *Custom options: pricing to confirm before preparation.
 
 ## Process (step-by-step photos)
-- Bellows, gluing, pressing:  
-  ![Bellows gluing](https://github.com/labodezao/stages-lutherie/blob/main/comm/Collage_20220425_180111.jpg)
-- Lever / mechanics assembly:  
-  ![Mechanics](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20(3).jpg)
-- Button / keyboard alignment:  
-  ![Alignment](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20bis.jpg)
-- Grills & finishing:  
-  ![Grill mounting](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%206%20(8).jpg)
-- Reeds / fine tuning:  
-  ![Reeds](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%207%20(23).jpg)
-- Finished instruments / portraits:  
-  ![Final portraits](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg)
+- **Bellows, gluing, pressing**:  
+  ![Accordion bellows being glued and assembled, showing cardboard pleats and pressing technique](https://github.com/labodezao/stages-lutherie/blob/main/comm/Collage_20220425_180111.jpg)
+
+- **Lever / mechanics assembly**:  
+  ![Close-up of accordion mechanics assembly, showing levers, springs and button mechanisms](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20(3).jpg)
+
+- **Button / keyboard alignment**:  
+  ![Detailed view of button alignment and keyboard setup with precision tools](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20bis.jpg)
+
+- **Grills & finishing**:  
+  ![Decorative grill being mounted on accordion with careful positioning](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%206%20(8).jpg)
+
+- **Reeds / fine tuning**:  
+  ![Reed installation and tuning process, showing precision work on accordion reeds](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%207%20(23).jpg)
+
+- **Finished instruments / portraits**:  
+  ![Group portrait of workshop participants proudly displaying their finished handcrafted accordions](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg)
 
 ## Atmosphere & workshop
-- Workshop & woodwork:  
-  ![Workshop wood](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%202%20(29).jpg)
-- Friendly moments / evening:  
-  ![Atmosphere](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%208.jpg)
-- Outdoor / breaks:  
-  ![Outdoor](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%205.jpg)
+- **Workshop & woodwork**:  
+  ![Workshop interior showing woodworking stations and tools for accordion building](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%202%20(29).jpg)
+
+- **Friendly moments / evening**:  
+  ![Participants enjoying a friendly evening gathering, sharing music and experiences](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%208.jpg)
+
+- **Outdoor / breaks**:  
+  ![Outdoor break time with participants relaxing in the sunshine](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%205.jpg)
 
 ## Day-by-day outline (reminder)
 1. Welcome, final option choices, first assemblies
