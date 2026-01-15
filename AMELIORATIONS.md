@@ -56,7 +56,7 @@ Stages de 10 jours pour fabriquer votre propre accordéon diatonique dans un ate
 - Email : contact@ewendaviau.com
 ```
 
-### 2.2 Conversion des images HEIC
+### 2.2 Conversion des images HEIC ✅
 **Problème** : Le dossier `comm/` contient des fichiers HEIC (format Apple) qui ne sont pas compatibles avec tous les navigateurs
 
 **Fichiers concernés** :
@@ -69,10 +69,10 @@ Stages de 10 jours pour fabriquer votre propre accordéon diatonique dans un ate
 - IMG_1011 2.HEIC
 - IMG_1012 2.HEIC
 
-**Suggestion** :
-- Convertir ces images en JPG ou PNG pour une compatibilité universelle
-- Utiliser des outils comme ImageMagick ou un convertisseur en ligne
-- Les intégrer dans les guides si elles sont pertinentes
+**Solution appliquée** :
+- ✅ Converti tous les fichiers HEIC en JPG pour une compatibilité universelle
+- ✅ Supprimé les fichiers HEIC originaux du dépôt
+- ✅ Ajouté *.HEIC au .gitignore pour prévenir de futurs ajouts
 
 ### 2.3 Nettoyage des fichiers système
 **Problème** : Présence de fichiers `desktop.ini` (fichiers système Windows)
@@ -205,14 +205,16 @@ Thumbs.db
 
 ## 5. Améliorations recommandées - Internationalisation 🌍
 
-### 5.1 Documents manquants en anglais
+### 5.1 Documents manquants en anglais ✅
 **Observations** :
 - `01-fiche-stage-detaillee-fr.md` → pas d'équivalent EN
 - `02-programme-jour-par-jour-fr.md` → pas d'équivalent EN
 
-**Suggestion** :
-- Traduire ces documents en anglais
-- Maintenir la parité entre les versions FR et EN
+**Solution appliquée** :
+- ✅ Créé `01-detailed-workshop-description-en.md` - traduction complète de la fiche détaillée
+- ✅ Créé `02-day-by-day-program-en.md` - traduction du programme jour par jour
+- ✅ Mis à jour README.md avec les liens vers les nouveaux documents
+- ✅ Maintien de la parité entre les versions FR et EN
 
 ### 5.2 Cohérence des noms de fichiers
 **Suggestion** :

@@ -26,6 +26,8 @@ Stages de 10 jours pour **fabriquer votre propre accordéon diatonique** de A à
 ### English 🇬🇧
 - [**Short announcement**](00-communication-annonce-en.md) - Workshop overview
 - [**Trainee guide**](guide-stagiaires-en.md) - Complete guide with photos and details
+- [**Detailed workshop description**](01-detailed-workshop-description-en.md) - Complete workshop information
+- [**Day-by-day program**](02-day-by-day-program-en.md) - Daily schedule
 
 ## 📸 Galerie
 

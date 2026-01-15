@@ -32,3 +32,7 @@ __pycache__/
 # Fichiers générés
 *.pdf.tmp
 *.md.tmp
+
+# Formats d'image non compatibles
+*.HEIC
+*.heic
