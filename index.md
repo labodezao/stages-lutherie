@@ -49,7 +49,7 @@ Découvrez les différentes étapes de fabrication et l'ambiance des stages dans
 ![Assemblage des soufflets](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(26).jpg?raw=true)
 *Soufflets colorés en cours de fabrication*
 
-![Montage des mécaniques](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20(3).jpg?raw=true)
+![Montage des mécaniques](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%203.jpg?raw=true)
 *Assemblage minutieux des mécaniques*
 
 ![Ambiance conviviale](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%208.jpg?raw=true)

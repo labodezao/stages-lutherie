@@ -50,10 +50,10 @@
   ![Soufflets d'accordéon en cours de collage et d'assemblage, montrant les plis en carton et la technique de pressage](https://github.com/labodezao/stages-lutherie/blob/main/comm/Collage_20220425_180111.jpg)
 
 - **Montage leviers / mécaniques** :  
-  ![Gros plan de l'assemblage des mécaniques d'accordéon, montrant leviers, ressorts et mécanismes de boutons](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20(3).jpg)
+  ![Gros plan de l'assemblage des mécaniques d'accordéon, montrant leviers, ressorts et mécanismes de boutons](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%203.jpg)
 
 - **Alignement boutons / clavier** :  
-  ![Vue détaillée de l'alignement des boutons et du montage du clavier avec outils de précision](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20bis.jpg)
+  ![Vue détaillée de l'alignement des boutons et du montage du clavier avec outils de précision](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%203%20bis.jpg)
 
 - **Grilles & finitions** :  
   ![Montage de la grille décorative sur l'accordéon avec positionnement soigneux](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%206%20(8).jpg)

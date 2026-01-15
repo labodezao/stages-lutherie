@@ -46,10 +46,10 @@
   ![Accordion bellows being glued and assembled, showing cardboard pleats and pressing technique](https://github.com/labodezao/stages-lutherie/blob/main/comm/Collage_20220425_180111.jpg)
 
 - **Lever / mechanics assembly**:  
-  ![Close-up of accordion mechanics assembly, showing levers, springs and button mechanisms](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20(3).jpg)
+  ![Close-up of accordion mechanics assembly, showing levers, springs and button mechanisms](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%203.jpg)
 
 - **Button / keyboard alignment**:  
-  ![Detailed view of button alignment and keyboard setup with precision tools](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%203%20bis.jpg)
+  ![Detailed view of button alignment and keyboard setup with precision tools](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%203%20bis.jpg)
 
 - **Grills & finishing**:  
   ![Decorative grill being mounted on accordion with careful positioning](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%206%20(8).jpg)
