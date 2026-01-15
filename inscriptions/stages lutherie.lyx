@@ -1,0 +1,316 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass scrartcl
+\begin_preamble
+
+\usepackage[draft]{hyperref}
+\usepackage[french]{babel}
+
+
+% increases link area for cross-references and autoname them
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\addto\extrasenglish{%
+ \renewcommand*{\equationautorefname}[1]{}
+ \renewcommand{\sectionautorefname}{sec.\negthinspace}
+ \renewcommand{\subsectionautorefname}{sec.\negthinspace}
+ \renewcommand{\subsubsectionautorefname}{sec.\negthinspace}
+ \renewcommand{\figureautorefname}{Fig.\negthinspace}
+ \renewcommand{\tableautorefname}{Tab.\negthinspace}
+}
+
+\date{}
+% makes caption labels bold
+\setkomafont{captionlabel}{\bfseries}
+% enables calculations
+\usepackage{calc}
+\usepackage{fancyhdr}
+
+
+\fancyhf{}
+%\pagestyle{fancy}
+\fancyhead[L]{Notice de l'utilisateur}                     
+\fancyhead[R]{L'Octodyna}
+\fancyfoot[C]{}     
+ 
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\float_placement h
+\paperfontsize 11
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\branch proto
+\selected 0
+\filename_suffix 0
+\color #faf0e6
+\end_branch
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1cm
+\topmargin 2cm
+\rightmargin 1cm
+\bottommargin 2cm
+\headheight 1cm
+\headsep 1cm
+\footskip 1cm
+\columnsep 1cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\series bold
+\size larger
+Stages de lutherie : Formulaire d'inscription
+\end_layout
+
+\begin_layout Paragraph
+Si vous lisez ce document, c'est que vous êtes surement intéressé par la
+ démarche de vous fabriquer votre instrument avec d'autres stagiaires.
+ Si vous cherchez de quoi vous changer les idées, vous recentrer avec vous
+ même grâce à des gestes minutieux et assembler votre instrument dans groupe
+ convivial ces stages sont faits pour vous.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Voici le cadre dans lequel j'organise ces stages de lutherie :
+\end_layout
+
+\begin_layout Itemize
+Ouvert pour tous public, ados à partir de 13 ans et adultes mais les enfants
+ doivent être accompagnés d'un tuteur majeur pour des questions administratives
+ et d'intégrité physique,
+\end_layout
+
+\begin_layout Itemize
+Les stages se déroulent habituellement pendant les vacances scolaire à l'Ascensi
+on, en Octobre et l'été en Juillet et/ou en Aout, 
+\end_layout
+
+\begin_layout Itemize
+Le tarif du stage inclue le travail de préparation des instruments que je
+ réalise avant votre venue, les frais pédagogiques et la matière première.
+ L'hébergement et les repas ne sont pas inclus dans le tarif mais je peux
+ vous fournir une liste de personnes pouvant vous accueillir, 
+\end_layout
+
+\begin_layout Itemize
+Si vous n'arrivez pas à finir votre instrument dans le délai imparti, il
+ vous est possible de revenir finir l'instrument à une prochaine session
+ sans surcout supplémentaire,
+\end_layout
+
+\begin_layout Itemize
+Les stages se déroulent à mon atelier à St Nazaire, à 20 min à pieds de
+ la mer et à 15 minutes en voiture d'un des plus beau site touristique de
+ la région : les marais salants de la presqu'ile Guérandaise.
+ Vous disposez d'une journée de repos en milieu de stage pour faire du tourisme,
+\end_layout
+
+\begin_layout Itemize
+En cas d'annulation, les acomptes versées qui correspondent au travail de
+ préparation de vos instrument ne pourra pas être rembourser.
+ Il vous faudra déplacer votre venue à une autre session ou trouver une
+ personne qui vous remplace,
+\end_layout
+
+\begin_layout Itemize
+Suivant les thèmes de stages, des activités en soirée pourront être proposés,
+\end_layout
+
+\begin_layout Itemize
+Ces stages de lutherie accessibles à tous consistent à assembler un travail
+ que je prépare avant votre arrivée.
+ Ces stages ne sont pas des formations en lutherie et si vous souhaitez
+ être fabricant et en faire votre métier, merci de me l'indiquer lors de
+ votre inscription.
+ Je vous remercie également de ne pas copier mes modèles sans m'en faire
+ la demande préalablement.
+\end_layout
+
+\begin_layout Standard
+Vous trouverez plus d'informations dans la foire aux questions ci dessous
+ :
+\end_layout
+
+\begin_layout Paragraph
+A qui s'adressent les stages ? 
+\end_layout
+
+\begin_layout Standard
+Ouvert pour tous public, ados à partir de 13 ans et adultes mais les enfants
+ doivent être accompagnés d'un tuteur majeur pour des questions administratives
+ et d'intégrité physique,
+\end_layout
+
+\begin_layout Paragraph
+Quelle sont les compétences requises ? 
+\end_layout
+
+\begin_layout Standard
+Ces stages de lutherie accessibles à tous consistent à assembler un travail
+ que je prépare avant votre arrivée, ce qui permet d'être accessibles même
+ aux mineur dotés de patience.
+ Si vous n'arrivez pas à finir votre instrument dans le délai imparti, il
+ vous est possible de revenir finir l'instrument à une prochaine session
+ sans surcout supplémentaire,
+\end_layout
+
+\begin_layout Paragraph
+Quel est le nombre maximum de stagiaire ?
+\end_layout
+
+\begin_layout Standard
+Le nombre maximum par stage est fixée actuellement à 10 stagiaire, alors
+ réservez dès que vous avez fait le choix d'y participer.
+\end_layout
+
+\begin_layout Paragraph
+A quelle période se déroulent les stages ?
+\end_layout
+
+\begin_layout Standard
+Les stages se déroulent habituellement pendant les vacances scolaire à l'Ascensi
+on, en Octobre et l'été en Juillet et/ou en Aout, 
+\end_layout
+
+\begin_layout Paragraph
+Jusqu'à quand je peux réserver ?
+\end_layout
+
+\begin_layout Standard
+Vous pouvez réserver jusqu'à 3 mois avant le début du stage, mais parfois
+ la liste d'attente est petite et vous avez peut être une chance d'y participer.
+\end_layout
+
+\begin_layout Paragraph
+L'acompte est t'il remboursable si j'annule ?
+\end_layout
+
+\begin_layout Standard
+En cas d'annulation, les acomptes versées qui correspondent au travail de
+ préparation de vos instrument ne pourra pas être rembourser.
+ Il vous faudra déplacer votre venue à une autre session ou trouver une
+ personne qui vous remplace,
+\end_layout
+
+\begin_layout Paragraph
+Ou se déroule ?
+\end_layout
+
+\begin_layout Standard
+Les stages se déroulent à mon atelier à St Nazaire, à 20 min à pieds de
+ la mer et à 15 minutes en voiture d'un des plus beau site touristique de
+ la région : les marais salants de la presqu'ile Guérandaise.
+ Vous disposez d'une journée de repos en milieu de stage pour faire du tourisme
+\end_layout
+
+\begin_layout Paragraph
+Quel est le prix de ce stage ?
+\end_layout
+
+\begin_layout Standard
+Le prix d'un instrument fait en stage est le même que si vous me demandiez
+ de le faire pour vous.
+ Le tarif du stage inclue le travail de préparation des instruments que
+ je réalise avant votre venue, les frais pédagogiques et la matière première.
+ L'hébergement et les repas ne sont pas inclus dans le tarif mais je peux
+ vous fournir une liste de personnes pouvant vous accueillir
+\end_layout
+
+\begin_layout Paragraph
+L'hébergement et les repas sont t'ils compris ?
+\end_layout
+
+\begin_layout Standard
+Pour moi la musique, c'est des notes organisées en clans de familles.
+ Composer ou la jouer, c'est un peu comme comprendre les règles sociales
+ des notes de musique, comprendre leurs codes et savoir lesquelles vont
+ de paire ou celles qui amène une tension.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Quelle est la différence entre stages de lutherie classiques ou stages méditatif
+s ?
+\end_layout
+
+\begin_layout Standard
+Chaque année j'organise un stage de lutherie ouvert aux personnes anglophones,
+ un stage de lutherie pour les francophones et un stage de lutherie méditative
+ où des activités de développement personnel sont généralement proposés
+ en soirée (constellations, méditation, chi Qong, Yoga, danse contact )
+ en fonction des personnes qui sont présentes.
+ Dans ce stage de lutherie méditative, en général on parles peu et la lutherie
+ deviens un est pour travailler le centrage et l'exploration intérieure.
+\end_layout
+
+\end_body
+\end_document
