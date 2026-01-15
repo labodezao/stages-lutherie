@@ -189,7 +189,7 @@ Thumbs.db
 - Créer des versions imprimables professionnelles
 - Les stocker dans un dossier `pdf/` ou les publier comme releases GitHub
 
-### 4.3 Site web / GitHub Pages
+### 4.3 Site web / GitHub Pages ✅
 **Suggestion** :
 - Activer GitHub Pages pour ce dépôt
 - Créer un site simple avec Jekyll ou un générateur statique
@@ -202,6 +202,13 @@ Thumbs.db
   - URL facile à partager (labodezao.github.io/stages-lutherie)
   - Améliore la visibilité
   - Navigation plus agréable qu'entre fichiers Markdown bruts
+
+**Solution appliquée** :
+- ✅ Créé `_config.yml` - configuration Jekyll pour GitHub Pages
+- ✅ Créé `index.md` - page d'accueil attractive avec photos, FAQ, et liens
+- ✅ Créé `CONTRIBUTING.md` - guide de contribution bilingue
+- ✅ Prêt pour activation de GitHub Pages dans les paramètres du dépôt
+- ✅ Thème Cayman configuré pour une apparence professionnelle
 
 ## 5. Améliorations recommandées - Internationalisation 🌍
 
@@ -276,12 +283,20 @@ jobs:
 - Faciliter les contributions futures
 - Checklist de vérification (liens, images, orthographe)
 
-### 7.3 Contributing guide
+### 7.3 Contributing guide ✅
 **Suggestion** :
 - Créer `CONTRIBUTING.md`
 - Expliquer comment contribuer au projet
 - Conventions de nommage
 - Processus de révision
+
+**Solution appliquée** :
+- ✅ Créé `CONTRIBUTING.md` bilingue (FR/EN)
+- ✅ Explique les conventions de nommage des fichiers
+- ✅ Définit les bonnes pratiques pour les images
+- ✅ Checklist de vérification avant soumission
+- ✅ Instructions pour les Pull Requests
+- ✅ Liste ce qu'il ne faut PAS faire
 
 ## 8. Améliorations recommandées - SEO et Marketing 📢
 
