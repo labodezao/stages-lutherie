@@ -256,7 +256,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 | Facebook Ads (test) | 50€ | Moyenne |
 | Impression flyers 100ex | 30€ | Moyenne |
 | Domaine email pro (optionnel) | 10€ | Basse |
-| **TOTAL MINIMUM** | **90€** | |
+| **TOTAL MINIMUM** | **80€** | |
 | **TOTAL OPTIMAL** | **106€** | |
 
 **Note** : La plupart des outils ont des versions gratuites suffisantes pour démarrer !
