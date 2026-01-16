@@ -1,3 +1,10 @@
+---
+title: "Day-by-day Program - Diatonic Accordion Workshop 2026"
+description: "Detailed 10-day schedule for building a diatonic accordion"
+keywords: "diatonic accordion, workshop program, building schedule"
+lang: en
+---
+
 # Program – 10 Days (Indicative and Realistic)
 
 - **Day 1**: Welcome, workshop tour, option choices, first assemblies

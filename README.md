@@ -49,6 +49,16 @@ Le dossier [`comm/`](comm/) contient plus de 60 photos illustrant :
 
 Consultez [AMELIORATIONS.md](AMELIORATIONS.md) pour les suggestions d'amélioration du projet et des documents.
 
+## 📄 Licence
+
+Ce projet est sous licence MIT pour la documentation et les fichiers de configuration. Voir [LICENSE](LICENSE) pour plus de détails.
+
+Le contenu pédagogique, les designs et les matériaux des stages sont propriété d'Ewen Daviau.
+
+## 🤝 Contribuer
+
+Vous souhaitez améliorer cette documentation ? Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour les guidelines.
+
 ## 📍 Lieu
 
 **Atelier de lutherie**  

@@ -1,3 +1,12 @@
+---
+title: "Trainee Guide - Diatonic Accordion Building Workshop 2026"
+description: "Complete guide for participants in the diatonic accordion building workshop - 10 days to create your own instrument"
+keywords: "diatonic accordion, lutherie, building workshop, Saint-Nazaire, trainee guide, handcrafted accordion"
+lang: en
+author: "Ewen Daviau"
+date: "2026"
+---
+
 # Diatonic Accordion Building Workshop – Trainee Guide (2026)
 ## 2026 Sessions
 - April 8–17, 2026 (10 days)

@@ -1,3 +1,10 @@
+---
+title: "Fiche détaillée - Stages de fabrication d'accordéon diatonique 2026"
+description: "Informations complètes sur les stages de lutherie : objectifs, tarifs, options et modalités"
+keywords: "accordéon diatonique, stage lutherie, fabrication instrument, fiche détaillée"
+lang: fr
+---
+
 # Fiche détaillée – Stages de fabrication d’accordéon diatonique 2026
 ## Esprit du stage
 10 jours d’immersion pour assembler votre propre instrument, dans un cadre calme et convivial. Expérience créative et sensorielle, accessible même sans expérience d’outillage.

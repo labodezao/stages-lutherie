@@ -1,3 +1,10 @@
+---
+title: "Stage Fabriquez votre accordéon diatonique - Annonce 2026"
+description: "Stage de 10 jours pour fabriquer votre accordéon diatonique à Saint-Nazaire - Sessions avril et octobre 2026"
+keywords: "accordéon diatonique, stage lutherie, fabrication accordéon, Saint-Nazaire"
+lang: fr
+---
+
 # Stage « Fabriquez votre accordéon diatonique » – 10 jours
 ## Pour qui ?
 - Ouvert à tou·te·s dès 13 ans (mineurs accompagnés d’un tuteur majeur)

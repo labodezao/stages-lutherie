@@ -1,3 +1,12 @@
+---
+title: "Guide des stagiaires - Stages de fabrication d'accordéon diatonique 2026"
+description: "Guide complet pour les participants aux stages de fabrication d'accordéon diatonique - 10 jours pour créer votre propre instrument"
+keywords: "accordéon diatonique, lutherie, stage fabrication, Saint-Nazaire, guide stagiaires, accordéon artisanal"
+lang: fr
+author: "Ewen Daviau"
+date: "2026"
+---
+
 # Guide des stagiaires – Stages de fabrication d'accordéon diatonique 2026
 
 ## Sessions 2026
