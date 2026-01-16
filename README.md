@@ -49,6 +49,13 @@ Le dossier [`comm/`](comm/) contient plus de 60 photos illustrant :
 
 Consultez [AMELIORATIONS.md](AMELIORATIONS.md) pour les suggestions d'amélioration du projet et des documents.
 
+## 📈 Stratégie Marketing
+
+Vous cherchez à attirer plus de stagiaires ? Consultez :
+- [**STRATEGIE-MARKETING.md**](STRATEGIE-MARKETING.md) - Analyse complète et recommandations stratégiques
+- [**Plan d'action 30 jours**](marketing-templates/plan-action-30-jours.md) - Checklist pratique pour démarrer
+- [**Templates réseaux sociaux**](marketing-templates/templates-reseaux-sociaux.md) - Posts prêts à l'emploi pour Instagram, Facebook, YouTube
+
 ## 📄 Licence
 
 Ce projet est sous licence MIT pour la documentation et les fichiers de configuration. Voir [LICENSE](LICENSE) pour plus de détails.
