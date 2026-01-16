@@ -3,6 +3,8 @@ title: "Day-by-day Program - Diatonic Accordion Workshop 2026"
 description: "Detailed 10-day schedule for building a diatonic accordion"
 keywords: "diatonic accordion, workshop program, building schedule"
 lang: en
+author: "Ewen Daviau"
+date: "2026"
 ---
 
 # Program – 10 Days (Indicative and Realistic)

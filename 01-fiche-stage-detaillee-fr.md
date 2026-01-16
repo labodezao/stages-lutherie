@@ -3,6 +3,8 @@ title: "Fiche détaillée - Stages de fabrication d'accordéon diatonique 2026"
 description: "Informations complètes sur les stages de lutherie : objectifs, tarifs, options et modalités"
 keywords: "accordéon diatonique, stage lutherie, fabrication instrument, fiche détaillée"
 lang: fr
+author: "Ewen Daviau"
+date: "2026"
 ---
 
 # Fiche détaillée – Stages de fabrication d’accordéon diatonique 2026

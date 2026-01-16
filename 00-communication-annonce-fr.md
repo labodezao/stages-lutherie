@@ -3,6 +3,8 @@ title: "Stage Fabriquez votre accordéon diatonique - Annonce 2026"
 description: "Stage de 10 jours pour fabriquer votre accordéon diatonique à Saint-Nazaire - Sessions avril et octobre 2026"
 keywords: "accordéon diatonique, stage lutherie, fabrication accordéon, Saint-Nazaire"
 lang: fr
+author: "Ewen Daviau"
+date: "2026"
 ---
 
 # Stage « Fabriquez votre accordéon diatonique » – 10 jours

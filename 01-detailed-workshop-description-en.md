@@ -3,6 +3,8 @@ title: "Detailed Description - Diatonic Accordion Building Workshops 2026"
 description: "Complete information about the lutherie workshops: objectives, pricing, options and terms"
 keywords: "diatonic accordion, lutherie workshop, instrument building, detailed description"
 lang: en
+author: "Ewen Daviau"
+date: "2026"
 ---
 
 # Detailed Description – Diatonic Accordion Building Workshops 2026
