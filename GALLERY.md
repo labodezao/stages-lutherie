@@ -189,6 +189,10 @@ This gallery showcases the different stages of building a diatonic accordion dur
 
 ## Images Additionnelles / Additional Images
 
+> **Note:** Les images suivantes sont au format HEIC (Apple). Elles peuvent ne pas s'afficher dans tous les navigateurs web. Pour une meilleure compatibilité, envisagez de les convertir au format JPEG ou PNG.
+> 
+> **Note:** The following images are in HEIC format (Apple). They may not display in all web browsers. For better compatibility, consider converting them to JPEG or PNG format.
+
 ![IMG 0916](comm/IMG_0916%202.HEIC)
 
 ![IMG 0920](comm/IMG_0920%202.HEIC)
