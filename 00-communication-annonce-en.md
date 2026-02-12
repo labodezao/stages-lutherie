@@ -1,3 +1,12 @@
+---
+title: "Build Your Diatonic Accordion Workshop - Announcement 2026"
+description: "10-day workshop to build your diatonic accordion in Saint-Nazaire - April and October 2026 sessions"
+keywords: "diatonic accordion, lutherie workshop, accordion building, Saint-Nazaire"
+lang: en
+author: "Ewen Daviau"
+date: "2026"
+---
+
 # "Build Your Diatonic Accordion" Workshop – 10 days
 ## Who is it for?
 - Open to everyone 13+ (minors with an adult guardian)

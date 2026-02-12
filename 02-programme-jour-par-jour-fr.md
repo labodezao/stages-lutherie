@@ -1,3 +1,12 @@
+---
+title: "Programme jour par jour - Stages d'accordéon diatonique 2026"
+description: "Programme détaillé des 10 jours de fabrication d'accordéon diatonique"
+keywords: "accordéon diatonique, programme stage, planning fabrication"
+lang: fr
+author: "Ewen Daviau"
+date: "2026"
+---
+
 # Programme – 10 jours (indicatif et réaliste)
 - Jour 1 : Accueil, visite atelier, choix d’options, premiers assemblages
 - Jour 2 : Structure bois (caisse MD/MG), ponçage, collage, équerrage, base mécanique

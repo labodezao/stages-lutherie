@@ -1,0 +1,29 @@
+# GitHub Pages Configuration
+title: Stages de Lutherie - Accordéon Diatonique
+description: Stages de fabrication d'accordéon diatonique organisés par Ewen Daviau à Saint-Nazaire, France
+show_downloads: false
+google_analytics: 
+theme: jekyll-theme-cayman
+
+# SEO
+lang: fr
+author: Ewen Daviau
+email: contact@ewendaviau.com
+
+# Social
+social:
+  name: Stages Lutherie
+  links:
+    - https://ewendaviau.com
+    - https://stages.ewendaviau.com
+
+# Navigation
+navigation:
+  - title: Accueil
+    url: /
+  - title: Guide FR
+    url: /guide-stagiaires-fr
+  - title: Guide EN
+    url: /guide-stagiaires-en
+  - title: Inscription
+    url: https://stages.ewendaviau.com

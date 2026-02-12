@@ -1,0 +1,95 @@
+name: Documentation Quality Check
+
+on:
+  push:
+    branches: [ main, copilot/* ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  markdown-link-check:
+    name: Check Markdown Links
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check links in Markdown files
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'no'
+          config-file: '.github/markdown-link-check-config.json'
+          
+  markdown-lint:
+    name: Lint Markdown Files
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Lint Markdown files
+        uses: DavidAnson/markdownlint-cli2-action@v13
+        with:
+          globs: '**/*.md'
+          
+  validate-structure:
+    name: Validate Documentation Structure
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check required files exist
+        run: |
+          echo "Checking required documentation files..."
+          files=(
+            "README.md"
+            "CONTRIBUTING.md"
+            "AMELIORATIONS.md"
+            "guide-stagiaires-fr.md"
+            "guide-stagiaires-en.md"
+            "00-communication-annonce-fr.md"
+            "00-communication-annonce-en.md"
+          )
+          
+          missing=0
+          for file in "${files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing: $file"
+              missing=1
+            else
+              echo "✅ Found: $file"
+            fi
+          done
+          
+          if [ $missing -eq 1 ]; then
+            echo "Some required files are missing!"
+            exit 1
+          fi
+          
+          echo "All required files are present!"
+          
+      - name: Check for system files
+        run: |
+          echo "Checking for unwanted system files..."
+          if find . -name "desktop.ini" -o -name ".DS_Store" -o -name "Thumbs.db" | grep .; then
+            echo "❌ Found system files that should not be committed!"
+            exit 1
+          fi
+          echo "✅ No system files found"
+          
+      - name: Check for HEIC files
+        run: |
+          echo "Checking for HEIC image files..."
+          if find . -name "*.HEIC" -o -name "*.heic" | grep .; then
+            echo "❌ Found HEIC files - please convert to JPG!"
+            exit 1
+          fi
+          echo "✅ No HEIC files found"
