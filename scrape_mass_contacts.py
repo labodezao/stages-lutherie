@@ -298,7 +298,7 @@ def main():
     # Scrape each source
     if 'helloasso' in args.sources:
         for category in args.categories:
-            scraper.scrape_helloasso_category(category=category, max_pages=10)
+            scraper.scrape_helloasso_category(category=category)
     
     if 'agendatrad' in args.sources:
         scraper.scrape_agendatrad_organizers()
