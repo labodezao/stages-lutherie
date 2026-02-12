@@ -1,0 +1,2 @@
+email,association_name,contact_name,phone,website,address,city,postal_code,department,region,type,source,date_collected,notes,validated
+example@association.fr,Association Example,Jean Dupont,02 40 00 00 00,https://www.example.fr,1 rue de la Musique,Nantes,44000,Loire-Atlantique,Pays de la Loire,Association,HelloAsso,2026-02-12,Cours accordéon diatonique,NO

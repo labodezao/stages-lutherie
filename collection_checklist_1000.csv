@@ -1,0 +1,28 @@
+priority,source,category,url,estimated_emails,status,collected,notes
+HIGH,HelloAsso,Accordéon - Bretagne,https://www.helloasso.com/e/reg/bretagne/cat/accordeon,30,TODO,0,Browse 35 associations
+HIGH,HelloAsso,Accordéon - Pays de la Loire,https://www.helloasso.com/e/reg/pays--de--la--loire/cat/accordeon,25,TODO,0,Browse 30 associations
+HIGH,HelloAsso,Accordéon - Nouvelle-Aquitaine,https://www.helloasso.com/e/reg/nouvelle-aquitaine/cat/accordeon,30,TODO,0,Browse 35 associations
+HIGH,HelloAsso,Accordéon - Occitanie,https://www.helloasso.com/e/reg/occitanie/cat/accordeon,25,TODO,0,Browse 30 associations
+HIGH,HelloAsso,Accordéon - Auvergne-Rhône-Alpes,https://www.helloasso.com/e/reg/auvergne-rhone-alpes/cat/accordeon,25,TODO,0,Browse 30 associations
+HIGH,HelloAsso,Accordéon - PACA,https://www.helloasso.com/e/reg/provence-alpes-cote-d-azur/cat/accordeon,20,TODO,0,Browse 25 associations
+HIGH,HelloAsso,Accordéon - Île-de-France,https://www.helloasso.com/e/reg/ile-de-france/cat/accordeon,35,TODO,0,Browse 40 associations
+HIGH,HelloAsso,Accordéon - Grand Est,https://www.helloasso.com/e/reg/grand-est/cat/accordeon,20,TODO,0,Browse 25 associations
+HIGH,HelloAsso,Accordéon - Hauts-de-France,https://www.helloasso.com/e/reg/hauts-de-france/cat/accordeon,20,TODO,0,Browse 25 associations
+HIGH,HelloAsso,Accordéon - Normandie,https://www.helloasso.com/e/reg/normandie/cat/accordeon,18,TODO,0,Browse 20 associations
+HIGH,HelloAsso,Accordéon - Bourgogne-Franche-Comté,https://www.helloasso.com/e/reg/bourgogne-franche-comte/cat/accordeon,18,TODO,0,Browse 20 associations
+HIGH,HelloAsso,Accordéon - Centre-Val de Loire,https://www.helloasso.com/e/reg/centre-val-de-loire/cat/accordeon,18,TODO,0,Browse 20 associations
+HIGH,AgendaTrad,Organisateurs France,https://agendatrad.org/orgas/France,180,TODO,0,"Click each organizer profile, extract email"
+MEDIUM,Regional Network,ACB44 - Loire-Atlantique,https://www.acb44.bzh/index.php/cours/musique/97-accordeon-diatonique,15,TODO,0,
+MEDIUM,Regional Network,Fédération Trad 33 - Gironde,https://trad33.com/annuaire/associations/,20,TODO,0,
+MEDIUM,Regional Network,CADB - Collectif Accordéon Diatonique Bretagne,http://diato.orlulas.fr/cadb/,10,TODO,0,
+MEDIUM,Regional Network,Musique et Danse 44,http://musiqueetdanse44.asso.fr/,15,TODO,0,
+HIGH,Teacher Directory,Superprof - Accordéon diatonique France,https://www.superprof.fr/cours/accordeon-diatonique/france/,80,TODO,0,"Browse all teacher profiles, extract emails"
+HIGH,Teacher Directory,ProfesseurParticulier.com,https://www.professeurparticulier.com/cours-particuliers/55-accordeon/,50,TODO,0,Teacher contacts by region
+HIGH,Teacher Directory,Prof-contact.com,https://prof-contact.com/prof-accordeon-france-74-100.html,40,TODO,0,Direct email listings
+HIGH,Teacher Directory,Accordéonistes de France,https://accordeonistes-de-france.tiuls.fr/3-cours,30,TODO,0,Professional directory with contacts
+MEDIUM,Luthiers,CCTheater Luthiers Directory,http://cctheater.free.fr/adresses_luthiers.htm,40,TODO,0,Complete list with emails
+MEDIUM,Luthiers,dia.to Professionnels,https://dia.to/ressources/professionnels,30,TODO,0,Repair shops and sellers
+MEDIUM,Net1901,Search: accordéon diatonique,https://www.net1901.org/recherche/accordéon+diatonique,80,TODO,0,Search and extract from profiles
+MEDIUM,Net1901,Search: accordéon traditionnel,https://www.net1901.org/recherche/accordéon+traditionnel,40,TODO,0,Search and extract from profiles
+MEDIUM,Net1901,Search: bal folk,https://www.net1901.org/recherche/bal+folk,60,TODO,0,Search and extract from profiles
+MEDIUM,Net1901,Search: musique traditionnelle,https://www.net1901.org/recherche/musique+traditionnelle,50,TODO,0,Search and extract from profiles

@@ -1,0 +1,79 @@
+country,priority,source,category,url,estimated_emails,status,collected
+AT,HIGH,National Federation,Österreichischer Volksmusikbund,http://www.volksmusikbund.at/,100,TODO,0
+AT,HIGH,Google Search,Steirische Harmonika Lehrer Österreich,https://www.google.com/search?q=Steirische+Harmonika+Lehrer+%C3%96sterreich,50,TODO,0
+AT,HIGH,Google Search,Volksmusik Verein Österreich,https://www.google.com/search?q=Volksmusik+Verein+%C3%96sterreich,50,TODO,0
+AT,MEDIUM,Facebook,Steirische Harmonika groups,https://www.facebook.com/search/groups/?q=Steirische+Harmonika+Austria,100,TODO,0
+AT,MEDIUM,Google Search,Volksmusik schools,https://www.google.com/search?q=Volksmusik+Austria+contact,30,TODO,0
+AT,MEDIUM,Google Search,Alpenmusik schools,https://www.google.com/search?q=Alpenmusik+Austria+contact,30,TODO,0
+BE,HIGH,Google Search,accordéon diatonique Belgique,https://www.google.com/search?q=accord%C3%A9on+diatonique+Belgique,50,TODO,0
+BE,HIGH,Google Search,volksmuziek vereniging België,https://www.google.com/search?q=volksmuziek+vereniging+Belgi%C3%AB,50,TODO,0
+BE,HIGH,Google Search,bal folk Belgium,https://www.google.com/search?q=bal+folk+Belgium,50,TODO,0
+BE,HIGH,Google Search,école musique traditionnelle,https://www.google.com/search?q=%C3%A9cole+musique+traditionnelle,50,TODO,0
+BE,MEDIUM,Facebook,accordéon diatonique groups,https://www.facebook.com/search/groups/?q=accord%C3%A9on+diatonique+Belgium,100,TODO,0
+BE,MEDIUM,Facebook,trekharmonica groups,https://www.facebook.com/search/groups/?q=trekharmonica+Belgium,100,TODO,0
+BE,MEDIUM,Google Search,musique folk schools,https://www.google.com/search?q=musique+folk+Belgium+contact,30,TODO,0
+BE,MEDIUM,Google Search,bal folk schools,https://www.google.com/search?q=bal+folk+Belgium+contact,30,TODO,0
+CH,HIGH,National Federation,Eidgenössischer Jodlerverband,https://www.jodlerverband.ch/,100,TODO,0
+CH,HIGH,Google Search,Schwyzerörgeli Lehrer Schweiz,https://www.google.com/search?q=Schwyzer%C3%B6rgeli+Lehrer+Schweiz,50,TODO,0
+CH,HIGH,Google Search,accordéon diatonique Suisse,https://www.google.com/search?q=accord%C3%A9on+diatonique+Suisse,50,TODO,0
+CH,HIGH,Google Search,Volksmusik Verein Schweiz,https://www.google.com/search?q=Volksmusik+Verein+Schweiz,50,TODO,0
+CH,MEDIUM,Facebook,Schwyzerörgeli groups,https://www.facebook.com/search/groups/?q=Schwyzer%C3%B6rgeli+Switzerland,100,TODO,0
+CH,MEDIUM,Facebook,accordéon diatonique groups,https://www.facebook.com/search/groups/?q=accord%C3%A9on+diatonique+Switzerland,100,TODO,0
+CH,MEDIUM,Google Search,Volksmusik schools,https://www.google.com/search?q=Volksmusik+Switzerland+contact,30,TODO,0
+CH,MEDIUM,Google Search,musique folklorique schools,https://www.google.com/search?q=musique+folklorique+Switzerland+contact,30,TODO,0
+DE,HIGH,National Federation,Deutscher Harmonikaverband (DHV),https://www.harmonika-verband.de/,200,TODO,0
+DE,HIGH,Google Search,Akkordeon Verein Deutschland,https://www.google.com/search?q=Akkordeon+Verein+Deutschland,50,TODO,0
+DE,HIGH,Google Search,Steirische Harmonika Lehrer,https://www.google.com/search?q=Steirische+Harmonika+Lehrer,50,TODO,0
+DE,HIGH,Google Search,Volksmusik Schule Deutschland,https://www.google.com/search?q=Volksmusik+Schule+Deutschland,50,TODO,0
+DE,HIGH,Google Search,Harmonika Verband,https://www.google.com/search?q=Harmonika+Verband,50,TODO,0
+DE,MEDIUM,Facebook,Akkordeon groups,https://www.facebook.com/search/groups/?q=Akkordeon+Germany,100,TODO,0
+DE,MEDIUM,Facebook,Steirische Harmonika groups,https://www.facebook.com/search/groups/?q=Steirische+Harmonika+Germany,100,TODO,0
+DE,MEDIUM,Google Search,Volksmusik schools,https://www.google.com/search?q=Volksmusik+Germany+contact,30,TODO,0
+DE,MEDIUM,Google Search,Volkstanz schools,https://www.google.com/search?q=Volkstanz+Germany+contact,30,TODO,0
+ES,HIGH,Google Search,trikitixa asociación País Vasco,https://www.google.com/search?q=trikitixa+asociaci%C3%B3n+Pa%C3%ADs+Vasco,50,TODO,0
+ES,HIGH,Google Search,acordeón diatónico escuela España,https://www.google.com/search?q=acorde%C3%B3n+diat%C3%B3nico+escuela+Espa%C3%B1a,50,TODO,0
+ES,HIGH,Google Search,música tradicional asociación,https://www.google.com/search?q=m%C3%BAsica+tradicional+asociaci%C3%B3n,50,TODO,0
+ES,MEDIUM,Facebook,trikitixa groups,https://www.facebook.com/search/groups/?q=trikitixa+Spain,100,TODO,0
+ES,MEDIUM,Facebook,acordeón diatónico groups,https://www.facebook.com/search/groups/?q=acorde%C3%B3n+diat%C3%B3nico+Spain,100,TODO,0
+ES,MEDIUM,Google Search,música tradicional schools,https://www.google.com/search?q=m%C3%BAsica+tradicional+Spain+contact,30,TODO,0
+ES,MEDIUM,Google Search,música popular schools,https://www.google.com/search?q=m%C3%BAsica+popular+Spain+contact,30,TODO,0
+GB,HIGH,National Federation,English Folk Dance and Song Society (EFDSS),https://www.efdss.org/,200,TODO,0
+GB,HIGH,Google Search,melodeon teacher UK,https://www.google.com/search?q=melodeon+teacher+UK,50,TODO,0
+GB,HIGH,Google Search,morris dancing group,https://www.google.com/search?q=morris+dancing+group,50,TODO,0
+GB,HIGH,Google Search,folk club England,https://www.google.com/search?q=folk+club+England,50,TODO,0
+GB,HIGH,Google Search,ceilidh band Scotland,https://www.google.com/search?q=ceilidh+band+Scotland,50,TODO,0
+GB,HIGH,Google Search,EFDSS member,https://www.google.com/search?q=EFDSS+member,50,TODO,0
+GB,MEDIUM,Facebook,melodeon groups,https://www.facebook.com/search/groups/?q=melodeon+United+Kingdom,100,TODO,0
+GB,MEDIUM,Facebook,button accordion groups,https://www.facebook.com/search/groups/?q=button+accordion+United+Kingdom,100,TODO,0
+GB,MEDIUM,Google Search,folk music schools,https://www.google.com/search?q=folk+music+United+Kingdom+contact,30,TODO,0
+GB,MEDIUM,Google Search,morris dancing schools,https://www.google.com/search?q=morris+dancing+United+Kingdom+contact,30,TODO,0
+IE,HIGH,National Federation,Comhaltas Ceoltóirí Éireann (CCE),https://comhaltas.ie/,250,TODO,0
+IE,HIGH,Google Search,button accordion teacher Ireland,https://www.google.com/search?q=button+accordion+teacher+Ireland,50,TODO,0
+IE,HIGH,Google Search,CCE branch Ireland,https://www.google.com/search?q=CCE+branch+Ireland,50,TODO,0
+IE,HIGH,Google Search,traditional Irish music association,https://www.google.com/search?q=traditional+Irish+music+association,50,TODO,0
+IE,HIGH,Google Search,fleadh cheoil,https://www.google.com/search?q=fleadh+cheoil,50,TODO,0
+IE,MEDIUM,Facebook,button accordion groups,https://www.facebook.com/search/groups/?q=button+accordion+Ireland,100,TODO,0
+IE,MEDIUM,Facebook,melodeon groups,https://www.facebook.com/search/groups/?q=melodeon+Ireland,100,TODO,0
+IE,MEDIUM,Google Search,traditional Irish music schools,https://www.google.com/search?q=traditional+Irish+music+Ireland+contact,30,TODO,0
+IE,MEDIUM,Google Search,céilí schools,https://www.google.com/search?q=c%C3%A9il%C3%AD+Ireland+contact,30,TODO,0
+IT,HIGH,National Federation,Associazione Italiana Fisarmonicisti,http://www.fisarmonicisti.it/,150,TODO,0
+IT,HIGH,Google Search,organetto associazione Italia,https://www.google.com/search?q=organetto+associazione+Italia,50,TODO,0
+IT,HIGH,Google Search,fisarmonica diatonica scuola,https://www.google.com/search?q=fisarmonica+diatonica+scuola,50,TODO,0
+IT,HIGH,Google Search,musica popolare italiana,https://www.google.com/search?q=musica+popolare+italiana,50,TODO,0
+IT,HIGH,Google Search,scuola organetto,https://www.google.com/search?q=scuola+organetto,50,TODO,0
+IT,MEDIUM,Facebook,organetto groups,https://www.facebook.com/search/groups/?q=organetto+Italy,100,TODO,0
+IT,MEDIUM,Facebook,fisarmonica diatonica groups,https://www.facebook.com/search/groups/?q=fisarmonica+diatonica+Italy,100,TODO,0
+IT,MEDIUM,Google Search,musica popolare schools,https://www.google.com/search?q=musica+popolare+Italy+contact,30,TODO,0
+IT,MEDIUM,Google Search,musica tradizionale schools,https://www.google.com/search?q=musica+tradizionale+Italy+contact,30,TODO,0
+NL,HIGH,Google Search,accordeon les Nederland,https://www.google.com/search?q=accordeon+les+Nederland,50,TODO,0
+NL,HIGH,Google Search,volksmuziek vereniging,https://www.google.com/search?q=volksmuziek+vereniging,50,TODO,0
+NL,HIGH,Google Search,balfolk Nederland,https://www.google.com/search?q=balfolk+Nederland,50,TODO,0
+NL,MEDIUM,Facebook,accordeon groups,https://www.facebook.com/search/groups/?q=accordeon+Netherlands,100,TODO,0
+NL,MEDIUM,Facebook,trekharmonica groups,https://www.facebook.com/search/groups/?q=trekharmonica+Netherlands,100,TODO,0
+NL,MEDIUM,Google Search,volksmuziek schools,https://www.google.com/search?q=volksmuziek+Netherlands+contact,30,TODO,0
+NL,MEDIUM,Google Search,balfolk schools,https://www.google.com/search?q=balfolk+Netherlands+contact,30,TODO,0
+PT,HIGH,Google Search,concertina Portugal associação,https://www.google.com/search?q=concertina+Portugal+associa%C3%A7%C3%A3o,50,TODO,0
+PT,HIGH,Google Search,música tradicional portuguesa,https://www.google.com/search?q=m%C3%BAsica+tradicional+portuguesa,50,TODO,0
+PT,MEDIUM,Facebook,concertina groups,https://www.facebook.com/search/groups/?q=concertina+Portugal,100,TODO,0
+PT,MEDIUM,Facebook,acordeão groups,https://www.facebook.com/search/groups/?q=acorde%C3%A3o+Portugal,100,TODO,0
+PT,MEDIUM,Google Search,música tradicional schools,https://www.google.com/search?q=m%C3%BAsica+tradicional+Portugal+contact,30,TODO,0
