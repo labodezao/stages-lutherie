@@ -5,6 +5,7 @@ This generates a checklist of all the URLs you need to visit to collect 1000+ em
 """
 
 import csv
+from urllib.parse import quote_plus
 
 def generate_url_checklist():
     """Generate a comprehensive list of URLs to visit."""
@@ -76,7 +77,7 @@ def generate_url_checklist():
         urls.append({
             'source': 'Net1901',
             'category': f'Recherche: {keyword}',
-            'url': f'https://www.net1901.org/recherche/{keyword.replace(" ", "+")}',
+            'url': f'https://www.net1901.org/recherche/{quote_plus(keyword)}',
             'estimated_contacts': '20-100',
             'priority': 'MEDIUM',
             'done': 'NO'
@@ -93,11 +94,11 @@ def generate_url_checklist():
         ("Côtes-d'Armor", "22"),
     ]
     
-    for dept_name, dept_num in departments_44_vicinity:
+    for dept_name, _ in departments_44_vicinity:
         urls.append({
             'source': 'Google Search',
             'category': f'Conservatoires {dept_name}',
-            'url': f'https://www.google.com/search?q=conservatoire+école+musique+{dept_name.replace(" ", "+")}+contact+email',
+            'url': f'https://www.google.com/search?q={quote_plus(f"conservatoire école musique {dept_name} contact email")}',
             'estimated_contacts': '10-30',
             'priority': 'MEDIUM',
             'done': 'NO'
@@ -117,7 +118,7 @@ def generate_url_checklist():
     urls.append({
         'source': 'Google Search',
         'category': 'Luthiers accordéon France',
-        'url': 'https://www.google.com/search?q=luthier+accordéon+diatonique+France+contact+email',
+        'url': f'https://www.google.com/search?q={quote_plus("luthier accordéon diatonique France contact email")}',
         'estimated_contacts': '20-50',
         'priority': 'LOW',
         'done': 'NO'
@@ -135,7 +136,7 @@ def generate_url_checklist():
         urls.append({
             'source': 'Facebook',
             'category': f'Groupe: {group}',
-            'url': f'https://www.facebook.com/search/groups/?q={group.replace(" ", "%20")}',
+            'url': f'https://www.facebook.com/search/groups/?q={quote_plus(group)}',
             'estimated_contacts': 'Variable (membres du groupe)',
             'priority': 'LOW',
             'done': 'NO'

@@ -3,10 +3,11 @@
 Advanced web scraper to collect 1000+ email addresses from:
 - HelloAsso (associations)
 - AgendaTrad (folk organizers)
-- Net1901 (association directory)
 - Chorotempo (traditional music organizers)
+- Net1901 (association directory) [planned, not yet implemented]
 
-This script can scrape multiple sources to build a comprehensive contact database.
+This script currently scrapes multiple sources (HelloAsso, AgendaTrad, Chorotempo)
+to build a comprehensive contact database. Net1901 support is planned but not yet available.
 """
 
 import re
@@ -14,13 +15,10 @@ import csv
 import sys
 import time
 import argparse
-from urllib.parse import urljoin, urlparse
-import json
 
 try:
     import requests
     from bs4 import BeautifulSoup
-    HAS_LIBS = True
 except ImportError:
     print("Error: Required libraries not installed.", file=sys.stderr)
     print("Install with: pip install requests beautifulsoup4", file=sys.stderr)
@@ -53,11 +51,13 @@ class ContactScraper:
             print(f"  Fetching: {url}")
             response = self.session.get(url, timeout=30)
             response.raise_for_status()
-            time.sleep(self.delay)
             return response.text
         except Exception as e:
             print(f"  Error fetching {url}: {e}", file=sys.stderr)
             return None
+        finally:
+            # Always sleep to avoid rate limiting
+            time.sleep(self.delay)
     
     def scrape_helloasso_category(self, category="accordeon", regions=None):
         """
@@ -94,10 +94,11 @@ class ContactScraper:
         emails = self.extract_emails_from_text(text_content)
         
         for email in emails:
-            if email not in self.emails and not self._is_excluded_email(email):
-                self.emails.add(email)
+            email_lower = email.lower()
+            if email_lower not in self.emails and not self._is_excluded_email(email):
+                self.emails.add(email_lower)
                 self.contacts.append({
-                    'email': email.lower(),
+                    'email': email_lower,
                     'source': 'HelloAsso',
                     'category': category,
                     'region': region,
@@ -136,10 +137,11 @@ class ContactScraper:
         emails = self.extract_emails_from_text(text_content)
         
         for email in emails:
-            if email not in self.emails and not self._is_excluded_email(email):
-                self.emails.add(email)
+            email_lower = email.lower()
+            if email_lower not in self.emails and not self._is_excluded_email(email):
+                self.emails.add(email_lower)
                 self.contacts.append({
-                    'email': email.lower(),
+                    'email': email_lower,
                     'source': 'AgendaTrad',
                     'category': 'folk-organizer',
                     'region': country,
@@ -166,10 +168,11 @@ class ContactScraper:
         emails = self.extract_emails_from_text(text_content)
         
         for email in emails:
-            if email not in self.emails and not self._is_excluded_email(email):
-                self.emails.add(email)
+            email_lower = email.lower()
+            if email_lower not in self.emails and not self._is_excluded_email(email):
+                self.emails.add(email_lower)
                 self.contacts.append({
-                    'email': email.lower(),
+                    'email': email_lower,
                     'source': 'Chorotempo',
                     'category': 'trad-organizer',
                     'region': country,

@@ -96,8 +96,9 @@ def extract_emails_from_html(html_content):
             # Find context around email (look for nearby text in paragraphs, divs, etc.)
             context = ""
             for element in soup.find_all(['p', 'div', 'td', 'li', 'span']):
-                if email in element.get_text():
-                    context = element.get_text().strip()
+                element_text = element.get_text()
+                if email_lower in element_text.lower():
+                    context = element_text.strip()
                     break
             
             emails_data.append({
@@ -124,7 +125,7 @@ def extract_emails_from_html(html_content):
     return unique_emails
 
 
-def save_to_csv(emails_data, output_file='associations_accordeon_emails.csv'):
+def save_to_csv(emails_data, output_file='extracted_emails.csv'):
     """Save extracted emails to CSV file."""
     with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['email', 'association_context']
