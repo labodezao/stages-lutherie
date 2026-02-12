@@ -23,6 +23,10 @@ This gallery showcases the different stages of building a diatonic accordion dur
 
 ![Grille Visuels](comm/visuels%20grille.png)
 
+### Visuel de communication interactif / Interactive Communication Visual
+
+📄 [Ouvrir le visuel HTML](comm/visuel-stage-accordeon.html) – Flyer complet avec photos, tarifs, dates et inscription.
+
 ---
 
 ## Collages de Présentation / Presentation Collages
