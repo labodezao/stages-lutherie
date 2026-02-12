@@ -61,6 +61,8 @@ def collect_from_source(source_row):
     # Attempt to collect (this would be actual web scraping in real implementation)
     print(f"\n⏳ Attempting to collect from {source}...")
     
+    # Note: scrape_mass_contacts is an optional dependency used only for
+    # automated collection features. Manual collection is always an option.
     try:
         # Try to import and use the scraper
         import scrape_mass_contacts

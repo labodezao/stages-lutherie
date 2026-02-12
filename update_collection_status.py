@@ -5,6 +5,7 @@ This script updates PATH_TO_1000_EMAILS.md with the latest progress.
 """
 
 import csv
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -68,8 +69,6 @@ def update_path_to_1000_emails(total_emails, remaining, progress_pct):
         today = datetime.now().strftime('%Y-%m-%d')
         
         # Replace the Current Status section
-        import re
-        
         # Pattern to match the Current Status section
         pattern = r'## Current Status\n\*\*Date:\*\* [^\n]+\n\*\*Collected:\*\* [^\n]+\n\*\*Target:\*\* [^\n]+\n\*\*Progress:\*\* [^\n]+\n\*\*Remaining:\*\* [^\n]+'
         
@@ -111,7 +110,12 @@ def generate_summary_report():
     intl_unique, intl_rows = count_emails_in_csv('international_emails_collected.csv')
     assoc_unique, assoc_rows = count_emails_in_csv('associations_accordeon_emails.csv')
     
-    total_collected = main_unique + intl_unique + assoc_unique
+    # Get actual unique count after deduplication
+    from merge_deduplicate_emails import deduplicate_emails
+    all_rows = main_rows + intl_rows + assoc_rows
+    unique_rows, num_duplicates = deduplicate_emails(all_rows)
+    total_collected = len(unique_rows)
+    
     TARGET = 1000
     progress_pct = (total_collected / TARGET) * 100
     remaining = TARGET - total_collected
@@ -120,8 +124,9 @@ def generate_summary_report():
     print(f"  Main database (France):        {main_unique:4d} emails")
     print(f"  International database:        {intl_unique:4d} emails")
     print(f"  Associations database:         {assoc_unique:4d} emails")
+    print(f"  Duplicates removed:            {num_duplicates:4d}")
     print(f"  ─────────────────────────────────────────")
-    print(f"  TOTAL COLLECTED:               {total_collected:4d} emails")
+    print(f"  TOTAL UNIQUE:                  {total_collected:4d} emails")
     print(f"  TARGET:                        {TARGET:4d} emails")
     print(f"  PROGRESS:                      {progress_pct:5.1f}%")
     print(f"  REMAINING:                     {remaining:4d} emails")
