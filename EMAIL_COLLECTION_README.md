@@ -8,7 +8,19 @@
 
 ## Quick Start
 
-### 1. Check Current Progress
+### 1. Interactive Collection Assistant (Recommended)
+```bash
+python3 collection_assistant.py
+```
+This provides an interactive menu with all collection tools in one place:
+- Check current status
+- View next tasks
+- Mark tasks as complete
+- Add emails to database
+- Merge & deduplicate
+- Update documentation
+
+### 2. Check Current Progress
 ```bash
 python3 track_collection_progress.py
 ```
@@ -17,7 +29,7 @@ This shows:
 - Progress toward 1000 email target
 - Next high-priority tasks to work on
 
-### 2. Update Status Documents
+### 3. Update Status Documents
 ```bash
 python3 update_collection_status.py
 ```
@@ -26,7 +38,7 @@ This:
 - Updates PATH_TO_1000_EMAILS.md with current progress
 - Shows breakdown of collected emails
 
-### 3. Merge & Deduplicate Emails
+### 4. Merge & Deduplicate Emails
 ```bash
 python3 merge_deduplicate_emails.py
 ```
@@ -35,6 +47,16 @@ This:
 - Removes duplicates
 - Creates all_emails_merged.csv with unique emails
 - Shows deduplication statistics
+
+### 5. Automated Batch Collection (if internet available)
+```bash
+python3 continue_collection.py
+```
+This attempts to:
+- Automatically collect from high-priority sources
+- Update checklists as sources are completed
+- Continue until target is reached
+- Note: Requires internet access to external domains
 
 ## Email Collection Workflow
 
@@ -104,6 +126,21 @@ python3 update_collection_status.py
    - Diatonic accordion specialists
 
 ## Tools Reference
+
+### collection_assistant.py (Interactive)
+- Interactive menu-driven interface
+- All collection tools in one place
+- Mark tasks complete
+- Update checklists
+- Guide through collection process
+
+### continue_collection.py (Automated)
+- Automated batch collection from checklists
+- Processes high-priority sources in sequence
+- Updates checklists automatically
+- Continues until target reached
+- Usage: `python3 continue_collection.py [--target 1000] [--max-sources N]`
+- Note: Requires internet access to external domains
 
 ### track_collection_progress.py
 - Shows current status across all databases
