@@ -39,6 +39,10 @@ This gallery showcases the different stages of building a diatonic accordion dur
 🇬🇧 **English:**
 📱 [Social media visuals EN](comm/social-media-visuals-en.html) – Facebook (1200×630), Instagram post (1080×1080), Instagram story (1080×1920), WordPress/OG (1200×675).
 
+### Prospection / Outreach
+
+📋 [Liste de prospection FR + EN](comm/prospection-reseaux-sociaux.md) – Forums, associations, groupes Facebook, comptes Instagram, hashtags et textes d'accroche prêts à poster.
+
 ---
 
 ## Collages de Présentation / Presentation Collages
