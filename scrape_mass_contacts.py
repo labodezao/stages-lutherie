@@ -27,6 +27,10 @@ except ImportError:
     sys.exit(1)
 
 
+# Shared email regex pattern
+EMAIL_REGEX = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
+
+
 class ContactScraper:
     """Multi-source contact scraper for associations."""
     
@@ -41,8 +45,7 @@ class ContactScraper:
         
     def extract_emails_from_text(self, text):
         """Extract email addresses from text."""
-        email_pattern = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
-        return re.findall(email_pattern, text)
+        return re.findall(EMAIL_REGEX, text)
     
     def fetch_page(self, url):
         """Fetch a web page with error handling."""
@@ -56,10 +59,12 @@ class ContactScraper:
             print(f"  Error fetching {url}: {e}", file=sys.stderr)
             return None
     
-    def scrape_helloasso_category(self, category="accordeon", regions=None, max_pages=50):
+    def scrape_helloasso_category(self, category="accordeon", regions=None):
         """
         Scrape HelloAsso directory for associations.
         Categories: accordeon, musique, bal-folk, danse, culture
+        Note: This version scrapes the main listing page only.
+        Individual association pages could be scraped for more emails but would be much slower.
         """
         print(f"\n=== Scraping HelloAsso: {category} ===")
         
@@ -106,10 +111,11 @@ class ContactScraper:
                 # Could visit individual association pages (but would be very slow)
                 pass
     
-    def scrape_agendatrad_organizers(self, countries=["France"], max_orgas=1000):
+    def scrape_agendatrad_organizers(self, countries=["France"]):
         """
         Scrape AgendaTrad for event organizers.
         AgendaTrad is a major folk music directory.
+        Note: Scrapes the main organizer listing page.
         """
         print(f"\n=== Scraping AgendaTrad organizers ===")
         
@@ -170,38 +176,50 @@ class ContactScraper:
                     'context': ''
                 })
     
-    def scrape_net1901_search(self, keywords=["accordéon", "folk", "musique traditionnelle"], max_results=500):
+    def scrape_net1901_search(self, keywords=["accordéon", "folk", "musique traditionnelle"]):
         """
         Scrape Net1901 association directory.
-        Note: This might require pagination handling.
+        Note: This is a placeholder. Net1901 requires specific implementation
+        as their site structure may use JavaScript or require form submissions.
+        Consider manual collection from Net1901 instead.
         """
         print(f"\n=== Scraping Net1901 directory ===")
+        print(f"  ⚠️  WARNING: Net1901 scraping not fully implemented")
+        print(f"  Recommend manual collection from: https://www.net1901.org/")
         
         for keyword in keywords:
-            # Net1901 search might require specific implementation
-            # This is a placeholder for the actual implementation
-            print(f"  Searching for: {keyword}")
-            # Would implement actual search here
+            print(f"  Would search for: {keyword}")
         
         print(f"  Found {len(self.emails)} unique emails so far")
     
     def _is_excluded_email(self, email):
-        """Filter out generic/admin emails."""
+        """Filter out generic/admin emails and platform addresses."""
         excluded_domains = [
             'example.com', 'test.com', 'localhost',
+            'helloasso.org', 'helloasso.com'
+        ]
+        excluded_keywords = [
             'noreply', 'no-reply', 'donotreply'
         ]
         excluded_prefixes = [
-            'admin@', 'webmaster@', 'postmaster@', 'info@',
-            'support@', 'hello@', 'contact@helloasso'
+            'admin@', 'webmaster@', 'postmaster@',
+            'support@', 'hello@'
         ]
+        # Allow 'info@' and 'contact@' as these are often real association contacts
         
         email_lower = email.lower()
         
+        # Check domains
         for domain in excluded_domains:
             if domain in email_lower:
                 return True
         
+        # Check keywords
+        for keyword in excluded_keywords:
+            if keyword in email_lower:
+                return True
+        
+        # Check prefixes
         for prefix in excluded_prefixes:
             if email_lower.startswith(prefix):
                 return True

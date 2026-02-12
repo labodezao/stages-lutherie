@@ -27,6 +27,10 @@ except ImportError:
     from urllib.error import URLError, HTTPError
 
 
+# Shared email regex pattern
+EMAIL_REGEX = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
+
+
 def fetch_webpage_requests(url):
     """Fetch webpage content using requests library."""
     try:
@@ -76,16 +80,13 @@ def extract_emails_from_html(html_content):
     """Extract emails from HTML content using BeautifulSoup or regex."""
     emails_data = []
     
-    # Email regex pattern
-    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-    
     if HAS_REQUESTS:
         # Use BeautifulSoup for better parsing
         soup = BeautifulSoup(html_content, 'html.parser')
         text_content = soup.get_text()
         
-        # Find all emails
-        emails_found = re.findall(email_pattern, text_content)
+        # Find all emails using shared regex
+        emails_found = re.findall(EMAIL_REGEX, text_content)
         
         # Try to find context for each email
         for email in emails_found:
@@ -104,8 +105,8 @@ def extract_emails_from_html(html_content):
                 'context': context[:300]  # Limit context length
             })
     else:
-        # Fallback to simple regex
-        emails_found = re.findall(email_pattern, html_content)
+        # Fallback to simple regex with shared pattern
+        emails_found = re.findall(EMAIL_REGEX, html_content)
         for email in emails_found:
             emails_data.append({
                 'email': email.lower(),
