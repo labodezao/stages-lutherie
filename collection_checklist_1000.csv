@@ -1,7 +1,7 @@
 priority,source,category,url,estimated_emails,status,collected,notes
-HIGH,HelloAsso,Accordéon - Bretagne,https://www.helloasso.com/e/reg/bretagne/cat/accordeon,30,TODO,0,Browse 35 associations
-HIGH,HelloAsso,Accordéon - Pays de la Loire,https://www.helloasso.com/e/reg/pays--de--la--loire/cat/accordeon,25,TODO,0,Browse 30 associations
-HIGH,HelloAsso,Accordéon - Nouvelle-Aquitaine,https://www.helloasso.com/e/reg/nouvelle-aquitaine/cat/accordeon,30,TODO,0,Browse 35 associations
+HIGH,HelloAsso,Accordéon - Bretagne,https://www.helloasso.com/e/reg/bretagne/cat/accordeon,30,TODO,0,Browse 35 associations [Needs manual collection]
+HIGH,HelloAsso,Accordéon - Pays de la Loire,https://www.helloasso.com/e/reg/pays--de--la--loire/cat/accordeon,25,TODO,0,Browse 30 associations [Needs manual collection]
+HIGH,HelloAsso,Accordéon - Nouvelle-Aquitaine,https://www.helloasso.com/e/reg/nouvelle-aquitaine/cat/accordeon,30,TODO,0,Browse 35 associations [Needs manual collection]
 HIGH,HelloAsso,Accordéon - Occitanie,https://www.helloasso.com/e/reg/occitanie/cat/accordeon,25,TODO,0,Browse 30 associations
 HIGH,HelloAsso,Accordéon - Auvergne-Rhône-Alpes,https://www.helloasso.com/e/reg/auvergne-rhone-alpes/cat/accordeon,25,TODO,0,Browse 30 associations
 HIGH,HelloAsso,Accordéon - PACA,https://www.helloasso.com/e/reg/provence-alpes-cote-d-azur/cat/accordeon,20,TODO,0,Browse 25 associations

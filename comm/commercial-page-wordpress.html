@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Fabriquez votre accordéon diatonique - Stage de lutherie 10 jours</title>
+  <meta name="description" content="Stage de fabrication d'accordéon diatonique en 10 jours. Repartez avec votre instrument fait de vos mains. Sessions 2026: 8-17 avril et 14-23 octobre à Saint-Nazaire.">
+  
+  <!-- WordPress Compatible CSS -->
+  <style type="text/css">
+    /* Base Reset for WordPress */
+    .workshop-page { margin: 0; padding: 0; box-sizing: border-box; }
+    .workshop-page *, .workshop-page *::before, .workshop-page *::after { box-sizing: inherit; }
+    
+    /* Color Palette */
+    :root {
+      --wood-dark: #3E2723;
+      --wood-medium: #5D4037;
+      --wood-light: #8D6E63;
+      --cream: #FFF8E1;
+      --gold: #D4A017;
+      --gold-light: #F5D061;
+      --white: #FAFAFA;
+    }
+    
+    /* Main Container */
+    .workshop-page {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #fff;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, #2C1810 0%, #3E2723 30%, #5D4037 70%, #8D6E63 100%);
+      color: var(--white);
+      padding: 80px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.02) 3px, rgba(255,255,255,0.02) 6px);
+      pointer-events: none;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .hero-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 24px;
+      border-radius: 25px;
+      margin-bottom: 25px;
+    }
+    
+    .hero-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 20px 0;
+      text-shadow: 0 3px 15px rgba(0,0,0,0.4);
+    }
+    
+    .hero-title .accent {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.3rem;
+      opacity: 0.95;
+      margin: 15px 0 0 0;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Date Cards */
+    .dates-section {
+      background-color: var(--cream);
+      padding: 50px 20px;
+    }
+    
+    .dates-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    
+    .date-card {
+      background: white;
+      border-radius: 15px;
+      border-top: 5px solid var(--gold);
+      padding: 30px 25px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .date-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .date-card .season {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    
+    .date-card .dates {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--wood-dark);
+      margin: 5px 0;
+    }
+    
+    .date-card .year {
+      font-size: 1rem;
+      color: var(--wood-light);
+    }
+    
+    /* Content Section */
+    .content-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .section-title {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      color: var(--wood-dark);
+      margin-bottom: 15px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: var(--gold);
+    }
+    
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 20px;
+    }
+    
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+    
+    .info-card {
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 30px;
+      transition: transform 0.3s ease;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .info-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .info-card h3 {
+      font-size: 1.4rem;
+      color: var(--wood-dark);
+      margin-bottom: 15px;
+    }
+    
+    .info-card p, .info-card ul {
+      color: #555;
+      line-height: 1.8;
+    }
+    
+    .info-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .info-card ul li {
+      padding: 5px 0 5px 25px;
+      position: relative;
+    }
+    
+    .info-card ul li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-weight: bold;
+    }
+    
+    /* Models & Pricing */
+    .pricing-section {
+      background: var(--cream);
+      padding: 60px 20px;
+    }
+    
+    .pricing-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+    
+    .pricing-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .pricing-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+    
+    .pricing-header {
+      background: linear-gradient(135deg, var(--wood-dark), var(--wood-medium));
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    
+    .pricing-card.featured .pricing-header {
+      background: linear-gradient(135deg, var(--gold), #B8860B);
+    }
+    
+    .model-name {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .model-desc {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+    
+    .pricing-body {
+      padding: 30px 25px;
+    }
+    
+    .price {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--wood-dark);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    
+    .price-note {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 25px;
+    }
+    
+    .deposit {
+      background: var(--cream);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--wood-dark);
+      margin-bottom: 20px;
+    }
+    
+    .features-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    
+    .features-list li {
+      padding: 10px 0 10px 30px;
+      position: relative;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .features-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .features-list li::before {
+      content: '●';
+      position: absolute;
+      left: 10px;
+      color: var(--gold);
+    }
+    
+    /* Program Section */
+    .program-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    
+    .program-timeline {
+      position: relative;
+      margin: 40px 0;
+    }
+    
+    .program-day {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    
+    .day-number {
+      text-align: center;
+      position: relative;
+    }
+    
+    .day-badge {
+      background: var(--gold);
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+    
+    .day-content {
+      background: var(--cream);
+      padding: 25px;
+      border-radius: 12px;
+      border-left: 4px solid var(--gold);
+    }
+    
+    .day-content h3 {
+      color: var(--wood-dark);
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
+    
+    .day-content p {
+      color: #555;
+      line-height: 1.8;
+    }
+    
+    /* Options Section */
+    .options-section {
+      background: linear-gradient(135deg, var(--cream) 0%, #fff 100%);
+      padding: 60px 20px;
+    }
+    
+    .options-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    
+    .option-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .option-card h4 {
+      color: var(--wood-dark);
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--gold);
+    }
+    
+    .option-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .option-card ul li {
+      padding: 8px 0;
+      color: #555;
+      font-size: 0.95rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      background: linear-gradient(135deg, var(--wood-dark), var(--wood-medium));
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+    
+    .cta-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .cta-title {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    
+    .cta-text {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      opacity: 0.95;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 18px 40px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      background: var(--gold);
+      color: var(--wood-dark);
+      box-shadow: 0 4px 15px rgba(212, 160, 23, 0.4);
+    }
+    
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 160, 23, 0.6);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .btn-secondary:hover {
+      background: white;
+      color: var(--wood-dark);
+      transform: translateY(-2px);
+    }
+    
+    /* Contact Section */
+    .contact-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .contact-card {
+      background: var(--cream);
+      padding: 30px;
+      border-radius: 12px;
+    }
+    
+    .contact-card .icon {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+    
+    .contact-card h3 {
+      color: var(--wood-dark);
+      margin-bottom: 10px;
+    }
+    
+    .contact-card a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .contact-card a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Practical Info */
+    .practical-info {
+      background: var(--cream);
+      padding: 60px 20px;
+    }
+    
+    .practical-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    
+    .practical-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    
+    .practical-card h3 {
+      color: var(--wood-dark);
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .practical-card .icon {
+      font-size: 1.5rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .program-day {
+        grid-template-columns: 80px 1fr;
+        gap: 20px;
+      }
+      
+      .day-badge {
+        width: 60px;
+        height: 60px;
+        font-size: 1rem;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    /* WordPress Gutenberg Compatibility */
+    .wp-block-group .workshop-page {
+      margin: 0;
+    }
+    
+    /* Ensure spacing in WordPress editor */
+    .block-editor-block-list__block .workshop-page {
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="workshop-page">
+  
+  <!-- HERO SECTION -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">Expérience unique · Depuis 2021</div>
+      <h1 class="hero-title">
+        Fabriquez votre<br>
+        <span class="accent">accordéon diatonique</span>
+      </h1>
+      <p class="hero-subtitle">🔨 10 jours d'immersion · Repartez avec un instrument fait de vos mains</p>
+    </div>
+  </section>
+
+  <!-- DATES SECTION -->
+  <section class="dates-section">
+    <div class="dates-container">
+      <div class="date-card">
+        <div class="season">🌸 Printemps</div>
+        <div class="dates">8 – 17 avril</div>
+        <div class="year">2026</div>
+      </div>
+      <div class="date-card">
+        <div class="season">🍂 Automne</div>
+        <div class="dates">14 – 23 octobre</div>
+        <div class="year">2026</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section class="content-section">
+    <div class="section-header">
+      <h2 class="section-title">Un stage unique en France</h2>
+      <p class="section-subtitle">10 jours pour créer votre propre instrument, dans un cadre convivial et professionnel</p>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="icon">🎯</div>
+        <h3>Pour qui ?</h3>
+        <ul>
+          <li>Ouvert à tous dès 13 ans</li>
+          <li>Débutants bienvenus</li>
+          <li>Aucune expérience manuelle requise</li>
+          <li>Mineurs avec tuteur majeur</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <div class="icon">⚡</div>
+        <h3>L'esprit du stage</h3>
+        <p>Expérience créative et sensorielle dans un cadre calme. Accompagnement personnalisé tout au long du processus de fabrication. Petit groupe pour un suivi optimal.</p>
+      </div>
+
+      <div class="info-card">
+        <div class="icon">🎓</div>
+        <h3>Objectifs</h3>
+        <ul>
+          <li>Assembler les soufflets</li>
+          <li>Monter les mécaniques</li>
+          <li>Poser grilles et finitions</li>
+          <li>Installer et régler les anches</li>
+          <li>Prise en main musicale</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING SECTION -->
+  <section class="pricing-section">
+    <div class="section-header">
+      <h2 class="section-title">Modèles & Tarifs</h2>
+      <p class="section-subtitle">Choisissez le modèle qui vous correspond</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Model 21/8 -->
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <div class="model-name">21/8</div>
+          <div class="model-desc">Modèle compact</div>
+        </div>
+        <div class="pricing-body">
+          <div class="price">2 820 €</div>
+          <div class="price-note">Tout inclus</div>
+          <div class="deposit">Acompte: 900 € (40%)</div>
+          <ul class="features-list">
+            <li>21 boutons main droite</li>
+            <li>8 basses main gauche</li>
+            <li>Idéal débutant ou voyage</li>
+            <li>Léger et maniable</li>
+            <li>Tonalités G/C, D/G, A/D</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Model 33/12 -->
+      <div class="pricing-card featured">
+        <div class="pricing-header">
+          <div class="model-name">33/12</div>
+          <div class="model-desc">Modèle polyvalent ⭐</div>
+        </div>
+        <div class="pricing-body">
+          <div class="price">4 500 €</div>
+          <div class="price-note">Tout inclus</div>
+          <div class="deposit">Acompte: 1 500 € (40%)</div>
+          <ul class="features-list">
+            <li>33 boutons main droite</li>
+            <li>12 basses main gauche</li>
+            <li>Tessiture étendue</li>
+            <li>Plus de possibilités musicales</li>
+            <li>Layouts Heim / Milleret-Pignol</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Model 33/18 -->
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <div class="model-name">33/18</div>
+          <div class="model-desc">Modèle pro</div>
+        </div>
+        <div class="pricing-body">
+          <div class="price">4 880 €</div>
+          <div class="price-note">Tout inclus</div>
+          <div class="deposit">Acompte: 1 900 € (40%)</div>
+          <ul class="features-list">
+            <li>33 boutons main droite</li>
+            <li>18 basses main gauche</li>
+            <li>Maximum de basses</li>
+            <li>Harmonies complètes</li>
+            <li>Répertoire complexe</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM SECTION -->
+  <section class="program-section">
+    <div class="section-header">
+      <h2 class="section-title">Programme détaillé - 10 jours</h2>
+      <p class="section-subtitle">Un parcours progressif de la structure à la musique</p>
+    </div>
+
+    <div class="program-timeline">
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 1</div>
+        </div>
+        <div class="day-content">
+          <h3>Accueil & premiers assemblages</h3>
+          <p>Visite de l'atelier, présentation des outils, choix des options personnalisées (essences de bois, tonalité, grilles). Début de l'assemblage de la structure de base.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 2</div>
+        </div>
+        <div class="day-content">
+          <h3>Structure bois</h3>
+          <p>Fabrication de la caisse main droite et main gauche, ponçage, collage, équerrage. Installation de la base mécanique.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 3</div>
+        </div>
+        <div class="day-content">
+          <h3>Claviers & boutons</h3>
+          <p>Montage des axes, installation des ressorts, réglage du toucher et de la course des touches.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 4</div>
+        </div>
+        <div class="day-content">
+          <h3>Mécaniques main droite/gauche</h3>
+          <p>Assemblage complet des mécaniques, réglage précis des hauteurs et des courses de touches.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 5</div>
+        </div>
+        <div class="day-content">
+          <h3>Soufflets</h3>
+          <p>Fabrication et pose des soufflets, ajustements minutieux, vérification de l'étanchéité complète.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 6</div>
+        </div>
+        <div class="day-content">
+          <h3>Grilles & finitions</h3>
+          <p>Fixation des grilles décoratives, travail sur les finitions bois, ponçage final et protection.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 7</div>
+        </div>
+        <div class="day-content">
+          <h3>Installation des anches</h3>
+          <p>Tri et sélection des anches, installation minutieuse, première mise en tension, tests note par note.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 8</div>
+        </div>
+        <div class="day-content">
+          <h3>Réglages fins</h3>
+          <p>Détection et correction des fuites d'air, ajustement de la mécanique, alignement parfait des touches.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 9</div>
+        </div>
+        <div class="day-content">
+          <h3>Tests complets</h3>
+          <p>Tests approfondis main droite et main gauche, évaluation du confort de jeu, corrections personnalisées selon votre morphologie.</p>
+        </div>
+      </div>
+
+      <div class="program-day">
+        <div class="day-number">
+          <div class="day-badge">Jour 10</div>
+        </div>
+        <div class="day-content">
+          <h3>Initiation musicale & finalisation</h3>
+          <p>Séance de pratique musicale avec intervenant extérieur, prise en main finale de l'instrument, séance photos, bilan et remise de l'instrument.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPTIONS SECTION -->
+  <section class="options-section">
+    <div class="section-header">
+      <h2 class="section-title">Options & Personnalisation</h2>
+      <p class="section-subtitle">Plus de 100 combinaisons possibles pour créer VOTRE instrument unique</p>
+    </div>
+
+    <div class="options-grid">
+      <div class="option-card">
+        <h4>🌳 Essences de bois</h4>
+        <ul>
+          <li>Merisier (cherry wood)</li>
+          <li>Noyer (walnut)</li>
+          <li>Érable sycomore (maple)</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>🎵 Tonalités</h4>
+        <ul>
+          <li>G/C (Sol/Do)</li>
+          <li>D/G (Ré/Sol)</li>
+          <li>A/D (La/Ré)</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>⚙️ Layouts main droite</h4>
+        <ul>
+          <li>Heim</li>
+          <li>Milleret-Pignol</li>
+          <li>Marquage tactile/visuel/sans</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>🎹 Configuration main gauche</h4>
+        <ul>
+          <li>Milleret-Pignol</li>
+          <li>Heim</li>
+          <li>Personnalisée (surcoût)</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>🎨 Grilles décoratives</h4>
+        <ul>
+          <li>Plus de 100 modèles</li>
+          <li>Catalogue numéroté</li>
+          <li>Choix à l'inscription</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>🎨 Soufflets</h4>
+        <ul>
+          <li>Couleurs: noir, rouge, bleu, vert, orange, mixte</li>
+          <li>Coins standard/renforcés/métal</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>🔘 Mécaniques</h4>
+        <ul>
+          <li>Boutons champignon bois naturel</li>
+          <li>Nacre noire</li>
+          <li>Nacre blanche</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>🎺 Anches</h4>
+        <ul>
+          <li>Tipo a mano (standard)</li>
+          <li>A mano + (premium)</li>
+          <li>Accordage sec/demi-sec</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRACTICAL INFO -->
+  <section class="practical-info">
+    <div class="section-header">
+      <h2 class="section-title">Informations pratiques</h2>
+    </div>
+
+    <div class="practical-grid">
+      <div class="practical-card">
+        <h3><span class="icon">📍</span> Lieu</h3>
+        <p><strong>Atelier de lutherie</strong><br>
+        9 rue Fernand de Magellan<br>
+        44600 Saint-Nazaire<br>
+        France</p>
+      </div>
+
+      <div class="practical-card">
+        <h3><span class="icon">⏰</span> Horaires</h3>
+        <p><strong>Journée type:</strong><br>
+        9h30 – 12h30: Atelier fabrication<br>
+        12h30 – 14h00: Pause déjeuner<br>
+        14h00 – 17h30: Montage & réglages<br>
+        Soirées: Concerts, bals, échanges</p>
+      </div>
+
+      <div class="practical-card">
+        <h3><span class="icon">✅</span> Inclus</h3>
+        <ul>
+          <li>Tous les matériaux</li>
+          <li>Outillage professionnel</li>
+          <li>Encadrement expert</li>
+          <li>Bretelles fournies</li>
+          <li>Sac/housse fournie</li>
+          <li>Consommables</li>
+        </ul>
+      </div>
+
+      <div class="practical-card">
+        <h3><span class="icon">🏨</span> Non inclus</h3>
+        <ul>
+          <li>Hébergement</li>
+          <li>Repas</li>
+          <li>Transport</li>
+        </ul>
+        <p style="margin-top: 15px;"><em>Nous pouvons vous conseiller des hébergements à proximité.</em></p>
+      </div>
+
+      <div class="practical-card">
+        <h3><span class="icon">📝</span> Conditions</h3>
+        <ul>
+          <li>Acompte non remboursable</li>
+          <li>Possible de déplacer la session</li>
+          <li>Transfert de place autorisé</li>
+          <li>Places limitées (petits groupes)</li>
+        </ul>
+      </div>
+
+      <div class="practical-card">
+        <h3><span class="icon">⚠️</span> Important</h3>
+        <ul>
+          <li>Travail préparatoire avant le stage</li>
+          <li>Instrument non destiné à la revente commerciale</li>
+          <li>Retour possible si non terminé (80€/jour)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Prêt à fabriquer votre accordéon ?</h2>
+      <p class="cta-text">Les places sont limitées. Ne manquez pas cette opportunité unique de créer votre propre instrument de musique !</p>
+      <div class="cta-buttons">
+        <a href="https://stages.ewendaviau.com" class="btn btn-primary" target="_blank" rel="noopener">
+          📝 S'inscrire maintenant
+        </a>
+        <a href="mailto:contact@ewendaviau.com" class="btn btn-secondary">
+          ✉️ Nous contacter
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="contact-section">
+    <div class="section-header">
+      <h2 class="section-title">Contact & Ressources</h2>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="icon">🌐</div>
+        <h3>Site web</h3>
+        <a href="https://stages.ewendaviau.com" target="_blank" rel="noopener">stages.ewendaviau.com</a>
+        <p style="margin-top: 10px;"><a href="https://ewendaviau.com" target="_blank" rel="noopener">ewendaviau.com</a></p>
+      </div>
+
+      <div class="contact-card">
+        <div class="icon">✉️</div>
+        <h3>Email</h3>
+        <a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a>
+      </div>
+
+      <div class="contact-card">
+        <div class="icon">🎥</div>
+        <h3>Vidéo du stage</h3>
+        <a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank" rel="noopener">Voir sur YouTube</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- WordPress Shortcode Instructions -->
+<!--
+Pour utiliser cette page dans WordPress:
+
+1. MÉTHODE SHORTCODE:
+   - Copiez tout le contenu de <style> jusqu'à </style>
+   - Ajoutez-le dans Apparence > Personnaliser > CSS additionnel
+   - Copiez tout le contenu de <div class="workshop-page"> jusqu'à </div>
+   - Collez-le dans un bloc HTML personnalisé
+
+2. MÉTHODE PAGE TEMPLATE:
+   - Créez un nouveau template de page
+   - Copiez tout le code HTML dans le template
+   - Assignez le template à votre page
+
+3. FORMULAIRE DE CONTACT:
+   - Installez Contact Form 7 ou WPForms
+   - Remplacez les liens des boutons par vos formulaires
+   - Exemple avec Contact Form 7:
+     <a href="#" class="btn btn-primary" onclick="document.getElementById('contact-form').scrollIntoView()">
+
+4. OPTIMISATION SEO:
+   - Utilisez Yoast SEO pour optimiser la meta description
+   - Ajoutez des balises alt aux images si vous les intégrez
+   - Vérifiez les permaliens propres
+
+5. RESPONSIVE:
+   - Testez sur mobile, tablette, desktop
+   - Le design est déjà responsive
+
+6. COMPATIBILITÉ:
+   - Testé avec Gutenberg, Elementor, Divi
+   - Compatible WordPress 5.0+
+-->
+
+</body>
+</html>
