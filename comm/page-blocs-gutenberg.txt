@@ -2,7 +2,7 @@
   STAGE DE LUTHERIE — EWEN D'AVIAU
   Page Gutenberg — blocs natifs WordPress
   Saint-Nazaire · stages.ewendaviau.com
-  
+
   COMMENT UTILISER CE FICHIER :
   -----------------------------------------------------------------------
   1. WordPress → Pages → Ajouter une page
@@ -13,80 +13,185 @@
   6. Cliquez à nouveau sur ⋮ → "Éditeur visuel" pour voir le résultat
   7. Tous les blocs sont maintenant éditables visuellement !
   8. Publiez la page
-  
-  BLOCS UTILISÉS :
-  - wp:cover    → Sections héro et CTA (fond foncé)
-  - wp:group    → Sections avec fond coloré
-  - wp:columns  → Grilles multi-colonnes
-  - wp:heading  → Titres H1/H2/H3/H4
-  - wp:paragraph → Textes
-  - wp:list     → Listes à puces
-  - wp:buttons  → Boutons CTA
-  - wp:spacer   → Espacements
-  - wp:separator → Séparateurs
+
+  CSS SCOPÉ : tout le style est préfixé .labo-workshop-page
+  → aucune interférence avec votre thème WordPress
 ====================================================================== -->
 
+<!-- wp:html -->
+<style>
+/* ============================================================
+   Stage Lutherie – Ewen d'Aviau
+   CSS entièrement scopé sous .labo-workshop-page
+   AUCUNE règle globale – aucune interférence avec le thème
+   ============================================================ */
 
-<!-- wp:cover {"customOverlayColor":"#3E2723","dimRatio":100,"minHeight":480,"minHeightUnit":"px","isDark":true} -->
-<div class="wp-block-cover" style="min-height:480px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim" style="background-color:#3E2723"></span><div class="wp-block-cover__inner-container">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem"}}} -->
-<p class="has-text-align-center" style="color:#D4A017;font-size:0.85rem">✦ Expérience unique · Depuis 2021 ✦</p>
+/* 1. Hero : badge doré arrondi */
+.labo-workshop-page .lsp-hero-badge {
+  display:inline-block !important;
+  background:#D4A017; color:#3E2723;
+  font-size:11px; font-weight:800; letter-spacing:3px;
+  text-transform:uppercase; padding:8px 24px;
+  border-radius:25px; margin-bottom:20px;
+}
+
+/* 2. Titre de section : soulignement doré */
+.labo-workshop-page .lsp-section-title { padding-bottom:18px; }
+.labo-workshop-page .lsp-section-title::after {
+  content:''; display:block;
+  width:60px; height:3px; background:#D4A017;
+  margin:10px auto 0;
+}
+
+/* 3. Cartes date : bordure dorée en haut */
+.labo-workshop-page .lsp-date-card {
+  border-top:5px solid #D4A017 !important;
+  border-radius:15px !important;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+  transition:transform .3s, box-shadow .3s;
+}
+.labo-workshop-page .lsp-date-card:hover {
+  transform:translateY(-5px);
+  box-shadow:0 8px 25px rgba(0,0,0,.15);
+}
+
+/* 4. Cartes info / pratiques : ombre douce */
+.labo-workshop-page .lsp-card {
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+  border-radius:12px !important;
+  transition:transform .3s, box-shadow .3s;
+}
+.labo-workshop-page .lsp-card:hover { transform:translateY(-3px); }
+
+/* 5. Cartes tarifs */
+.labo-workshop-page .lsp-pricing-card {
+  box-shadow:0 4px 20px rgba(0,0,0,.10);
+  border-radius:15px !important; overflow:hidden;
+  transition:transform .3s, box-shadow .3s;
+}
+.labo-workshop-page .lsp-pricing-card:hover {
+  transform:translateY(-5px);
+  box-shadow:0 8px 30px rgba(0,0,0,.15);
+}
+
+/* 6. Badge circulaire jour du programme */
+.labo-workshop-page .lsp-day-circle {
+  width:70px; height:70px; border-radius:50% !important;
+  background:#D4A017; color:#fff;
+  font-weight:700; font-size:0.9rem;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto;
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+/* 7. Contenu jour programme : bordure gauche dorée */
+.labo-workshop-page .lsp-day-content {
+  border-left:4px solid #D4A017 !important;
+  border-radius:0 12px 12px 0 !important;
+}
+
+/* 8. Options : titre sous-titré doré */
+.labo-workshop-page .lsp-option-title {
+  border-bottom:2px solid #D4A017;
+  padding-bottom:10px; margin-bottom:12px;
+}
+
+/* 9. Bloc acompte (fond crème) */
+.labo-workshop-page .lsp-deposit {
+  background:#FFF8E1; border-radius:8px;
+  padding:12px; text-align:center;
+  font-weight:600; color:#3E2723;
+}
+
+/* 10. Hero H1 accent doré italique */
+.labo-workshop-page .lsp-accent { color:#F5D061; font-style:italic; }
+</style>
+<!-- /wp:html -->
+
+<!-- wp:group {"className":"labo-workshop-page","layout":{"type":"default"},"style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}}}} -->
+<div class="wp-block-group labo-workshop-page">
+
+<!-- wp:cover {"customGradient":"linear-gradient(135deg,#2C1810 0%,#3E2723 30%,#5D4037 70%,#8D6E63 100%)","dimRatio":100,"minHeight":480,"minHeightUnit":"px","isDark":true} -->
+<div class="wp-block-cover" style="min-height:480px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim" style="background:linear-gradient(135deg,#2C1810 0%,#3E2723 30%,#5D4037 70%,#8D6E63 100%)"></span><div class="wp-block-cover__inner-container">
+
+<!-- wp:paragraph {"align":"center","className":"lsp-hero-badge"} -->
+<p class="has-text-align-center lsp-hero-badge">✦ Expérience unique · Depuis 2021 ✦</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":1,"textAlign":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<h1 class="wp-block-heading has-text-align-center" style="color:#FAFAFA">Fabriquez votre<br>accordéon diatonique</h1>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.85)"},"typography":{"fontSize":"1.15rem"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.85);font-size:1.15rem">🔨 10 jours d'immersion · Repartez avec un instrument fait de vos mains</p>
+
+<!-- wp:html -->
+<h1 class="wp-block-heading has-text-align-center" style="color:#FAFAFA;font-family:Georgia,'Times New Roman',serif;font-size:3.5rem;font-weight:700;line-height:1.2;margin:0 0 20px;text-shadow:0 3px 15px rgba(0,0,0,0.4);text-align:center">
+  Fabriquez votre<br><span class="lsp-accent">accordéon diatonique</span>
+</h1>
+<!-- /wp:html -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.2rem">🔨 10 jours d'immersion · Repartez avec un instrument fait de vos mains</p>
 <!-- /wp:paragraph -->
+
 <!-- wp:spacer {"height":"20px"} -->
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
+
 </div></div>
 <!-- /wp:cover -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem">
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem">
 <!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#3E2723">📅 Prochaines sessions</h2>
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color lsp-section-title" style="color:#3E2723">📅 Prochaines sessions</h2>
 <!-- /wp:heading -->
-
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017"/>
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
 <!-- /wp:separator -->
 <!-- wp:spacer {"height":"30px"} -->
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns">
-<!-- wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<!-- wp:group {"className":"lsp-date-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-date-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2.5rem"}}} -->
 <p class="has-text-align-center" style="font-size:2.5rem">🌸</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#3E2723">Printemps 2026</h3>
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Printemps 2026</h3>
 <!-- /wp:heading -->
 <!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#D4A017"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#D4A017">8 – 17 avril</h2>
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#D4A017">8 – 17 avril</h2>
 <!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
-<p class="has-text-align-center" style="color:#5D4037">Stage de printemps</p>
+<!-- wp:paragraph {"align":"center","style":{}} -->
+<p class="has-text-align-center"><span style="font-size:1rem;color:#8D6E63">2026</span></p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037;font-size:0.9rem">Stage de printemps</p>
 <!-- /wp:paragraph -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<!-- wp:group {"className":"lsp-date-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-date-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2.5rem"}}} -->
 <p class="has-text-align-center" style="font-size:2.5rem">🍂</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#3E2723">Automne 2026</h3>
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Automne 2026</h3>
 <!-- /wp:heading -->
 <!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#D4A017"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#D4A017">14 – 23 octobre</h2>
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#D4A017">14 – 23 octobre</h2>
 <!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
-<p class="has-text-align-center" style="color:#5D4037">Stage d'automne</p>
+<!-- wp:paragraph {"align":"center","style":{}} -->
+<p class="has-text-align-center"><span style="font-size:1rem;color:#8D6E63">2026</span></p>
 <!-- /wp:paragraph -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037;font-size:0.9rem">Stage d'automne</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
 </div>
 <!-- /wp:column -->
 </div>
@@ -95,558 +200,742 @@
 <!-- /wp:group -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem">
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem">
 <!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#3E2723">Un stage unique en France</h2>
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color lsp-section-title" style="color:#3E2723">Un stage unique en France</h2>
 <!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
-<p class="has-text-align-center" style="color:#5D4037">10 jours pour créer votre propre instrument, dans un cadre convivial et professionnel</p>
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">10 jours pour créer votre propre instrument, dans un cadre convivial et professionnel</p>
 <!-- /wp:paragraph -->
-
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017"/>
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
 <!-- /wp:separator -->
 <!-- wp:spacer {"height":"30px"} -->
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns">
-<!-- wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
-<p class="has-text-align-center" style="font-size:2rem">🎯</p>
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFF8E1;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🎯</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Pour qui ?</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Pour qui ?</h3>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Ouvert à tous dès 13 ans</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Débutants bienvenus</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Aucune expérience manuelle requise</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Mineurs avec tuteur majeur</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Accessibilité handicap disponible</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Ouvert à tous dès 13 ans</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Débutants bienvenus</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Aucune expérience manuelle requise</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Mineurs avec tuteur majeur</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Accessibilité handicap disponible</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
-<p class="has-text-align-center" style="font-size:2rem">⚡</p>
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFF8E1;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">⚡</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">L'esprit du stage</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">L'esprit du stage</h3>
 <!-- /wp:heading -->
-<!-- wp:paragraph -->
-<p>Expérience créative et sensorielle dans un cadre calme. Accompagnement personnalisé tout au long du processus de fabrication. Petit groupe (max 6 stagiaires) pour un suivi optimal.</p>
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Expérience créative et sensorielle dans un cadre calme. Accompagnement personnalisé tout au long du processus de fabrication. Petit groupe (max 6 stagiaires) pour un suivi optimal.</p>
 <!-- /wp:paragraph -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
-<p class="has-text-align-center" style="font-size:2rem">🎓</p>
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFF8E1;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🎓</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Objectifs</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Objectifs</h3>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Assembler les soufflets</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Monter les mécaniques</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Poser grilles et finitions</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Installer et régler les anches</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Prise en main musicale</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Assembler les soufflets</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Monter les mécaniques</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Poser grilles et finitions</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Installer et régler les anches</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Prise en main musicale</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-</div>
 <!-- /wp:group -->
-
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#3E2723","text":"#FAFAFA"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#3E2723;color:#FAFAFA;padding-top:3rem;padding-bottom:3rem">
-<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#F5D061"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#F5D061">Modèles & Tarifs</h2>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.7)"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.7)">Choisissez le modèle qui vous correspond</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017"/>
-<!-- /wp:separator -->
-<!-- wp:spacer {"height":"30px"} -->
-<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
-<!-- /wp:spacer -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#F5D061"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#F5D061">21/8</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.7)"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.7)">Modèle compact</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#FAFAFA">2 820 €</h2>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"}}} -->
-<p class="has-text-align-center" style="color:#D4A017">Tout inclus</p>
-<!-- /wp:paragraph -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.6)"},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.6);font-size:0.9rem">Acompte : 900 € (40%)</p>
-<!-- /wp:paragraph -->
-<!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>21 boutons main droite</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>8 basses main gauche</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Idéal débutant ou voyage</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Léger et maniable</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Tonalités G/C, D/G, A/D</li>
-<!-- /wp:list-item -->
-</ul>
-<!-- /wp:list -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#F5D061"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#F5D061">33/12 ⭐</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.7)"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.7)">Modèle polyvalent</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#FAFAFA">4 500 €</h2>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"}}} -->
-<p class="has-text-align-center" style="color:#D4A017">Tout inclus</p>
-<!-- /wp:paragraph -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.6)"},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.6);font-size:0.9rem">Acompte : 1 500 € (40%)</p>
-<!-- /wp:paragraph -->
-<!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>33 boutons main droite</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>12 basses main gauche</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Tessiture étendue</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Layouts Heim / Milleret-Pignol</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Plus de possibilités musicales</li>
-<!-- /wp:list-item -->
-</ul>
-<!-- /wp:list -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#F5D061"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#F5D061">33/18</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.7)"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.7)">Modèle pro</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#FAFAFA">4 880 €</h2>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"}}} -->
-<p class="has-text-align-center" style="color:#D4A017">Tout inclus</p>
-<!-- /wp:paragraph -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.6)"},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.6);font-size:0.9rem">Acompte : 1 900 € (40%)</p>
-<!-- /wp:paragraph -->
-<!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>33 boutons main droite</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>18 basses main gauche</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Maximum de basses</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Harmonies complètes</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Répertoire complexe</li>
-<!-- /wp:list-item -->
-</ul>
-<!-- /wp:list -->
 </div>
 <!-- /wp:column -->
 </div>
 <!-- /wp:columns -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FAFAFA"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#FAFAFA;padding-top:3rem;padding-bottom:3rem">
-<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#3E2723">Programme détaillé — 10 jours</h2>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
-<p class="has-text-align-center" style="color:#5D4037">Un parcours progressif de la structure à la musique</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017"/>
-<!-- /wp:separator -->
-<!-- wp:spacer {"height":"30px"} -->
-<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
-<!-- /wp:spacer -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 1</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Accueil & premiers assemblages</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Visite de l'atelier, présentation des outils, choix des options personnalisées (essences de bois, tonalité, grilles). Début de l'assemblage de la structure de base.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 2</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Structure bois</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Fabrication de la caisse main droite et main gauche, ponçage, collage, équerrage. Installation de la base mécanique.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 3</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Claviers & boutons</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Montage des axes, installation des ressorts, réglage du toucher et de la course des touches.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 4</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Mécaniques main droite/gauche</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Assemblage complet des mécaniques, réglage précis des hauteurs et des courses de touches.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 5</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Soufflets</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Fabrication et pose des soufflets, ajustements minutieux, vérification de l'étanchéité complète.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 6</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Grilles & finitions</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Fixation des grilles décoratives, travail sur les finitions bois, ponçage final et protection.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 7</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Installation des anches</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Tri et sélection des anches, installation minutieuse, première mise en tension, tests note par note.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 8</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Réglages fins</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Détection et correction des fuites d'air, ajustement de la mécanique, alignement parfait des touches.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 9</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Tests complets</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Tests approfondis main droite et main gauche, évaluation du confort de jeu, corrections personnalisées selon votre morphologie.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns">
-<!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#D4A017;padding-top:0.75rem;padding-bottom:0.75rem">
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<p class="has-text-align-center" style="color:#FAFAFA"><strong>Jour 10</strong></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:column --><!-- wp:column -->
-<div class="wp-block-column">
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Initiation musicale & finalisation</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
-<p style="color:#555">Séance de pratique musicale avec intervenant extérieur, prise en main finale de l'instrument, séance photos, bilan et remise de l'instrument.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
-<!-- wp:separator {"style":{"color":{"background":"#EEE"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEE"/>
-<!-- /wp:separator -->
-
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem">
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem">
 <!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#3E2723">Options & Personnalisation</h2>
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color lsp-section-title" style="color:#3E2723">Modèles &amp; Tarifs</h2>
 <!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
-<p class="has-text-align-center" style="color:#5D4037">Plus de 100 combinaisons possibles pour créer VOTRE instrument unique</p>
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Choisissez le modèle qui vous correspond</p>
 <!-- /wp:paragraph -->
-
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017"/>
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
 <!-- /wp:separator -->
 <!-- wp:spacer {"height":"30px"} -->
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns">
-<!-- wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-pricing-card","style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-pricing-card" style="background-color:#FFFFFF;padding-top:0;padding-bottom:0;padding-left:0;padding-right:0">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#3E2723","text":"#FAFAFA"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#3E2723;color:#FAFAFA;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#FAFAFA"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA">21/8</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"rgba(255,255,255,0.85)"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.85)">Modèle compact</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">2 820 €</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#666"}},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
+<!-- /wp:paragraph -->
+<!-- wp:group {"className":"lsp-deposit","style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-deposit" style="background-color:#FFF8E1;padding-top:0.75rem;padding-bottom:0.75rem;padding-left:1rem;padding-right:1rem">
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723">Acompte : 900 € (40%)</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>21 boutons main droite</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>8 basses main gauche</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Idéal débutant ou voyage</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Léger et maniable</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Tonalités G/C, D/G, A/D</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-pricing-card","style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-pricing-card" style="background-color:#FFFFFF;padding-top:0;padding-bottom:0;padding-left:0;padding-right:0">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#D4A017","text":"#3E2723"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#3E2723;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">33/12 ⭐</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723">Modèle polyvalent</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">4 500 €</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#666"}},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
+<!-- /wp:paragraph -->
+<!-- wp:group {"className":"lsp-deposit","style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-deposit" style="background-color:#FFF8E1;padding-top:0.75rem;padding-bottom:0.75rem;padding-left:1rem;padding-right:1rem">
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723">Acompte : 1 500 € (40%)</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>33 boutons main droite</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>12 basses main gauche</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Tessiture étendue</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Layouts Heim / Milleret-Pignol</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Plus de possibilités musicales</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-pricing-card","style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-pricing-card" style="background-color:#FFFFFF;padding-top:0;padding-bottom:0;padding-left:0;padding-right:0">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#3E2723","text":"#FAFAFA"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#3E2723;color:#FAFAFA;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#FAFAFA"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA">33/18</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"rgba(255,255,255,0.85)"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.85)">Modèle pro</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">4 880 €</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#666"}},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
+<!-- /wp:paragraph -->
+<!-- wp:group {"className":"lsp-deposit","style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-deposit" style="background-color:#FFF8E1;padding-top:0.75rem;padding-bottom:0.75rem;padding-left:1rem;padding-right:1rem">
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723">Acompte : 1 900 € (40%)</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>33 boutons main droite</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>18 basses main gauche</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Maximum de basses</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Harmonies complètes</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Répertoire complexe</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem">
+<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color lsp-section-title" style="color:#3E2723">Programme détaillé — 10 jours</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Un parcours progressif de la structure à la musique</p>
+<!-- /wp:paragraph -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 1</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Accueil &amp; premiers assemblages</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Visite de l'atelier, présentation des outils, choix des options personnalisées (essences de bois, tonalité, grilles). Début de l'assemblage de la structure de base.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 2</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Structure bois</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Fabrication de la caisse main droite et main gauche, ponçage, collage, équerrage. Installation de la base mécanique.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 3</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Claviers &amp; boutons</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Montage des axes, installation des ressorts, réglage du toucher et de la course des touches.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 4</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Mécaniques main droite/gauche</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Assemblage complet des mécaniques, réglage précis des hauteurs et des courses de touches.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 5</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Soufflets</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Fabrication et pose des soufflets, ajustements minutieux, vérification de l'étanchéité complète.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 6</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Grilles &amp; finitions</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Fixation des grilles décoratives, travail sur les finitions bois, ponçage final et protection.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 7</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Installation des anches</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Tri et sélection des anches, installation minutieuse, première mise en tension, tests note par note.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 8</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Réglages fins</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Détection et correction des fuites d'air, ajustement de la mécanique, alignement parfait des touches.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 9</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Tests complets</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Tests approfondis main droite et main gauche, évaluation du confort de jeu, corrections personnalisées selon votre morphologie.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {"width":"20%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem">
+<!-- wp:html -->
+<div class="lsp-day-circle">Jour 10</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"width":"80%",} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-day-content","style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-day-content" style="background-color:#FFF8E1;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem">
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Initiation musicale &amp; finalisation</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Séance de pratique musicale avec intervenant extérieur, prise en main finale de l'instrument, séance photos, bilan et remise de l'instrument.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem">
+<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color lsp-section-title" style="color:#3E2723">Options &amp; Personnalisation</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Plus de 100 combinaisons possibles pour créer VOTRE instrument unique</p>
+<!-- /wp:paragraph -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns">
+<!-- wp:column {} -->
+<div class="wp-block-column">
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🌳</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Essences de bois</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Essences de bois</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Merisier (cherry wood)</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Noyer (walnut)</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Érable sycomore (maple)</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Merisier (cherry wood)</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Noyer (walnut)</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Érable sycomore (maple)</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🎵</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Tonalités</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Tonalités</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>G/C (Sol/Do)</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>D/G (Ré/Sol)</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>A/D (La/Ré)</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>G/C (Sol/Do)</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>D/G (Ré/Sol)</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>A/D (La/Ré)</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">⚙️</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Layouts main droite</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Layouts main droite</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Heim</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Milleret-Pignol</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Marquage tactile / visuel / sans</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Heim</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Milleret-Pignol</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Marquage tactile / visuel / sans</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🎹</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Configuration main gauche</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Configuration main gauche</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Milleret-Pignol</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Heim</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Personnalisée (surcoût)</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Milleret-Pignol</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Heim</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Personnalisée (surcoût)</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
+</div>
+<!-- /wp:group -->
 </div>
 <!-- /wp:column -->
 </div>
@@ -656,72 +945,101 @@
 <!-- /wp:spacer -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns">
-<!-- wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🎨</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Grilles décoratives</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Grilles décoratives</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Plus de 100 modèles</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Catalogue numéroté</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Choix à l'inscription</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Plus de 100 modèles</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Catalogue numéroté</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Choix à l'inscription</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">💨</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Soufflets</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Soufflets</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Couleurs : noir, rouge, bleu, vert, orange, mixte</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Coins standard / renforcés / métal</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Couleurs : noir, rouge, bleu, vert, orange, mixte</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Coins standard / renforcés / métal</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🔘</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Mécaniques / boutons</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Mécaniques / boutons</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Champignon bois naturel</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Nacre noire</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Nacre blanche</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Champignon bois naturel</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Nacre noire</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Nacre blanche</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🎺</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":4,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-align-center" style="color:#3E2723">Anches</h4>
+<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Anches</h4>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Tipo a mano (standard)</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>A mano + (premium)</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Accordage sec / demi-sec</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Tipo a mano (standard)</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>A mano + (premium)</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Accordage sec / demi-sec</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
+</div>
+<!-- /wp:group -->
 </div>
 <!-- /wp:column -->
 </div>
@@ -729,63 +1047,85 @@
 </div>
 <!-- /wp:group -->
 
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem">
 <!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#3E2723">Informations pratiques</h2>
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color lsp-section-title" style="color:#3E2723">Informations pratiques</h2>
 <!-- /wp:heading -->
-
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017"/>
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
 <!-- /wp:separator -->
 <!-- wp:spacer {"height":"30px"} -->
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns">
-<!-- wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">📍</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Lieu</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Lieu</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph -->
 <p><strong>Atelier de lutherie</strong><br>9 rue Fernand de Magellan<br>44600 Saint-Nazaire<br>France</p>
 <!-- /wp:paragraph -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">⏰</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Horaires</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Horaires</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph -->
 <p><strong>Journée type :</strong><br>9h30 – 12h30 : Atelier fabrication<br>12h30 – 14h00 : Pause déjeuner<br>14h00 – 17h30 : Montage &amp; réglages<br>Soirées : Concerts, bals, échanges</p>
 <!-- /wp:paragraph -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">✅</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Inclus</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Inclus</h3>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Tous les matériaux</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Outillage professionnel</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Encadrement expert</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Bretelles fournies</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Sac / housse fournie</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Consommables</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Tous les matériaux</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Outillage professionnel</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Encadrement expert</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Bretelles fournies</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Sac / housse fournie</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Consommables</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
+</div>
+<!-- /wp:group -->
 </div>
 <!-- /wp:column -->
 </div>
@@ -795,60 +1135,85 @@
 <!-- /wp:spacer -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns">
-<!-- wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">📝</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Conditions</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Conditions</h3>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Acompte non remboursable</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Possible de déplacer la session</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Transfert de place autorisé</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Places limitées (petits groupes)</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Acompte non remboursable</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Possible de déplacer la session</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Transfert de place autorisé</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Places limitées (petits groupes)</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🏨</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Non inclus</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Non inclus</h3>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Hébergement</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Repas</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Transport</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Hébergement</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Repas</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Transport</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 <!-- wp:paragraph {"style":{"color":{"text":"#777"}}} -->
-<p style="color:#777"><em>Nous pouvons vous conseiller des hébergements à proximité.</em></p>
+<p class="has-text-color" style="color:#777"><em>Nous pouvons vous conseiller des hébergements à proximité.</em></p>
 <!-- /wp:paragraph -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFFFFF;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">⚠️</p>
 <!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading" style="color:#3E2723">Important</h3>
+<!-- wp:heading {"level":3,"textAlign":"None","style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Important</h3>
 <!-- /wp:heading -->
 <!-- wp:list -->
-<ul class="wp-block-list">
-<!-- wp:list-item --><li>Travail préparatoire avant le stage</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Instrument non destiné à la revente commerciale</li>
-<!-- /wp:list-item --><!-- wp:list-item --><li>Retour possible si non terminé (80 €/jour)</li>
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Travail préparatoire avant le stage</li>
 <!-- /wp:list-item -->
-</ul>
+<!-- wp:list-item -->
+<li>Instrument non destiné à la revente commerciale</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Retour possible si non terminé (80 €/jour)</li>
+<!-- /wp:list-item --></ul>
 <!-- /wp:list -->
+</div>
+<!-- /wp:group -->
 </div>
 <!-- /wp:column -->
 </div>
@@ -856,50 +1221,55 @@
 </div>
 <!-- /wp:group -->
 
-<!-- wp:cover {"customOverlayColor":"#2C1810","dimRatio":100,"minHeight":360,"minHeightUnit":"px","isDark":true} -->
-<div class="wp-block-cover" style="min-height:360px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim" style="background-color:#2C1810"></span><div class="wp-block-cover__inner-container">
-<!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#FAFAFA"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#FAFAFA">Prêt à fabriquer votre accordéon ?</h2>
+<!-- wp:cover {"customGradient":"linear-gradient(135deg,#2C1810 0%,#3E2723 60%,#5D4037 100%)","dimRatio":100,"minHeight":360,"minHeightUnit":"px","isDark":true} -->
+<div class="wp-block-cover" style="min-height:360px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim" style="background:linear-gradient(135deg,#2C1810 0%,#3E2723 60%,#5D4037 100%)"></span><div class="wp-block-cover__inner-container">
+
+<!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2.5rem"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2.5rem">Prêt à fabriquer votre accordéon ?</h2>
 <!-- /wp:heading -->
-<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.85)"}}} -->
-<p class="has-text-align-center" style="color:rgba(255,255,255,0.85)">Les places sont limitées à 6 stagiaires. Ne manquez pas cette opportunité unique de créer votre propre instrument !</p>
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.2rem">Les places sont limitées à 6 stagiaires. Ne manquez pas cette opportunité unique de créer votre propre instrument !</p>
 <!-- /wp:paragraph -->
+
 <!-- wp:spacer {"height":"20px"} -->
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
-<div class="wp-block-buttons">
-<!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
-<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://stages.ewendaviau.com" target="_blank" rel="noreferrer noopener" style="border-radius:30px;background-color:#D4A017;color:#3E2723;padding-top:14px;padding-bottom:14px;padding-left:32px;padding-right:32px">📝 S'inscrire maintenant</a></div>
-<!-- /wp:button --><!-- wp:button {"style":{"color":{"background":"rgba(255,255,255,0.15)","text":"#FAFAFA"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
-<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="mailto:contact@ewendaviau.com" style="border-radius:30px;background-color:rgba(255,255,255,0.15);color:#FAFAFA;padding-top:14px;padding-bottom:14px;padding-left:32px;padding-right:32px">✉️ Nous contacter</a></div>
+<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"36px","right":"36px"}},"typography":{"fontWeight":"700"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:14px;padding-right:36px;padding-bottom:14px;padding-left:36px;font-weight:700" target="_blank" rel="noreferrer noopener">📝 S'inscrire maintenant</a></div>
 <!-- /wp:button -->
-</div>
+
+<!-- wp:button {"style":{"color":{"background":"rgba(255,255,255,0.15)","text":"#FAFAFA"},"border":{"radius":"30px","width":"2px","color":"#FAFAFA","style":"solid"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"36px","right":"36px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="mailto:contact@ewendaviau.com" style="border-radius:30px;color:#FAFAFA;background-color:rgba(255,255,255,0.15);border:2px solid #FAFAFA;padding-top:14px;padding-right:36px;padding-bottom:14px;padding-left:36px">✉️ Nous contacter</a></div>
+<!-- /wp:button --></div>
 <!-- /wp:buttons -->
+
 </div></div>
 <!-- /wp:cover -->
 
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem">
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem">
 <!-- wp:heading {"level":2,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="wp-block-heading has-text-align-center" style="color:#3E2723">Contact & Ressources</h2>
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color lsp-section-title" style="color:#3E2723">Contact &amp; Ressources</h2>
 <!-- /wp:heading -->
-
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
-<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017"/>
+<hr class="wp-block-separator has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
 <!-- /wp:separator -->
 <!-- wp:spacer {"height":"30px"} -->
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns">
-<!-- wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFF8E1;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🌐</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#3E2723">Site web</h3>
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Site web</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"align":"center"} -->
 <p class="has-text-align-center"><a href="https://stages.ewendaviau.com" target="_blank" rel="noopener">stages.ewendaviau.com</a></p>
@@ -908,32 +1278,48 @@
 <p class="has-text-align-center"><a href="https://ewendaviau.com" target="_blank" rel="noopener">ewendaviau.com</a></p>
 <!-- /wp:paragraph -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFF8E1;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">✉️</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#3E2723">Email</h3>
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Email</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"align":"center"} -->
 <p class="has-text-align-center"><a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></p>
 <!-- /wp:paragraph -->
 </div>
-<!-- /wp:column --><!-- wp:column -->
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {} -->
 <div class="wp-block-column">
-<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<!-- wp:group {"className":"lsp-card","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}{}, "layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background lsp-card" style="background-color:#FFF8E1;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem">
+<!-- wp:paragraph {"align":"center","style":{,"typography":{"fontSize":"2rem"}}} -->
 <p class="has-text-align-center" style="font-size:2rem">🎥</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":3,"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-align-center" style="color:#3E2723">Vidéo du stage</h3>
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Vidéo du stage</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"align":"center"} -->
 <p class="has-text-align-center"><a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank" rel="noopener">Voir sur YouTube →</a></p>
 <!-- /wp:paragraph -->
 </div>
+<!-- /wp:group -->
+</div>
 <!-- /wp:column -->
 </div>
 <!-- /wp:columns -->
+</div>
+<!-- /wp:group -->
+
+
 </div>
 <!-- /wp:group -->
