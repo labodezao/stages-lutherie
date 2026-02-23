@@ -798,27 +798,21 @@
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:image {"sizeSlug":"thumbnail","linkDestination":"none","style":{"border":{"radius":"6px"}}} -->
-<figure class="wp-block-image size-thumbnail" style="border-radius:6px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/cherrywood.png" alt="Essences de bois" style="border-radius:6px"/></figure>
-<!-- /wp:image -->
-<!-- wp:spacer {"height":"10px"} -->
-<div style="height:10px" aria-hidden="true" class="wp-block-spacer"></div>
-<!-- /wp:spacer -->
-<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
-<p style="font-size:2rem">🌳</p>
+<div class="wp-block-column"><!-- wp:cover {"url":"https://VOTRE-SITE.COM/wp-content/uploads/cherrywood.png","dimRatio":45,"customOverlayColor":"#3E2723","isUserOverlayColor":true,"minHeight":280,"minHeightUnit":"px","style":{"border":{"radius":"12px"}}} -->
+<div class="wp-block-cover" style="border-radius:12px;min-height:280px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-45 has-background-dim" style="background-color:#3E2723"></span><img class="wp-block-cover__image-background" src="https://VOTRE-SITE.COM/wp-content/uploads/cherrywood.png" alt="Bois merisier" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<p class="has-text-align-center" style="font-size:2rem">🌳</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Essences de bois</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#D4A017"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#D4A017">Essences de bois</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
 <!-- /wp:separator -->
 
-<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
-<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<!-- wp:list {"style":{"color":{"text":"#FFF8E1"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#FFF8E1"><!-- wp:list-item -->
 <li>Merisier (cherry wood)</li>
 <!-- /wp:list-item -->
 <!-- wp:list-item -->
@@ -827,8 +821,8 @@
 <!-- wp:list-item -->
 <li>Érable sycomore (maple)</li>
 <!-- /wp:list-item --></ul>
-<!-- /wp:list --></div>
-<!-- /wp:group --></div>
+<!-- /wp:list --></div></div>
+<!-- /wp:cover --></div>
 <!-- /wp:column -->
 
 <!-- wp:column -->
