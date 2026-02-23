@@ -8,18 +8,76 @@
 
 | Fichier | Type | Usage |
 |---------|------|-------|
-| `commercial-page-wordpress.html` | **Page WordPress** | À intégrer dans une page/article WordPress |
+| **`page-blocs-gutenberg.txt`** | ⭐ **Blocs Gutenberg natifs** | Coller dans l'éditeur de code → tous les blocs sont éditables visuellement |
+| `commercial-page-wordpress.html` | Page HTML monolithique | Intégrer via un bloc HTML personnalisé (moins flexible) |
 | `visuels-bilingues.html` | **Outil de captures d'écran** | Ouvrir dans le navigateur → faire une capture → uploader l'image |
 | `visuels-urgence-avril.html` | **Outil de captures d'écran** | Idem — version française uniquement |
 | `visuals-urgency-april.html` | **Outil de captures d'écran** | Idem — version anglaise uniquement |
 
 ---
 
-## PARTIE 1 — Page commerciale dans WordPress
+## ⭐ PARTIE 0 — Page en Blocs Gutenberg natifs (recommandée)
 
-Le fichier `commercial-page-wordpress.html` est conçu pour être intégré directement dans WordPress. Il contient la page de vente complète du stage (dates, tarifs, programme, inscription).
+Le fichier **`page-blocs-gutenberg.txt`** contient la page complète en **blocs WordPress natifs**.  
+Chaque section devient un bloc éditable visuellement : vous pouvez modifier les textes, couleurs, boutons directement dans l'éditeur Gutenberg, sans toucher au code.
 
-### Méthode recommandée — Bloc HTML personnalisé (Gutenberg)
+### Contenu de la page (311 blocs)
+
+| Section | Blocs utilisés |
+|---------|---------------|
+| 🎨 Héro (fond brun) | `wp:cover` + `wp:heading` + `wp:paragraph` |
+| 📅 Dates sessions | `wp:group` + `wp:columns` (2 colonnes) |
+| 👥 À propos | `wp:group` + `wp:columns` (3 colonnes) |
+| 💰 Tarifs (3 modèles) | `wp:group` + `wp:columns` (3 colonnes) |
+| 📋 Programme 10 jours | `wp:group` × 10 jours en colonnes |
+| 🎛 Options & personnalisation | `wp:columns` (4 + 4) |
+| ℹ️ Infos pratiques | `wp:columns` (3 + 3) |
+| ✍️ CTA Inscription | `wp:cover` + `wp:buttons` |
+| 📞 Contact | `wp:columns` (3 colonnes) |
+
+### Comment l'importer — 3 étapes
+
+**Étape 1 — Créer une nouvelle page**
+
+Dans WordPress : **Pages → Ajouter une page**
+
+Donnez-lui un titre, par exemple : `Stage accordéon diatonique 2026`
+
+**Étape 2 — Ouvrir l'éditeur de code Gutenberg**
+
+1. Dans l'éditeur Gutenberg, cliquez sur les **3 points ⋮** (coin supérieur droit)
+2. Choisissez **"Éditeur de code"** (ou appuyez sur `Ctrl+Shift+Alt+M`)
+3. Vous voyez maintenant le code brut de la page
+
+**Étape 3 — Coller les blocs**
+
+1. Sélectionnez tout le contenu existant (**Ctrl+A** ou **Cmd+A**) et supprimez-le
+2. Ouvrez le fichier `page-blocs-gutenberg.txt` et copiez tout son contenu (**Ctrl+A** puis **Ctrl+C**)
+3. Collez dans l'éditeur de code WordPress (**Ctrl+V**)
+4. Cliquez à nouveau sur **⋮ → "Éditeur visuel"** pour revenir en mode visuel
+5. Tous vos blocs apparaissent — vous pouvez maintenant cliquer sur n'importe quel texte pour le modifier !
+6. Cliquez **Publier**
+
+> 💡 **Astuce** : Si vous voyez un message "Ce bloc contient du contenu inattendu", cliquez sur **"Convertir en blocs HTML"** puis **"Récupérer"** pour forcer la conversion.
+
+### Modifier les blocs après import
+
+Une fois importé, chaque élément est modifiable directement dans Gutenberg :
+
+- **Changer une date** → cliquez sur "8 – 17 avril" → modifiez le texte
+- **Changer un tarif** → cliquez sur "4 500 €" → modifiez
+- **Changer la couleur de fond** → cliquez sur la section → panneau latéral → Couleur
+- **Ajouter un formulaire** → cliquez entre deux blocs → **+** → cherchez "Contact Form 7" ou "WPForms"
+- **Ajouter une image** → cliquez sur n'importe quel bloc → **+** au-dessus → "Image"
+
+---
+
+## PARTIE 1 — Page commerciale HTML dans WordPress (méthode alternative)
+
+Le fichier `commercial-page-wordpress.html` est une version HTML autonome (tout-en-un).  
+Moins flexible que les blocs, mais utile si vous avez des problèmes de compatibilité de thème.
+
+### Méthode — Bloc HTML personnalisé (Gutenberg)
 
 **Étape 1 — Copier le CSS**
 
