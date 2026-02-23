@@ -83,31 +83,30 @@
       background: var(--red-bright);
     }
 
-    .v1-alarm {
+    /* Top badges row — flex to avoid overlap */
+    .v1-top-badges {
       position: absolute;
       top: 38px;
       left: 50px;
+      right: 310px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .v1-alarm {
       background: var(--red);
       color: #fff;
       font-weight: 800;
       font-size: 13px;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      padding: 7px 22px;
+      padding: 7px 18px;
       border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .v1-alarm::before {
-      content: '⏰';
-      font-size: 16px;
+      white-space: nowrap;
     }
 
     .v1-workshop-badge {
-      position: absolute;
-      top: 38px;
-      left: 380px;
       background: rgba(212,160,23,0.15);
       border: 1px solid var(--gold);
       color: var(--gold-light);
@@ -117,6 +116,7 @@
       text-transform: uppercase;
       padding: 7px 18px;
       border-radius: 20px;
+      white-space: nowrap;
     }
 
     .v1-content {
@@ -913,8 +913,10 @@
 
 <div id="v1">
   <div class="v1-red-bar"></div>
-  <div class="v1-alarm">Spot alert · April 2026 workshop</div>
-  <div class="v1-workshop-badge">🪗 Lutherie · Saint-Nazaire</div>
+  <div class="v1-top-badges">
+    <div class="v1-alarm">⏰ Spot alert · April 2026 workshop</div>
+    <div class="v1-workshop-badge">🪗 Lutherie · Saint-Nazaire</div>
+  </div>
 
   <div class="v1-content">
     <div class="v1-headline">
@@ -925,14 +927,6 @@
     <div class="v1-sub">
       🗓 <strong>April 8 – 17, 2026</strong> · Max 6 participants · Everything included<br>
       Build your own <strong>diatonic accordion</strong> from scratch with a master luthier
-    </div>
-    <div class="v1-footer">
-      <span class="v1-cta">⚡ Register now →</span>
-      <div class="v1-date-pill">
-        <div class="dl">🌸 Spring workshop</div>
-        <div class="dv">April 8 – 17, 2026</div>
-      </div>
-      <span class="v1-site">stages.ewendaviau.com</span>
     </div>
   </div>
 
@@ -955,6 +949,15 @@
       <div class="v1-dot free"></div>
       <div class="v1-spots-label"><strong style="color:var(--gold-light)">Spots still available</strong> — don't wait!</div>
     </div>
+  </div>
+
+  <div class="v1-footer">
+    <span class="v1-cta">⚡ Register now →</span>
+    <div class="v1-date-pill">
+      <div class="dl">🌸 Spring workshop</div>
+      <div class="dv">April 8 – 17, 2026</div>
+    </div>
+    <span class="v1-site">stages.ewendaviau.com</span>
   </div>
 </div>
 
@@ -1048,7 +1051,7 @@
       This isn't just a workshop —<br>it's an experience that<br>
       <em>turns you into a creator</em>.
     </div>
-    <div class="v3-quote-author">Ewan Daviau · Luthier</div>
+    <div class="v3-quote-author">Ewen d'Aviau · Luthier</div>
   </div>
 </div>
 
@@ -1776,12 +1779,12 @@
      ║  VISUAL 6 — Facebook Post 1200 × 630 px                     ║
      ║  BACKGROUND : From musician to accordion maker              ║
      ╚═══════════════════════════════════════════════════════════════╝ -->
-<h2 class="section-title">📘 Visual 6 – Facebook Post 1200 × 630 px · Ewan Daviau's Background</h2>
+<h2 class="section-title">📘 Visual 6 – Facebook Post 1200 × 630 px · Ewen d'Aviau's Background</h2>
 <p class="format-info">From musician to luthier · The story behind this unique workshop</p>
 
 <div id="v6">
   <div class="v6-gold-bar"></div>
-  <div class="v6-label">🧑‍🎨 My story · Ewan Daviau</div>
+  <div class="v6-label">🧑‍🎨 My story · Ewen d'Aviau</div>
 
   <div class="v6-content">
     <div class="v6-eyebrow">Who am I?</div>
@@ -1845,7 +1848,7 @@
 
 <div id="v7">
   <div class="v7-eyebrow">
-    <span class="v7-eyebrow-badge">🎓 My approach · Ewan Daviau</span>
+    <span class="v7-eyebrow-badge">🎓 My approach · Ewen d'Aviau</span>
   </div>
 
   <div class="v7-main">
@@ -1856,7 +1859,7 @@
       it's <em>a part of you</em>.
     </div>
     <div class="v7-divider"></div>
-    <div class="v7-name">Ewan Daviau · Luthier &amp; Teacher</div>
+    <div class="v7-name">Ewen d'Aviau · Luthier &amp; Teacher</div>
   </div>
 
   <div class="v7-values">
@@ -1889,7 +1892,7 @@
      ║  DISABILITY APPROACH : Lutherie & instrument adaptation     ║
      ╚═══════════════════════════════════════════════════════════════╝ -->
 <h2 class="section-title">📘 Visual 8 – Facebook Post 1200 × 630 px · Disability Approach</h2>
-<p class="format-info">Inclusive lutherie · Instrument adaptation · Ewan Daviau, accordion maker</p>
+<p class="format-info">Inclusive lutherie · Instrument adaptation · Ewen d'Aviau, accordion maker</p>
 
 <div id="v8">
   <div class="v8-teal-bar"></div>
@@ -1902,7 +1905,7 @@
       genuinely.
     </div>
     <div class="v8-sub">
-      Alongside public workshops, Ewan works on <strong>creating and adapting<br>
+      Alongside public workshops, Ewen works on <strong>creating and adapting<br>
       instruments for people with disabilities</strong>.
     </div>
     <div class="v8-points">
@@ -1953,7 +1956,7 @@
   </div>
 
   <div class="v9-header">
-    <div class="v9-badge">Inclusive lutherie · Ewan Daviau</div>
+    <div class="v9-badge">Inclusive lutherie · Ewen d'Aviau</div>
     <div class="v9-main-title">
       A workshop<br>
       <em>without barriers</em>
@@ -2027,7 +2030,7 @@
       "Tell me about your needs<br>before you register —<br>
       we'll find <em>together</em> the best way to welcome you."
     </div>
-    <div class="v9-commit-author">Ewan Daviau · contact@ewendaviau.com</div>
+    <div class="v9-commit-author">Ewen d'Aviau · contact@ewendaviau.com</div>
   </div>
 
   <div class="v9-cta">

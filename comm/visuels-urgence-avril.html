@@ -86,33 +86,30 @@
       background: var(--red-bright);
     }
 
-    /* Pulsing alarm badge */
-    .v1-alarm {
+    /* Top badges row — flex to avoid overlap */
+    .v1-top-badges {
       position: absolute;
       top: 38px;
       left: 50px;
+      right: 310px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .v1-alarm {
       background: var(--red);
       color: #fff;
       font-weight: 800;
       font-size: 13px;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      padding: 7px 22px;
+      padding: 7px 18px;
       border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .v1-alarm::before {
-      content: '⏰';
-      font-size: 16px;
+      white-space: nowrap;
     }
 
-    /* Workshop badge */
     .v1-workshop-badge {
-      position: absolute;
-      top: 38px;
-      left: 340px;
       background: rgba(212,160,23,0.15);
       border: 1px solid var(--gold);
       color: var(--gold-light);
@@ -122,6 +119,7 @@
       text-transform: uppercase;
       padding: 7px 18px;
       border-radius: 20px;
+      white-space: nowrap;
     }
 
     .v1-content {
@@ -1076,8 +1074,10 @@
 
 <div id="v1">
   <div class="v1-red-bar"></div>
-  <div class="v1-alarm">Alerte places · Stage avril 2026</div>
-  <div class="v1-workshop-badge">🪗 Lutherie · Saint-Nazaire</div>
+  <div class="v1-top-badges">
+    <div class="v1-alarm">⏰ Alerte places · Stage avril 2026</div>
+    <div class="v1-workshop-badge">🪗 Lutherie · Saint-Nazaire</div>
+  </div>
 
   <div class="v1-content">
     <div class="v1-headline">
@@ -1088,14 +1088,6 @@
     <div class="v1-sub">
       🗓 <strong>8 – 17 avril 2026</strong> · Max 6 stagiaires · Tout inclus<br>
       Fabriquez votre <strong>accordéon diatonique</strong> de A à Z avec un luthier
-    </div>
-    <div class="v1-footer">
-      <span class="v1-cta">⚡ S'inscrire maintenant →</span>
-      <div class="v1-date-pill">
-        <div class="dl">🌸 Stage de printemps</div>
-        <div class="dv">8 – 17 avril 2026</div>
-      </div>
-      <span class="v1-site">stages.ewendaviau.com</span>
     </div>
   </div>
 
@@ -1118,6 +1110,15 @@
       <div class="v1-dot free"></div>
       <div class="v1-spots-label"><strong style="color:var(--gold-light)">Places encore disponibles</strong> — agissez vite !</div>
     </div>
+  </div>
+
+  <div class="v1-footer">
+    <span class="v1-cta">⚡ S'inscrire maintenant →</span>
+    <div class="v1-date-pill">
+      <div class="dl">🌸 Stage de printemps</div>
+      <div class="dv">8 – 17 avril 2026</div>
+    </div>
+    <span class="v1-site">stages.ewendaviau.com</span>
   </div>
 </div>
 
@@ -1211,7 +1212,7 @@
       Ce n'est pas un stage comme les autres —<br>c'est une expérience qui vous<br>
       <em>transforme en créateur</em>.
     </div>
-    <div class="v3-quote-author">Ewan Daviau · Luthier</div>
+    <div class="v3-quote-author">Ewen d'Aviau · Luthier</div>
   </div>
 </div>
 
@@ -1943,12 +1944,12 @@
      ║  VISUEL 6 — Facebook Post 1200 × 630 px                     ║
      ║  PARCOURS : De musicien à facteur d'accordéon               ║
      ╚═══════════════════════════════════════════════════════════════╝ -->
-<h2 class="section-title">📘 Visuel 6 – Facebook Post 1200 × 630 px · Parcours d'Ewan Daviau</h2>
+<h2 class="section-title">📘 Visuel 6 – Facebook Post 1200 × 630 px · Parcours d'Ewen d'Aviau</h2>
 <p class="format-info">De musicien à luthier · La genèse d'un atelier unique</p>
 
 <div id="v6">
   <div class="v6-gold-bar"></div>
-  <div class="v6-label">🧑‍🎨 Mon parcours · Ewan Daviau</div>
+  <div class="v6-label">🧑‍🎨 Mon parcours · Ewen d'Aviau</div>
 
   <div class="v6-content">
     <div class="v6-eyebrow">Qui suis-je ?</div>
@@ -2012,7 +2013,7 @@
 
 <div id="v7">
   <div class="v7-eyebrow">
-    <span class="v7-eyebrow-badge">🎓 Ma démarche · Ewan Daviau</span>
+    <span class="v7-eyebrow-badge">🎓 Ma démarche · Ewen d'Aviau</span>
   </div>
 
   <div class="v7-main">
@@ -2023,7 +2024,7 @@
       c'est une <em>part de vous</em>.
     </div>
     <div class="v7-divider"></div>
-    <div class="v7-name">Ewan Daviau · Luthier & Formateur</div>
+    <div class="v7-name">Ewen d'Aviau · Luthier & Formateur</div>
   </div>
 
   <div class="v7-values">
@@ -2056,7 +2057,7 @@
      ║  DÉMARCHE HANDICAP : Lutherie & adaptation d'instruments    ║
      ╚═══════════════════════════════════════════════════════════════╝ -->
 <h2 class="section-title">📘 Visuel 8 – Facebook Post 1200 × 630 px · Démarche Handicap</h2>
-<p class="format-info">Lutherie inclusive · Adaptation d'instruments · Ewan Daviau, facteur d'accordéon</p>
+<p class="format-info">Lutherie inclusive · Adaptation d'instruments · Ewen d'Aviau, facteur d'accordéon</p>
 
 <div id="v8">
   <div class="v8-teal-bar"></div>
@@ -2069,7 +2070,7 @@
       vraiment.
     </div>
     <div class="v8-sub">
-      En plus des stages grand public, Ewan travaille à la <strong>création<br>
+      En plus des stages grand public, Ewen travaille à la <strong>création<br>
       et l'adaptation d'instruments pour les personnes en situation de handicap</strong>.
     </div>
     <div class="v8-points">
@@ -2120,7 +2121,7 @@
   </div>
 
   <div class="v9-header">
-    <div class="v9-badge">Lutherie inclusive · Ewan Daviau</div>
+    <div class="v9-badge">Lutherie inclusive · Ewen d'Aviau</div>
     <div class="v9-main-title">
       Un atelier<br>
       <em>sans barrières</em>
@@ -2194,7 +2195,7 @@
       « Parlez-moi de vos besoins<br>avant de vous inscrire —<br>
       nous trouverons <em>ensemble</em> la meilleure façon de vous accueillir. »
     </div>
-    <div class="v9-commit-author">Ewan Daviau · contact@ewendaviau.com</div>
+    <div class="v9-commit-author">Ewen d'Aviau · contact@ewendaviau.com</div>
   </div>
 
   <div class="v9-cta">
