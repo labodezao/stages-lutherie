@@ -110,7 +110,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
-<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">🌸 Printemps</p>
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">PRINTEMPS</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
@@ -130,7 +130,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
-<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">🍂 Automne</p>
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">AUTOMNE</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
@@ -177,8 +177,8 @@
 <p style="font-size:2rem">🎯</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-color" style="color:#3E2723">Pour qui ?</h3>
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Pour qui ?</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
@@ -219,8 +219,8 @@
 <p style="font-size:2rem">⚡</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-color" style="color:#3E2723">L'esprit du stage</h3>
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">L'esprit du stage</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -243,8 +243,8 @@
 <p style="font-size:2rem">🎓</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="wp-block-heading has-text-color" style="color:#3E2723">Objectifs</h3>
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Objectifs</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
@@ -831,8 +831,8 @@
 <p style="font-size:2rem">🎵</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Tonalités</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Tonalités</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -859,8 +859,8 @@
 <p style="font-size:2rem">⚙️</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Layouts main droite</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Layouts main droite</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -887,8 +887,8 @@
 <p style="font-size:2rem">🎹</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Configuration main gauche</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Configuration main gauche</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -923,8 +923,8 @@
 <p style="font-size:2rem">🎨</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Grilles décoratives</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Grilles décoratives</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -948,11 +948,11 @@
 <!-- wp:column -->
 <div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
-<p style="font-size:2rem">��</p>
+<p style="font-size:2rem">💨</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Soufflets</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Soufflets</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -976,8 +976,8 @@
 <p style="font-size:2rem">🔘</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Mécaniques / boutons</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Mécaniques / boutons</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -1004,8 +1004,8 @@
 <p style="font-size:2rem">🎺</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Anches</h4>
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Anches</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -1162,7 +1162,7 @@
 <!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 
-<!-- wp:paragraph {{"style":{{"color":{{"text":"#777"}},"typography":{{"fontStyle":"italic"}}}}}} -->
+<!-- wp:paragraph {"style":{"color":{"text":"#777"},"typography":{"fontStyle":"italic"}}} -->
 <p class="has-text-color" style="color:#777;font-style:italic">Nous pouvons vous conseiller des hébergements à proximité.</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
