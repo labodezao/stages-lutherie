@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visuels Urgence Avril 2026 – Dernières Places</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Open+Sans:wght@300;400;600;700;800&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --wood-dark:   #3E2723;
+      --wood-medium: #5D4037;
+      --wood-light:  #8D6E63;
+      --cream:       #FFF8E1;
+      --gold:        #D4A017;
+      --gold-light:  #F5D061;
+      --red:         #B71C1C;
+      --red-bright:  #E53935;
+    }
+
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: #111;
+      padding: 40px;
+      color: #fff;
+    }
+
+    h2.section-title {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 60px 0 12px;
+    }
+    h2.section-title:first-of-type { margin-top: 0; }
+
+    .format-info {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VISUEL 1 — Facebook Post 1200×630
+       Point clé : URGENCE & RARETÉ
+       "Il ne reste plus que quelques places · 1 semaine"
+    ═══════════════════════════════════════════════════════ */
+    #v1 {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1A0000 0%, #3E2723 40%, #5D4037 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+
+    /* Wood grain texture */
+    #v1::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        92deg,
+        transparent,
+        transparent 4px,
+        rgba(255,255,255,0.018) 4px,
+        rgba(255,255,255,0.018) 8px
+      );
+    }
+
+    /* Urgent left strip */
+    .v1-red-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 8px;
+      height: 100%;
+      background: var(--red-bright);
+    }
+
+    /* Pulsing alarm badge */
+    .v1-alarm {
+      position: absolute;
+      top: 38px;
+      left: 50px;
+      background: var(--red);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 7px 22px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .v1-alarm::before {
+      content: '⏰';
+      font-size: 16px;
+    }
+
+    /* Workshop badge */
+    .v1-workshop-badge {
+      position: absolute;
+      top: 38px;
+      left: 340px;
+      background: rgba(212,160,23,0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 7px 18px;
+      border-radius: 20px;
+    }
+
+    .v1-content {
+      position: absolute;
+      left: 50px;
+      top: 100px;
+      width: 640px;
+    }
+
+    .v1-headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 58px;
+      line-height: 1.05;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+
+    .v1-headline em {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .v1-headline .red-accent {
+      color: #FF5252;
+    }
+
+    .v1-sub {
+      margin-top: 18px;
+      font-size: 17px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.6;
+    }
+
+    .v1-sub strong { color: #fff; }
+
+    .v1-countdown {
+      position: absolute;
+      top: 100px;
+      right: 50px;
+      width: 240px;
+      background: rgba(183,28,28,0.2);
+      border: 2px solid var(--red-bright);
+      border-radius: 20px;
+      padding: 26px 20px;
+      text-align: center;
+    }
+
+    .v1-countdown .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #FF7070;
+      margin-bottom: 8px;
+    }
+
+    .v1-countdown .number {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 80px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .v1-countdown .unit {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-top: 6px;
+    }
+
+    .v1-spots {
+      position: absolute;
+      top: 310px;
+      right: 50px;
+      width: 240px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 18px 20px;
+    }
+
+    .v1-spots-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .v1-spots-row:last-child { margin-bottom: 0; }
+
+    .v1-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .v1-dot.taken  { background: var(--red-bright); }
+    .v1-dot.taken2 { background: rgba(229,57,53,0.55); }
+    .v1-dot.free   { background: var(--gold); }
+
+    .v1-spots-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.3;
+    }
+    .v1-spots-label strong { color: #fff; }
+
+    .v1-footer {
+      position: absolute;
+      bottom: 40px;
+      left: 50px;
+      right: 50px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .v1-cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 16px;
+      padding: 14px 32px;
+      border-radius: 30px;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .v1-date-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 12px;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    .v1-date-pill .dl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 2px; }
+    .v1-date-pill .dv { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 700; color: #fff; }
+
+    .v1-site {
+      margin-left: auto;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VISUEL 2 — Instagram Post 1080×1080
+       Point clé : TRANSFORMATION
+       "Vous repartez avec VOTRE accordéon"
+    ═══════════════════════════════════════════════════════ */
+    #v2 {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 30% 40%, #4A2800 0%, #3E2723 35%, #2C1810 70%, #1A0F0A 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+
+    #v2::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        92deg,
+        transparent, transparent 4px,
+        rgba(255,255,255,0.012) 4px, rgba(255,255,255,0.012) 8px
+      );
+    }
+
+    /* Golden circle / glow in center */
+    #v2::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,160,23,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .v2-urgency-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--red);
+      padding: 12px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      z-index: 5;
+    }
+
+    .v2-urgency-banner span {
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .v2-urgency-banner .sep {
+      color: rgba(255,255,255,0.4);
+      font-size: 18px;
+    }
+
+    .v2-center {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 70px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .v2-step {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 14px;
+    }
+
+    .v2-before {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 34px;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .v2-arrow {
+      font-size: 50px;
+      color: var(--gold);
+      margin: 10px 0;
+      line-height: 1;
+    }
+
+    .v2-after {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 54px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      text-shadow: 0 0 40px rgba(212,160,23,0.3);
+    }
+
+    .v2-after em {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .v2-tagline {
+      margin-top: 24px;
+      font-size: 18px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.6;
+      max-width: 700px;
+    }
+
+    .v2-tagline strong { color: var(--gold-light); }
+
+    .v2-divider {
+      width: 80px;
+      height: 2px;
+      background: var(--gold);
+      margin: 28px auto;
+      opacity: 0.6;
+    }
+
+    .v2-proof {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+    }
+
+    .v2-proof-item {
+      text-align: center;
+    }
+
+    .v2-proof-item .num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--gold-light);
+    }
+
+    .v2-proof-item .desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .v2-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 22px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.3);
+      z-index: 5;
+    }
+
+    .v2-bottom .site {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1px;
+    }
+
+    .v2-bottom .cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 28px;
+      text-decoration: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VISUEL 3 — Facebook Post 1200×630
+       Point clé : AUTHENTICITÉ
+       "Un savoir-faire vrai · Maître à élève · Pas un cours en ligne"
+    ═══════════════════════════════════════════════════════ */
+    #v3 {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(120deg, #2C1810 0%, #3E2723 45%, #6D4C41 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+
+    #v3::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        92deg, transparent, transparent 4px,
+        rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px
+      );
+    }
+
+    /* Right decorative quote block */
+    .v3-quote-side {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 420px;
+      height: 100%;
+      background: rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 35px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .v3-quote-icon {
+      font-size: 60px;
+      color: var(--gold);
+      opacity: 0.3;
+      line-height: 1;
+      margin-bottom: 16px;
+      font-family: Georgia, serif;
+      font-weight: 900;
+    }
+
+    .v3-quote-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 21px;
+      font-style: italic;
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+      line-height: 1.55;
+    }
+
+    .v3-quote-text em { color: var(--gold-light); font-style: normal; }
+
+    .v3-quote-author {
+      margin-top: 18px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .v3-content {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 780px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 50px 55px;
+      z-index: 2;
+    }
+
+    .v3-badge {
+      display: inline-block;
+      background: rgba(212,160,23,0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      align-self: flex-start;
+    }
+
+    .v3-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 50px;
+      line-height: 1.08;
+      color: #fff;
+    }
+
+    .v3-title em {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .v3-points {
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .v3-point {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.45;
+    }
+
+    .v3-point .icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .v3-point strong { color: #fff; }
+
+    .v3-footer {
+      margin-top: 26px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .v3-alert-badge {
+      background: var(--red);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 10px 22px;
+      border-radius: 25px;
+      letter-spacing: 0.5px;
+    }
+
+    .v3-info {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VISUEL 4 — Instagram Story 1080×1920
+       Point clé : EXPÉRIENCE UNIQUE
+       "10 jours d'immersion · Votre voyage de la planche à l'instrument"
+    ═══════════════════════════════════════════════════════ */
+    #v4 {
+      width: 1080px;
+      height: 1920px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #1A0800 0%, #3E2723 20%, #5D4037 60%, #3E2723 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+
+    #v4::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        92deg, transparent, transparent 4px,
+        rgba(255,255,255,0.012) 4px, rgba(255,255,255,0.012) 8px
+      );
+    }
+
+    .v4-top-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--red);
+      padding: 18px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      z-index: 5;
+    }
+
+    .v4-top-banner .txt {
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .v4-top-banner .dot {
+      width: 6px; height: 6px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+    }
+
+    .v4-header {
+      position: absolute;
+      top: 75px;
+      left: 60px;
+      right: 60px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .v4-badge {
+      display: inline-block;
+      background: rgba(212,160,23,0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 24px;
+      border-radius: 22px;
+      margin-bottom: 20px;
+    }
+
+    .v4-main-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 70px;
+      line-height: 1.06;
+      color: #fff;
+      text-shadow: 0 3px 25px rgba(0,0,0,0.5);
+    }
+
+    .v4-main-title em {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .v4-subtitle {
+      margin-top: 16px;
+      font-size: 20px;
+      color: rgba(255,255,255,0.72);
+      letter-spacing: 0.5px;
+    }
+
+    /* Journey timeline */
+    .v4-journey {
+      position: absolute;
+      top: 520px;
+      left: 60px;
+      right: 60px;
+      z-index: 2;
+    }
+
+    .v4-journey-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .v4-journey-title em { color: var(--gold-light); font-style: italic; }
+
+    .v4-timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .v4-timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold) 0%, rgba(212,160,23,0.2) 100%);
+    }
+
+    .v4-step {
+      position: relative;
+      padding: 0 0 32px 30px;
+    }
+
+    .v4-step:last-child { padding-bottom: 0; }
+
+    .v4-step-dot {
+      position: absolute;
+      left: -26px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(212,160,23,0.5);
+    }
+
+    .v4-step-day {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+
+    .v4-step-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .v4-step-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.5;
+    }
+
+    /* Info grid */
+    .v4-info {
+      position: absolute;
+      top: 1160px;
+      left: 60px;
+      right: 60px;
+      z-index: 2;
+    }
+
+    .v4-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .v4-info-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .v4-info-card .icon { font-size: 32px; margin-bottom: 10px; }
+    .v4-info-card .label {
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+    .v4-info-card .desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.4;
+    }
+
+    /* Highlights */
+    .v4-highlights {
+      position: absolute;
+      top: 1430px;
+      left: 60px;
+      right: 60px;
+      z-index: 2;
+    }
+
+    .v4-highlight-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .v4-check {
+      color: var(--gold-light);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .v4-highlight-text {
+      font-size: 16px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.45;
+    }
+
+    .v4-highlight-text strong { color: #fff; }
+
+    /* CTA */
+    .v4-cta {
+      position: absolute;
+      bottom: 100px;
+      left: 60px;
+      right: 60px;
+      text-align: center;
+      z-index: 5;
+    }
+
+    .v4-cta-btn {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 22px;
+      padding: 20px 55px;
+      border-radius: 40px;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .v4-cta-sub {
+      margin-top: 14px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+    }
+
+    .v4-swipe {
+      position: absolute;
+      bottom: 38px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      z-index: 5;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VISUEL 5 — Instagram Post 1080×1080
+       Point clé : ACCESSIBILITÉ
+       "Aucun prérequis · Pour tous · Même les débutants absolus"
+    ═══════════════════════════════════════════════════════ */
+    #v5 {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 60% 60%, #5D4037 0%, #3E2723 40%, #2C1810 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+
+    #v5::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        92deg, transparent, transparent 4px,
+        rgba(255,255,255,0.012) 4px, rgba(255,255,255,0.012) 8px
+      );
+    }
+
+    .v5-urgency-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      background: linear-gradient(90deg, var(--red) 0%, #8B0000 100%);
+      padding: 13px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      z-index: 5;
+    }
+
+    .v5-urgency-top span {
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .v5-urgency-top .sep {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .v5-main {
+      position: absolute;
+      top: 55px;
+      left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 70px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .v5-question {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 40px;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.3;
+    }
+
+    .v5-answer {
+      margin-top: 12px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 52px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      text-shadow: 0 0 30px rgba(212,160,23,0.25);
+    }
+
+    .v5-answer em {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .v5-divider {
+      width: 70px;
+      height: 2px;
+      background: var(--gold);
+      margin: 26px auto;
+      opacity: 0.5;
+    }
+
+    .v5-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+    }
+
+    .v5-feat {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px 14px;
+    }
+
+    .v5-feat .icon { font-size: 28px; margin-bottom: 8px; }
+    .v5-feat .label {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .v5-feat .desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.4;
+    }
+
+    .v5-testimonial {
+      margin-top: 24px;
+      background: rgba(212,160,23,0.1);
+      border: 1px solid rgba(212,160,23,0.25);
+      border-radius: 16px;
+      padding: 20px 30px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-style: italic;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .v5-testimonial em { color: var(--gold-light); font-style: normal; }
+
+    .v5-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.3);
+      z-index: 5;
+    }
+
+    .v5-bottom .site {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 1px;
+    }
+
+    .v5-bottom .cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 28px;
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ╔═══════════════════════════════════════════════════════════════╗
+     ║  VISUEL 1 — Facebook Post 1200 × 630 px                     ║
+     ║  Point clé : URGENCE & RARETÉ                               ║
+     ╚═══════════════════════════════════════════════════════════════╝ -->
+<h2 class="section-title">📘 Visuel 1 – Facebook Post 1200 × 630 px · Urgence &amp; Rareté</h2>
+<p class="format-info">Plus que quelques places · 1 semaine pour s'inscrire · Stage avril 2026</p>
+
+<div id="v1">
+  <div class="v1-red-bar"></div>
+  <div class="v1-alarm">Alerte places · Stage avril 2026</div>
+  <div class="v1-workshop-badge">🪗 Lutherie · Saint-Nazaire</div>
+
+  <div class="v1-content">
+    <div class="v1-headline">
+      Il ne reste plus que<br>
+      <em>quelques places</em><br>
+      <span class="red-accent">au stage d'avril !</span>
+    </div>
+    <div class="v1-sub">
+      🗓 <strong>8 – 17 avril 2026</strong> · Max 6 stagiaires · Tout inclus<br>
+      Fabriquez votre <strong>accordéon diatonique</strong> de A à Z avec un luthier
+    </div>
+    <div class="v1-footer">
+      <span class="v1-cta">⚡ S'inscrire maintenant →</span>
+      <div class="v1-date-pill">
+        <div class="dl">🌸 Stage de printemps</div>
+        <div class="dv">8 – 17 avril 2026</div>
+      </div>
+      <span class="v1-site">stages.ewendaviau.com</span>
+    </div>
+  </div>
+
+  <div class="v1-countdown">
+    <div class="label">⏰ Compte à rebours</div>
+    <div class="number">7</div>
+    <div class="unit">jours restants</div>
+  </div>
+
+  <div class="v1-spots">
+    <div class="v1-spots-row">
+      <div class="v1-dot taken"></div>
+      <div class="v1-spots-label"><strong>Stagiaires inscrits</strong> (confirmés)</div>
+    </div>
+    <div class="v1-spots-row">
+      <div class="v1-dot taken2"></div>
+      <div class="v1-spots-label">Places en cours de confirmation</div>
+    </div>
+    <div class="v1-spots-row">
+      <div class="v1-dot free"></div>
+      <div class="v1-spots-label"><strong style="color:var(--gold-light)">Places encore disponibles</strong> — agissez vite !</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════════════════════════════════╗
+     ║  VISUEL 2 — Instagram Post 1080 × 1080 px                   ║
+     ║  Point clé : TRANSFORMATION                                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ -->
+<h2 class="section-title">📸 Visuel 2 – Instagram Post 1080 × 1080 px · Transformation</h2>
+<p class="format-info">Vous repartez avec VOTRE instrument, fait de vos propres mains</p>
+
+<div id="v2">
+  <div class="v2-urgency-banner">
+    <span>⏰ 1 semaine pour s'inscrire</span>
+    <span class="sep">·</span>
+    <span>🔥 Dernières places · Stage Avril 2026</span>
+  </div>
+
+  <div class="v2-center">
+    <div class="v2-step">Votre voyage en 10 jours</div>
+    <div class="v2-before">Vous arrivez les mains vides…</div>
+    <div class="v2-arrow">↓</div>
+    <div class="v2-after">
+      Vous repartez avec<br>
+      <em>votre accordéon</em>
+    </div>
+    <div class="v2-tagline">
+      Fabriqué par vous, accordé par vous,<br>
+      <strong>pour vous accompagner toute une vie.</strong>
+    </div>
+    <div class="v2-divider"></div>
+    <div class="v2-proof">
+      <div class="v2-proof-item">
+        <div class="num">+30</div>
+        <div class="desc">accordéons fabriqués<br>par nos stagiaires</div>
+      </div>
+      <div class="v2-proof-item">
+        <div class="num">6</div>
+        <div class="desc">stagiaires max<br>par session</div>
+      </div>
+      <div class="v2-proof-item">
+        <div class="num">10</div>
+        <div class="desc">jours d'immersion<br>complète</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v2-bottom">
+    <span class="site">stages.ewendaviau.com</span>
+    <span class="cta">🌸 8–17 avril · S'inscrire →</span>
+  </div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════════════════════════════════╗
+     ║  VISUEL 3 — Facebook Post 1200 × 630 px                     ║
+     ║  Point clé : AUTHENTICITÉ                                   ║
+     ╚═══════════════════════════════════════════════════════════════╝ -->
+<h2 class="section-title">📘 Visuel 3 – Facebook Post 1200 × 630 px · Authenticité</h2>
+<p class="format-info">Un vrai savoir-faire transmis de maître à élève · Pas un cours en ligne</p>
+
+<div id="v3">
+  <div class="v3-content">
+    <div class="v3-badge">⚡ Dernières places · Avril 2026</div>
+    <div class="v3-title">Un savoir-faire<br><em>authentique</em>,<br>transmis de mains en mains</div>
+
+    <div class="v3-points">
+      <div class="v3-point">
+        <span class="icon">🔨</span>
+        <span>Vous <strong>construisez réellement</strong> votre instrument — pas une simulation, pas un kit</span>
+      </div>
+      <div class="v3-point">
+        <span class="icon">🧑‍🏫</span>
+        <span>Suivi personnalisé par un <strong>luthier professionnel</strong> tout au long des 10 jours</span>
+      </div>
+      <div class="v3-point">
+        <span class="icon">🎵</span>
+        <span>Le jour 10, vous <strong>jouez vos premières notes</strong> sur l'accordéon que vous avez fabriqué</span>
+      </div>
+    </div>
+
+    <div class="v3-footer">
+      <span class="v3-alert-badge">⏰ Plus que 1 semaine pour s'inscrire !</span>
+      <span class="v3-info">📍 Saint-Nazaire · Depuis 2021</span>
+    </div>
+  </div>
+
+  <div class="v3-quote-side">
+    <div class="v3-quote-icon">"</div>
+    <div class="v3-quote-text">
+      Ce n'est pas un stage comme les autres —<br>c'est une expérience qui vous<br>
+      <em>transforme en créateur</em>.
+    </div>
+    <div class="v3-quote-author">Ewan Daviau · Luthier</div>
+  </div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════════════════════════════════╗
+     ║  VISUEL 4 — Instagram Story 1080 × 1920 px                  ║
+     ║  Point clé : EXPÉRIENCE UNIQUE                              ║
+     ╚═══════════════════════════════════════════════════════════════╝ -->
+<h2 class="section-title">📱 Visuel 4 – Instagram Story 1080 × 1920 px · Expérience Unique</h2>
+<p class="format-info">10 jours d'immersion · Du premier copeau à la première note jouée</p>
+
+<div id="v4">
+  <div class="v4-top-banner">
+    <span class="txt">⏰ 1 semaine pour s'inscrire</span>
+    <span class="dot"></span>
+    <span class="txt">🔥 Dernières places</span>
+  </div>
+
+  <div class="v4-header">
+    <div class="v4-badge">Stage de lutherie · Avril 2026</div>
+    <div class="v4-main-title">
+      10 jours pour<br>
+      <em>tout changer</em>
+    </div>
+    <div class="v4-subtitle">De la planche de bois à votre accordéon diatonique</div>
+  </div>
+
+  <div class="v4-journey">
+    <div class="v4-journey-title">Votre <em>voyage</em> en 10 étapes</div>
+    <div class="v4-timeline">
+      <div class="v4-step">
+        <div class="v4-step-dot"></div>
+        <div class="v4-step-day">Jours 1 – 2</div>
+        <div class="v4-step-title">🌱 Premier contact</div>
+        <div class="v4-step-desc">Découverte de la lutherie, des outils et des matériaux. Vous posez vos mains sur le bois pour la première fois.</div>
+      </div>
+      <div class="v4-step">
+        <div class="v4-step-dot"></div>
+        <div class="v4-step-day">Jours 3 – 5</div>
+        <div class="v4-step-title">🔨 La structure prend forme</div>
+        <div class="v4-step-desc">Assemblage du corps, pose des anches. L'accordéon commence à exister entre vos mains.</div>
+      </div>
+      <div class="v4-step">
+        <div class="v4-step-dot"></div>
+        <div class="v4-step-day">Jours 6 – 8</div>
+        <div class="v4-step-title">🎨 L'âme de votre instrument</div>
+        <div class="v4-step-desc">Soufflets, décoration, personnalisation. Votre instrument commence à vous ressembler.</div>
+      </div>
+      <div class="v4-step">
+        <div class="v4-step-dot"></div>
+        <div class="v4-step-day">Jours 9 – 10</div>
+        <div class="v4-step-title">🎵 Les premières notes</div>
+        <div class="v4-step-desc">Accordage final, réglages. Le jour 10, vous jouez vos premiers morceaux sur l'accordéon que vous avez fabriqué.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v4-info">
+    <div class="v4-info-grid">
+      <div class="v4-info-card">
+        <div class="icon">🎯</div>
+        <div class="label">Aucun prérequis</div>
+        <div class="desc">Débutants absolus<br>bienvenus · Dès 13 ans</div>
+      </div>
+      <div class="v4-info-card">
+        <div class="icon">👥</div>
+        <div class="label">Max 6 stagiaires</div>
+        <div class="desc">Un suivi vraiment<br>personnalisé</div>
+      </div>
+      <div class="v4-info-card">
+        <div class="icon">🪗</div>
+        <div class="label">Tout inclus</div>
+        <div class="desc">Matériaux, outils<br>Sac + bretelles</div>
+      </div>
+      <div class="v4-info-card">
+        <div class="icon">📍</div>
+        <div class="label">Saint-Nazaire</div>
+        <div class="desc">Loire-Atlantique (44)<br>Depuis 2021</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v4-highlights">
+    <div class="v4-highlight-row">
+      <span class="v4-check">✓</span>
+      <span class="v4-highlight-text"><strong>+30 accordéons</strong> fabriqués par nos stagiaires depuis 2021</span>
+    </div>
+    <div class="v4-highlight-row">
+      <span class="v4-check">✓</span>
+      <span class="v4-highlight-text">Choix entre <strong>3 modèles</strong> (21/8 · 33/12 · 33/18)</span>
+    </div>
+    <div class="v4-highlight-row">
+      <span class="v4-check">✓</span>
+      <span class="v4-highlight-text">Vous choisissez la couleur des soufflets et la décoration des grilles</span>
+    </div>
+    <div class="v4-highlight-row">
+      <span class="v4-check">✓</span>
+      <span class="v4-highlight-text"><strong>Pas de kit pré-assemblé</strong> — vous construisez vraiment de zéro</span>
+    </div>
+  </div>
+
+  <div class="v4-cta">
+    <span class="v4-cta-btn">🌸 Réserver ma place →</span>
+    <div class="v4-cta-sub">stages.ewendaviau.com · Places très limitées</div>
+  </div>
+
+  <div class="v4-swipe">▲ Glisser pour en savoir plus</div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════════════════════════════════╗
+     ║  VISUEL 5 — Instagram Post 1080 × 1080 px                   ║
+     ║  Point clé : ACCESSIBILITÉ                                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ -->
+<h2 class="section-title">📸 Visuel 5 – Instagram Post 1080 × 1080 px · Accessibilité</h2>
+<p class="format-info">Aucun prérequis · Pour débutants absolus · Une invitation sincère</p>
+
+<div id="v5">
+  <div class="v5-urgency-top">
+    <span>⏰ Plus que 1 semaine</span>
+    <span class="sep">·</span>
+    <span>🔥 Dernières places · Stage Avril 2026</span>
+  </div>
+
+  <div class="v5-main">
+    <div class="v5-question">
+      Vous n'avez jamais fabriqué<br>quoi que ce soit de vos mains ?
+    </div>
+    <div class="v5-answer">
+      C'est justement<br>
+      <em>pour vous.</em>
+    </div>
+
+    <div class="v5-divider"></div>
+
+    <div class="v5-features">
+      <div class="v5-feat">
+        <div class="icon">🎯</div>
+        <div class="label">Zéro prérequis</div>
+        <div class="desc">Aucune expérience en lutherie ou en musique nécessaire</div>
+      </div>
+      <div class="v5-feat">
+        <div class="icon">🧑‍🤝‍🧑</div>
+        <div class="label">Dès 13 ans</div>
+        <div class="desc">Accessible à tous, en famille ou en solo</div>
+      </div>
+      <div class="v5-feat">
+        <div class="icon">👨‍🏫</div>
+        <div class="label">Guidé pas à pas</div>
+        <div class="desc">Le luthier est là à chaque étape, chaque jour</div>
+      </div>
+    </div>
+
+    <div class="v5-testimonial">
+      « Je n'avais jamais touché un outil de ma vie.<br>
+      10 jours plus tard, je jouais <em>mon accordéon</em>. »
+    </div>
+  </div>
+
+  <div class="v5-bottom">
+    <span class="site">stages.ewendaviau.com</span>
+    <span class="cta">🌸 8–17 avril · S'inscrire →</span>
+  </div>
+</div>
+
+</body>
+</html>
