@@ -1,123 +1,53 @@
 <!-- =====================================================================
   STAGE DE LUTHERIE — EWEN D'AVIAU
-  Page Gutenberg — blocs natifs WordPress
+  Page WordPress — blocs Gutenberg natifs  (zéro CSS personnalisé)
   Saint-Nazaire · stages.ewendaviau.com
 
   COMMENT UTILISER CE FICHIER :
-  -----------------------------------------------------------------------
-  1. WordPress → Pages → Ajouter une page
-  2. Cliquez sur les 3 points ⋮ (coin supérieur droit de l'éditeur)
-  3. Choisissez "Éditeur de code"
-  4. Sélectionnez tout (Ctrl+A / Cmd+A) et supprimez
-  5. Collez tout le contenu de CE fichier
-  6. Cliquez à nouveau sur ⋮ → "Éditeur visuel" pour voir le résultat
-  7. Tous les blocs sont maintenant éditables visuellement !
-  8. Publiez la page
+  ─────────────────────────────────────────────────────────────────────
+  1. Uploadez vos photos dans Médias > Ajouter
+  2. Pour chaque image, copiez son URL depuis la médiathèque
+  3. Remplacez les URLs du type :
+       https://VOTRE-SITE.COM/wp-content/uploads/nom-image.jpg
+     par vos vraies URLs WordPress
+  4. WordPress → Pages → Ajouter une page
+  5. Cliquez sur ⋮ → "Éditeur de code"
+  6. Sélectionnez tout (Ctrl+A) et collez ce fichier
+  7. ⋮ → "Éditeur visuel" → tous les blocs sont éditables !
+  8. Publiez
 
-  CSS SCOPÉ : tout le style est préfixé .labo-workshop-page
-  → aucune interférence avec votre thème WordPress
+  IMAGES À UPLOADER (dans l'ordre d'apparition) :
+  ─────────────────────────────────────────────────────────────────────
+  Hero background   : Collage_20220426_192041.jpg
+  Galerie 1         : Collage_20220425_180111.jpg
+  Galerie 2         : Collage_20220425_180332.jpg
+  Galerie 3         : Collage_20220426_192041.jpg
+  Pour qui          : IMG_0931.jpg
+  L'esprit          : IMG_0959.jpg
+  Objectifs         : Jour 10 (25).jpg
+  Jour 1            : FB jour 1.jpg
+  Jour 2            : FB jour 2.jpg
+  Jour 3            : FB jour 3.jpg
+  Jour 4            : Jour 4 (4).jpg
+  Jour 5            : FB jour 5.jpg
+  Jour 6            : FB jour 6.jpg
+  Jour 7            : FB jour 7.jpg
+  Jour 8            : FB jour 8.jpg
+  Jour 9            : FB jour 9.jpg
+  Jour 10           : Jour 10 (25).jpg
+  Bois merisier     : cherrywood.png
+  Bois noyer        : walnut.png
+  Bois érable       : maple.png
+  Atelier           : IMG_1011 2.jpg
 ====================================================================== -->
 
-<!-- wp:html -->
-<style>
-/* ============================================================
-   Stage Lutherie – Ewen d'Aviau
-   CSS entièrement scopé sous .labo-workshop-page
-   AUCUNE règle globale – aucune interférence avec le thème
-   ============================================================ */
-
-/* 1. Hero : badge doré arrondi */
-.labo-workshop-page .lsp-hero-badge {
-  display:inline-block !important;
-  background:#D4A017; color:#3E2723;
-  font-size:11px; font-weight:800; letter-spacing:3px;
-  text-transform:uppercase; padding:8px 24px;
-  border-radius:25px; margin-bottom:20px;
-}
-
-/* 2. Titre de section : soulignement doré */
-.labo-workshop-page .lsp-section-title { padding-bottom:18px; }
-.labo-workshop-page .lsp-section-title::after {
-  content:''; display:block;
-  width:60px; height:3px; background:#D4A017;
-  margin:10px auto 0;
-}
-
-/* 3. Cartes date : bordure dorée en haut */
-.labo-workshop-page .lsp-date-card {
-  border-top:5px solid #D4A017 !important;
-  border-radius:15px !important;
-  box-shadow:0 4px 15px rgba(0,0,0,.08);
-  transition:transform .3s, box-shadow .3s;
-}
-.labo-workshop-page .lsp-date-card:hover {
-  transform:translateY(-5px);
-  box-shadow:0 8px 25px rgba(0,0,0,.15);
-}
-
-/* 4. Cartes info / pratiques : ombre douce */
-.labo-workshop-page .lsp-card {
-  box-shadow:0 4px 15px rgba(0,0,0,.08);
-  border-radius:12px !important;
-  transition:transform .3s, box-shadow .3s;
-}
-.labo-workshop-page .lsp-card:hover { transform:translateY(-3px); }
-
-/* 5. Cartes tarifs */
-.labo-workshop-page .lsp-pricing-card {
-  box-shadow:0 4px 20px rgba(0,0,0,.10);
-  border-radius:15px !important; overflow:hidden;
-  transition:transform .3s, box-shadow .3s;
-}
-.labo-workshop-page .lsp-pricing-card:hover {
-  transform:translateY(-5px);
-  box-shadow:0 8px 30px rgba(0,0,0,.15);
-}
-
-/* 6. Badge circulaire jour du programme */
-.labo-workshop-page .lsp-day-circle {
-  width:70px; height:70px; border-radius:50% !important;
-  background:#D4A017; color:#fff;
-  font-weight:700; font-size:0.9rem;
-  display:flex; align-items:center; justify-content:center;
-  margin:0 auto;
-  box-shadow:0 3px 10px rgba(0,0,0,.15);
-}
-
-/* 7. Contenu jour programme : bordure gauche dorée */
-.labo-workshop-page .lsp-day-content {
-  border-left:4px solid #D4A017 !important;
-  border-radius:0 12px 12px 0 !important;
-}
-
-/* 8. Options : titre sous-titré doré */
-.labo-workshop-page .lsp-option-title {
-  border-bottom:2px solid #D4A017;
-  padding-bottom:10px; margin-bottom:12px;
-}
-
-/* 9. Bloc acompte (fond crème) */
-.labo-workshop-page .lsp-deposit {
-  background:#FFF8E1; border-radius:8px;
-  padding:12px; text-align:center;
-  font-weight:600; color:#3E2723;
-}
-
-/* 10. Hero H1 accent doré italique */
-.labo-workshop-page .lsp-accent { color:#F5D061; font-style:italic; }
-</style>
-<!-- /wp:html -->
-
-<!-- wp:group {"className":"labo-workshop-page"} -->
-<div class="wp-block-group labo-workshop-page"><!-- wp:cover {"minHeight":480,"minHeightUnit":"px","customGradient":"linear-gradient(135deg,#2C1810 0%,#3E2723 30%,#5D4037 70%,#8D6E63 100%)"} -->
-<div class="wp-block-cover" style="min-height:480px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim has-background-gradient" style="background:linear-gradient(135deg,#2C1810 0%,#3E2723 30%,#5D4037 70%,#8D6E63 100%)"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","className":"lsp-hero-badge"} -->
-<p class="has-text-align-center lsp-hero-badge">✦ Expérience unique · Depuis 2021 ✦</p>
+<!-- wp:cover {"url":"https://VOTRE-SITE.COM/wp-content/uploads/collage_20220426_192041.jpg","dimRatio":60,"customOverlayColor":"#2C1810","isUserOverlayColor":true,"minHeight":550,"minHeightUnit":"px"} -->
+<div class="wp-block-cover" style="min-height:550px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-60 has-background-dim" style="background-color:#2C1810"></span><img class="wp-block-cover__image-background" alt="Stage de fabrication d'accordéon diatonique" src="https://VOTRE-SITE.COM/wp-content/uploads/collage_20220426_192041.jpg" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"25px"},"spacing":{"padding":{"top":"8px","bottom":"8px","left":"24px","right":"24px"}},"typography":{"fontSize":"0.75rem","fontWeight":"800","letterSpacing":"3px","textTransform":"uppercase"}}} -->
+<p class="has-text-align-center has-text-color has-background" style="background-color:#D4A017;color:#3E2723;border-radius:25px;padding-top:8px;padding-right:24px;padding-bottom:8px;padding-left:24px;font-size:0.75rem;font-weight:800;letter-spacing:3px;text-transform:uppercase">✦ Expérience unique · Depuis 2021 ✦</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":1,"align":"center","className":"wp-block-heading has-text-align-center"} -->
-<h1 class="nm-block-heading wp-block-heading has-text-align-center">
-  Fabriquez votre<br><span class="lsp-accent">accordéon diatonique</span>
-</h1>
+<!-- wp:heading {"textAlign":"center","level":1,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"3rem","fontWeight":"700"}}} -->
+<h1 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:3rem;font-weight:700">Fabriquez votre<br><em style="color:#F5D061">accordéon diatonique</em></h1>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
@@ -126,12 +56,42 @@
 
 <!-- wp:spacer {"height":"20px"} -->
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">📝 S'inscrire maintenant</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"30px","color":"#FAFAFA","width":"2px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color wp-element-button" href="mailto:contact@ewendaviau.com" style="border-radius:30px;color:#FAFAFA;border:2px solid #FAFAFA;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px">✉️ Nous contacter</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons -->
+
+<!-- wp:spacer {"height":"10px"} -->
+<div style="height:10px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer --></div></div>
 <!-- /wp:cover -->
 
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#3E2723"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#3E2723"><!-- wp:gallery {"columns":3,"linkTo":"none","sizeSlug":"large"} -->
+<figure class="wp-block-gallery has-nested-images columns-3 is-cropped"><!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://VOTRE-SITE.COM/wp-content/uploads/collage_20220425_180111.jpg" alt="Stage lutherie accordéon — collage 1"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://VOTRE-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg" alt="Stage lutherie accordéon — collage 2"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://VOTRE-SITE.COM/wp-content/uploads/collage_20220426_192041.jpg" alt="Stage lutherie accordéon — collage 3"/></figure>
+<!-- /wp:image --></figure>
+<!-- /wp:gallery --></div>
+<!-- /wp:group -->
+
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","className":"lsp-section-title","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center lsp-section-title has-text-color" style="color:#3E2723">📅 Prochaines sessions</h2>
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">📅 Prochaines sessions</h2>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -144,49 +104,41 @@
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-date-card"} -->
-<div class="wp-block-group has-background lsp-date-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2.5rem">🌸</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"top":{"color":"#D4A017","style":"solid","width":"5px"},"radius":"15px"},"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;border-top:5px solid #D4A017;padding-top:2rem;padding-bottom:2rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🌸</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Printemps 2026</h3>
-<!-- /wp:heading -->
-
-<!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#D4A017"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#D4A017">8 – 17 avril</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"align":"center","style":{}} -->
-<p class="has-text-align-center"><span style="font-size:1rem;color:#8D6E63">2026</span></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">🌸 Printemps</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="font-size:0.9rem"><p class="has-text-align-center has-text-color" style="color:#5D4037;font-size:0.9rem">Stage de printemps</p></p>
+<!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">8 – 17 avril</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Stage de printemps</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-date-card"} -->
-<div class="wp-block-group has-background lsp-date-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2.5rem">🍂</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"top":{"color":"#D4A017","style":"solid","width":"5px"},"radius":"15px"},"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;border-top:5px solid #D4A017;padding-top:2rem;padding-bottom:2rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🍂</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Automne 2026</h3>
-<!-- /wp:heading -->
-
-<!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#D4A017"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#D4A017">14 – 23 octobre</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"align":"center","style":{}} -->
-<p class="has-text-align-center"><span style="font-size:1rem;color:#8D6E63">2026</span></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">🍂 Automne</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="font-size:0.9rem"><p class="has-text-align-center has-text-color" style="color:#5D4037;font-size:0.9rem">Stage d'automne</p></p>
+<!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">14 – 23 octobre</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Stage d'automne</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column --></div>
@@ -194,12 +146,12 @@
 <!-- /wp:group -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","className":"lsp-section-title","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center lsp-section-title has-text-color" style="color:#3E2723">Un stage unique en France</h2>
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Un stage unique en France</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#5D4037">10 jours pour créer votre propre instrument, dans un cadre convivial et professionnel</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">10 jours pour créer votre propre instrument, dans un cadre convivial et professionnel</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -212,17 +164,25 @@
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2.5rem">🎯</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/img_0931.jpg" alt="Stagiaires à l'atelier" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎯</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Pour qui ?</h3>
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">Pour qui ?</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>Ouvert à tous dès 13 ans</li>
 <!-- /wp:list-item -->
 
@@ -246,13 +206,21 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2.5rem">⚡</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/img_0959.jpg" alt="Ambiance de l'atelier" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">⚡</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">L'esprit du stage</h3>
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">L'esprit du stage</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -262,17 +230,25 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2.5rem">🎓</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/jour-10-25.jpg" alt="Instrument terminé" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎓</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Objectifs</h3>
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">Objectifs</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>Assembler les soufflets</li>
 <!-- /wp:list-item -->
 
@@ -298,12 +274,12 @@
 <!-- /wp:group -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","className":"lsp-section-title","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center lsp-section-title has-text-color" style="color:#3E2723">Modèles &amp; Tarifs</h2>
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Modèles &amp; Tarifs</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#5D4037">Choisissez le modèle qui vous correspond</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Choisissez le modèle qui vous correspond</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -316,29 +292,29 @@
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-pricing-card"} -->
-<div class="wp-block-group has-background lsp-pricing-card"><!-- wp:group {"className":"has-background has-text-color"} -->
-<div class="wp-block-group has-background has-text-color"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA">21/8</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;overflow:hidden"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"linear-gradient(135deg,#3E2723,#5D4037)"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background:linear-gradient(135deg,#3E2723,#5D4037);padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2rem;font-weight:700">21/8</h3>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"rgba(255,255,255,0.85)"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.85)">Modèle compact</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FAFAFA;opacity:0.9;font-size:0.95rem">Modèle compact</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">2 820 €</h2>
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">2 820 €</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#666"}},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="font-size:0.9rem"><p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:group {"className":"has-background lsp-deposit"} -->
-<div class="wp-block-group has-background lsp-deposit"><!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#3E2723">Acompte : 900 € (40%)</p></p>
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:8px;padding:0.75rem 1rem;text-align:center"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Acompte : 900 € (40%)</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -347,22 +323,18 @@
 <!-- /wp:spacer -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>21 boutons main droite</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>8 basses main gauche</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Idéal débutant ou voyage</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Léger et maniable</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Tonalités G/C, D/G, A/D</li>
 <!-- /wp:list-item --></ul>
@@ -372,29 +344,29 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-pricing-card"} -->
-<div class="wp-block-group has-background lsp-pricing-card"><!-- wp:group {"className":"has-background has-text-color"} -->
-<div class="wp-block-group has-background has-text-color"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">33/12 ⭐</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;overflow:hidden"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background:linear-gradient(135deg,#D4A017,#B8860B);padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">33/12 ⭐</h3>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#3E2723">Modèle polyvalent</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;opacity:0.9;font-size:0.95rem">Modèle polyvalent</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">4 500 €</h2>
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">4 500 €</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#666"}},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="font-size:0.9rem"><p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:group {"className":"has-background lsp-deposit"} -->
-<div class="wp-block-group has-background lsp-deposit"><!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#3E2723">Acompte : 1 500 € (40%)</p></p>
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:8px;padding:0.75rem 1rem;text-align:center"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Acompte : 1 500 € (40%)</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -403,24 +375,20 @@
 <!-- /wp:spacer -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>33 boutons main droite</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>12 basses main gauche</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Tessiture étendue</li>
 <!-- /wp:list-item -->
-
-<!-- wp:list-item -->
-<li>Layouts Heim / Milleret-Pignol</li>
-<!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Plus de possibilités musicales</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Layouts Heim / Milleret-Pignol</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list --></div>
 <!-- /wp:group --></div>
@@ -428,29 +396,29 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-pricing-card"} -->
-<div class="wp-block-group has-background lsp-pricing-card"><!-- wp:group {"className":"has-background has-text-color"} -->
-<div class="wp-block-group has-background has-text-color"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA">33/18</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;overflow:hidden"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"linear-gradient(135deg,#3E2723,#5D4037)"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background:linear-gradient(135deg,#3E2723,#5D4037);padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2rem;font-weight:700">33/18</h3>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"rgba(255,255,255,0.85)"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.85)">Modèle pro</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FAFAFA;opacity:0.9;font-size:0.95rem">Modèle pro</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">4 880 €</h2>
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">4 880 €</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#666"}},"typography":{"fontSize":"0.9rem"}}} -->
-<p class="has-text-align-center" style="font-size:0.9rem"><p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:group {"className":"has-background lsp-deposit"} -->
-<div class="wp-block-group has-background lsp-deposit"><!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#3E2723"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#3E2723">Acompte : 1 900 € (40%)</p></p>
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:8px;padding:0.75rem 1rem;text-align:center"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Acompte : 1 900 € (40%)</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -459,22 +427,18 @@
 <!-- /wp:spacer -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>33 boutons main droite</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>18 basses main gauche</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Maximum de basses</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Harmonies complètes</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Répertoire complexe</li>
 <!-- /wp:list-item --></ul>
@@ -486,12 +450,12 @@
 <!-- /wp:group -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","className":"lsp-section-title","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center lsp-section-title has-text-color" style="color:#3E2723">Programme détaillé — 10 jours</h2>
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Programme détaillé — 10 jours</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#5D4037">Un parcours progressif de la structure à la musique</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Un parcours progressif de la structure à la musique</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -503,18 +467,24 @@
 <!-- /wp:spacer -->
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 1</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>1</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Accueil &amp; premiers assemblages</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-1.jpg" alt="Stage accordéon — jour 1" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Accueil &amp; premiers assemblages</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -527,20 +497,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 2</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>2</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Structure bois</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-2.jpg" alt="Stage accordéon — jour 2" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Structure bois</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -553,20 +528,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 3</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>3</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Claviers &amp; boutons</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-3.jpg" alt="Stage accordéon — jour 3" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Claviers &amp; boutons</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -579,20 +559,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 4</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>4</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Mécaniques main droite/gauche</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/jour-4-4.jpg" alt="Stage accordéon — jour 4" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Mécaniques main droite/gauche</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -605,20 +590,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 5</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>5</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Soufflets</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-5.jpg" alt="Stage accordéon — jour 5" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Soufflets</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -631,20 +621,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 6</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>6</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Grilles &amp; finitions</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-6.jpg" alt="Stage accordéon — jour 6" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Grilles &amp; finitions</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -657,20 +652,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 7</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>7</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Installation des anches</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-7.jpg" alt="Stage accordéon — jour 7" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Installation des anches</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -683,20 +683,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 8</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>8</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Réglages fins</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-8.jpg" alt="Stage accordéon — jour 8" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Réglages fins</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -709,20 +714,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 9</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>9</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Tests complets</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/fb-jour-9.jpg" alt="Stage accordéon — jour 9" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Tests complets</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -735,20 +745,25 @@
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
 <!-- /wp:separator -->
-
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background"} -->
-<div class="wp-block-group has-background"><!-- wp:html -->
-<div class="lsp-day-circle">Jour 10</div>
-<!-- /wp:html --></div>
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>10</p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-day-content"} -->
-<div class="wp-block-group has-background lsp-day-content"><!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Initiation musicale &amp; finalisation</h3>
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/jour-10-25.jpg" alt="Stage accordéon — jour 10" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Initiation musicale &amp; finalisation</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
@@ -760,16 +775,17 @@
 
 <!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
-<!-- /wp:separator --></div>
+<!-- /wp:separator -->
+</div>
 <!-- /wp:group -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","className":"lsp-section-title","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center lsp-section-title has-text-color" style="color:#3E2723">Options &amp; Personnalisation</h2>
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Options &amp; Personnalisation</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"align":"center","style":{"style":{"color":{"text":"#5D4037"}}}} -->
-<p class="has-text-align-center"><p class="has-text-align-center has-text-color" style="color:#5D4037">Plus de 100 combinaisons possibles pour créer VOTRE instrument unique</p></p>
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Plus de 100 combinaisons possibles pour créer VOTRE instrument unique</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -780,26 +796,34 @@
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
-<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🌳</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:image {"sizeSlug":"thumbnail","linkDestination":"none","style":{"border":{"radius":"6px"}}} -->
+<figure class="wp-block-image size-thumbnail" style="border-radius:6px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/cherrywood.png" alt="Essences de bois" style="border-radius:6px"/></figure>
+<!-- /wp:image -->
+<!-- wp:spacer {"height":"10px"} -->
+<div style="height:10px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🌳</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Essences de bois</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Essences de bois</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>Merisier (cherry wood)</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Noyer (walnut)</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Érable sycomore (maple)</li>
 <!-- /wp:list-item --></ul>
@@ -808,24 +832,26 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🎵</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎵</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Tonalités</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Tonalités</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>G/C (Sol/Do)</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>D/G (Ré/Sol)</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>A/D (La/Ré)</li>
 <!-- /wp:list-item --></ul>
@@ -834,24 +860,26 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">⚙️</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">⚙️</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Layouts main droite</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Layouts main droite</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>Heim</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Milleret-Pignol</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Marquage tactile / visuel / sans</li>
 <!-- /wp:list-item --></ul>
@@ -860,56 +888,62 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🎹</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎹</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Configuration main gauche</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Configuration main gauche</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>Milleret-Pignol</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Heim</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Personnalisée (surcoût)</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list --></div>
 <!-- /wp:group --></div>
-<!-- /wp:column --></div>
+<!-- /wp:column -->
+
+</div>
 <!-- /wp:columns -->
 
 <!-- wp:spacer {"height":"20px"} -->
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
-<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🎨</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎨</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Grilles décoratives</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Grilles décoratives</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>Plus de 100 modèles</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Catalogue numéroté</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Choix à l'inscription</li>
 <!-- /wp:list-item --></ul>
@@ -918,20 +952,23 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">💨</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">��</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Soufflets</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Soufflets</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>Couleurs : noir, rouge, bleu, vert, orange, mixte</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Coins standard / renforcés / métal</li>
 <!-- /wp:list-item --></ul>
@@ -940,24 +977,26 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🔘</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🔘</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Mécaniques / boutons</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Mécaniques / boutons</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>Champignon bois naturel</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Nacre noire</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Nacre blanche</li>
 <!-- /wp:list-item --></ul>
@@ -966,36 +1005,40 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🎺</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎺</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"className":"lsp-option-title","style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading lsp-option-title has-text-color" style="color:#3E2723">Anches</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Anches</h4>
 <!-- /wp:heading -->
 
-<!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
 <li>Tipo a mano (standard)</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>A mano + (premium)</li>
 <!-- /wp:list-item -->
-
 <!-- wp:list-item -->
 <li>Accordage sec / demi-sec</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list --></div>
 <!-- /wp:group --></div>
-<!-- /wp:column --></div>
+<!-- /wp:column -->
+
+</div>
 <!-- /wp:columns --></div>
 <!-- /wp:group -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","className":"lsp-section-title","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center lsp-section-title has-text-color" style="color:#3E2723">Informations pratiques</h2>
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Informations pratiques</h2>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -1006,15 +1049,19 @@
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","style":{"border":{"radius":"12px"}}} -->
+<figure class="wp-block-image size-large" style="border-radius:12px"><img src="https://VOTRE-SITE.COM/wp-content/uploads/img_1011-2.jpg" alt="L'atelier de lutherie Ewen d'Aviau à Saint-Nazaire" style="border-radius:12px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">📍</p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Lieu</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">📍 Lieu</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
@@ -1024,13 +1071,9 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">⏰</p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Horaires</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">⏰ Horaires</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
@@ -1040,17 +1083,13 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">✅</p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Inclus</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">✅ Inclus</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>Tous les matériaux</li>
 <!-- /wp:list-item -->
 
@@ -1084,17 +1123,13 @@
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">📝</p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Conditions</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">📝 Conditions</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>Acompte non remboursable</li>
 <!-- /wp:list-item -->
 
@@ -1114,17 +1149,13 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🏨</p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Non inclus</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">🏨 Non inclus</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>Hébergement</li>
 <!-- /wp:list-item -->
 
@@ -1137,24 +1168,20 @@
 <!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 
-<!-- wp:paragraph {"style":{"color":{"text":"#777"}}} -->
-<p class="has-text-color" style="color:#777"><em>Nous pouvons vous conseiller des hébergements à proximité.</em></p>
+<!-- wp:paragraph {{"style":{{"color":{{"text":"#777"}},"typography":{{"fontStyle":"italic"}}}}}} -->
+<p class="has-text-color" style="color:#777;font-style:italic">Nous pouvons vous conseiller des hébergements à proximité.</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">⚠️</p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":3,"className":"wp-block-heading","style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Important</h3>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">⚠️ Important</h3>
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<ul class="wp-block-list"><!-- wp:list-item -->
 <li>Travail préparatoire avant le stage</li>
 <!-- /wp:list-item -->
 
@@ -1171,33 +1198,33 @@
 <!-- /wp:columns --></div>
 <!-- /wp:group -->
 
-<!-- wp:cover {"minHeight":360,"minHeightUnit":"px","customGradient":"linear-gradient(135deg,#2C1810 0%,#3E2723 60%,#5D4037 100%)"} -->
-<div class="wp-block-cover" style="min-height:360px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim has-background-gradient" style="background:linear-gradient(135deg,#2C1810 0%,#3E2723 60%,#5D4037 100%)"></span><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2.5rem"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2.5rem">Prêt à fabriquer votre accordéon ?</h2>
+<!-- wp:cover {"url":"https://VOTRE-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg","dimRatio":75,"customOverlayColor":"#2C1810","isUserOverlayColor":true,"minHeight":400,"minHeightUnit":"px"} -->
+<div class="wp-block-cover" style="min-height:400px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-75 has-background-dim" style="background-color:#2C1810"></span><img class="wp-block-cover__image-background" alt="Atelier lutherie accordéon" src="https://VOTRE-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2.5rem"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2.5rem">Prêt à fabriquer votre accordéon ?</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
 <p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.2rem">Les places sont limitées à 6 stagiaires. Ne manquez pas cette opportunité unique de créer votre propre instrument !</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:spacer {"height":"20px"} -->
-<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- wp:spacer {"height":"25px"} -->
+<div style="height:25px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
-<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"36px","right":"36px"}},"typography":{"fontWeight":"700"}}} -->
-<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:14px;padding-right:36px;padding-bottom:14px;padding-left:36px;font-weight:700" target="_blank" rel="noreferrer noopener">📝 S'inscrire maintenant</a></div>
+<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem","fontWeight":"700"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem;font-weight:700" target="_blank" rel="noreferrer noopener">📝 S'inscrire maintenant</a></div>
 <!-- /wp:button -->
 
-<!-- wp:button {"style":{"color":{"background":"rgba(255,255,255,0.15)","text":"#FAFAFA"},"border":{"radius":"30px","width":"2px","color":"#FAFAFA","style":"solid"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"36px","right":"36px"}}}} -->
-<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-border-color wp-element-button" href="mailto:contact@ewendaviau.com" style="border-color:#FAFAFA;border-style:solid;border-width:2px;border-radius:30px;color:#FAFAFA;background-color:rgba(255,255,255,0.15);padding-top:14px;padding-right:36px;padding-bottom:14px;padding-left:36px">✉️ Nous contacter</a></div>
+<!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"30px","color":"#FAFAFA","width":"2px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color wp-element-button" href="mailto:contact@ewendaviau.com" style="border-radius:30px;color:#FAFAFA;border:2px solid #FAFAFA;padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem">✉️ Nous contacter</a></div>
 <!-- /wp:button --></div>
 <!-- /wp:buttons --></div></div>
 <!-- /wp:cover -->
 
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","className":"lsp-section-title","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="nm-block-heading wp-block-heading has-text-align-center lsp-section-title has-text-color" style="color:#3E2723">Contact &amp; Ressources</h2>
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Contact &amp; Ressources</h2>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
@@ -1210,13 +1237,13 @@
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🌐</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🌐</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Site web</h3>
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Site web</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center"} -->
@@ -1230,13 +1257,13 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">✉️</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">✉️</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Email</h3>
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Email</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center"} -->
@@ -1246,13 +1273,13 @@
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"has-background lsp-card"} -->
-<div class="wp-block-group has-background lsp-card"><!-- wp:paragraph -->
-<p><p class="has-text-align-center" style="font-size:2rem">🎥</p></p>
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎥</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Vidéo du stage</h3>
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Vidéo du stage</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center"} -->
@@ -1261,17 +1288,4 @@
 <!-- /wp:group --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns --></div>
-<!-- /wp:group --></div>
 <!-- /wp:group -->
-
-<!-- wp:heading {"textAlign":"center","level":3} -->
-<h3 class="nm-block-heading wp-block-heading has-text-align-center">Le catalogue des Stages :</h3>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"align":"center"} -->
-<p class="has-text-align-center">[3d-flip-book mode="fullscreen" id="2902"][/3d-flip-book]</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p></p>
-<!-- /wp:paragraph -->
