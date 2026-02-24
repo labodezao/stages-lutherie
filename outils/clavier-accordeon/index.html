@@ -518,7 +518,7 @@ function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 const FR2EN={
   'Do':'C','Ré':'D','Re':'D','Mi':'E','Fa':'F','Sol':'G','La':'A','Si':'B',
   'Do#':'C#','Ré#':'D#','Fa#':'F#','Sol#':'G#','La#':'A#',
-  'Réb':'Db','Mib':'Eb','Solb':'Gb','Lab':'Ab','Sib':'Bb','Dob':'Cb','Sib':'Bb',
+  'Réb':'Db','Mib':'Eb','Solb':'Gb','Lab':'Ab','Sib':'Bb','Dob':'Cb',
 };
 const EN2FR={
   'C':'Do','D':'Ré','E':'Mi','F':'Fa','G':'Sol','A':'La','B':'Si',
@@ -1424,8 +1424,13 @@ function openImportExport(){
 }
 function closeModal(){document.getElementById('import-modal').classList.remove('open');}
 function copyJSON(){
-  const ta=document.getElementById('modal-json');ta.select();document.execCommand('copy');
-  document.getElementById('modal-msg').textContent=t('copied');
+  const text=document.getElementById('modal-json').value;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>{document.getElementById('modal-msg').textContent=t('copied');}).catch(()=>{});
+  } else {
+    const ta=document.getElementById('modal-json');ta.select();document.execCommand('copy');
+    document.getElementById('modal-msg').textContent=t('copied');
+  }
 }
 function doImport(){
   try{
