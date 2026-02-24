@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🪗 Clavier Accordéon Diatonique</title>
+  <style>
+    :root {
+      --vert:       #2d5a27;
+      --vert-med:   #3d7a35;
+      --vert-clair: #e8f5e3;
+      --or:         #c8a96e;
+      --or-clair:   #fff8e6;
+      --gris:       #6c757d;
+      --fond:       #f2f5f2;
+      --texte:      #222;
+      --rouge:      #c0392b;
+      --bleu:       #1565c0;
+      --border:     #d0d7d0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, Arial, sans-serif; background: var(--fond); color: var(--texte); line-height: 1.5; font-size: 15px; }
+
+    /* ── Header ───────────────────────────────────────────── */
+    header {
+      background: var(--vert); color: #fff;
+      padding: 12px 22px;
+      display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    header .icon { font-size: 1.8rem; flex-shrink: 0; }
+    header .hd-text { flex: 1; min-width: 0; }
+    header h1 { font-size: 1.15rem; font-weight: 700; white-space: nowrap; }
+    header p  { font-size: 0.78rem; opacity: .8; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #save-status {
+      font-size: .78rem; padding: 4px 11px; border-radius: 20px;
+      font-weight: 700; white-space: nowrap; flex-shrink: 0;
+      transition: background .3s, color .3s;
+    }
+    #save-status.saved  { background: rgba(255,255,255,.18); color: #c8ffb8; }
+    #save-status.dirty  { background: #f39c12; color: #fff; }
+    #save-status.saving { background: rgba(255,255,255,.1); color: #ffe; }
+
+    /* ── Library panel ────────────────────────────────────── */
+    #library-panel {
+      background: #fff; border-bottom: 2px solid var(--border);
+      padding: 14px 22px;
+    }
+    .lib-toolbar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .lib-toolbar h2 { font-size: .88rem; color: var(--vert); font-weight: 700; flex: 1; }
+    #lib-cards {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .instr-card {
+      border: 2px solid var(--border); border-radius: 8px; padding: 10px 14px;
+      min-width: 200px; max-width: 260px; cursor: pointer;
+      transition: border-color .18s, box-shadow .18s;
+      background: #fafafa; position: relative;
+    }
+    .instr-card:hover  { border-color: var(--vert); box-shadow: 0 2px 8px rgba(45,90,39,.12); }
+    .instr-card.active { border-color: var(--vert); background: var(--vert-clair); }
+    .instr-card .card-name  { font-weight: 700; font-size: .9rem; color: var(--texte); }
+    .instr-card .card-sub   { font-size: .75rem; color: var(--gris); margin-top: 2px; }
+    .instr-card .card-meta  { font-size: .72rem; color: #aaa; margin-top: 5px; }
+    .instr-card .card-btns  {
+      display: flex; gap: 5px; margin-top: 8px;
+    }
+    .card-action {
+      font-size: .7rem; padding: 3px 8px; border: none; border-radius: 4px;
+      cursor: pointer; font-family: inherit; font-weight: 700;
+    }
+    .ca-edit  { background: var(--vert);  color: #fff; }
+    .ca-dup   { background: #e0e0e0; color: #444; }
+    .ca-del   { background: #fde; color: var(--rouge); }
+    .lib-empty { font-size: .85rem; color: var(--gris); font-style: italic; padding: 6px 0; }
+
+    /* ── Container ────────────────────────────────────────── */
+    .container { max-width: 1340px; margin: 0 auto; padding: 18px 16px; }
+
+    /* ── Card ─────────────────────────────────────────────── */
+    .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 18px; overflow: hidden; }
+    .card-head {
+      background: var(--vert); color: #fff;
+      padding: 10px 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .card-head h2 { font-size: .93rem; font-weight: 700; flex: 1; }
+    .step-badge {
+      background: rgba(255,255,255,.22); border-radius: 50%;
+      width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .78rem; flex-shrink: 0;
+    }
+    .card-body { padding: 18px; }
+
+    /* ── Form elements ────────────────────────────────────── */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: .75rem; font-weight: 700; color: var(--gris); text-transform: uppercase; letter-spacing: .05em; }
+    input[type="text"], input[type="date"], select {
+      padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px;
+      font-size: .87rem; font-family: inherit; background: #fff; color: var(--texte);
+      transition: border-color .18s;
+    }
+    input[type="text"]:focus, select:focus, input[type="date"]:focus {
+      border-color: var(--vert); outline: none;
+      box-shadow: 0 0 0 3px rgba(45,90,39,.1);
+    }
+
+    /* ── Buttons ──────────────────────────────────────────── */
+    .btn {
+      padding: 8px 16px; border: none; border-radius: 6px;
+      font-family: inherit; font-size: .85rem; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      transition: filter .15s, transform .1s;
+    }
+    .btn:hover  { filter: brightness(1.1); }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--vert);  color: #fff; }
+    .btn-or      { background: var(--or);    color: #fff; }
+    .btn-outline { background: transparent; color: var(--vert); border: 2px solid var(--vert); }
+    .btn-outline:hover { background: var(--vert-clair); filter: none; }
+    .btn-bleu    { background: var(--bleu);  color: #fff; }
+    .btn-rouge   { background: var(--rouge); color: #fff; }
+    .btn-gris    { background: #e0e0e0; color: #444; }
+    .btn-group   { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ── Row config ───────────────────────────────────────── */
+    .rangees-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .rangee-cfg {
+      display: flex; flex-direction: column; gap: 3px;
+      background: var(--vert-clair); border: 1.5px solid var(--border);
+      border-radius: 6px; padding: 8px 10px; min-width: 145px;
+    }
+    .rangee-cfg label { font-size: .72rem; font-weight: 700; color: var(--vert); }
+
+    /* ── Note grid ────────────────────────────────────────── */
+    .note-section { margin-bottom: 20px; }
+    .note-section-title {
+      font-size: .88rem; font-weight: 700; color: var(--vert);
+      border-bottom: 2px solid var(--vert-clair); padding-bottom: 4px; margin-bottom: 9px;
+    }
+    .row-wrap { margin-bottom: 12px; }
+    .btn-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+    .btn-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .btn-num  { font-size: .65rem; color: var(--gris); font-weight: 700; }
+    .note-input {
+      width: 64px; padding: 4px 4px; text-align: center;
+      font-size: .78rem; border-radius: 5px; border: 1.5px solid var(--border);
+      cursor: pointer;
+    }
+    .note-input.pousse { border-color: var(--vert); background: var(--vert-clair); }
+    .note-input.tire   { border-color: var(--or);   background: var(--or-clair);  }
+    .note-input:focus  { outline: none; }
+    .note-input.pousse:focus { border-color: #1a4417; box-shadow: 0 0 0 2px rgba(45,90,39,.15); }
+    .note-input.tire:focus   { border-color: #9a7030; box-shadow: 0 0 0 2px rgba(200,169,110,.2); }
+    .note-input.picker-open  { box-shadow: 0 0 0 3px rgba(21,101,192,.3) !important; border-color: var(--bleu) !important; }
+
+    /* ── Info note ────────────────────────────────────────── */
+    .info-box {
+      background: #eaf2fb; border-left: 4px solid var(--bleu);
+      padding: 10px 13px; border-radius: 0 6px 6px 0; font-size: .82rem; margin-bottom: 14px;
+    }
+    .mono { font-family: monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
+    .legend { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: .82rem; }
+    .legend-swatch { width: 32px; height: 15px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: .66rem; font-weight: 700; }
+
+    /* ── Note Picker popup ────────────────────────────────── */
+    #note-picker {
+      position: absolute; z-index: 999;
+      background: #fff; border: 2px solid var(--vert);
+      border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.18);
+      padding: 12px 14px; min-width: 310px;
+      display: none;
+    }
+    .picker-title {
+      font-size: .75rem; font-weight: 700; color: var(--vert);
+      text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px;
+    }
+    .picker-tabs { display: flex; gap: 0; margin-bottom: 10px; border-bottom: 2px solid var(--border); }
+    .picker-tab-btn {
+      padding: 4px 13px; border: none; background: none;
+      font-family: inherit; font-size: .8rem; font-weight: 700; color: var(--gris);
+      cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px;
+    }
+    .picker-tab-btn.active { color: var(--vert); border-bottom-color: var(--vert); }
+    .picker-tab { display: none; }
+    .picker-tab.active { display: block; }
+
+    /* Note tab */
+    .picker-notes-row { display: flex; gap: 3px; margin-bottom: 4px; flex-wrap: wrap; }
+    .pn { /* picker note button */
+      min-width: 36px; padding: 4px 6px; border: 1.5px solid var(--border);
+      border-radius: 5px; background: #f8f8f8; font-family: inherit; font-size: .8rem;
+      font-weight: 700; cursor: pointer; text-align: center;
+      transition: background .1s, border-color .1s;
+    }
+    .pn:hover            { background: var(--vert-clair); border-color: var(--vert); }
+    .pn.selected         { background: var(--vert); color: #fff; border-color: var(--vert); }
+    .pn.sharp            { background: #e8e0f5; }
+    .pn.sharp:hover      { background: #6b4da0; color: #fff; border-color: #6b4da0; }
+    .pn.sharp.selected   { background: #6b4da0; color: #fff; border-color: #6b4da0; }
+    .pn.flat             { background: #fde8e0; }
+    .pn.flat:hover       { background: #c0392b; color: #fff; border-color: #c0392b; }
+    .pn.flat.selected    { background: #c0392b; color: #fff; border-color: #c0392b; }
+    .picker-octave-row   { display: flex; gap: 3px; margin-top: 8px; align-items: center; }
+    .picker-octave-label { font-size: .7rem; font-weight: 700; color: var(--gris); margin-right: 4px; }
+    .po { /* picker octave button */
+      width: 32px; height: 28px; border: 1.5px solid var(--border);
+      border-radius: 5px; background: #f0f0f0; font-family: inherit; font-size: .82rem;
+      font-weight: 700; cursor: pointer;
+    }
+    .po:hover          { background: var(--or-clair); border-color: var(--or); }
+    .po.selected       { background: var(--or); color: #fff; border-color: var(--or); }
+    .picker-preview {
+      margin-top: 10px; padding: 6px 10px; background: #f4f6f4;
+      border-radius: 5px; font-size: .85rem; font-weight: 700; color: var(--vert);
+      min-height: 34px; display: flex; align-items: center; gap: 8px;
+    }
+    .picker-preview span { flex: 1; }
+    .picker-clear { font-size: .72rem; color: var(--rouge); cursor: pointer; border: none; background: none; font-family: inherit; }
+    .picker-insert { padding: 5px 14px; background: var(--vert); color: #fff; border: none; border-radius: 5px; font-family: inherit; font-size: .82rem; font-weight: 700; cursor: pointer; }
+
+    /* Chord tab */
+    .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .pc { /* picker chord button */
+      padding: 4px 6px; border: 1.5px solid var(--border);
+      border-radius: 5px; background: #f8f8f8; font-family: inherit; font-size: .75rem;
+      font-weight: 700; cursor: pointer; text-align: center;
+    }
+    .pc:hover  { background: var(--vert-clair); border-color: var(--vert); }
+    .pc.selected { background: var(--vert); color: #fff; }
+    .picker-close-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+    .picker-close-btn { font-size: .75rem; color: var(--gris); cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ── Live preview ─────────────────────────────────────── */
+    #preview-card .card-head { background: var(--bleu); }
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 14px; }
+    .tab-btn {
+      padding: 7px 18px; border: none; background: none;
+      font-family: inherit; font-size: .85rem; font-weight: 700; color: var(--gris);
+      cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -2px;
+    }
+    .tab-btn.active { color: var(--bleu); border-bottom-color: var(--bleu); }
+    #visual-output { overflow-x: auto; }
+    #visual-output svg { display: block; margin: 0 auto; max-width: 100%; }
+    .mfr-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .mfr-table th, .mfr-table td { border: 1px solid #ddd; padding: 6px 10px; text-align: center; }
+    .mfr-table th { background: var(--vert); color: #fff; font-size: .77rem; font-weight: 700; }
+    .mfr-table tr:nth-child(even) td { background: #f6f9f5; }
+    .mfr-table td.note-p { color: #1a5c1a; font-weight: 700; }
+    .mfr-table td.note-t { color: #8b6914; font-weight: 700; }
+    .mfr-table td.row-hd { background: #edf4ec; font-weight: 700; color: var(--vert); }
+    .mfr-sub { color: var(--gris); font-style: italic; font-size: .78rem; margin-bottom: 14px; }
+    .preview-updating { opacity: .5; transition: opacity .2s; }
+
+    /* ── Import/Export modal ──────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      z-index: 500; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: 12px; padding: 24px;
+      max-width: 600px; width: 95%; max-height: 80vh; overflow: auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,.25);
+    }
+    .modal-box h3 { font-size: 1rem; color: var(--vert); margin-bottom: 12px; }
+    .modal-box textarea {
+      width: 100%; height: 200px; font-family: monospace; font-size: .78rem;
+      border: 1.5px solid var(--border); border-radius: 6px; padding: 8px;
+      resize: vertical;
+    }
+
+    /* ── Divider ──────────────────────────────────────────── */
+    hr.divider { border: none; border-top: 1.5px solid var(--vert-clair); margin: 16px 0; }
+
+    /* ── Print ────────────────────────────────────────────── */
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff; }
+      .card { box-shadow: none; border: 1px solid #ddd; }
+      .card-head { background: #2d5a27 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .mfr-table th { background: #2d5a27 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 680px) {
+      header { flex-wrap: wrap; }
+      .form-grid { grid-template-columns: 1fr; }
+      #note-picker { min-width: 260px; }
+      .chord-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HEADER                                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<header class="no-print">
+  <div class="icon">🪗</div>
+  <div class="hd-text">
+    <h1>Clavier Accordéon Diatonique</h1>
+    <p>Plan de clavier client &amp; bon de commande anches</p>
+  </div>
+  <span id="save-status" class="saved">✓ Sauvegardé</span>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- BIBLIOTHÈQUE                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="library-panel" class="no-print">
+  <div class="lib-toolbar">
+    <h2>📁 Mes accordéons sauvegardés</h2>
+    <button class="btn btn-primary" onclick="newInstrument()" style="font-size:.8rem;padding:6px 12px;">＋ Nouvel instrument</button>
+    <button class="btn btn-gris"    onclick="openImportExport()" style="font-size:.8rem;padding:6px 12px;">⇅ Import / Export</button>
+  </div>
+  <div id="lib-cards">
+    <div class="lib-empty">Aucun instrument sauvegardé. Configurez puis sauvegardez avec le bouton ci-dessous.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MAIN CONTAINER                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="container">
+
+  <!-- ÉTAPE 1 : Configuration ─────────────────────────────── -->
+  <div class="card no-print">
+    <div class="card-head">
+      <div class="step-badge">1</div>
+      <h2>Configuration de l'accordéon</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Référence instrument</label>
+          <input type="text" id="nom-instrument" placeholder="Ex : Sol/Do #001" oninput="onAnyChange()">
+        </div>
+        <div class="form-group">
+          <label>Nom du client</label>
+          <input type="text" id="nom-joueur" placeholder="Ex : Jean Dupont" oninput="onAnyChange()">
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="date-creation" onchange="onAnyChange()">
+        </div>
+        <div class="form-group">
+          <label>Luthier</label>
+          <input type="text" id="nom-luthier" value="Ewen d'Aviau" oninput="onAnyChange()">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Modèle prédéfini</label>
+          <select id="preset-select" onchange="loadPreset(this.value)">
+            <option value="">— Choisir un modèle —</option>
+            <option value="GC21">Sol/Do — 21 boutons (2 rangées)</option>
+            <option value="DG21">Ré/Sol — 21 boutons (2 rangées)</option>
+            <option value="CF21">Do/Fa — 21 boutons (2 rangées)</option>
+            <option value="GCD33">Sol/Do/Ré — 33 boutons (3 rangées)</option>
+            <option value="BbFC33">Sib/Fa/Do — 33 boutons (3 rangées)</option>
+            <option value="custom">Personnalisé…</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Rangées (main droite)</label>
+          <select id="nb-rangees" onchange="onRangeesChange()">
+            <option value="2">2 rangées</option>
+            <option value="3" selected>3 rangées</option>
+            <option value="4">4 rangées</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Configuration main gauche</label>
+          <select id="config-gauche" onchange="onGaucheChange()">
+            <option value="8">8 basses (4+4)</option>
+            <option value="12" selected>12 basses (6+6)</option>
+            <option value="18">18 basses (6+6+6 terzetto)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nombre de voix (anches)</label>
+          <select id="nb-voix" onchange="onAnyChange()">
+            <option value="1">1 voix</option>
+            <option value="2" selected>2 voix (LM ou MH)</option>
+            <option value="3">3 voix (LMH)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="rangees-cfg-wrap">
+        <div style="font-size:.78rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.05em;margin-top:14px;margin-bottom:6px;">
+          Configuration des rangées (nom &amp; nombre de boutons)
+        </div>
+        <div class="rangees-grid" id="rangees-cfg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 2 : Saisie des notes ──────────────────────────── -->
+  <div class="card no-print">
+    <div class="card-head">
+      <div class="step-badge">2</div>
+      <h2>Saisie des notes — cliquez un champ pour ouvrir le sélecteur de notes</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="info-box">
+        <strong>Cliquez</strong> sur un champ vert (poussé) ou ambré (tiré) pour ouvrir le sélecteur de notes.
+        Ou tapez directement : <span class="mono">Sol4</span> · <span class="mono">Fa#3</span> · <span class="mono">Sib4</span> — Accords : <span class="mono">Sol Maj</span> · <span class="mono">Ré Min</span> · <span class="mono">Do 7</span>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:var(--vert-clair);border:1.5px solid var(--vert);color:#1a5c1a;">↓</div>
+          <strong>Poussé</strong>
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:var(--or-clair);border:1.5px solid var(--or);color:#8b6914;">↑</div>
+          <strong>Tiré</strong>
+        </div>
+        <button class="btn btn-rouge" style="margin-left:auto;font-size:.78rem;padding:5px 11px;" onclick="clearNotes()">🗑️ Effacer toutes les notes</button>
+      </div>
+
+      <div id="note-grid"></div>
+
+      <div class="btn-group" style="margin-top:14px;">
+        <button class="btn btn-primary" onclick="saveCurrentInstrument()">💾 Sauvegarder cet accordéon</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APERÇU LIVE ─────────────────────────────────────────── -->
+  <div class="card" id="preview-card">
+    <div class="card-head no-print">
+      <div class="step-badge">3</div>
+      <h2>Aperçu &amp; impression — mis à jour automatiquement</h2>
+      <button class="btn btn-bleu no-print" onclick="forcePreview()" style="margin-left:auto;font-size:.78rem;padding:5px 12px;">🔄 Actualiser</button>
+    </div>
+    <div class="card-body">
+      <div class="tabs no-print">
+        <button class="tab-btn active" id="tab-btn-visual"    onclick="showTab('visual',this)">🎹 Clavier client</button>
+        <button class="tab-btn"        id="tab-btn-fabricant" onclick="showTab('fabricant',this)">📋 Fabricant anches</button>
+      </div>
+      <div class="btn-group no-print" style="margin-bottom:14px;">
+        <button class="btn btn-bleu"    onclick="printSection('visual')">🖨️ PDF plan clavier</button>
+        <button class="btn btn-primary" onclick="printSection('fabricant')">🖨️ PDF fabricant</button>
+      </div>
+
+      <div id="tab-visual">
+        <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.85rem;">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
+      </div>
+      <div id="tab-fabricant" style="display:none;">
+        <div id="table-output"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- NOTE PICKER (floating popup)                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="note-picker">
+  <div class="picker-tabs">
+    <button class="picker-tab-btn active" onclick="showPickerTab('notes',this)">🎵 Note</button>
+    <button class="picker-tab-btn"        onclick="showPickerTab('chords',this)">🎼 Accord</button>
+    <button class="picker-close-btn" style="margin-left:auto;padding:4px 8px;" onclick="hidePicker()">✕ Fermer</button>
+  </div>
+
+  <!-- Tab: Notes -->
+  <div class="picker-tab active" id="picker-tab-notes">
+    <div class="picker-title">Touches naturelles</div>
+    <div class="picker-notes-row" id="picker-naturals"></div>
+    <div class="picker-title" style="margin-top:8px;">Dièses</div>
+    <div class="picker-notes-row" id="picker-sharps"></div>
+    <div class="picker-title" style="margin-top:8px;">Bémols</div>
+    <div class="picker-notes-row" id="picker-flats"></div>
+    <div class="picker-octave-row">
+      <span class="picker-octave-label">Octave :</span>
+      <div id="picker-octaves"></div>
+    </div>
+  </div>
+
+  <!-- Tab: Chords -->
+  <div class="picker-tab" id="picker-tab-chords">
+    <div class="picker-title">Accords (cliquez pour insérer)</div>
+    <div class="chord-grid" id="picker-chords-grid"></div>
+  </div>
+
+  <!-- Preview & insert -->
+  <div class="picker-preview" id="picker-preview">
+    <span id="picker-preview-text">— sélectionnez une note et une octave —</span>
+    <button class="picker-clear" onclick="pickerClear()">Effacer</button>
+    <button class="picker-insert" onclick="pickerInsert()">Insérer ↵</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- IMPORT / EXPORT MODAL                                       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay no-print" id="import-modal">
+  <div class="modal-box">
+    <h3>⇅ Import / Export JSON</h3>
+    <p style="font-size:.82rem;color:var(--gris);margin-bottom:10px;">
+      Copiez le JSON pour sauvegarder sur votre ordinateur, ou collez un JSON exporté pour importer.
+    </p>
+    <textarea id="modal-json" spellcheck="false"></textarea>
+    <div class="btn-group" style="margin-top:12px;">
+      <button class="btn btn-primary" onclick="doImport()">⬇️ Importer ce JSON</button>
+      <button class="btn btn-gris"    onclick="copyJSON()">📋 Copier</button>
+      <button class="btn btn-outline" onclick="closeModal()">Fermer</button>
+    </div>
+    <p id="modal-msg" style="font-size:.8rem;margin-top:8px;min-height:1.2em;"></p>
+  </div>
+</div>
+
+<script>
+/* ╔══════════════════════════════════════════════════════╗
+   ║  ÉTAT GLOBAL                                         ║
+   ╚══════════════════════════════════════════════════════╝ */
+let CFG = {
+  nbRangees: 3,
+  rangees: [
+    { nom: 'Rangée Sol (intérieure)', nb: 11 },
+    { nom: 'Rangée Do (médiane)',     nb: 11 },
+    { nom: 'Rangée Ré (extérieure)', nb: 11 },
+  ],
+  configGauche: 12,
+  notes: { droite: [], basses: [], accords: [], terzetto: [] }
+};
+let currentId      = null;   // ID of the loaded instrument in library (null = unsaved)
+let saveTimer      = null;   // debounce timer for auto-save
+let previewTimer   = null;   // debounce timer for live preview
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  PRÉRÉGLAGES                                         ║
+   ╚══════════════════════════════════════════════════════╝ */
+const PRESETS = {
+  GC21: {
+    nbRangees: 2,
+    rangees: [
+      { nom: 'Rangée Sol (intérieure)', nb: 10 },
+      { nom: 'Rangée Do (extérieure)',  nb: 11 },
+    ],
+    notes: {
+      droite: [
+        [
+          {p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},
+          {p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},
+          {p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}
+        ],
+        [
+          {p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},
+          {p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},
+          {p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}
+        ]
+      ],
+      basses:  [{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
+      accords: [{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],
+      terzetto: []
+    }
+  },
+  DG21: {
+    nbRangees: 2,
+    rangees: [
+      { nom: 'Rangée Ré (intérieure)',  nb: 10 },
+      { nom: 'Rangée Sol (extérieure)', nb: 11 },
+    ],
+    notes: {
+      droite: [
+        [
+          {p:'Ré3',t:'Mi3'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Ré4',t:'Do#4'},
+          {p:'Fa#4',t:'Mi4'},{p:'La4',t:'Sol4'},{p:'Ré5',t:'Si4'},{p:'Fa#5',t:'Do#5'},
+          {p:'La5',t:'Mi5'},{p:'Ré6',t:'Sol5'}
+        ],
+        [
+          {p:'Sol2',t:'La2'},{p:'Si2',t:'Do3'},{p:'Ré3',t:'Mi3'},{p:'Sol3',t:'Fa#3'},
+          {p:'Si3',t:'La3'},{p:'Ré4',t:'Do4'},{p:'Sol4',t:'Mi4'},{p:'Si4',t:'Fa#4'},
+          {p:'Ré5',t:'La4'},{p:'Sol5',t:'Do5'},{p:'Si5',t:'Mi5'}
+        ]
+      ],
+      basses:  [{p:'Ré3',t:'La2'},{p:'Sol2',t:'Ré2'},{p:'La3',t:'Mi3'},{p:'Do3',t:'Sol2'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
+      accords: [{p:'Ré Maj',t:'La Min'},{p:'Sol Maj',t:'Ré Min'},{p:'La Maj',t:'Mi Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],
+      terzetto: []
+    }
+  },
+  CF21: {
+    nbRangees: 2,
+    rangees: [
+      { nom: 'Rangée Do (intérieure)', nb: 10 },
+      { nom: 'Rangée Fa (extérieure)', nb: 11 },
+    ],
+    notes: {
+      droite: [
+        [
+          {p:'Do3',t:'Ré3'},{p:'Mi3',t:'Fa3'},{p:'Sol3',t:'La3'},{p:'Do4',t:'Si3'},
+          {p:'Mi4',t:'Ré4'},{p:'Sol4',t:'Fa4'},{p:'Do5',t:'La4'},{p:'Mi5',t:'Si4'},
+          {p:'Sol5',t:'Ré5'},{p:'Do6',t:'Fa5'}
+        ],
+        [
+          {p:'Fa3',t:'Mi3'},{p:'La3',t:'Sol3'},{p:'Do4',t:'Sib3'},{p:'Fa4',t:'Ré4'},
+          {p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'La4'},{p:'La5',t:'Sib4'},
+          {p:'Do6',t:'Ré5'},{p:'Fa6',t:'Mi5'},{p:'La6',t:'Sol5'}
+        ]
+      ],
+      basses:  [{p:'Do3',t:'Sol2'},{p:'Fa3',t:'Do3'},{p:'Sol2',t:'Ré2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'}],
+      accords: [{p:'Do Maj',t:'Sol Maj'},{p:'Fa Maj',t:'Do Maj'},{p:'Sol Maj',t:'Ré Min'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'}],
+      terzetto: []
+    }
+  },
+  GCD33: {
+    nbRangees: 3,
+    rangees: [
+      { nom: 'Rangée Sol (intérieure)', nb: 11 },
+      { nom: 'Rangée Do (médiane)',     nb: 11 },
+      { nom: 'Rangée Ré (extérieure)', nb: 11 },
+    ],
+    notes: {
+      droite: [
+        [
+          {p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},
+          {p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},
+          {p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'},{p:'Si6',t:'Mi6'}
+        ],
+        [
+          {p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},
+          {p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},
+          {p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}
+        ],
+        [
+          {p:'Ré3',t:'Mi3'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Ré4',t:'Do#4'},
+          {p:'Fa#4',t:'Mi4'},{p:'La4',t:'Sol4'},{p:'Ré5',t:'Si4'},{p:'Fa#5',t:'Do#5'},
+          {p:'La5',t:'Mi5'},{p:'Ré6',t:'Sol5'},{p:'Fa#6',t:'La5'}
+        ]
+      ],
+      basses:  [{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
+      accords: [{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],
+      terzetto: []
+    }
+  },
+  BbFC33: {
+    nbRangees: 3,
+    rangees: [
+      { nom: 'Rangée Sib (intérieure)', nb: 11 },
+      { nom: 'Rangée Fa (médiane)',      nb: 11 },
+      { nom: 'Rangée Do (extérieure)',   nb: 11 },
+    ],
+    notes: {
+      droite: [
+        [
+          {p:'Sib3',t:'Do4'},{p:'Ré4',t:'Mib4'},{p:'Fa4',t:'Sol4'},{p:'Sib4',t:'La4'},
+          {p:'Ré5',t:'Do5'},{p:'Fa5',t:'Mib5'},{p:'Sib5',t:'Sol5'},{p:'Ré6',t:'La5'},
+          {p:'Fa6',t:'Do6'},{p:'Sib6',t:'Mib6'},{p:'Ré7',t:'Sol6'}
+        ],
+        [
+          {p:'Fa3',t:'Mib3'},{p:'La3',t:'Sol3'},{p:'Do4',t:'Sib3'},{p:'Fa4',t:'Ré4'},
+          {p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'La4'},{p:'La5',t:'Sib4'},
+          {p:'Do6',t:'Ré5'},{p:'Fa6',t:'Mi5'},{p:'La6',t:'Sol5'}
+        ],
+        [
+          {p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},
+          {p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},
+          {p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}
+        ]
+      ],
+      basses:  [{p:'Sib2',t:'Fa2'},{p:'Mib3',t:'Sib2'},{p:'Fa3',t:'Do3'},{p:'Do3',t:'Sol2'},{p:'Sol3',t:'Ré3'},{p:'Ré3',t:'La2'}],
+      accords: [{p:'Sib Maj',t:'Fa Min'},{p:'Mib Maj',t:'Sib Maj'},{p:'Fa Maj',t:'Do Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Sol Maj',t:'Ré Min'},{p:'Ré Maj',t:'La Min'}],
+      terzetto: []
+    }
+  }
+};
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  BASE DE DONNÉES LOCALE (localStorage)               ║
+   ╚══════════════════════════════════════════════════════╝ */
+const DB_KEY = 'acc_clavier_db';
+
+const DB = {
+  load() {
+    try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; }
+  },
+  save(list) {
+    localStorage.setItem(DB_KEY, JSON.stringify(list));
+  },
+  all()  { return DB.load(); },
+  get(id){ return DB.load().find(r => r.id === id) || null; },
+  add(record) {
+    const list = DB.load();
+    list.unshift(record);   // newest first
+    DB.save(list);
+    return record.id;
+  },
+  update(id, data) {
+    const list = DB.load();
+    const idx  = list.findIndex(r => r.id === id);
+    if (idx >= 0) { list[idx] = { ...list[idx], ...data, id, lastModified: new Date().toISOString() }; DB.save(list); }
+  },
+  delete(id) {
+    DB.save(DB.load().filter(r => r.id !== id));
+  },
+  duplicate(id) {
+    const src = DB.get(id);
+    if (!src) return null;
+    const newRec = JSON.parse(JSON.stringify(src));
+    newRec.id  = Date.now().toString();
+    newRec.nom = src.nom + ' (copie)';
+    newRec.lastModified = new Date().toISOString();
+    DB.add(newRec);
+    return newRec.id;
+  }
+};
+
+/* ── Snapshot courant → objet base de données ── */
+function snapshotToDB() {
+  readNoteInputsIntoCFG();
+  return {
+    id:           currentId || Date.now().toString(),
+    nom:          val('nom-instrument') || 'Sans titre',
+    joueur:       val('nom-joueur'),
+    luthier:      val('nom-luthier') || "Ewen d'Aviau",
+    dateCreation: val('date-creation'),
+    lastModified: new Date().toISOString(),
+    nbRangees:    CFG.nbRangees,
+    rangees:      JSON.parse(JSON.stringify(CFG.rangees)),
+    configGauche: parseInt(document.getElementById('config-gauche').value),
+    nbVoix:       parseInt(document.getElementById('nb-voix').value),
+    notes:        JSON.parse(JSON.stringify(CFG.notes)),
+  };
+}
+
+/* ── Charger un objet DB → formulaire ── */
+function loadFromDB(rec) {
+  currentId = rec.id;
+  document.getElementById('nom-instrument').value  = rec.nom || '';
+  document.getElementById('nom-joueur').value      = rec.joueur || '';
+  document.getElementById('nom-luthier').value     = rec.luthier || "Ewen d'Aviau";
+  document.getElementById('date-creation').value   = rec.dateCreation || '';
+  document.getElementById('config-gauche').value   = String(rec.configGauche || 12);
+  document.getElementById('nb-voix').value         = String(rec.nbVoix || 2);
+  CFG.nbRangees    = rec.nbRangees || 2;
+  CFG.rangees      = JSON.parse(JSON.stringify(rec.rangees));
+  CFG.configGauche = rec.configGauche || 12;
+  CFG.notes        = JSON.parse(JSON.stringify(rec.notes));
+  document.getElementById('nb-rangees').value = String(CFG.nbRangees);
+  renderRangeesCfg();
+  generateInputGrid();
+  setSaveStatus('saved');
+}
+
+/* ─────────────────────────────────────── */
+function saveCurrentInstrument() {
+  readNoteInputsIntoCFG();
+  const rec = snapshotToDB();
+  if (currentId && DB.get(currentId)) {
+    DB.update(currentId, rec);
+  } else {
+    currentId = rec.id;
+    DB.add(rec);
+  }
+  renderLibrary();
+  setSaveStatus('saved');
+}
+
+function newInstrument() {
+  currentId = null;
+  document.getElementById('preset-select').value = '';
+  document.getElementById('nom-instrument').value = '';
+  document.getElementById('nom-joueur').value = '';
+  document.getElementById('date-creation').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('nb-voix').value = '2';
+  loadPreset('GCD33');
+  document.getElementById('preset-select').value = 'GCD33';
+  renderLibrary();
+  setSaveStatus('dirty');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  RENDU BIBLIOTHÈQUE                                  ║
+   ╚══════════════════════════════════════════════════════╝ */
+function renderLibrary() {
+  const list = DB.all();
+  const wrap = document.getElementById('lib-cards');
+  if (!list.length) {
+    wrap.innerHTML = '<div class="lib-empty">Aucun instrument sauvegardé. Configurez puis cliquez "💾 Sauvegarder".</div>';
+    return;
+  }
+  wrap.innerHTML = list.map(rec => {
+    const active  = rec.id === currentId ? ' active' : '';
+    const modDate = rec.lastModified
+      ? new Date(rec.lastModified).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'2-digit' })
+      : '—';
+    const info = [
+      rec.nbRangees + ' rangées',
+      rec.configGauche + ' basses',
+      (rec.nbVoix || 2) + ' voix'
+    ].join(' · ');
+    return `<div class="instr-card${active}" id="card-${rec.id}">
+      <div class="card-name">🪗 ${escHTML(rec.nom)}</div>
+      <div class="card-sub">${rec.joueur ? 'Client : ' + escHTML(rec.joueur) : '&nbsp;'}</div>
+      <div class="card-meta">${info} · ${modDate}</div>
+      <div class="card-btns">
+        <button class="card-action ca-edit" onclick="event.stopPropagation();editInstrument('${rec.id}')">✏️ Éditer</button>
+        <button class="card-action ca-dup"  onclick="event.stopPropagation();duplicateInstrument('${rec.id}')">⧉ Copier</button>
+        <button class="card-action ca-del"  onclick="event.stopPropagation();deleteInstrument('${rec.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function editInstrument(id) {
+  const rec = DB.get(id);
+  if (!rec) return;
+  loadFromDB(rec);
+  renderLibrary();
+  document.querySelector('.container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  scheduleLivePreview();
+}
+
+function duplicateInstrument(id) {
+  const newId = DB.duplicate(id);
+  renderLibrary();
+  if (newId) editInstrument(newId);
+}
+
+function deleteInstrument(id) {
+  const rec = DB.get(id);
+  if (!rec) return;
+  if (!confirm(`Supprimer « ${rec.nom} » ?`)) return;
+  DB.delete(id);
+  if (currentId === id) { currentId = null; setSaveStatus('dirty'); }
+  renderLibrary();
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  STATUT SAUVEGARDE                                   ║
+   ╚══════════════════════════════════════════════════════╝ */
+function setSaveStatus(state) {
+  const el = document.getElementById('save-status');
+  el.className = state;
+  el.textContent = {
+    saved:  '✓ Sauvegardé',
+    dirty:  '● Modifications…',
+    saving: '… Sauvegarde',
+  }[state] || '';
+}
+
+/* ── Auto-save déclenchée sur chaque changement ── */
+function onAnyChange() {
+  setSaveStatus('dirty');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    if (currentId) { saveCurrentInstrument(); }
+  }, 1200);
+  scheduleLivePreview();
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  INIT                                                ║
+   ╚══════════════════════════════════════════════════════╝ */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('date-creation').value = new Date().toISOString().slice(0, 10);
+  initPicker();
+  renderLibrary();
+
+  const list = DB.all();
+  if (list.length) {
+    loadFromDB(list[0]);
+  } else {
+    loadPreset('GCD33');
+    document.getElementById('preset-select').value = 'GCD33';
+  }
+  scheduleLivePreview();
+
+  // Close picker when clicking outside
+  document.addEventListener('click', e => {
+    const picker = document.getElementById('note-picker');
+    if (picker.style.display !== 'none' && !picker.contains(e.target) && !e.target.classList.contains('note-input')) {
+      hidePicker();
+    }
+  });
+});
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  CHARGEMENT PRÉRÉGLAGE                               ║
+   ╚══════════════════════════════════════════════════════╝ */
+function loadPreset(key) {
+  if (!key || key === 'custom') {
+    renderRangeesCfg();
+    generateInputGrid();
+    onAnyChange();
+    return;
+  }
+  const p = PRESETS[key];
+  if (!p) return;
+  CFG.nbRangees = p.nbRangees;
+  CFG.rangees   = p.rangees.map(r => ({ nom: r.nom, nb: r.nb }));
+  CFG.notes     = JSON.parse(JSON.stringify(p.notes));
+  document.getElementById('nb-rangees').value = p.nbRangees;
+  renderRangeesCfg();
+  generateInputGrid();
+  onAnyChange();
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  CHANGEMENT RANGÉES                                  ║
+   ╚══════════════════════════════════════════════════════╝ */
+function onRangeesChange() {
+  readNoteInputsIntoCFG();
+  const nb = parseInt(document.getElementById('nb-rangees').value);
+  CFG.nbRangees = nb;
+  while (CFG.rangees.length < nb) CFG.rangees.push({ nom: `Rangée ${CFG.rangees.length + 1}`, nb: 11 });
+  CFG.rangees = CFG.rangees.slice(0, nb);
+  while (CFG.notes.droite.length < nb) CFG.notes.droite.push([]);
+  CFG.notes.droite = CFG.notes.droite.slice(0, nb);
+  renderRangeesCfg();
+  generateInputGrid();
+  onAnyChange();
+}
+
+function onGaucheChange() {
+  readNoteInputsIntoCFG();
+  generateInputGrid();
+  onAnyChange();
+}
+
+/* ── Read current input values back into CFG.notes ── */
+function readNoteInputsIntoCFG() {
+  const configGauche = parseInt(document.getElementById('config-gauche').value);
+  const nbBass = configGauche === 8 ? 4 : 6;
+
+  const newDroite = [];
+  for (let r = 0; r < CFG.nbRangees; r++) {
+    const rCfg = CFG.rangees[r] || { nb: 11 };
+    const row = [];
+    for (let b = 0; b < rCfg.nb; b++) {
+      row.push({ p: val(`d-${r}-${b}-p`), t: val(`d-${r}-${b}-t`) });
+    }
+    newDroite.push(row);
+  }
+  CFG.notes.droite = newDroite;
+
+  const readRow = (key, count) => {
+    const arr = [];
+    for (let b = 0; b < count; b++) {
+      arr.push({ p: val(`g-${key}-${b}-p`), t: val(`g-${key}-${b}-t`) });
+    }
+    return arr;
+  };
+  CFG.notes.basses   = readRow('basses',  nbBass);
+  CFG.notes.accords  = readRow('accords', nbBass);
+  CFG.notes.terzetto = configGauche === 18 ? readRow('terzetto', 6) : [];
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  RENDU CONFIG RANGÉES                                ║
+   ╚══════════════════════════════════════════════════════╝ */
+function renderRangeesCfg() {
+  const wrap = document.getElementById('rangees-cfg');
+  let html = '';
+  for (let r = 0; r < CFG.nbRangees; r++) {
+    const rCfg = CFG.rangees[r] || { nom: `Rangée ${r+1}`, nb: 11 };
+    html += `<div class="rangee-cfg">
+      <label>Rangée ${r+1} — Nom</label>
+      <input type="text" id="rnom-${r}" value="${esc(rCfg.nom)}" style="font-size:.78rem;padding:4px 7px;"
+        onchange="CFG.rangees[${r}].nom=this.value; onAnyChange()">
+      <label style="margin-top:4px;">Boutons</label>
+      <input type="text" id="rnb-${r}" value="${rCfg.nb}" style="font-size:.78rem;padding:4px 7px;width:60px;"
+        onchange="CFG.rangees[${r}].nb=parseInt(this.value)||11; onRangeesChange()">
+    </div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  GÉNÉRATION GRILLE INPUTS                            ║
+   ╚══════════════════════════════════════════════════════╝ */
+function generateInputGrid() {
+  const configGauche = parseInt(document.getElementById('config-gauche').value);
+  CFG.configGauche = configGauche;
+  const nbBass = configGauche === 8 ? 4 : 6;
+  let html = '';
+
+  /* Main Droite */
+  html += `<div class="note-section"><div class="note-section-title">🎵 Main Droite</div>`;
+  for (let r = 0; r < CFG.nbRangees; r++) {
+    const rCfg  = CFG.rangees[r] || { nom: `Rangée ${r+1}`, nb: 11 };
+    const nb    = rCfg.nb;
+    const notes = CFG.notes.droite[r] || [];
+    const label = rCfg.nom.split(' ')[1] || `R${r+1}`;
+    html += `<div class="row-wrap">
+      <div style="font-size:.78rem;font-weight:700;color:var(--vert);margin-bottom:4px;">${esc(rCfg.nom)}</div>
+      <div class="btn-grid">`;
+    for (let b = 0; b < nb; b++) {
+      const n = notes[b] || { p:'', t:'' };
+      html += `<div class="btn-cell">
+        <div class="btn-num">${label} ${b+1}</div>
+        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" title="Poussé — ${label} btn ${b+1}" oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
+        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" title="Tiré — ${label} btn ${b+1}"   oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+  html += `</div>`;
+
+  /* Main Gauche */
+  html += `<div class="note-section"><div class="note-section-title">🎹 Main Gauche</div>`;
+  const gSections = [
+    { key: 'basses',   label: 'Basses',   count: nbBass, type: 'note'  },
+    { key: 'accords',  label: 'Accords',  count: nbBass, type: 'chord' },
+  ];
+  if (configGauche === 18) gSections.push({ key: 'terzetto', label: 'Terzetto', count: 6, type: 'chord' });
+
+  gSections.forEach(({ key, label, count, type }) => {
+    const arr = CFG.notes[key] || [];
+    html += `<div class="row-wrap">
+      <div style="font-size:.78rem;font-weight:700;color:var(--vert);margin-bottom:4px;">${label}</div>
+      <div class="btn-grid">`;
+    for (let b = 0; b < count; b++) {
+      const n = arr[b] || { p:'', t:'' };
+      html += `<div class="btn-cell">
+        <div class="btn-num">${label[0]}${b+1}</div>
+        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
+        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
+      </div>`;
+    }
+    html += `</div></div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById('note-grid').innerHTML = html;
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  NOTE PICKER                                         ║
+   ╚══════════════════════════════════════════════════════╝ */
+let pickerInput    = null;
+let pickerNote     = '';
+let pickerOctave   = '';
+
+const NATURALS  = ['Do','Ré','Mi','Fa','Sol','La','Si'];
+const SHARPS    = ['Do#','Ré#',null,'Fa#','Sol#','La#',null];
+const FLATS     = ['Réb','Mib',null,'Solb','Lab','Sib',null];
+const OCTAVES   = ['2','3','4','5','6'];
+
+const CHORDS = (() => {
+  const roots = ['Do','Ré','Mi','Fa','Sol','La','Si','Do#','Ré#','Fa#','Sol#','Sib','Mib','Lab'];
+  const types = ['Maj','Min','7'];
+  const out = [];
+  roots.forEach(r => types.forEach(t => out.push(`${r} ${t}`)));
+  return out;
+})();
+
+function initPicker() {
+  /* naturals */
+  const nRow = document.getElementById('picker-naturals');
+  nRow.innerHTML = NATURALS.map(n =>
+    `<button class="pn" onclick="pickerSetNote('${n}')">${n}</button>`
+  ).join('');
+
+  /* sharps */
+  const sRow = document.getElementById('picker-sharps');
+  sRow.innerHTML = SHARPS.map((n, i) =>
+    n ? `<button class="pn sharp" onclick="pickerSetNote('${n}')">${n}</button>`
+      : `<span style="min-width:36px;"></span>`
+  ).join('');
+
+  /* flats */
+  const fRow = document.getElementById('picker-flats');
+  fRow.innerHTML = FLATS.map((n, i) =>
+    n ? `<button class="pn flat" onclick="pickerSetNote('${n}')">${n}</button>`
+      : `<span style="min-width:36px;"></span>`
+  ).join('');
+
+  /* octaves */
+  const oWrap = document.getElementById('picker-octaves');
+  oWrap.innerHTML = OCTAVES.map(o =>
+    `<button class="po" onclick="pickerSetOctave('${o}')">${o}</button>`
+  ).join('');
+  oWrap.style.display = 'flex';
+  oWrap.style.gap = '3px';
+
+  /* chords */
+  const cGrid = document.getElementById('picker-chords-grid');
+  cGrid.innerHTML = CHORDS.map(c =>
+    `<button class="pc" onclick="pickerInsertDirect('${c}')">${c}</button>`
+  ).join('');
+}
+
+function showPicker(input) {
+  pickerInput = input;
+  pickerNote  = '';
+  pickerOctave = '';
+
+  // Parse existing value
+  const v = input.value.trim();
+  if (v) {
+    const m = v.match(/^([A-Za-zÀ-ÿ#b]+)(\d?)$/);
+    if (m) { pickerNote = m[1]; pickerOctave = m[2] || ''; }
+    else { pickerNote = v; }  // chord like "Sol Maj"
+  }
+
+  // Show correct tab
+  const isChord = input.dataset.type === 'chord';
+  showPickerTab(isChord ? 'chords' : 'notes',
+    document.querySelector(isChord ? '.picker-tab-btn:nth-child(2)' : '.picker-tab-btn:first-child'));
+
+  updatePickerHighlights();
+  updatePickerPreview();
+
+  // Position
+  const picker = document.getElementById('note-picker');
+  picker.style.display = 'block';
+  const rect   = input.getBoundingClientRect();
+  const scrollY = window.scrollY;
+  const scrollX = window.scrollX;
+  let top  = scrollY + rect.bottom + 6;
+  let left = scrollX + rect.left;
+  // Clamp to viewport
+  const pw = picker.offsetWidth  || 320;
+  const ph = picker.offsetHeight || 300;
+  if (left + pw > scrollX + window.innerWidth  - 10) left = scrollX + window.innerWidth  - pw - 10;
+  if (left < 8) left = 8;
+  if (top + ph > scrollY + window.innerHeight - 10) top = scrollY + rect.top - ph - 6;
+  picker.style.top  = top  + 'px';
+  picker.style.left = left + 'px';
+
+  input.classList.add('picker-open');
+}
+
+function hidePicker() {
+  document.getElementById('note-picker').style.display = 'none';
+  if (pickerInput) {
+    pickerInput.classList.remove('picker-open');
+    pickerInput = null;
+  }
+}
+
+function showPickerTab(name, btn) {
+  document.querySelectorAll('.picker-tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('picker-tab-notes').classList.toggle('active',  name === 'notes');
+  document.getElementById('picker-tab-chords').classList.toggle('active', name === 'chords');
+}
+
+function pickerSetNote(n) {
+  pickerNote = n;
+  updatePickerHighlights();
+  updatePickerPreview();
+  if (pickerNote && pickerOctave) pickerInsert();
+}
+
+function pickerSetOctave(o) {
+  pickerOctave = o;
+  updatePickerHighlights();
+  updatePickerPreview();
+  if (pickerNote && pickerOctave) pickerInsert();
+}
+
+function pickerInsertDirect(text) {
+  if (!pickerInput) return;
+  pickerInput.value = text;
+  pickerInput.dispatchEvent(new Event('input', { bubbles: true }));
+  hidePicker();
+  onAnyChange();
+}
+
+function pickerInsert() {
+  if (!pickerInput) return;
+  const v = pickerNote + pickerOctave;
+  if (!v) return;
+  pickerInput.value = v;
+  pickerInput.dispatchEvent(new Event('input', { bubbles: true }));
+  hidePicker();
+  onAnyChange();
+}
+
+function pickerClear() {
+  if (!pickerInput) return;
+  pickerInput.value = '';
+  pickerInput.dispatchEvent(new Event('input', { bubbles: true }));
+  pickerNote = ''; pickerOctave = '';
+  updatePickerHighlights();
+  updatePickerPreview();
+  hidePicker();
+  onAnyChange();
+}
+
+function updatePickerHighlights() {
+  document.querySelectorAll('#picker-tab-notes .pn').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent === pickerNote);
+  });
+  document.querySelectorAll('.po').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent === pickerOctave);
+  });
+}
+
+function updatePickerPreview() {
+  const txt = pickerNote + pickerOctave;
+  document.getElementById('picker-preview-text').textContent =
+    txt ? txt : '— sélectionnez une note et une octave —';
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  LECTURE DES INPUTS → data object                   ║
+   ╚══════════════════════════════════════════════════════╝ */
+function readInputs() {
+  readNoteInputsIntoCFG();
+  const configGauche = parseInt(document.getElementById('config-gauche').value);
+  const nbBass = configGauche === 8 ? 4 : 6;
+  const droite = CFG.notes.droite.map((row, ri) => ({
+    nom: CFG.rangees[ri] ? CFG.rangees[ri].nom : `Rangée ${ri+1}`,
+    boutons: row
+  }));
+  return {
+    nomInstrument: val('nom-instrument') || 'Accordéon Diatonique',
+    nomJoueur:     val('nom-joueur'),
+    nomLuthier:    val('nom-luthier') || "Ewen d'Aviau",
+    date:          val('date-creation'),
+    nbVoix:        parseInt(document.getElementById('nb-voix').value),
+    configGauche,
+    droite,
+    basses:   CFG.notes.basses,
+    accords:  CFG.notes.accords,
+    terzetto: CFG.notes.terzetto || [],
+  };
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  SVG — MAIN DROITE                                   ║
+   ╚══════════════════════════════════════════════════════╝ */
+function buildSVG_Droite(data) {
+  const R=26, HGAP=62, VGAP=74, LPAD=172, MARG=18, HEAD=72, FOOT=30;
+  const maxBtns = Math.max(...data.droite.map(r => r.boutons.length));
+  const W = LPAD + maxBtns * HGAP + MARG;
+  const H = MARG + HEAD + data.droite.length * VGAP + FOOT;
+  let s = svg_open(W, H);
+  s += tx(W/2, MARG+16, escSVG(data.nomInstrument), 15, '#2d5a27', 'bold', 'middle');
+  if (data.nomJoueur) s += tx(W/2, MARG+32, `Client : ${escSVG(data.nomJoueur)}`, 10, '#555', 'normal', 'middle');
+  s += tx(W/2, MARG+46, `Luthier : ${escSVG(data.nomLuthier)}  ·  ${fmtDate(data.date)}`, 9, '#888', 'normal', 'middle');
+  const lx = LPAD, ly = MARG+58;
+  s += `<rect x="${lx}" y="${ly-11}" width="14" height="11" rx="2" fill="#e8f5e3" stroke="#2d5a27" stroke-width="1.2"/>`;
+  s += tx(lx+18, ly, '↓ Poussé', 9, '#333', 'normal', 'start');
+  s += `<rect x="${lx+80}" y="${ly-11}" width="14" height="11" rx="2" fill="#fff8e6" stroke="#c8a96e" stroke-width="1.2"/>`;
+  s += tx(lx+98, ly, '↑ Tiré', 9, '#333', 'normal', 'start');
+  data.droite.forEach((row, ri) => {
+    const cy = MARG + HEAD + ri * VGAP + VGAP/2;
+    const stagger = (ri % 2 === 1) ? HGAP/2 : 0;
+    s += `<rect x="${LPAD-4}" y="${cy-R-6}" width="${row.boutons.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?'#fafafa':'#f3f7f3'}" opacity=".7"/>`;
+    s += tx(LPAD-8, cy+4, escSVG(row.nom), 10, '#2d5a27', 'bold', 'end');
+    row.boutons.forEach((btn, bi) => {
+      const cx = LPAD + stagger + bi * HGAP;
+      s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="white" stroke="#bbb" stroke-width="1.2"/>`;
+      s += `<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="#e8f5e3"/>`;
+      s += `<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="#fff8e6"/>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#2d5a27" stroke-width="1.4"/>`;
+      s += `<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="#2d5a27" stroke-width=".5" opacity=".4"/>`;
+      s += tx(cx, cy+3.5, bi+1, 8, 'rgba(0,0,0,.25)', 'normal', 'middle');
+      if (btn.p) { const fs=btn.p.length>5?7.5:8.5; s += tx(cx, cy-9,  escSVG(btn.p), fs, '#1a5c1a', 'bold', 'middle'); }
+      if (btn.t) { const fs=btn.t.length>5?7.5:8.5; s += tx(cx, cy+19, escSVG(btn.t), fs, '#8b6914', 'bold', 'middle'); }
+    });
+  });
+  const fy = MARG + HEAD + data.droite.length * VGAP + 12;
+  s += `<line x1="${LPAD}" y1="${fy}" x2="${W-MARG}" y2="${fy}" stroke="#eee" stroke-width="1"/>`;
+  s += tx(LPAD, fy+14, `${escSVG(data.nomLuthier)} — ewendaviau.com`, 8, '#bbb', 'normal', 'start');
+  s += '</svg>';
+  return s;
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  SVG — MAIN GAUCHE                                   ║
+   ╚══════════════════════════════════════════════════════╝ */
+function buildSVG_Gauche(data) {
+  const R=26, HGAP=65, VGAP=72, LPAD=120, MARG=14, HEAD=36, FOOT=22;
+  const sections = [{ nom:'Basses', items:data.basses }, { nom:'Accords', items:data.accords }];
+  if (data.terzetto && data.terzetto.length) sections.push({ nom:'Terzetto', items:data.terzetto });
+  const maxItems = Math.max(...sections.map(s => s.items.length));
+  const W = LPAD + maxItems * HGAP + MARG;
+  const H = MARG + HEAD + sections.length * VGAP + FOOT;
+  let s = svg_open(W, H);
+  s += tx(W/2, MARG+16, `Main Gauche — ${escSVG(data.nomInstrument)}`, 12, '#2d5a27', 'bold', 'middle');
+  sections.forEach((sec, si) => {
+    const cy = MARG + HEAD + si * VGAP + VGAP/2;
+    const stagger = (si % 2 === 1) ? HGAP/2 : 0;
+    s += `<rect x="${LPAD-4}" y="${cy-R-6}" width="${sec.items.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?'#fafafa':'#f3f7f3'}" opacity=".7"/>`;
+    s += tx(LPAD-7, cy+4, escSVG(sec.nom), 10, '#2d5a27', 'bold', 'end');
+    sec.items.forEach((btn, bi) => {
+      const cx = LPAD + stagger + bi * HGAP;
+      s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="white" stroke="#bbb" stroke-width="1.2"/>`;
+      s += `<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="#e8f5e3"/>`;
+      s += `<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="#fff8e6"/>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#2d5a27" stroke-width="1.4"/>`;
+      s += `<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="#2d5a27" stroke-width=".5" opacity=".4"/>`;
+      s += tx(cx, cy+3.5, bi+1, 8, 'rgba(0,0,0,.25)', 'normal', 'middle');
+      if (btn.p) { const fs=btn.p.length>7?7:(btn.p.length>4?7.5:8.5); s += tx(cx, cy-9,  escSVG(btn.p), fs, '#1a5c1a', 'bold', 'middle'); }
+      if (btn.t) { const fs=btn.t.length>7?7:(btn.t.length>4?7.5:8.5); s += tx(cx, cy+19, escSVG(btn.t), fs, '#8b6914', 'bold', 'middle'); }
+    });
+  });
+  s += '</svg>';
+  return s;
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  TABLEAU FABRICANT                                   ║
+   ╚══════════════════════════════════════════════════════╝ */
+function buildManufacturerTable(data) {
+  const date = fmtDate(data.date);
+  let h = `<p class="mfr-sub">Instrument : <strong>${escHTML(data.nomInstrument)}</strong> &nbsp;|&nbsp;
+     Client : <strong>${escHTML(data.nomJoueur)||'—'}</strong> &nbsp;|&nbsp;
+     Luthier : <strong>${escHTML(data.nomLuthier)}</strong> &nbsp;|&nbsp;
+     Date : <strong>${date}</strong> &nbsp;|&nbsp;
+     Voix : <strong>${data.nbVoix}</strong></p>`;
+
+  h += `<h4 style="color:var(--vert);border-bottom:2px solid var(--vert-clair);padding-bottom:5px;margin:0 0 10px;font-size:.9rem;">
+    MAIN DROITE — Plaque anches mélodie (bisonore)</h4>`;
+  h += `<table class="mfr-table"><thead><tr>
+    <th>Rangée</th><th>N°</th>
+    <th>Note Poussée ↓<br><small style="font-weight:400;opacity:.85">(soufflet poussé)</small></th>
+    <th>Note Tirée ↑<br><small style="font-weight:400;opacity:.85">(soufflet tiré)</small></th>
+  </tr></thead><tbody>`;
+  data.droite.forEach(row => {
+    row.boutons.forEach((btn, bi) => {
+      h += `<tr>`;
+      if (bi === 0) h += `<td class="row-hd" rowspan="${row.boutons.length}">${escHTML(row.nom)}</td>`;
+      h += `<td>${bi+1}</td><td class="note-p">${escHTML(btn.p)||'—'}</td><td class="note-t">${escHTML(btn.t)||'—'}</td></tr>`;
+    });
+  });
+  h += `</tbody></table>`;
+
+  h += `<h4 style="color:var(--vert);border-bottom:2px solid var(--vert-clair);padding-bottom:5px;margin:20px 0 10px;font-size:.9rem;">
+    MAIN GAUCHE — Plaques basses, accords${data.terzetto.length ? ' &amp; terzetto' : ''}</h4>`;
+  h += `<table class="mfr-table"><thead><tr>
+    <th>Type</th><th>N°</th><th>Note/Accord Poussé ↓</th><th>Note/Accord Tiré ↑</th>
+  </tr></thead><tbody>`;
+  const gSections = [{ nom:'Basses', arr:data.basses }, { nom:'Accords', arr:data.accords }];
+  if (data.terzetto.length) gSections.push({ nom:'Terzetto', arr:data.terzetto });
+  gSections.forEach(({ nom, arr }) => {
+    arr.forEach((btn, bi) => {
+      h += `<tr>`;
+      if (bi === 0) h += `<td class="row-hd" rowspan="${arr.length}">${nom}</td>`;
+      h += `<td>${bi+1}</td><td class="note-p">${escHTML(btn.p)||'—'}</td><td class="note-t">${escHTML(btn.t)||'—'}</td></tr>`;
+    });
+  });
+  h += `</tbody></table>`;
+
+  h += `<div style="margin-top:20px;background:#f6f9f5;border:1.5px solid var(--vert-clair);border-radius:6px;padding:12px 15px;font-size:.8rem;">
+    <strong>Spécifications / Specifications :</strong><br>
+    &bull; Accordéon bisonore — soufflet poussé / tiré (bisonoric — push / pull)<br>
+    &bull; Nombre de voix (reeds per note) : <strong>${data.nbVoix}</strong><br>
+    &bull; Notation solfège : Do=C · Ré=D · Mi=E · Fa=F · Sol=G · La=A · Si=B<br>
+    &bull; Dièse = # · Bémol = b &nbsp;&nbsp;|&nbsp;&nbsp; Octaves : 2=basse · 3=médium grave · 4=médium · 5=aigu · 6=très aigu<br>
+    <br><em>Document généré le ${date} — ${escHTML(data.nomLuthier)} — ewendaviau.com</em>
+  </div>`;
+  return h;
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  APERÇU LIVE                                         ║
+   ╚══════════════════════════════════════════════════════╝ */
+function scheduleLivePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(runLivePreview, 600);
+}
+
+function forcePreview() {
+  clearTimeout(previewTimer);
+  runLivePreview();
+}
+
+function runLivePreview() {
+  try {
+    const data = readInputs();
+    const svgD = buildSVG_Droite(data);
+    const svgG = buildSVG_Gauche(data);
+    document.getElementById('visual-output').innerHTML =
+      `<h3 style="color:var(--vert);font-size:.9rem;margin-bottom:10px;">Main Droite</h3>${svgD}
+       <h3 style="color:var(--vert);font-size:.9rem;margin:18px 0 10px;">Main Gauche</h3>${svgG}`;
+    document.getElementById('table-output').innerHTML = buildManufacturerTable(data);
+  } catch(e) { /* ignore partial states during editing */ }
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  ONGLETS                                             ║
+   ╚══════════════════════════════════════════════════════╝ */
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-visual').style.display    = name === 'visual'    ? '' : 'none';
+  document.getElementById('tab-fabricant').style.display = name === 'fabricant' ? '' : 'none';
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  IMPRESSION                                          ║
+   ╚══════════════════════════════════════════════════════╝ */
+function printSection(which) {
+  const data  = readInputs();
+  const title = which === 'visual'
+    ? `Plan clavier — ${data.nomInstrument}`
+    : `Bon de commande anches — ${data.nomInstrument}`;
+
+  let body = '';
+  if (which === 'visual') {
+    body = `
+      <h2 style="color:#2d5a27;font-size:13pt;margin-bottom:4mm;">${escHTML(data.nomInstrument)} — Plan de clavier</h2>
+      <p style="font-size:9pt;color:#666;margin-bottom:4mm;">Client : <b>${escHTML(data.nomJoueur)||'—'}</b> · Luthier : <b>${escHTML(data.nomLuthier)}</b> · ${fmtDate(data.date)}</p>
+      <div style="display:flex;gap:12mm;margin-bottom:4mm;">
+        <span style="font-size:8pt;"><span style="display:inline-block;width:10mm;height:5mm;background:#e8f5e3;border:1px solid #2d5a27;border-radius:2px;vertical-align:middle;margin-right:2mm;"></span>↓ Poussé</span>
+        <span style="font-size:8pt;"><span style="display:inline-block;width:10mm;height:5mm;background:#fff8e6;border:1px solid #c8a96e;border-radius:2px;vertical-align:middle;margin-right:2mm;"></span>↑ Tiré</span>
+      </div>
+      <h3 style="font-size:10pt;color:#2d5a27;margin:3mm 0 2mm;">Main Droite</h3>
+      ${buildSVG_Droite(data)}
+      <h3 style="font-size:10pt;color:#2d5a27;margin:6mm 0 2mm;">Main Gauche</h3>
+      ${buildSVG_Gauche(data)}
+      <p style="font-size:7pt;color:#bbb;text-align:center;margin-top:8mm;">Plan réalisé par ${escHTML(data.nomLuthier)} — ewendaviau.com</p>`;
+  } else {
+    body = buildManufacturerTable(data);
+  }
+
+  const win = window.open('', '_blank', 'width=920,height=720');
+  if (!win) { alert('Veuillez autoriser les popups pour imprimer.'); return; }
+  win.document.write(`<!DOCTYPE html><html lang="fr"><head>
+    <meta charset="UTF-8"><title>${escHTML(title)}</title>
+    <style>
+      body { font-family:Arial,sans-serif; margin:12mm 14mm; color:#222; }
+      h4   { color:#2d5a27; border-bottom:1px solid #c8e0c5; padding-bottom:4px; margin:5mm 0 3mm; font-size:10pt; }
+      table { width:100%; border-collapse:collapse; font-size:8.5pt; margin-bottom:4mm; }
+      th,td { border:1px solid #ddd; padding:4px 9px; text-align:center; }
+      th    { background:#2d5a27; color:#fff; font-size:8pt; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      tr:nth-child(even) td { background:#f6f9f5; }
+      td.row-hd { background:#edf4ec; font-weight:700; color:#2d5a27; }
+      td.note-p { color:#1a5c1a; font-weight:700; }
+      td.note-t { color:#8b6914; font-weight:700; }
+      .mfr-sub  { font-size:8pt; color:#666; margin-bottom:4mm; }
+      p { margin-bottom:2mm; font-size:9pt; }
+      @media print { body { margin:8mm 10mm; } }
+    </style>
+  </head><body>${body}</body></html>`);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 600);
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  EFFACER LES NOTES                                   ║
+   ╚══════════════════════════════════════════════════════╝ */
+function clearNotes() {
+  if (!confirm('Effacer toutes les notes ?')) return;
+  document.querySelectorAll('#note-grid input').forEach(el => { el.value = ''; });
+  readNoteInputsIntoCFG();
+  onAnyChange();
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  IMPORT / EXPORT JSON                                ║
+   ╚══════════════════════════════════════════════════════╝ */
+function openImportExport() {
+  const list = DB.all();
+  document.getElementById('modal-json').value = JSON.stringify(list, null, 2);
+  document.getElementById('modal-msg').textContent = '';
+  document.getElementById('import-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('import-modal').classList.remove('open');
+}
+function copyJSON() {
+  const ta = document.getElementById('modal-json');
+  ta.select();
+  document.execCommand('copy');
+  document.getElementById('modal-msg').textContent = '✓ Copié dans le presse-papiers.';
+}
+function doImport() {
+  try {
+    const data = JSON.parse(document.getElementById('modal-json').value);
+    if (!Array.isArray(data)) throw new Error('Format invalide (doit être un tableau)');
+    DB.save(data);
+    renderLibrary();
+    if (data.length) loadFromDB(data[0]);
+    closeModal();
+    document.getElementById('modal-msg').textContent = `✓ ${data.length} instrument(s) importé(s).`;
+  } catch(e) {
+    document.getElementById('modal-msg').textContent = '✗ Erreur : ' + e.message;
+  }
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  UTILITAIRES                                         ║
+   ╚══════════════════════════════════════════════════════╝ */
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+function esc(s)     { if (!s) return ''; return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escSVG(s)  { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHTML(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.appendChild(document.createTextNode(String(s)));
+  return d.innerHTML;
+}
+function fmtDate(d) {
+  if (!d) return new Date().toLocaleDateString('fr-FR');
+  try { return new Date(d).toLocaleDateString('fr-FR'); } catch(e) { return d; }
+}
+function svg_open(w, h) {
+  return `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif"><rect width="${w}" height="${h}" fill="white"/>`;
+}
+function tx(x, y, text, size, fill, weight, anchor) {
+  return `<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-weight="${weight||'normal'}" text-anchor="${anchor||'start'}">${text}</text>`;
+}
+</script>
+</body>
+</html>
