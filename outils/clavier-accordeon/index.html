@@ -10,6 +10,7 @@
   --gris:#888;--fond:#f5f5f3;--txt:#1a1a18;--rouge:#b8312a;--bleu:#1a6691;--brd:#e2e2da;
   --gold:#b8860b;--gold-d:#7a5c00;--dark:#1a1c1a;
   --card-bg:#ffffff;--card-head:#1a1c1a;--input-bg:#ffffff;--input-brd:#d4d4cc;
+  --tooltip-bg:#1a1c1a;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--fond);color:var(--txt);line-height:1.5;font-size:15px}
@@ -209,6 +210,21 @@ select option{background:#fff;color:var(--txt)}
 .preset-btn{width:auto!important;padding:2px 7px!important;font-size:.7rem!important}
 hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 
+/* ── Help tooltips ── */
+.tip{display:inline-flex;align-items:center;justify-content:center;
+  width:15px;height:15px;border-radius:50%;background:rgba(184,134,11,.15);
+  color:var(--gold);font-size:.7rem;font-weight:700;cursor:help;
+  vertical-align:middle;margin-left:4px;position:relative;flex-shrink:0;
+  border:1px solid rgba(184,134,11,.3)}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);
+  background:var(--tooltip-bg);color:#fff;font-size:.72rem;font-weight:400;line-height:1.45;white-space:pre-wrap;
+  max-width:280px;min-width:160px;padding:7px 10px;border-radius:6px;
+  border:1px solid var(--gold);box-shadow:0 4px 16px rgba(0,0,0,.3);
+  pointer-events:none;opacity:0;transition:opacity .15s;z-index:9999;text-align:left}
+.tip:hover::after,.tip:focus::after{opacity:1}
+/* keep visible even when at bottom of screen */
+.tip.tip-up::after{bottom:auto;top:calc(100% + 7px)}
+
 /* ── Print ── */
 @media print{
   .no-print{display:none!important}
@@ -289,19 +305,19 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           </div></div>
         <div class="form-group"><label data-i="leftHandConfig">Main gauche — basses libres</label>
           <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 7px;align-items:center;margin-top:2px;">
-            <span class="gauche-label" data-i="basses">Basses</span>
+            <span class="gauche-label" data-i="basses">Basses</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Basses" data-tip="Bouton produisant une note basse unique (fondamentale). Ex: Do grave, Sol grave.&#10;— Single bass note button (root note). E.g. low C, low G.">ⓘ</span>
             <div class="rng-ctrl">
               <button type="button" class="rng-btn" onclick="changeGauche('basses',-1)">−</button>
               <input type="number" id="nb-basses" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('basses')">
               <button type="button" class="rng-btn" onclick="changeGauche('basses',1)">＋</button>
             </div>
-            <span class="gauche-label" data-i="accords">Accords</span>
+            <span class="gauche-label" data-i="accords">Accords</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Accords" data-tip="Bouton d'accord : 2 voix (fondamentale + quinte). Ex: Do+Sol, Sol+Ré.&#10;— Chord button: 2 voices (root + fifth). E.g. C+G, G+D.">ⓘ</span>
             <div class="rng-ctrl">
               <button type="button" class="rng-btn" onclick="changeGauche('accords',-1)">−</button>
               <input type="number" id="nb-accords" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('accords')">
               <button type="button" class="rng-btn" onclick="changeGauche('accords',1)">＋</button>
             </div>
-            <span class="gauche-label" data-i="terzetto">Terzetto</span>
+            <span class="gauche-label" data-i="terzetto">Terzetto</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Terzetto" data-tip="Terzetto (italien : &quot;trio&quot;) : plaque d'anche ajoutant la TIERCE à l'accord.&#10;2 voix : Do+Sol · 3 voix terzetto : Do+Mi+Sol (accord complet).&#10;Optionnel sur accordéon 2-voix ; inclus sur 3-voix.&#10;—&#10;Terzetto (Italian: &quot;trio&quot;): reed plate adding the 3RD to each chord.&#10;2-voice: C+G · 3-voice terzetto: C+E+G (full chord).&#10;Optional on 2-voice; standard on 3-voice instruments.">ⓘ</span>
             <div class="rng-ctrl">
               <button type="button" class="rng-btn" onclick="changeGauche('terzetto',-1)">−</button>
               <input type="number" id="nb-terzetto" min="0" max="60" value="0" style="width:48px;text-align:center;" oninput="applyGaucheCount('terzetto')">
@@ -316,7 +332,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,6)">18b</button>
             <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,8)">24b</button>
           </div></div>
-        <div class="form-group"><label data-i="voices">Nombre de voix (anches)</label>
+        <div class="form-group"><label data-i="voices">Nombre de voix (anches) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Voix" data-tip="1 voix : une anche par note (son pur).&#10;2 voix : deux anches par note (ex: M+H ou L+M) → son plus riche.&#10;3 voix : trois anches (L+M+H) → son très plein, avec tremolo.&#10;—&#10;1 voice: one reed per note (pure tone).&#10;2 voices: two reeds per note (e.g. M+H or L+M) → richer sound.&#10;3 voices: three reeds (L+M+H) → full sound with tremolo.">ⓘ</span></label>
           <select id="nb-voix" onchange="onAnyChange()">
             <option value="1">1 voix / 1 voice</option>
             <option value="2" selected>2 voix / voices (LM ou MH)</option>
@@ -324,7 +340,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           </select>
           <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
             <input type="checkbox" id="show-midi" onchange="onAnyChange()">
-            <label for="show-midi" style="font-size:.82rem;cursor:pointer;font-weight:normal;text-transform:none;letter-spacing:0" data-i="showMidi">Numéros MIDI</label>
+            <label for="show-midi" style="font-size:.82rem;cursor:pointer;font-weight:normal;text-transform:none;letter-spacing:0" data-i="showMidi">Numéros MIDI <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: MIDI" data-tip="Affiche le numéro MIDI de chaque note sur le clavier et dans le tableau fabricant.&#10;Do central (Do4) = MIDI 60. Utile pour les logiciels et fabricants.&#10;—&#10;Shows MIDI note number on keyboard and manufacturer table.&#10;Middle C (C4) = MIDI 60. Useful for software and manufacturers.">ⓘ</span></label>
           </div></div>
       </div>
       <div id="rangees-cfg-wrap">
@@ -345,7 +361,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <option value="442">442 Hz</option>
             <option value="443">443 Hz</option>
           </select></div>
-        <div class="form-group"><label data-i="orderTremolo">Tremolo (± centièmes de Hz)</label>
+        <div class="form-group"><label data-i="orderTremolo">Tremolo (± centièmes de Hz) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Tremolo" data-tip="Écart de fréquence entre le rang naturel et le rang tremolo (en centièmes d'un demi-ton). Ex: ±7 Cents = vibrato lent doux. ±15 Cents = vibrato plus prononcé.&#10;—&#10;Frequency offset between natural and tremolo reed rows (in cents = 1/100 of a semitone). E.g. ±7 cents = gentle slow vibrato.">ⓘ</span></label>
           <input type="text" id="order-tremolo" placeholder="Ex : ± 7 Cents" oninput="onAnyChange()"></div>
         <div class="form-group"><label data-i="orderHarmony">Harmonie / Harmony</label>
           <input type="text" id="order-harmony" placeholder="Ex : —" oninput="onAnyChange()"></div>
@@ -980,7 +996,7 @@ function renderRangeesCfg(){
     html+=`<div class="rangee-cfg">
       <label>R${r+1} — Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
-      <label style="margin-top:3px;">Registre</label>
+      <label style="margin-top:3px;">Registre <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: Registre" data-tip="B (16') : une octave plus grave.&#10;N (8') : hauteur naturelle 440 Hz.&#10;N+ (8'+) : légèrement plus haut (442 Hz).&#10;N- (8'-) : légèrement plus bas (438 Hz).&#10;A (4') : une octave plus aigu (piccolo).&#10;—&#10;B(16')=low octave · N(8')=natural 440 Hz · N+(8'+)=+2Hz · N-(8'-)=-2Hz · A(4')=high octave">ⓘ</span></label>
       <select id="rreg-${r}" style="font-size:.76rem;padding:3px 5px;" onchange="CFG.rangees[${r}].register=this.value;onAnyChange()">
         ${REGISTERS.map(rv=>`<option value="${rv}"${rv===reg?' selected':''}>${rLabels[rv]}</option>`).join('')}
       </select>
