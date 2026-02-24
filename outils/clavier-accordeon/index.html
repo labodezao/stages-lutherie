@@ -6,194 +6,209 @@
 <title>🪗 Clavier Accordéon Diatonique</title>
 <style>
 :root{
-  --vert:#2d5a27;--vert-c:#e8f5e3;--or:#c8a96e;--or-c:#fff8e6;
-  --gris:#6c757d;--fond:#f2f5f2;--txt:#222;--rouge:#c0392b;--bleu:#1565c0;--brd:#d0d7d0;
-  --gold:#c9a227;--gold-d:#8b6914;--dark:#111111;
+  --vert:#1a3a12;--vert-c:#e4f0df;--or:#c9a227;--or-c:#fdf6e3;
+  --gris:#6c757d;--fond:#0e1a0e;--txt:#e8e8d8;--rouge:#c0392b;--bleu:#2980b9;--brd:#2a4a22;
+  --gold:#c9a227;--gold-d:#8b6914;--dark:#0a0e08;
+  --card-bg:#141f11;--card-head:#1e3018;--input-bg:#0d1a0a;--input-brd:#2d4a25;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--fond);color:var(--txt);line-height:1.5;font-size:15px}
 
 /* ── Header ── */
-header{background:var(--vert);color:#fff;padding:10px 20px;display:flex;align-items:center;gap:10px;
-  position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+header{background:linear-gradient(135deg,#0a0e08 0%,#1e3018 50%,#0a0e08 100%);color:#fff;
+  padding:10px 20px;display:flex;align-items:center;gap:10px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 16px rgba(0,0,0,.6);border-bottom:2px solid var(--gold)}
 header .icon{font-size:1.7rem;flex-shrink:0}
 header .hd-text{flex:1;min-width:0}
-header h1{font-size:1.1rem;font-weight:700;white-space:nowrap}
-header p{font-size:.75rem;opacity:.8;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header h1{font-size:1.1rem;font-weight:700;white-space:nowrap;color:var(--gold);letter-spacing:.04em}
+header p{font-size:.75rem;opacity:.7;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#b8d4b0}
 #save-status{font-size:.75rem;padding:4px 10px;border-radius:20px;font-weight:700;white-space:nowrap;flex-shrink:0;transition:background .3s,color .3s}
-#save-status.saved{background:rgba(255,255,255,.18);color:#c8ffb8}
-#save-status.dirty{background:#f39c12;color:#fff}
-#save-status.saving{background:rgba(255,255,255,.1);color:#ffe}
-.lang-btn{padding:5px 11px;border:1.5px solid rgba(255,255,255,.5);border-radius:5px;background:transparent;
-  color:#fff;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .15s}
-.lang-btn:hover,.lang-btn.active{background:rgba(255,255,255,.2)}
+#save-status.saved{background:rgba(201,162,39,.15);color:#c9a227;border:1px solid rgba(201,162,39,.3)}
+#save-status.dirty{background:#f39c12;color:#000}
+#save-status.saving{background:rgba(201,162,39,.1);color:#c9a227}
+.lang-btn{padding:5px 11px;border:1.5px solid rgba(201,162,39,.4);border-radius:5px;background:transparent;
+  color:#c9a227;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .15s}
+.lang-btn:hover,.lang-btn.active{background:rgba(201,162,39,.18);border-color:var(--gold)}
 
 /* ── Library ── */
-#library-panel{background:#fff;border-bottom:2px solid var(--brd);padding:12px 20px}
+#library-panel{background:var(--card-bg);border-bottom:1px solid var(--brd);padding:12px 20px}
 .lib-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.lib-toolbar h2{font-size:.86rem;color:var(--vert);font-weight:700;flex:1}
+.lib-toolbar h2{font-size:.86rem;color:var(--gold);font-weight:700;flex:1}
 #lib-cards{display:flex;gap:9px;flex-wrap:wrap}
-.instr-card{border:2px solid var(--brd);border-radius:8px;padding:9px 12px;min-width:190px;max-width:250px;
-  cursor:pointer;transition:border-color .18s,box-shadow .18s;background:#fafafa;position:relative}
-.instr-card:hover{border-color:var(--vert);box-shadow:0 2px 8px rgba(45,90,39,.12)}
-.instr-card.active{border-color:var(--vert);background:var(--vert-c)}
-.card-name{font-weight:700;font-size:.88rem}.card-sub,.card-meta{font-size:.72rem;color:var(--gris);margin-top:2px}
+.instr-card{border:1.5px solid var(--brd);border-radius:8px;padding:9px 12px;min-width:190px;max-width:250px;
+  cursor:pointer;transition:border-color .18s,box-shadow .18s;background:#0d160a;position:relative}
+.instr-card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(201,162,39,.18)}
+.instr-card.active{border-color:var(--gold);background:#1a2a10;box-shadow:0 0 0 2px rgba(201,162,39,.25)}
+.card-name{font-weight:700;font-size:.88rem;color:var(--gold)}.card-sub,.card-meta{font-size:.72rem;color:var(--gris);margin-top:2px}
 .card-btns{display:flex;gap:4px;margin-top:7px}
 .ca{font-size:.68rem;padding:3px 7px;border:none;border-radius:4px;cursor:pointer;font-family:inherit;font-weight:700}
-.ca-edit{background:var(--vert);color:#fff}.ca-dup{background:#e0e0e0;color:#444}.ca-del{background:#fde;color:var(--rouge)}
+.ca-edit{background:rgba(201,162,39,.2);color:var(--gold);border:1px solid rgba(201,162,39,.3)}
+.ca-dup{background:#1e2e18;color:#9ab890;border:1px solid #2a4a22}
+.ca-del{background:rgba(192,57,43,.15);color:#e07060;border:1px solid rgba(192,57,43,.3)}
 .lib-empty{font-size:.83rem;color:var(--gris);font-style:italic;padding:5px 0}
 
 /* ── Container ── */
 .container{max-width:1380px;margin:0 auto;padding:16px 14px}
-.card{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:16px;overflow:hidden}
-.card-head{background:var(--vert);color:#fff;padding:9px 16px;display:flex;align-items:center;gap:9px}
-.card-head h2{font-size:.9rem;font-weight:700;flex:1}
-.step-badge{background:rgba(255,255,255,.22);border-radius:50%;width:22px;height:22px;
-  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0}
+.card{background:var(--card-bg);border-radius:10px;border:1px solid var(--brd);
+  box-shadow:0 4px 20px rgba(0,0,0,.4);margin-bottom:16px;overflow:hidden}
+.card-head{background:linear-gradient(135deg,var(--card-head),#162612);color:#fff;
+  padding:10px 16px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(201,162,39,.25)}
+.card-head h2{font-size:.9rem;font-weight:700;flex:1;color:var(--gold)}
+.step-badge{background:rgba(201,162,39,.2);border:1.5px solid rgba(201,162,39,.5);border-radius:50%;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;flex-shrink:0;color:var(--gold)}
 .card-body{padding:16px}
 
 /* ── Forms ── */
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:11px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:11px}
 .form-group{display:flex;flex-direction:column;gap:3px}
-.form-group label{font-size:.72rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.05em}
+.form-group label{font-size:.7rem;font-weight:700;color:#7a9870;text-transform:uppercase;letter-spacing:.05em}
 input[type="text"],input[type="date"],input[type="number"],select{
-  padding:7px 9px;border:1.5px solid var(--brd);border-radius:6px;font-size:.85rem;
-  font-family:inherit;background:#fff;color:var(--txt);transition:border-color .18s}
+  padding:7px 9px;border:1.5px solid var(--input-brd);border-radius:6px;font-size:.85rem;
+  font-family:inherit;background:var(--input-bg);color:var(--txt);transition:border-color .18s}
 input[type="text"]:focus,input[type="number"]:focus,select:focus,input[type="date"]:focus{
-  border-color:var(--vert);outline:none;box-shadow:0 0 0 3px rgba(45,90,39,.1)}
+  border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(201,162,39,.15)}
+select option{background:#0d1a0a;color:var(--txt)}
 .hint{font-size:.68rem;color:var(--gris);margin-top:3px}
 
 /* ── Buttons ── */
 .btn{padding:7px 14px;border:none;border-radius:6px;font-family:inherit;font-size:.83rem;font-weight:700;
   cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:filter .15s,transform .1s}
-.btn:hover{filter:brightness(1.1)}.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--vert);color:#fff}
-.btn-or{background:var(--or);color:#fff}
-.btn-outline{background:transparent;color:var(--vert);border:2px solid var(--vert)}
-.btn-outline:hover{background:var(--vert-c);filter:none}
-.btn-bleu{background:var(--bleu);color:#fff}
-.btn-rouge{background:var(--rouge);color:#fff}
-.btn-gris{background:#e0e0e0;color:#444}
+.btn:hover{filter:brightness(1.15)}.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,#2d5a20,#1a3a12);color:var(--gold);border:1px solid rgba(201,162,39,.3)}
+.btn-or{background:linear-gradient(135deg,#c9a227,#9a7a10);color:#000;border:1px solid #c9a227}
+.btn-outline{background:transparent;color:var(--gold);border:1.5px solid rgba(201,162,39,.5)}
+.btn-outline:hover{background:rgba(201,162,39,.1);filter:none}
+.btn-bleu{background:linear-gradient(135deg,#1a5a8a,#0e3a5a);color:#8cd4ff;border:1px solid #2980b9}
+.btn-rouge{background:linear-gradient(135deg,#8a1a1a,#5a0e0e);color:#ffb0b0;border:1px solid #c0392b}
+.btn-gris{background:#1e2a1a;color:#9ab890;border:1px solid #2a4a22}
 .btn-group{display:flex;gap:7px;flex-wrap:wrap}
 
 /* ── Row config ── */
 .rangees-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
-.rangee-cfg{display:flex;flex-direction:column;gap:3px;background:var(--vert-c);border:1.5px solid var(--brd);
-  border-radius:6px;padding:7px 9px;min-width:140px}
-.rangee-cfg label{font-size:.7rem;font-weight:700;color:var(--vert)}
+.rangee-cfg{display:flex;flex-direction:column;gap:3px;background:#0d160a;border:1.5px solid var(--brd);
+  border-radius:6px;padding:7px 9px;min-width:160px}
+.rangee-cfg label{font-size:.7rem;font-weight:700;color:#7a9870}
 .rng-ctrl{display:flex;align-items:center;gap:5px}
 
 /* ── +/− small buttons ── */
-.rng-btn{width:24px;height:24px;border:1.5px solid var(--brd);border-radius:4px;
-  background:#fff;font-size:1rem;line-height:1;cursor:pointer;font-family:inherit;font-weight:700;
-  color:var(--vert);display:inline-flex;align-items:center;justify-content:center;
+.rng-btn{width:26px;height:26px;border:1.5px solid var(--brd);border-radius:4px;
+  background:#0d160a;font-size:1rem;line-height:1;cursor:pointer;font-family:inherit;font-weight:700;
+  color:var(--gold);display:inline-flex;align-items:center;justify-content:center;
   padding:0;flex-shrink:0;transition:background .12s,border-color .12s}
-.rng-btn:hover{background:var(--vert-c);border-color:var(--vert)}
+.rng-btn:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
 .rng-count{font-size:.78rem;font-weight:700;color:var(--gris);min-width:18px;text-align:center}
 
 /* ── Note grid ── */
 .note-section{margin-bottom:18px}
-.note-section-title{font-size:.86rem;font-weight:700;color:var(--vert);
-  border-bottom:2px solid var(--vert-c);padding-bottom:4px;margin-bottom:8px}
+.note-section-title{font-size:.86rem;font-weight:700;color:var(--gold);
+  border-bottom:1.5px solid rgba(201,162,39,.25);padding-bottom:4px;margin-bottom:8px}
 .sec-hd{display:flex;align-items:center;gap:7px;margin-bottom:5px}
-.sec-label{font-size:.76rem;font-weight:700;color:var(--vert)}
+.sec-label{font-size:.76rem;font-weight:700;color:var(--gold)}
 .row-wrap{margin-bottom:11px}
 .btn-grid{display:flex;flex-wrap:wrap;gap:4px}
 .btn-cell{display:flex;flex-direction:column;align-items:center;gap:2px}
 .btn-num{font-size:.63rem;color:var(--gris);font-weight:700}
 .note-input{width:62px;padding:4px 3px;text-align:center;font-size:.76rem;border-radius:5px;
-  border:1.5px solid var(--brd);cursor:pointer}
-.note-input.pousse{border-color:var(--vert);background:var(--vert-c)}
-.note-input.tire{border-color:var(--or);background:var(--or-c)}
+  border:1.5px solid var(--input-brd);cursor:pointer;background:var(--input-bg);color:var(--txt)}
+.note-input.pousse{border-color:#3a6a2a;background:#0d1f0a}
+.note-input.tire{border-color:#6a5010;background:#1a1200}
 .note-input:focus{outline:none}
-.note-input.pousse:focus{border-color:#1a4417;box-shadow:0 0 0 2px rgba(45,90,39,.15)}
-.note-input.tire:focus{border-color:#9a7030;box-shadow:0 0 0 2px rgba(200,169,110,.2)}
-.note-input.picker-open{box-shadow:0 0 0 3px rgba(21,101,192,.3)!important;border-color:var(--bleu)!important}
+.note-input.pousse:focus{border-color:#6fcf5a;box-shadow:0 0 0 2px rgba(111,207,90,.15)}
+.note-input.tire:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,162,39,.15)}
+.note-input.picker-open{box-shadow:0 0 0 3px rgba(201,162,39,.3)!important;border-color:var(--gold)!important}
 .legend{display:flex;gap:14px;margin-bottom:11px;flex-wrap:wrap;align-items:center}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:.8rem}
 .legend-swatch{width:30px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;
   font-size:.64rem;font-weight:700}
-.info-box{background:#eaf2fb;border-left:4px solid var(--bleu);padding:9px 12px;
-  border-radius:0 6px 6px 0;font-size:.8rem;margin-bottom:12px}
-.mono{font-family:monospace;background:#f0f0f0;padding:1px 4px;border-radius:3px}
+.info-box{background:rgba(41,128,185,.12);border-left:4px solid var(--bleu);padding:9px 12px;
+  border-radius:0 6px 6px 0;font-size:.8rem;margin-bottom:12px;color:#8cd4ff}
+.mono{font-family:monospace;background:#0d160a;padding:1px 4px;border-radius:3px;color:var(--gold)}
 
 /* ── Note Picker ── */
-#note-picker{position:absolute;z-index:999;background:#fff;border:2px solid var(--vert);
-  border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:11px 13px;min-width:305px;display:none}
-.picker-tabs{display:flex;gap:0;margin-bottom:9px;border-bottom:2px solid var(--brd)}
+#note-picker{position:absolute;z-index:999;background:#141f11;border:2px solid var(--gold);
+  border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.7);padding:11px 13px;min-width:305px;display:none}
+.picker-tabs{display:flex;gap:0;margin-bottom:9px;border-bottom:1.5px solid var(--brd)}
 .picker-tab-btn{padding:4px 12px;border:none;background:none;font-family:inherit;font-size:.78rem;
   font-weight:700;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
-.picker-tab-btn.active{color:var(--vert);border-bottom-color:var(--vert)}
+.picker-tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
 .picker-tab{display:none}
 .picker-tab.active{display:block}
-.picker-title{font-size:.72rem;font-weight:700;color:var(--vert);text-transform:uppercase;
+.picker-title{font-size:.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;
   letter-spacing:.05em;margin-bottom:7px}
 .picker-notes-row{display:flex;gap:3px;margin-bottom:4px;flex-wrap:wrap}
 .pn{min-width:34px;padding:4px 5px;border:1.5px solid var(--brd);border-radius:5px;
-  background:#f8f8f8;font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;transition:background .1s,border-color .1s}
-.pn:hover{background:var(--vert-c);border-color:var(--vert)}
-.pn.selected{background:var(--vert);color:#fff;border-color:var(--vert)}
-.pn.sharp{background:#e8e0f5}.pn.sharp:hover,.pn.sharp.selected{background:#6b4da0;color:#fff;border-color:#6b4da0}
-.pn.flat{background:#fde8e0}.pn.flat:hover,.pn.flat.selected{background:#c0392b;color:#fff;border-color:#c0392b}
+  background:#0d160a;font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;
+  color:var(--txt);transition:background .1s,border-color .1s}
+.pn:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
+.pn.selected{background:var(--gold);color:#000;border-color:var(--gold)}
+.pn.sharp{background:#1a1030;border-color:#4a3a80;color:#c8b0ff}
+.pn.sharp:hover,.pn.sharp.selected{background:#6b4da0;color:#fff;border-color:#6b4da0}
+.pn.flat{background:#1a0a08;border-color:#6a2a20;color:#ffb0a0}
+.pn.flat:hover,.pn.flat.selected{background:#c0392b;color:#fff;border-color:#c0392b}
 .picker-octave-row{display:flex;gap:3px;margin-top:7px;align-items:center}
 .picker-octave-label{font-size:.68rem;font-weight:700;color:var(--gris);margin-right:3px}
 .po{width:30px;height:26px;border:1.5px solid var(--brd);border-radius:5px;
-  background:#f0f0f0;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer}
-.po:hover{background:var(--or-c);border-color:var(--or)}
-.po.selected{background:var(--or);color:#fff;border-color:var(--or)}
-.picker-preview{margin-top:9px;padding:6px 9px;background:#f4f6f4;border-radius:5px;
-  font-size:.83rem;font-weight:700;color:var(--vert);min-height:33px;display:flex;align-items:center;gap:7px}
+  background:#0d160a;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--txt)}
+.po:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
+.po.selected{background:var(--gold);color:#000;border-color:var(--gold)}
+.picker-preview{margin-top:9px;padding:6px 9px;background:#0d160a;border:1px solid var(--brd);border-radius:5px;
+  font-size:.83rem;font-weight:700;color:var(--gold);min-height:33px;display:flex;align-items:center;gap:7px}
 .picker-preview span{flex:1}
-.picker-clear{font-size:.7rem;color:var(--rouge);cursor:pointer;border:none;background:none;font-family:inherit}
-.picker-insert{padding:5px 12px;background:var(--vert);color:#fff;border:none;border-radius:5px;
+.picker-clear{font-size:.7rem;color:#e07060;cursor:pointer;border:none;background:none;font-family:inherit}
+.picker-insert{padding:5px 12px;background:var(--gold);color:#000;border:none;border-radius:5px;
   font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer}
-.midi-preview{font-size:.65rem;color:var(--bleu);font-weight:700;opacity:.8}
+.midi-preview{font-size:.65rem;color:#8cd4ff;font-weight:700;opacity:.9}
 .chord-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.pc{padding:4px 5px;border:1.5px solid var(--brd);border-radius:5px;background:#f8f8f8;
-  font-family:inherit;font-size:.73rem;font-weight:700;cursor:pointer;text-align:center}
-.pc:hover{background:var(--vert-c);border-color:var(--vert)}
-.pc.selected{background:var(--vert);color:#fff}
+.pc{padding:4px 5px;border:1.5px solid var(--brd);border-radius:5px;background:#0d160a;
+  font-family:inherit;font-size:.73rem;font-weight:700;cursor:pointer;text-align:center;color:var(--txt)}
+.pc:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
+.pc.selected{background:var(--gold);color:#000}
 
 /* ── Preview tabs ── */
-#preview-card .card-head{background:var(--bleu)}
-.tabs{display:flex;gap:0;border-bottom:2px solid var(--brd);margin-bottom:13px}
+#preview-card .card-head{background:linear-gradient(135deg,#0e2a3a,#091a28)}
+#preview-card .card-head h2{color:#8cd4ff}
+#preview-card .step-badge{background:rgba(41,128,185,.2);border-color:rgba(41,128,185,.5);color:#8cd4ff}
+.tabs{display:flex;gap:0;border-bottom:1.5px solid var(--brd);margin-bottom:13px}
 .tab-btn{padding:7px 17px;border:none;background:none;font-family:inherit;font-size:.83rem;
   font-weight:700;color:var(--gris);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px}
-.tab-btn.active{color:var(--bleu);border-bottom-color:var(--bleu)}
+.tab-btn.active{color:#8cd4ff;border-bottom-color:#8cd4ff}
 #visual-output{overflow-x:auto}
 #visual-output svg{display:block;margin:0 auto;max-width:100%}
 
 /* ── Fab view toggle ── */
 .fab-view-wrap{display:flex;gap:0;margin-bottom:12px}
-.fab-view-btn{padding:6px 15px;border:1.5px solid var(--vert);background:#fff;
-  font-family:inherit;font-size:.78rem;font-weight:700;color:var(--vert);cursor:pointer;transition:background .15s}
+.fab-view-btn{padding:6px 15px;border:1.5px solid var(--brd);background:#0d160a;
+  font-family:inherit;font-size:.78rem;font-weight:700;color:var(--gold);cursor:pointer;transition:background .15s}
 .fab-view-btn:first-child{border-radius:6px 0 0 6px}
 .fab-view-btn:last-child{border-radius:0 6px 6px 0;border-left:none}
-.fab-view-btn.active{background:var(--vert);color:#fff}
+.fab-view-btn.active{background:rgba(201,162,39,.2);border-color:var(--gold)}
 
 /* ── Tables ── */
 .mfr-table{width:100%;border-collapse:collapse;font-size:.8rem}
-.mfr-table th,.mfr-table td{border:1px solid #ddd;padding:5px 9px;text-align:center}
-.mfr-table th{background:var(--vert);color:#fff;font-size:.75rem;font-weight:700}
-.mfr-table tr:nth-child(even) td{background:#f6f9f5}
-.mfr-table td.note-p{color:#1a5c1a;font-weight:700}
-.mfr-table td.note-t{color:#8b6914;font-weight:700}
-.mfr-table td.row-hd{background:#edf4ec;font-weight:700;color:var(--vert)}
-.mfr-table td.midi-c{color:var(--bleu);font-size:.72rem}
+.mfr-table th,.mfr-table td{border:1px solid #2a3a22;padding:5px 9px;text-align:center}
+.mfr-table th{background:#1a2a12;color:var(--gold);font-size:.75rem;font-weight:700}
+.mfr-table tr:nth-child(even) td{background:#0f180c}
+.mfr-table td{background:#0d160a;color:#c8d8c0}
+.mfr-table td.note-p{color:#6fcf5a;font-weight:700}
+.mfr-table td.note-t{color:var(--gold);font-weight:700}
+.mfr-table td.row-hd{background:#1a2a12;font-weight:700;color:var(--gold)}
+.mfr-table td.midi-c{color:#8cd4ff;font-size:.72rem}
 .mfr-sub{color:var(--gris);font-style:italic;font-size:.76rem;margin-bottom:12px}
 
 /* ── Modal ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
   z-index:500;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal-box{background:#fff;border-radius:12px;padding:22px;max-width:600px;width:95%;
-  max-height:80vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-.modal-box h3{font-size:.98rem;color:var(--vert);margin-bottom:11px}
+.modal-box{background:#141f11;border:2px solid var(--brd);border-radius:12px;padding:22px;max-width:600px;width:95%;
+  max-height:80vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.modal-box h3{font-size:.98rem;color:var(--gold);margin-bottom:11px}
 .modal-box textarea{width:100%;height:200px;font-family:monospace;font-size:.76rem;
-  border:1.5px solid var(--brd);border-radius:6px;padding:8px;resize:vertical}
+  border:1.5px solid var(--brd);border-radius:6px;padding:8px;resize:vertical;
+  background:#0d160a;color:var(--txt)}
 
 /* ── Misc ── */
-hr.divider{border:none;border-top:1.5px solid var(--vert-c);margin:14px 0}
+hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 
 /* ── Print ── */
 @media print{
@@ -231,6 +246,9 @@ hr.divider{border:none;border-top:1.5px solid var(--vert-c);margin:14px 0}
     <h2 data-i="myInstruments">📁 Mes accordéons sauvegardés</h2>
     <button class="btn btn-primary" onclick="newInstrument()" style="font-size:.78rem;padding:5px 11px;" data-i-btn="newInstrument">＋ Nouvel instrument</button>
     <button class="btn btn-gris"    onclick="openImportExport()" style="font-size:.78rem;padding:5px 11px;" data-i-btn="importExport">⇅ Import / Export</button>
+    <label class="btn btn-outline" style="font-size:.78rem;padding:5px 11px;cursor:pointer;" title="Charger un fichier .json" data-i-btn="openFile">📂 Ouvrir .json
+      <input type="file" accept=".json,application/json" style="display:none;" onchange="loadFromFile(event)">
+    </label>
   </div>
   <div id="lib-cards"><div class="lib-empty" data-i="noSaved">Aucun instrument sauvegardé.</div></div>
 </div>
@@ -295,6 +313,30 @@ hr.divider{border:none;border-top:1.5px solid var(--vert-c);margin:14px 0}
         <div style="font-size:.75rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.05em;margin-top:13px;margin-bottom:5px;" data-i="rowConfig">Configuration des rangées</div>
         <div class="rangees-grid" id="rangees-cfg"></div>
       </div>
+      <hr class="divider">
+      <div style="font-size:.75rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;" data-i="orderSpecTitle">📋 Spécifications commande fabricant (Voci Armoniche checklist)</div>
+      <div class="form-grid">
+        <div class="form-group"><label data-i="orderQty">Quantité</label>
+          <input type="number" id="order-qty" min="1" value="1" oninput="onAnyChange()" style="width:80px;"></div>
+        <div class="form-group"><label data-i="orderReedType">Type d'anches</label>
+          <input type="text" id="order-reed-type" placeholder="Ex : Tipo a mano" oninput="onAnyChange()"></div>
+        <div class="form-group"><label data-i="orderTuning">Accord de base</label>
+          <select id="order-tuning" onchange="onAnyChange()">
+            <option value="440">440 Hz</option>
+            <option value="441">441 Hz</option>
+            <option value="442">442 Hz</option>
+            <option value="443">443 Hz</option>
+          </select></div>
+        <div class="form-group"><label data-i="orderTremolo">Tremolo (± centièmes de Hz)</label>
+          <input type="text" id="order-tremolo" placeholder="Ex : ± 7 Cents" oninput="onAnyChange()"></div>
+        <div class="form-group"><label data-i="orderHarmony">Harmonie / Harmony</label>
+          <input type="text" id="order-harmony" placeholder="Ex : —" oninput="onAnyChange()"></div>
+        <div class="form-group"><label data-i="orderBassType">Type de basses</label>
+          <input type="text" id="order-bass-type" placeholder="Ex : Basso Helikon, Balilla…" oninput="onAnyChange()"></div>
+        <div class="form-group"><label data-i="orderBassComp">Composition basses</label>
+          <input type="text" id="order-bass-comp" placeholder="Ex : 6 Balilla / 4 BH4 + 4 BH2" oninput="onAnyChange()"></div>
+      </div>
+      <div class="hint" style="margin-top:5px;" data-i="orderSpecHelp">Ces informations apparaissent dans l'en-tête du bon de commande fabricant.</div>
     </div>
   </div>
 
@@ -320,6 +362,7 @@ hr.divider{border:none;border-top:1.5px solid var(--vert-c);margin:14px 0}
       <div id="note-grid"></div>
       <div class="btn-group" style="margin-top:13px;">
         <button class="btn btn-primary" onclick="saveCurrentInstrument()" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
+        <button class="btn btn-or"      onclick="saveAsJSON()" data-i-btn="saveAs">⬇️ Enregistrer sous .json</button>
       </div>
     </div>
   </div>
@@ -395,6 +438,7 @@ hr.divider{border:none;border-top:1.5px solid var(--vert-c);margin:14px 0}
     <textarea id="modal-json" spellcheck="false"></textarea>
     <div class="btn-group" style="margin-top:11px;">
       <button class="btn btn-primary" onclick="doImport()" data-i-btn="importBtn">⬇️ Importer</button>
+      <button class="btn btn-or"      onclick="downloadAllJSON()" data-i-btn="downloadAll">⬇️ Télécharger tout (.json)</button>
       <button class="btn btn-gris"    onclick="copyJSON()" data-i-btn="copyBtn">📋 Copier</button>
       <button class="btn btn-outline" onclick="closeModal()" data-i-btn="closeBtn">Fermer</button>
     </div>
@@ -441,7 +485,7 @@ fr:{
   presetPlaceholder:'— Choisir un modèle —',custom:'Personnalisé…',
   // SVG strings
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Poussé',svgPull:'↑ Tiré',
-  svgHigh:'▲ AIGU',svgLow:'▼ GRAVE',svgBellowsPush:'POUSSÉ',svgBellowsPull:'TIRÉ',
+  svgHigh:'AIGU ▶',svgLow:'◀ GRAVE',svgBellowsPush:'POUSSÉ',svgBellowsPull:'TIRÉ',
   svgRH:'Main Droite',svgLH:'Main Gauche',svgSommierRH:'SOMMIER — Main Droite',svgSommierLH:'SOMMIER — Main Gauche',
   svgMidi:'MIDI',svgGeneratedBy:'Généré le',svgPlan:'Plan de clavier',
   // Manufacturer table
@@ -460,6 +504,22 @@ fr:{
   popupAlert:'Veuillez autoriser les popups pour imprimer.',
   importSuccess:(n)=>`✓ ${n} instrument(s) importé(s).`,importError:'✗ Erreur : ',
   copied:'✓ Copié dans le presse-papiers.',invalidFormat:'Format invalide (doit être un tableau)',
+  saveAs:'⬇️ Enregistrer sous .json',openFile:'📂 Ouvrir .json',
+  downloadAll:'⬇️ Télécharger tout (.json)',loadedFrom:(n)=>`✓ ${n} instrument(s) chargé(s).`,
+  // Order spec section
+  orderSpecTitle:'📋 Spécifications commande fabricant (checklist Voci Armoniche)',
+  orderQty:'Quantité',orderReedType:'Type d\'anches',orderTuning:'Accord de base',
+  orderTremolo:'Tremolo (± centièmes Hz)',orderHarmony:'Harmonie',
+  orderBassType:'Type de basses',orderBassComp:'Composition basses',
+  orderSpecHelp:'Ces champs apparaissent dans l\'en-tête du bon de commande fabricant.',
+  // Manufacturer checklist labels
+  orderChecklistTitle:'BON DE COMMANDE ANCHES',
+  clQty:'Quantité',clReedType:'Type d\'anches',
+  clDesc:'Description générale (touches/accords)',clDescHint:'touches mélodie / nb basses',
+  clTonality:'Tonalité (clé)',clRowSpec:'Spécification rangées',
+  clTuning:'Accord de base',clTremolo:'Tremolo',
+  clHarmony:'Harmonie',clBassType:'Type de basses',
+  clBassComp:'Composition basses',clVoices:'Nombre de voix',clLuthier:'Luthier / Date',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -493,7 +553,7 @@ en:{
   cgHelp:'Fine-tune with + / − below',
   presetPlaceholder:'— Choose a preset —',custom:'Custom…',
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Push',svgPull:'↑ Pull',
-  svgHigh:'▲ TREBLE',svgLow:'▼ BASS',svgBellowsPush:'PUSH',svgBellowsPull:'PULL',
+  svgHigh:'TREBLE ▶',svgLow:'◀ BASS',svgBellowsPush:'PUSH',svgBellowsPull:'PULL',
   svgRH:'Right Hand',svgLH:'Left Hand',svgSommierRH:'REED PLATE — Right Hand',svgSommierLH:'REED PLATE — Left Hand',
   svgMidi:'MIDI',svgGeneratedBy:'Generated on',svgPlan:'Keyboard plan',
   mfrRH:'RIGHT HAND — Melody reed plate (bisonoric)',
@@ -511,6 +571,22 @@ en:{
   popupAlert:'Please allow popups to print.',
   importSuccess:(n)=>`✓ ${n} instrument(s) imported.`,importError:'✗ Error: ',
   copied:'✓ Copied to clipboard.',invalidFormat:'Invalid format (must be an array)',
+  saveAs:'⬇️ Save As .json',openFile:'📂 Open .json',
+  downloadAll:'⬇️ Download all (.json)',loadedFrom:(n)=>`✓ ${n} instrument(s) loaded.`,
+  // Order spec section
+  orderSpecTitle:'📋 Manufacturer order specifications (Voci Armoniche checklist)',
+  orderQty:'Quantity',orderReedType:'Reed type',orderTuning:'Base tuning',
+  orderTremolo:'Tremolo (± cents)',orderHarmony:'Harmony',
+  orderBassType:'Bass type',orderBassComp:'Bass composition',
+  orderSpecHelp:'These fields appear in the manufacturer order form header.',
+  // Manufacturer checklist labels
+  orderChecklistTitle:'REED ORDER FORM',
+  clQty:'Quantity',clReedType:'Reed type',
+  clDesc:'General description (keys/chords)',clDescHint:'melody keys / nb basses',
+  clTonality:'Key tonality',clRowSpec:'Row specification',
+  clTuning:'Base tuning',clTremolo:'Tremolo',
+  clHarmony:'Harmony',clBassType:'Bass type',
+  clBassComp:'Bass composition',clVoices:'Number of voices',clLuthier:'Luthier / Date',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -663,13 +739,27 @@ const DB={
 
 function snapshotToDB(){
   readNoteInputsIntoCFG();
+  // Read register values from selects
+  for(let r=0;r<CFG.nbRangees;r++){
+    const sel=document.getElementById(`rreg-${r}`);
+    if(sel)CFG.rangees[r].register=sel.value;
+  }
   return{id:currentId||Date.now().toString(),nom:val('nom-instrument')||'Sans titre',
     joueur:val('nom-joueur'),luthier:val('nom-luthier')||"Ewen d'Aviau",
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
     configGauche:parseInt(document.getElementById('config-gauche').value)||12,
     nbVoix:parseInt(document.getElementById('nb-voix').value),
-    notes:JSON.parse(JSON.stringify(CFG.notes))};
+    notes:JSON.parse(JSON.stringify(CFG.notes)),
+    orderSpecs:{
+      qty:val('order-qty')||'1',
+      reedType:val('order-reed-type'),
+      tuning:document.getElementById('order-tuning')?.value||'440',
+      tremolo:val('order-tremolo'),
+      harmony:val('order-harmony'),
+      bassType:val('order-bass-type'),
+      bassComp:val('order-bass-comp'),
+    }};
 }
 function loadFromDB(rec){
   currentId=rec.id;
@@ -686,6 +776,13 @@ function loadFromDB(rec){
   // ensure terzetto exists
   if(!CFG.notes.terzetto) CFG.notes.terzetto=[];
   document.getElementById('nb-rangees').value=String(CFG.nbRangees);
+  // Load order specs
+  const os=rec.orderSpecs||{};
+  const sv=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined)el.value=v;};
+  sv('order-qty',os.qty||'1');sv('order-reed-type',os.reedType||'');
+  sv('order-tuning',os.tuning||'440');sv('order-tremolo',os.tremolo||'');
+  sv('order-harmony',os.harmony||'');sv('order-bass-type',os.bassType||'');
+  sv('order-bass-comp',os.bassComp||'');
   renderRangeesCfg();
   generateInputGrid();
   setSaveStatus('saved');
@@ -830,17 +927,26 @@ function readNoteInputsIntoCFG(){
 }
 
 /* ── Render row configs ── */
+const REGISTERS=['B','N','N+','N-','A'];
+const REGISTER_LABELS={'B':'B (16\' grave)','N':'N (8\' naturel 440)','N+':'N+ (8\'+ aigu)','N-':'N- (8\'- grave)','A':'A (4\' piccolo)'};
+const REGISTER_LABELS_EN={'B':'B (16\' low)','N':'N (8\' natural 440)','N+':'N+ (8\'+ sharp)','N-':'N- (8\'- flat)','A':'A (4\' piccolo)'};
 function renderRangeesCfg(){
   const wrap=document.getElementById('rangees-cfg');let html='';
+  const rLabels=lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS;
   for(let r=0;r<CFG.nbRangees;r++){
-    const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11};
+    const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
+    const reg=rc.register||'N';
     html+=`<div class="rangee-cfg">
       <label>R${r+1} — Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
+      <label style="margin-top:3px;">Registre</label>
+      <select id="rreg-${r}" style="font-size:.76rem;padding:3px 5px;" onchange="CFG.rangees[${r}].register=this.value;onAnyChange()">
+        ${REGISTERS.map(rv=>`<option value="${rv}"${rv===reg?' selected':''}>${rLabels[rv]}</option>`).join('')}
+      </select>
       <label style="margin-top:3px;">Boutons</label>
       <div class="rng-ctrl">
         <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].nb=Math.max(1,(CFG.rangees[${r}].nb||11)-1);document.getElementById('rnb-${r}').value=CFG.rangees[${r}].nb;onRangeesChange()">−</button>
-        <input type="number" id="rnb-${r}" value="${rc.nb}" min="1" max="30" style="width:46px;text-align:center;font-size:.76rem;padding:3px;" onchange="CFG.rangees[${r}].nb=parseInt(this.value)||11;onRangeesChange()">
+        <input type="number" id="rnb-${r}" value="${rc.nb}" min="1" max="30" style="width:54px;text-align:center;font-size:.82rem;padding:3px;font-weight:700;" oninput="CFG.rangees[${r}].nb=Math.max(1,parseInt(this.value)||1);onRangeesChange()">
         <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].nb=Math.min(30,(CFG.rangees[${r}].nb||11)+1);document.getElementById('rnb-${r}').value=CFG.rangees[${r}].nb;onRangeesChange()">＋</button>
       </div></div>`;
   }
@@ -993,8 +1099,15 @@ function updatePickerPreview(){
    ╚══════════════════════════════════════════════════════╝ */
 function readInputs(){
   readNoteInputsIntoCFG();
+  // capture register from selects
+  for(let r=0;r<CFG.nbRangees;r++){
+    const sel=document.getElementById(`rreg-${r}`);
+    if(sel)CFG.rangees[r].register=sel.value;
+  }
   const droite=CFG.notes.droite.map((row,ri)=>({
-    nom:CFG.rangees[ri]?CFG.rangees[ri].nom:`Rangée ${ri+1}`,boutons:row
+    nom:CFG.rangees[ri]?CFG.rangees[ri].nom:`Rangée ${ri+1}`,
+    register:(CFG.rangees[ri]||{}).register||'N',
+    boutons:row
   }));
   return{
     nomInstrument:val('nom-instrument')||'Accordéon Diatonique',
@@ -1007,6 +1120,15 @@ function readInputs(){
     basses:CFG.notes.basses,
     accords:CFG.notes.accords,
     terzetto:CFG.notes.terzetto||[],
+    orderSpecs:{
+      qty:val('order-qty')||'1',
+      reedType:val('order-reed-type'),
+      tuning:document.getElementById('order-tuning')?.value||'440',
+      tremolo:val('order-tremolo'),
+      harmony:val('order-harmony'),
+      bassType:val('order-bass-type'),
+      bassComp:val('order-bass-comp'),
+    },
   };
 }
 
@@ -1065,11 +1187,15 @@ function buildSVG_Droite(data,dark){
   s+=tx(MARG+BW/2,MARG+HEAD-4,t('svgBellowsPush'),6,gold,'bold','middle');
   s+=tx(MARG+BW/2,MARG+HEAD+data.droite.length*VGAP+10,t('svgBellowsPull'),6,gold,'bold','middle');
 
-  // Orientation arrows
-  const ax=W-MARG-2;
-  s+=tx(ax,MARG+HEAD-4,t('svgHigh'),8,gold,'bold','end');
-  s+=tx(ax,MARG+HEAD+data.droite.length*VGAP+10,t('svgLow'),8,gold,'bold','end');
-  s+=`<line x1="${ax-40}" y1="${MARG+HEAD-2}" x2="${ax-40}" y2="${MARG+HEAD+data.droite.length*VGAP}" stroke="${gold}" stroke-width=".8" opacity=".4"/>`;
+  // Orientation arrows — horizontal across the top
+  const arrowY=MARG+HEAD-10;
+  const ax1=BW+LPAD,ax2=W-MARG-2;
+  const arrowMid=(ax1+ax2)/2;
+  s+=`<line x1="${ax1+2}" y1="${arrowY}" x2="${ax2-2}" y2="${arrowY}" stroke="${gold}" stroke-width="1" opacity=".5"/>`;
+  s+=`<polygon points="${ax1+2},${arrowY} ${ax1+10},${arrowY-4} ${ax1+10},${arrowY+4}" fill="${gold}" opacity=".7"/>`;
+  s+=`<polygon points="${ax2-2},${arrowY} ${ax2-10},${arrowY-4} ${ax2-10},${arrowY+4}" fill="${gold}" opacity=".7"/>`;
+  s+=tx(ax1+14,arrowY+4,t('svgLow'),8,gold,'bold','start');
+  s+=tx(ax2-14,arrowY+4,t('svgHigh'),8,gold,'bold','end');
 
   // Title
   s+=tx(BW+LPAD+(maxBtns*HGAP)/2,MARG+16,escSVG(data.nomInstrument),16,gold,'bold','middle');
@@ -1233,22 +1359,78 @@ function buildManufacturerTable(data,dark){
   const date=fmtDate(data.date);
   const showMidi=data.showMidi;
   const gold=dark?'#c9a227':'#2d5a27';
-  const bg=dark?'#111':'#fff';
   const subStyle=dark?'color:#aaa;':'color:#666;';
+  const os=data.orderSpecs||{};
 
-  let h=`<p class="mfr-sub" style="${subStyle}">
-    ${t('instrumentRef')} : <strong>${escHTML(data.nomInstrument)}</strong> &nbsp;|&nbsp;
-    ${t('clientName')} : <strong>${escHTML(data.nomJoueur)||'—'}</strong> &nbsp;|&nbsp;
-    ${t('luthier')} : <strong>${escHTML(data.nomLuthier)}</strong> &nbsp;|&nbsp;
-    ${t('date')} : <strong>${date}</strong> &nbsp;|&nbsp;
-    ${t('voices')} : <strong>${data.nbVoix}</strong></p>`;
+  // ── Description générale (nb touches / nb accords)
+  const totalBtns=data.droite.reduce((s,r)=>s+r.boutons.length,0);
+  const nbBasses=data.basses.length;
+  const genDesc=`${totalBtns}/${nbBasses}`;
+  // ── Row spec string  e.g.  "1B / 2N"  or  "3N"
+  const rowSpecStr=data.droite.map(r=>r.register||'N').join(' / ');
 
   const thStyle=dark?`style="background:#1a1500;color:#c9a227;border-color:#333;"`:'';
   const tdStyle=dark?`style="background:#1a1a1a;border-color:#333;color:#ddd;"`:'';
   const hdStyle=dark?`style="background:#111;color:#c9a227;border-color:#333;font-weight:700;"`:'class="row-hd"';
+  const clStyle=dark?`style="background:#0d0d00;border-color:#333;color:#ddd;"`:`style="background:#fafdf8;"`;
+  const clHdStyle=dark?`style="background:#0d0d00;color:#c9a227;border-color:#333;font-weight:700;"`:`style="background:#e8f5e3;color:#2d5a27;font-weight:700;"`;
+  const clValStyle=dark?`style="background:#1a1a1a;border-color:#333;color:#e8e8c8;font-weight:700;"`:`style="background:#fff;font-weight:700;"`;
 
+  let h='';
+
+  // ══ VOCI ARMONICHE CHECKLIST HEADER ══
+  h+=`<div style="border:2px solid ${dark?'#c9a227':'#2d5a27'};border-radius:8px;overflow:hidden;margin-bottom:18px;">
+    <div style="background:${dark?'#1a1500':'#2d5a27'};color:${dark?'#c9a227':'#fff'};padding:8px 14px;font-size:.86rem;font-weight:700;letter-spacing:.04em;">
+      📋 ${t('orderChecklistTitle')} &nbsp;—&nbsp; ${escHTML(data.nomInstrument)}
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+      <tbody>
+        <tr>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;width:36%">${t('clQty')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.qty||'1')}</td>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;width:36%">${t('clReedType')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.reedType||'—')}</td>
+        </tr>
+        <tr>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clDesc')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${genDesc} <span style="opacity:.6;font-weight:normal;font-size:.76rem;">(${t('clDescHint')})</span></td>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTonality')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomInstrument)}</td>
+        </tr>
+        <tr>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clRowSpec')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(rowSpecStr)}
+            <span style="opacity:.6;font-weight:normal;font-size:.72rem;">&nbsp;(B=16' · N=8' · N+=8'+ · N-=8'- · A=4')</span></td>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTuning')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.tuning||'440')} Hz</td>
+        </tr>
+        <tr>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTremolo')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.tremolo||'—')}</td>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clHarmony')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.harmony||'—')}</td>
+        </tr>
+        <tr>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clBassType')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.bassType||'—')}</td>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clBassComp')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.bassComp||'—')}</td>
+        </tr>
+        <tr>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clVoices')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix}</td>
+          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clLuthier')}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomLuthier)} — ${date}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>`;
+
+  // ══ NOTE TABLES ══
   const tableStart=(midi)=>`<table class="mfr-table" style="${dark?'color:#ddd;':''}"><thead><tr>
-    <th ${thStyle}>${t('mfrRow')}</th><th ${thStyle}>${t('mfrNo')}</th>
+    <th ${thStyle}>${t('mfrRow')}</th>
+    <th ${thStyle}>${t('clRowSpec')}</th>
+    <th ${thStyle}>${t('mfrNo')}</th>
     <th ${thStyle}>${t('mfrPushNote')}<br><small style="font-weight:400;opacity:.8">${t('mfrPushSub')}</small></th>
     <th ${thStyle}>${t('mfrPullNote')}<br><small style="font-weight:400;opacity:.8">${t('mfrPullSub')}</small></th>
     ${midi?`<th ${thStyle}>${t('mfrMidiPush')}</th><th ${thStyle}>${t('mfrMidiPull')}</th>`:''}
@@ -1257,9 +1439,13 @@ function buildManufacturerTable(data,dark){
   h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:0 0 10px;font-size:.88rem;">${t('mfrRH')}</h4>`;
   h+=tableStart(showMidi);
   data.droite.forEach(row=>{
+    const reg=row.register||'N';
     row.boutons.forEach((btn,bi)=>{
       h+=`<tr>`;
-      if(bi===0)h+=`<td ${hdStyle} rowspan="${row.boutons.length}">${escHTML(row.nom)}</td>`;
+      if(bi===0){
+        h+=`<td ${hdStyle} rowspan="${row.boutons.length}">${escHTML(row.nom)}</td>`;
+        h+=`<td ${hdStyle} rowspan="${row.boutons.length}" style="font-size:.8rem;text-align:center;">${reg}<br><span style="font-weight:normal;opacity:.7;font-size:.7rem;">${(lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS)[reg]||reg}</span></td>`;
+      }
       h+=`<td ${tdStyle}>${bi+1}</td>`;
       h+=`<td class="note-p" ${tdStyle}>${escHTML(displayNote(btn.p))||'—'}</td>`;
       h+=`<td class="note-t" ${tdStyle}>${escHTML(displayNote(btn.t))||'—'}</td>`;
@@ -1290,6 +1476,7 @@ function buildManufacturerTable(data,dark){
     });
   });
   h+=`</tbody></table>`;
+
   h+=`<div style="margin-top:18px;background:${dark?'#1a1500':'#f6f9f5'};border:1.5px solid ${dark?'#333':'#c8e0c5'};border-radius:6px;padding:11px 14px;font-size:.78rem;${dark?'color:#ccc;':''}">
     <strong>${t('specTitle')}</strong><br>
     &bull; ${t('spec1')}<br>&bull; ${t('spec2')} : <strong>${data.nbVoix}</strong><br>
@@ -1441,6 +1628,48 @@ function doImport(){
     closeModal();
     document.getElementById('modal-msg').textContent=t('importSuccess')(data.length);
   }catch(e){document.getElementById('modal-msg').textContent=t('importError')+e.message;}
+}
+
+/* ─── Save As / Open JSON file ─── */
+function saveAsJSON(){
+  readNoteInputsIntoCFG();
+  const rec=snapshotToDB();
+  const name=(rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_');
+  triggerDownload(JSON.stringify(rec,null,2),name+'.json','application/json');
+}
+function downloadAllJSON(){
+  const list=DB.all();
+  triggerDownload(JSON.stringify(list,null,2),'accordeons_export.json','application/json');
+}
+function loadFromFile(evt){
+  const file=evt.target.files&&evt.target.files[0];
+  if(!file)return;
+  evt.target.value=''; // reset so same file can be re-loaded
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      let data=JSON.parse(e.target.result);
+      // Accept both a single object and an array
+      if(!Array.isArray(data))data=[data];
+      data.forEach((rec,i)=>{if(!rec.id)rec.id=Date.now().toString(36)+'_'+i+'_'+Math.random().toString(36).slice(2);});
+      const existing=DB.load();
+      // Merge: skip duplicates by id, add new ones at top
+      const ids=new Set(existing.map(r=>r.id));
+      const fresh=data.filter(r=>!ids.has(r.id));
+      DB.save([...fresh,...existing]);
+      renderLibrary();
+      if(data.length)loadFromDB(data[0]);
+      alert(t('loadedFrom')(data.length));
+    }catch(err){alert(t('importError')+err.message);}
+  };
+  reader.readAsText(file);
+}
+function triggerDownload(content,filename,mime){
+  const blob=new Blob([content],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},100);
 }
 
 /* ─── utils ─── */
