@@ -6,208 +6,207 @@
 <title>🪗 Clavier Accordéon Diatonique</title>
 <style>
 :root{
-  --vert:#1a3a12;--vert-c:#e4f0df;--or:#c9a227;--or-c:#fdf6e3;
-  --gris:#6c757d;--fond:#0e1a0e;--txt:#e8e8d8;--rouge:#c0392b;--bleu:#2980b9;--brd:#2a4a22;
-  --gold:#c9a227;--gold-d:#8b6914;--dark:#0a0e08;
-  --card-bg:#141f11;--card-head:#1e3018;--input-bg:#0d1a0a;--input-brd:#2d4a25;
+  --vert:#1d6b23;--vert-c:#eaf5ea;--or:#b8860b;--or-c:#fffbf0;
+  --gris:#888;--fond:#f5f5f3;--txt:#1a1a18;--rouge:#b8312a;--bleu:#1a6691;--brd:#e2e2da;
+  --gold:#b8860b;--gold-d:#7a5c00;--dark:#1a1c1a;
+  --card-bg:#ffffff;--card-head:#1a1c1a;--input-bg:#ffffff;--input-brd:#d4d4cc;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--fond);color:var(--txt);line-height:1.5;font-size:15px}
 
 /* ── Header ── */
-header{background:linear-gradient(135deg,#0a0e08 0%,#1e3018 50%,#0a0e08 100%);color:#fff;
+header{background:#fff;color:var(--txt);
   padding:10px 20px;display:flex;align-items:center;gap:10px;
   position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 16px rgba(0,0,0,.6);border-bottom:2px solid var(--gold)}
+  box-shadow:0 1px 8px rgba(0,0,0,.08);border-bottom:2px solid var(--gold)}
 header .icon{font-size:1.7rem;flex-shrink:0}
 header .hd-text{flex:1;min-width:0}
-header h1{font-size:1.1rem;font-weight:700;white-space:nowrap;color:var(--gold);letter-spacing:.04em}
-header p{font-size:.75rem;opacity:.7;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#b8d4b0}
+header h1{font-size:1.1rem;font-weight:700;white-space:nowrap;color:var(--dark);letter-spacing:.03em}
+header p{font-size:.75rem;color:var(--gris);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #save-status{font-size:.75rem;padding:4px 10px;border-radius:20px;font-weight:700;white-space:nowrap;flex-shrink:0;transition:background .3s,color .3s}
-#save-status.saved{background:rgba(201,162,39,.15);color:#c9a227;border:1px solid rgba(201,162,39,.3)}
-#save-status.dirty{background:#f39c12;color:#000}
-#save-status.saving{background:rgba(201,162,39,.1);color:#c9a227}
-.lang-btn{padding:5px 11px;border:1.5px solid rgba(201,162,39,.4);border-radius:5px;background:transparent;
-  color:#c9a227;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .15s}
-.lang-btn:hover,.lang-btn.active{background:rgba(201,162,39,.18);border-color:var(--gold)}
+#save-status.saved{background:rgba(184,134,11,.12);color:var(--gold);border:1px solid rgba(184,134,11,.3)}
+#save-status.dirty{background:#f39c12;color:#fff}
+#save-status.saving{background:rgba(184,134,11,.08);color:var(--gold)}
+.lang-btn{padding:5px 11px;border:1.5px solid var(--brd);border-radius:5px;background:transparent;
+  color:var(--gris);font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lang-btn.active{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
 
 /* ── Library ── */
-#library-panel{background:var(--card-bg);border-bottom:1px solid var(--brd);padding:12px 20px}
+#library-panel{background:#f0f0ee;border-bottom:1px solid var(--brd);padding:12px 20px}
 .lib-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.lib-toolbar h2{font-size:.86rem;color:var(--gold);font-weight:700;flex:1}
+.lib-toolbar h2{font-size:.86rem;color:var(--dark);font-weight:700;flex:1}
 #lib-cards{display:flex;gap:9px;flex-wrap:wrap}
 .instr-card{border:1.5px solid var(--brd);border-radius:8px;padding:9px 12px;min-width:190px;max-width:250px;
-  cursor:pointer;transition:border-color .18s,box-shadow .18s;background:#0d160a;position:relative}
-.instr-card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(201,162,39,.18)}
-.instr-card.active{border-color:var(--gold);background:#1a2a10;box-shadow:0 0 0 2px rgba(201,162,39,.25)}
-.card-name{font-weight:700;font-size:.88rem;color:var(--gold)}.card-sub,.card-meta{font-size:.72rem;color:var(--gris);margin-top:2px}
+  cursor:pointer;transition:border-color .18s,box-shadow .18s;background:#fff;position:relative}
+.instr-card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(184,134,11,.14)}
+.instr-card.active{border-color:var(--dark);background:#fffff8;box-shadow:0 0 0 2px rgba(26,28,26,.12)}
+.card-name{font-weight:700;font-size:.88rem;color:var(--dark)}.card-sub,.card-meta{font-size:.72rem;color:var(--gris);margin-top:2px}
 .card-btns{display:flex;gap:4px;margin-top:7px}
 .ca{font-size:.68rem;padding:3px 7px;border:none;border-radius:4px;cursor:pointer;font-family:inherit;font-weight:700}
-.ca-edit{background:rgba(201,162,39,.2);color:var(--gold);border:1px solid rgba(201,162,39,.3)}
-.ca-dup{background:#1e2e18;color:#9ab890;border:1px solid #2a4a22}
-.ca-del{background:rgba(192,57,43,.15);color:#e07060;border:1px solid rgba(192,57,43,.3)}
+.ca-edit{background:var(--dark);color:var(--or-c);border:1px solid var(--dark)}
+.ca-dup{background:#f0f0ee;color:#555;border:1px solid var(--brd)}
+.ca-del{background:rgba(184,49,42,.1);color:#b8312a;border:1px solid rgba(184,49,42,.25)}
 .lib-empty{font-size:.83rem;color:var(--gris);font-style:italic;padding:5px 0}
 
 /* ── Container ── */
 .container{max-width:1380px;margin:0 auto;padding:16px 14px}
 .card{background:var(--card-bg);border-radius:10px;border:1px solid var(--brd);
-  box-shadow:0 4px 20px rgba(0,0,0,.4);margin-bottom:16px;overflow:hidden}
-.card-head{background:linear-gradient(135deg,var(--card-head),#162612);color:#fff;
-  padding:10px 16px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(201,162,39,.25)}
-.card-head h2{font-size:.9rem;font-weight:700;flex:1;color:var(--gold)}
-.step-badge{background:rgba(201,162,39,.2);border:1.5px solid rgba(201,162,39,.5);border-radius:50%;width:24px;height:24px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:16px;overflow:hidden}
+.card-head{background:var(--card-head);color:#fff;
+  padding:10px 16px;display:flex;align-items:center;gap:9px;border-bottom:2px solid var(--gold)}
+.card-head h2{font-size:.9rem;font-weight:700;flex:1;color:var(--or-c)}
+.step-badge{background:rgba(255,251,240,.15);border:1.5px solid var(--gold);border-radius:50%;width:24px;height:24px;
   display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;flex-shrink:0;color:var(--gold)}
 .card-body{padding:16px}
 
 /* ── Forms ── */
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:11px}
 .form-group{display:flex;flex-direction:column;gap:3px}
-.form-group label{font-size:.7rem;font-weight:700;color:#7a9870;text-transform:uppercase;letter-spacing:.05em}
+.form-group label{font-size:.7rem;font-weight:700;color:#777;text-transform:uppercase;letter-spacing:.05em}
 input[type="text"],input[type="date"],input[type="number"],select{
   padding:7px 9px;border:1.5px solid var(--input-brd);border-radius:6px;font-size:.85rem;
   font-family:inherit;background:var(--input-bg);color:var(--txt);transition:border-color .18s}
 input[type="text"]:focus,input[type="number"]:focus,select:focus,input[type="date"]:focus{
-  border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(201,162,39,.15)}
-select option{background:#0d1a0a;color:var(--txt)}
+  border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(184,134,11,.12)}
+select option{background:#fff;color:var(--txt)}
 .hint{font-size:.68rem;color:var(--gris);margin-top:3px}
 
 /* ── Buttons ── */
 .btn{padding:7px 14px;border:none;border-radius:6px;font-family:inherit;font-size:.83rem;font-weight:700;
   cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:filter .15s,transform .1s}
-.btn:hover{filter:brightness(1.15)}.btn:active{transform:scale(.97)}
-.btn-primary{background:linear-gradient(135deg,#2d5a20,#1a3a12);color:var(--gold);border:1px solid rgba(201,162,39,.3)}
-.btn-or{background:linear-gradient(135deg,#c9a227,#9a7a10);color:#000;border:1px solid #c9a227}
-.btn-outline{background:transparent;color:var(--gold);border:1.5px solid rgba(201,162,39,.5)}
-.btn-outline:hover{background:rgba(201,162,39,.1);filter:none}
-.btn-bleu{background:linear-gradient(135deg,#1a5a8a,#0e3a5a);color:#8cd4ff;border:1px solid #2980b9}
-.btn-rouge{background:linear-gradient(135deg,#8a1a1a,#5a0e0e);color:#ffb0b0;border:1px solid #c0392b}
-.btn-gris{background:#1e2a1a;color:#9ab890;border:1px solid #2a4a22}
+.btn:hover{filter:brightness(.92)}.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--dark);color:var(--or-c);border:1px solid var(--dark)}
+.btn-or{background:var(--gold);color:#fff;border:1px solid var(--gold-d)}
+.btn-outline{background:#fff;color:var(--dark);border:1.5px solid var(--dark)}
+.btn-outline:hover{background:var(--dark);color:var(--or-c);filter:none}
+.btn-bleu{background:#1a6691;color:#fff;border:1px solid #1a6691}
+.btn-rouge{background:#b8312a;color:#fff;border:1px solid #b8312a}
+.btn-gris{background:#f0f0ee;color:#555;border:1px solid var(--brd)}
 .btn-group{display:flex;gap:7px;flex-wrap:wrap}
 
 /* ── Row config ── */
 .rangees-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
-.rangee-cfg{display:flex;flex-direction:column;gap:3px;background:#0d160a;border:1.5px solid var(--brd);
+.rangee-cfg{display:flex;flex-direction:column;gap:3px;background:#f8f8f6;border:1.5px solid var(--brd);
   border-radius:6px;padding:7px 9px;min-width:160px}
-.rangee-cfg label{font-size:.7rem;font-weight:700;color:#7a9870}
+.rangee-cfg label{font-size:.7rem;font-weight:700;color:#666}
 .rng-ctrl{display:flex;align-items:center;gap:5px}
 
 /* ── +/− small buttons ── */
 .rng-btn{width:26px;height:26px;border:1.5px solid var(--brd);border-radius:4px;
-  background:#0d160a;font-size:1rem;line-height:1;cursor:pointer;font-family:inherit;font-weight:700;
-  color:var(--gold);display:inline-flex;align-items:center;justify-content:center;
+  background:#fff;font-size:1rem;line-height:1;cursor:pointer;font-family:inherit;font-weight:700;
+  color:var(--dark);display:inline-flex;align-items:center;justify-content:center;
   padding:0;flex-shrink:0;transition:background .12s,border-color .12s}
-.rng-btn:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
+.rng-btn:hover{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
 .rng-count{font-size:.78rem;font-weight:700;color:var(--gris);min-width:18px;text-align:center}
 
 /* ── Note grid ── */
 .note-section{margin-bottom:18px}
-.note-section-title{font-size:.86rem;font-weight:700;color:var(--gold);
-  border-bottom:1.5px solid rgba(201,162,39,.25);padding-bottom:4px;margin-bottom:8px}
+.note-section-title{font-size:.86rem;font-weight:700;color:var(--dark);
+  border-bottom:2px solid var(--gold);padding-bottom:4px;margin-bottom:8px}
 .sec-hd{display:flex;align-items:center;gap:7px;margin-bottom:5px}
-.sec-label{font-size:.76rem;font-weight:700;color:var(--gold)}
+.sec-label{font-size:.76rem;font-weight:700;color:var(--dark)}
 .row-wrap{margin-bottom:11px}
 .btn-grid{display:flex;flex-wrap:wrap;gap:4px}
 .btn-cell{display:flex;flex-direction:column;align-items:center;gap:2px}
 .btn-num{font-size:.63rem;color:var(--gris);font-weight:700}
 .note-input{width:62px;padding:4px 3px;text-align:center;font-size:.76rem;border-radius:5px;
   border:1.5px solid var(--input-brd);cursor:pointer;background:var(--input-bg);color:var(--txt)}
-.note-input.pousse{border-color:#3a6a2a;background:#0d1f0a}
-.note-input.tire{border-color:#6a5010;background:#1a1200}
+.note-input.pousse{border-color:#4a9a3a;background:#eef8eb}
+.note-input.tire{border-color:#c8a020;background:#fffbf0}
 .note-input:focus{outline:none}
-.note-input.pousse:focus{border-color:#6fcf5a;box-shadow:0 0 0 2px rgba(111,207,90,.15)}
-.note-input.tire:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,162,39,.15)}
-.note-input.picker-open{box-shadow:0 0 0 3px rgba(201,162,39,.3)!important;border-color:var(--gold)!important}
+.note-input.pousse:focus{border-color:#2d8a20;box-shadow:0 0 0 2px rgba(45,138,32,.12)}
+.note-input.tire:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,134,11,.12)}
+.note-input.picker-open{box-shadow:0 0 0 3px rgba(184,134,11,.2)!important;border-color:var(--gold)!important}
 .legend{display:flex;gap:14px;margin-bottom:11px;flex-wrap:wrap;align-items:center}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:.8rem}
 .legend-swatch{width:30px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;
   font-size:.64rem;font-weight:700}
-.info-box{background:rgba(41,128,185,.12);border-left:4px solid var(--bleu);padding:9px 12px;
-  border-radius:0 6px 6px 0;font-size:.8rem;margin-bottom:12px;color:#8cd4ff}
-.mono{font-family:monospace;background:#0d160a;padding:1px 4px;border-radius:3px;color:var(--gold)}
+.info-box{background:rgba(26,102,145,.08);border-left:3px solid var(--bleu);padding:9px 12px;
+  border-radius:0 6px 6px 0;font-size:.8rem;margin-bottom:12px;color:#1a5580}
+.mono{font-family:monospace;background:#f0f0ee;padding:1px 4px;border-radius:3px;color:var(--dark)}
 
 /* ── Note Picker ── */
-#note-picker{position:absolute;z-index:999;background:#141f11;border:2px solid var(--gold);
-  border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.7);padding:11px 13px;min-width:305px;display:none}
+#note-picker{position:absolute;z-index:999;background:#fff;border:2px solid var(--dark);
+  border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.15);padding:11px 13px;min-width:305px;display:none}
 .picker-tabs{display:flex;gap:0;margin-bottom:9px;border-bottom:1.5px solid var(--brd)}
 .picker-tab-btn{padding:4px 12px;border:none;background:none;font-family:inherit;font-size:.78rem;
   font-weight:700;color:var(--gris);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
-.picker-tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.picker-tab-btn.active{color:var(--dark);border-bottom-color:var(--gold)}
 .picker-tab{display:none}
 .picker-tab.active{display:block}
-.picker-title{font-size:.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;
+.picker-title{font-size:.72rem;font-weight:700;color:#777;text-transform:uppercase;
   letter-spacing:.05em;margin-bottom:7px}
 .picker-notes-row{display:flex;gap:3px;margin-bottom:4px;flex-wrap:wrap}
 .pn{min-width:34px;padding:4px 5px;border:1.5px solid var(--brd);border-radius:5px;
-  background:#0d160a;font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;
+  background:#f8f8f6;font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;
   color:var(--txt);transition:background .1s,border-color .1s}
-.pn:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
-.pn.selected{background:var(--gold);color:#000;border-color:var(--gold)}
-.pn.sharp{background:#1a1030;border-color:#4a3a80;color:#c8b0ff}
-.pn.sharp:hover,.pn.sharp.selected{background:#6b4da0;color:#fff;border-color:#6b4da0}
-.pn.flat{background:#1a0a08;border-color:#6a2a20;color:#ffb0a0}
-.pn.flat:hover,.pn.flat.selected{background:#c0392b;color:#fff;border-color:#c0392b}
+.pn:hover{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
+.pn.selected{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
+.pn.sharp{background:#f3f0fa;border-color:#c0b0e0;color:#5a3d8a}
+.pn.sharp:hover,.pn.sharp.selected{background:#5a3d8a;color:#fff;border-color:#5a3d8a}
+.pn.flat{background:#fdf0ee;border-color:#e0a898;color:#8a3020}
+.pn.flat:hover,.pn.flat.selected{background:#b8312a;color:#fff;border-color:#b8312a}
 .picker-octave-row{display:flex;gap:3px;margin-top:7px;align-items:center}
 .picker-octave-label{font-size:.68rem;font-weight:700;color:var(--gris);margin-right:3px}
 .po{width:30px;height:26px;border:1.5px solid var(--brd);border-radius:5px;
-  background:#0d160a;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--txt)}
-.po:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
-.po.selected{background:var(--gold);color:#000;border-color:var(--gold)}
-.picker-preview{margin-top:9px;padding:6px 9px;background:#0d160a;border:1px solid var(--brd);border-radius:5px;
-  font-size:.83rem;font-weight:700;color:var(--gold);min-height:33px;display:flex;align-items:center;gap:7px}
+  background:#f8f8f6;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--txt)}
+.po:hover{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
+.po.selected{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
+.picker-preview{margin-top:9px;padding:6px 9px;background:#f8f8f6;border:1px solid var(--brd);border-radius:5px;
+  font-size:.83rem;font-weight:700;color:var(--dark);min-height:33px;display:flex;align-items:center;gap:7px}
 .picker-preview span{flex:1}
-.picker-clear{font-size:.7rem;color:#e07060;cursor:pointer;border:none;background:none;font-family:inherit}
-.picker-insert{padding:5px 12px;background:var(--gold);color:#000;border:none;border-radius:5px;
+.picker-clear{font-size:.7rem;color:var(--rouge);cursor:pointer;border:none;background:none;font-family:inherit}
+.picker-insert{padding:5px 12px;background:var(--dark);color:var(--or-c);border:none;border-radius:5px;
   font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer}
-.midi-preview{font-size:.65rem;color:#8cd4ff;font-weight:700;opacity:.9}
+.midi-preview{font-size:.65rem;color:#1a6691;font-weight:700;opacity:.9}
 .chord-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.pc{padding:4px 5px;border:1.5px solid var(--brd);border-radius:5px;background:#0d160a;
+.pc{padding:4px 5px;border:1.5px solid var(--brd);border-radius:5px;background:#f8f8f6;
   font-family:inherit;font-size:.73rem;font-weight:700;cursor:pointer;text-align:center;color:var(--txt)}
-.pc:hover{background:rgba(201,162,39,.15);border-color:var(--gold)}
-.pc.selected{background:var(--gold);color:#000}
+.pc:hover{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
+.pc.selected{background:var(--dark);color:var(--or-c)}
 
 /* ── Preview tabs ── */
-#preview-card .card-head{background:linear-gradient(135deg,#0e2a3a,#091a28)}
-#preview-card .card-head h2{color:#8cd4ff}
-#preview-card .step-badge{background:rgba(41,128,185,.2);border-color:rgba(41,128,185,.5);color:#8cd4ff}
-.tabs{display:flex;gap:0;border-bottom:1.5px solid var(--brd);margin-bottom:13px}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--brd);margin-bottom:13px}
 .tab-btn{padding:7px 17px;border:none;background:none;font-family:inherit;font-size:.83rem;
   font-weight:700;color:var(--gris);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px}
-.tab-btn.active{color:#8cd4ff;border-bottom-color:#8cd4ff}
+.tab-btn.active{color:var(--dark);border-bottom-color:var(--gold)}
 #visual-output{overflow-x:auto}
 #visual-output svg{display:block;margin:0 auto;max-width:100%}
 
 /* ── Fab view toggle ── */
 .fab-view-wrap{display:flex;gap:0;margin-bottom:12px}
-.fab-view-btn{padding:6px 15px;border:1.5px solid var(--brd);background:#0d160a;
-  font-family:inherit;font-size:.78rem;font-weight:700;color:var(--gold);cursor:pointer;transition:background .15s}
+.fab-view-btn{padding:6px 15px;border:1.5px solid var(--brd);background:#fff;
+  font-family:inherit;font-size:.78rem;font-weight:700;color:#555;cursor:pointer;transition:background .15s,color .15s}
 .fab-view-btn:first-child{border-radius:6px 0 0 6px}
 .fab-view-btn:last-child{border-radius:0 6px 6px 0;border-left:none}
-.fab-view-btn.active{background:rgba(201,162,39,.2);border-color:var(--gold)}
+.fab-view-btn.active{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
 
 /* ── Tables ── */
 .mfr-table{width:100%;border-collapse:collapse;font-size:.8rem}
-.mfr-table th,.mfr-table td{border:1px solid #2a3a22;padding:5px 9px;text-align:center}
-.mfr-table th{background:#1a2a12;color:var(--gold);font-size:.75rem;font-weight:700}
-.mfr-table tr:nth-child(even) td{background:#0f180c}
-.mfr-table td{background:#0d160a;color:#c8d8c0}
-.mfr-table td.note-p{color:#6fcf5a;font-weight:700}
-.mfr-table td.note-t{color:var(--gold);font-weight:700}
-.mfr-table td.row-hd{background:#1a2a12;font-weight:700;color:var(--gold)}
-.mfr-table td.midi-c{color:#8cd4ff;font-size:.72rem}
+.mfr-table th,.mfr-table td{border:1px solid #e0e0d8;padding:5px 9px;text-align:center}
+.mfr-table th{background:var(--dark);color:var(--or-c);font-size:.75rem;font-weight:700}
+.mfr-table tr:nth-child(even) td{background:#fafaf8}
+.mfr-table td{background:#fff;color:var(--txt)}
+.mfr-table td.note-p{color:#1d6b23;font-weight:700}
+.mfr-table td.note-t{color:var(--gold-d);font-weight:700}
+.mfr-table td.row-hd{background:#f0f0ee;font-weight:700;color:var(--dark)}
+.mfr-table td.midi-c{color:#1a6691;font-size:.72rem}
 .mfr-sub{color:var(--gris);font-style:italic;font-size:.76rem;margin-bottom:12px}
 
 /* ── Modal ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);
   z-index:500;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal-box{background:#141f11;border:2px solid var(--brd);border-radius:12px;padding:22px;max-width:600px;width:95%;
-  max-height:80vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.6)}
-.modal-box h3{font-size:.98rem;color:var(--gold);margin-bottom:11px}
+.modal-box{background:#fff;border:2px solid var(--dark);border-radius:12px;padding:22px;max-width:600px;width:95%;
+  max-height:80vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.15)}
+.modal-box h3{font-size:.98rem;color:var(--dark);margin-bottom:11px}
 .modal-box textarea{width:100%;height:200px;font-family:monospace;font-size:.76rem;
   border:1.5px solid var(--brd);border-radius:6px;padding:8px;resize:vertical;
-  background:#0d160a;color:var(--txt)}
+  background:#fafaf8;color:var(--txt)}
 
-/* ── Misc ── */
+.gauche-label{font-size:.74rem;font-weight:700;color:#555}
+.preset-btn{width:auto!important;padding:2px 7px!important;font-size:.7rem!important}
 hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 
 /* ── Print ── */
@@ -215,8 +214,8 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   .no-print{display:none!important}
   body{background:#fff}
   .card{box-shadow:none;border:1px solid #ddd}
-  .card-head{background:#2d5a27!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .mfr-table th{background:#2d5a27!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card-head{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .mfr-table th{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 @media(max-width:680px){
   header{flex-wrap:wrap}
@@ -288,16 +287,35 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               onchange="onRangeesChange()" style="width:54px;text-align:center">
             <button type="button" class="rng-btn" onclick="changeNbRangees(1)">＋</button>
           </div></div>
-        <div class="form-group"><label data-i="leftHandTpl">Modèle main gauche</label>
-          <select id="config-gauche" onchange="onGaucheChange()">
-            <option value="" data-i-opt="cgLeft">— Modèle de départ —</option>
-            <option value="4"  data-i-opt="cg4" >4 basses (2+2)</option>
-            <option value="8"  data-i-opt="cg8" >8 basses (4+4)</option>
-            <option value="12" data-i-opt="cg12" selected>12 basses (6+6)</option>
-            <option value="18" data-i-opt="cg18">18 basses (6+6+6)</option>
-            <option value="24" data-i-opt="cg24">24 basses (8+8+8)</option>
-          </select>
-          <span class="hint" data-i="cgHelp">Ajustez avec + / − ci-dessous</span></div>
+        <div class="form-group"><label data-i="leftHandConfig">Main gauche — basses libres</label>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 7px;align-items:center;margin-top:2px;">
+            <span class="gauche-label" data-i="basses">Basses</span>
+            <div class="rng-ctrl">
+              <button type="button" class="rng-btn" onclick="changeGauche('basses',-1)">−</button>
+              <input type="number" id="nb-basses" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('basses')">
+              <button type="button" class="rng-btn" onclick="changeGauche('basses',1)">＋</button>
+            </div>
+            <span class="gauche-label" data-i="accords">Accords</span>
+            <div class="rng-ctrl">
+              <button type="button" class="rng-btn" onclick="changeGauche('accords',-1)">−</button>
+              <input type="number" id="nb-accords" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('accords')">
+              <button type="button" class="rng-btn" onclick="changeGauche('accords',1)">＋</button>
+            </div>
+            <span class="gauche-label" data-i="terzetto">Terzetto</span>
+            <div class="rng-ctrl">
+              <button type="button" class="rng-btn" onclick="changeGauche('terzetto',-1)">−</button>
+              <input type="number" id="nb-terzetto" min="0" max="60" value="0" style="width:48px;text-align:center;" oninput="applyGaucheCount('terzetto')">
+              <button type="button" class="rng-btn" onclick="changeGauche('terzetto',1)">＋</button>
+            </div>
+          </div>
+          <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+            <span style="font-size:.65rem;color:#888;" data-i="quickSet">Rapide :</span>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(2,2,0)">4b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(4,4,0)">8b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,0)">12b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,6)">18b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,8)">24b</button>
+          </div></div>
         <div class="form-group"><label data-i="voices">Nombre de voix (anches)</label>
           <select id="nb-voix" onchange="onAnyChange()">
             <option value="1">1 voix / 1 voice</option>
@@ -350,11 +368,11 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       </div>
       <div class="legend">
         <div class="legend-item">
-          <div class="legend-swatch" style="background:var(--vert-c);border:1.5px solid var(--vert);color:#1a5c1a;">↓</div>
+          <div class="legend-swatch" style="background:#eef8eb;border:1.5px solid #4a9a3a;color:#1d6b23;">↓</div>
           <strong data-i="push">Poussé</strong>
         </div>
         <div class="legend-item">
-          <div class="legend-swatch" style="background:var(--or-c);border:1.5px solid var(--or);color:#8b6914;">↑</div>
+          <div class="legend-swatch" style="background:#fffbf0;border:1.5px solid #c8a020;color:#7a5c00;">↑</div>
           <strong data-i="pull">Tiré</strong>
         </div>
         <button class="btn btn-rouge" style="margin-left:auto;font-size:.76rem;padding:5px 10px;" onclick="clearNotes()" data-i-btn="clearNotes">🗑️ Effacer toutes les notes</button>
@@ -461,7 +479,7 @@ fr:{
   preset:'Modèle prédéfini',rowsRH:'Rangées main droite',leftHandTpl:'Modèle main gauche',
   voices:'Nombre de voix (anches)',options:'Options',showMidi:'Numéros MIDI',
   rowConfig:'Configuration des rangées (nom & boutons)',
-  clickToOpen:'<strong>Cliquez</strong> sur un champ <span style="color:#1a5c1a;font-weight:700;">vert</span> (poussé) ou <span style="color:#8b6914;font-weight:700;">ambré</span> (tiré) pour ouvrir le sélecteur de notes.',
+  clickToOpen:'<strong>Cliquez</strong> sur un champ <span style="color:#1d6b23;font-weight:700;">vert</span> (poussé) ou <span style="color:#b8860b;font-weight:700;">ambré</span> (tiré) pour ouvrir le sélecteur de notes.',
   rightHand:'🎵 Main Droite',leftHand:'🎹 Main Gauche',push:'Poussé',pull:'Tiré',
   clearNotes:'🗑️ Effacer toutes les notes',saveInstrument:'💾 Sauvegarder cet accordéon',
   clientVisual:'🎹 Clavier client',manufacturerTable:'📋 Fabricant anches',
@@ -479,9 +497,7 @@ fr:{
   noSaved:'Aucun instrument sauvegardé. Configurez puis cliquez "💾 Sauvegarder".',
   saved:'✓ Sauvegardé',dirty:'● Modifications…',saving:'… Sauvegarde',
   rows:'rangées',voices_:'voix',edit:'✏️ Éditer',copy:'⧉ Copier',delete:'🗑️',
-  cgLeft:'— Modèle de départ —',cg4:'4 basses (2+2)',cg8:'8 basses (4+4)',
-  cg12:'12 basses (6+6)',cg18:'18 basses (6+6+6 terzetto)',cg24:'24 basses (8+8+8)',
-  cgHelp:'Ajustez avec + / − ci-dessous',
+  leftHandConfig:'Main gauche — basses libres',quickSet:'Rapide :',
   presetPlaceholder:'— Choisir un modèle —',custom:'Personnalisé…',
   // SVG strings
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Poussé',svgPull:'↑ Tiré',
@@ -530,7 +546,7 @@ en:{
   preset:'Preset layout',rowsRH:'Right hand rows',leftHandTpl:'Left hand template',
   voices:'Number of voices (reeds)',options:'Options',showMidi:'MIDI note numbers',
   rowConfig:'Row configuration (name & button count)',
-  clickToOpen:'<strong>Click</strong> a <span style="color:#1a5c1a;font-weight:700;">green</span> (push) or <span style="color:#8b6914;font-weight:700;">amber</span> (pull) field to open the note picker.',
+  clickToOpen:'<strong>Click</strong> a <span style="color:#1d6b23;font-weight:700;">green</span> (push) or <span style="color:#b8860b;font-weight:700;">amber</span> (pull) field to open the note picker.',
   rightHand:'🎵 Right Hand',leftHand:'🎹 Left Hand',push:'Push',pull:'Pull',
   clearNotes:'🗑️ Clear all notes',saveInstrument:'💾 Save this accordion',
   clientVisual:'🎹 Client keyboard',manufacturerTable:'📋 Reed manufacturer',
@@ -548,9 +564,7 @@ en:{
   noSaved:'No saved instruments. Configure then click "💾 Save".',
   saved:'✓ Saved',dirty:'● Unsaved changes…',saving:'… Saving',
   rows:'rows',voices_:'voices',edit:'✏️ Edit',copy:'⧉ Copy',delete:'🗑️',
-  cgLeft:'— Starting template —',cg4:'4 basses (2+2)',cg8:'8 basses (4+4)',
-  cg12:'12 basses (6+6)',cg18:'18 basses (6+6+6)',cg24:'24 basses (8+8+8)',
-  cgHelp:'Fine-tune with + / − below',
+  leftHandConfig:'Left hand — free bass count',quickSet:'Quick:',
   presetPlaceholder:'— Choose a preset —',custom:'Custom…',
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Push',svgPull:'↑ Pull',
   svgHigh:'TREBLE ▶',svgLow:'◀ BASS',svgBellowsPush:'PUSH',svgBellowsPull:'PULL',
@@ -748,7 +762,6 @@ function snapshotToDB(){
     joueur:val('nom-joueur'),luthier:val('nom-luthier')||"Ewen d'Aviau",
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
-    configGauche:parseInt(document.getElementById('config-gauche').value)||12,
     nbVoix:parseInt(document.getElementById('nb-voix').value),
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
@@ -767,15 +780,21 @@ function loadFromDB(rec){
   document.getElementById('nom-joueur').value=rec.joueur||'';
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
-  document.getElementById('config-gauche').value=String(rec.configGauche||12);
   document.getElementById('nb-voix').value=String(rec.nbVoix||2);
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
-  CFG.configGauche=rec.configGauche||12;
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
   // ensure terzetto exists
   if(!CFG.notes.terzetto) CFG.notes.terzetto=[];
+  // backward compat: if notes arrays are missing, init from configGauche
+  if(!CFG.notes.basses||!CFG.notes.basses.length){
+    const cgMap={4:2,8:4,18:6,24:8};
+    const nb=cgMap[rec.configGauche]||6;
+    CFG.notes.basses=Array.from({length:nb},()=>({p:'',t:''}));
+    CFG.notes.accords=Array.from({length:nb},()=>({p:'',t:''}));
+  }
   document.getElementById('nb-rangees').value=String(CFG.nbRangees);
+  syncGaucheInputs();
   // Load order specs
   const os=rec.orderSpecs||{};
   const sv=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined)el.value=v;};
@@ -866,6 +885,7 @@ function loadPreset(key){
   CFG.notes=JSON.parse(JSON.stringify(p.notes));
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
   document.getElementById('nb-rangees').value=p.nbRangees;
+  syncGaucheInputs();
   renderRangeesCfg();generateInputGrid();onAnyChange();
 }
 
@@ -889,26 +909,47 @@ function onRangeesChange(){
 }
 
 /* ╔══════════════════════════════════════════════════════╗
-   ║  BASSES — LEFT HAND (flexible)                       ║
+   ║  BASSES — LEFT HAND (free count)                     ║
    ╚══════════════════════════════════════════════════════╝ */
-function onGaucheChange(){
+function changeGauche(key,delta){
+  const el=document.getElementById('nb-'+key);
+  el.value=Math.max(0,Math.min(60,(parseInt(el.value)||0)+delta));
+  applyGaucheCount(key);
+}
+function applyGaucheCount(key){
   readNoteInputsIntoCFG();
-  const v=parseInt(document.getElementById('config-gauche').value);
-  if(!v)return; // placeholder selected
-  const nb=v===4?2:v===8?4:v===24?8:v===18?6:6;
-  const resize=(arr,n)=>{const r=arr.slice(0,n);while(r.length<n)r.push({p:'',t:''});return r;};
-  CFG.notes.basses =resize(CFG.notes.basses,nb);
-  CFG.notes.accords=resize(CFG.notes.accords,nb);
-  CFG.notes.terzetto=v===18?resize(CFG.notes.terzetto,6):v===24?resize(CFG.notes.terzetto,8):[];
+  const el=document.getElementById('nb-'+key);
+  const n=Math.max(0,Math.min(60,parseInt(el.value)||0));
+  el.value=n;
+  const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
+  CFG.notes[key]=resize(CFG.notes[key]||[],n);
   generateInputGrid();onAnyChange();
 }
-function addGaucheBtn(key){readNoteInputsIntoCFG();CFG.notes[key].push({p:'',t:''});generateInputGrid();onAnyChange();}
-function removeGaucheBtn(key){readNoteInputsIntoCFG();if(CFG.notes[key].length>1){CFG.notes[key].pop();generateInputGrid();onAnyChange();}}
-function toggleTerzetto(){
+function setGauchePreset(nb,na,nt){
   readNoteInputsIntoCFG();
-  if((CFG.notes.terzetto||[]).length>0){CFG.notes.terzetto=[];}
-  else{CFG.notes.terzetto=Array.from({length:6},()=>({p:'',t:''}));}
+  const resize=(arr,n)=>{const r=arr.slice(0,n);while(r.length<n)r.push({p:'',t:''});return r;};
+  document.getElementById('nb-basses').value=nb;
+  document.getElementById('nb-accords').value=na;
+  document.getElementById('nb-terzetto').value=nt;
+  CFG.notes.basses=resize(CFG.notes.basses,nb);
+  CFG.notes.accords=resize(CFG.notes.accords,na);
+  CFG.notes.terzetto=resize(CFG.notes.terzetto,nt);
   generateInputGrid();onAnyChange();
+}
+function syncGaucheInputs(){
+  const s=(k)=>{const el=document.getElementById('nb-'+k);if(el)el.value=(CFG.notes[k]||[]).length;};
+  s('basses');s('accords');s('terzetto');
+}
+function addGaucheBtn(key){
+  readNoteInputsIntoCFG();CFG.notes[key].push({p:'',t:''});
+  const el=document.getElementById('nb-'+key);if(el)el.value=CFG.notes[key].length;
+  generateInputGrid();onAnyChange();
+}
+function removeGaucheBtn(key){
+  readNoteInputsIntoCFG();
+  if(CFG.notes[key].length>0){CFG.notes[key].pop();
+    const el=document.getElementById('nb-'+key);if(el)el.value=CFG.notes[key].length;
+    generateInputGrid();onAnyChange();}
 }
 
 /* ── Read inputs back into CFG ── */
@@ -974,15 +1015,13 @@ function generateInputGrid(){
     html+=`</div></div>`;
   }
   html+=`</div>`;
-  // Left hand
+  // Left hand — all sections including terzetto if count > 0
   html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>`;
-  const gsec=[
-    {key:'basses',label:t('basses'),type:'note'},
-    {key:'accords',label:t('accords'),type:'chord'},
-  ];
+  const gsec=[{key:'basses',label:t('basses'),type:'note'},{key:'accords',label:t('accords'),type:'chord'}];
   if((CFG.notes.terzetto||[]).length>0)gsec.push({key:'terzetto',label:t('terzetto'),type:'chord'});
   gsec.forEach(({key,label,type})=>{
     const arr=CFG.notes[key]||[];const count=arr.length;
+    if(count===0)return;
     html+=`<div class="row-wrap">
       <div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${count})</span></span>
@@ -1000,10 +1039,6 @@ function generateInputGrid(){
     }
     html+=`</div></div>`;
   });
-  const hasTerz=(CFG.notes.terzetto||[]).length>0;
-  html+=`<div style="margin-top:9px;">
-    <button class="btn btn-outline" style="font-size:.76rem;padding:4px 11px;" onclick="toggleTerzetto()">${hasTerz?t('removeTerzetto'):t('addTerzetto')}</button>
-  </div>`;
   html+=`</div>`;
   document.getElementById('note-grid').innerHTML=html;
 }
