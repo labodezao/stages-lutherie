@@ -1192,8 +1192,8 @@ function renderRangeesCfg(){
       </div>
       <label style="margin-top:3px;">${t('rowOffset')}</label>
       <div class="rng-ctrl">
-        <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].offset=Math.max(0,(CFG.rangees[${r}].offset||0)-1);document.getElementById('roff-${r}').value=CFG.rangees[${r}].offset;scheduleLivePreview()">−</button>
-        <input type="number" id="roff-${r}" value="${rc.offset||0}" min="0" max="30" style="width:54px;text-align:center;font-size:.82rem;padding:3px;font-weight:700;" oninput="CFG.rangees[${r}].offset=Math.max(0,parseInt(this.value)||0);scheduleLivePreview()">
+        <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].offset=Math.max(-30,(CFG.rangees[${r}].offset||0)-1);document.getElementById('roff-${r}').value=CFG.rangees[${r}].offset;scheduleLivePreview()">−</button>
+        <input type="number" id="roff-${r}" value="${rc.offset||0}" min="-30" max="30" style="width:54px;text-align:center;font-size:.82rem;padding:3px;font-weight:700;" oninput="CFG.rangees[${r}].offset=Math.min(30,Math.max(-30,parseInt(this.value)||0));scheduleLivePreview()">
         <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].offset=Math.min(30,(CFG.rangees[${r}].offset||0)+1);document.getElementById('roff-${r}').value=CFG.rangees[${r}].offset;scheduleLivePreview()">＋</button>
       </div></div>`;
   }
@@ -1418,9 +1418,12 @@ function buildSVG_Droite(data,dark){
   const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
 
-  const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
-  const maxOff=Math.max(...data.droite.map(r=>(r.offset||0)),0);
-  const W=BW+LPAD+maxBtns*HGAP+maxOff*(HGAP/2)+MARG;
+  const allOffs=data.droite.map(r=>r.offset||0);
+  const maxOff=Math.max(...allOffs,0);
+  const minOff=Math.min(...allOffs,0);
+  const leftShift=-minOff*(HGAP/2);
+  const BASE=BW+LPAD+leftShift;
+  const W=BASE+maxBtns*HGAP+maxOff*(HGAP/2)+MARG;
   const H=MARG+HEAD+data.droite.length*VGAP+FOOT;
 
   let s=svg_open(W,H,bg);
@@ -1432,7 +1435,7 @@ function buildSVG_Droite(data,dark){
 
   // Orientation arrows — horizontal across the top
   const arrowY=MARG+HEAD-10;
-  const ax1=BW+LPAD,ax2=W-MARG-2;
+  const ax1=BASE,ax2=W-MARG-2;
   const arrowMid=(ax1+ax2)/2;
   s+=`<line x1="${ax1+2}" y1="${arrowY}" x2="${ax2-2}" y2="${arrowY}" stroke="${gold}" stroke-width="1" opacity=".5"/>`;
   s+=`<polygon points="${ax1+2},${arrowY} ${ax1+10},${arrowY-4} ${ax1+10},${arrowY+4}" fill="${gold}" opacity=".7"/>`;
@@ -1441,12 +1444,12 @@ function buildSVG_Droite(data,dark){
   s+=tx(ax2-14,arrowY+4,t('svgHigh'),8,gold,'bold','end');
 
   // Title
-  s+=tx(BW+LPAD+(maxBtns*HGAP)/2,MARG+16,escSVG(data.nomInstrument),16,gold,'bold','middle');
-  if(data.nomJoueur)s+=tx(BW+LPAD+(maxBtns*HGAP)/2,MARG+32,`${t('svgClient')} : ${escSVG(data.nomJoueur)}`,10,subtl,'normal','middle');
-  s+=tx(BW+LPAD+(maxBtns*HGAP)/2,MARG+47,`${t('svgLuthier')} : ${escSVG(data.nomLuthier)}  ·  ${fmtDate(data.date)}`,9,subtl,'normal','middle');
+  s+=tx(BASE+(maxBtns*HGAP)/2,MARG+16,escSVG(data.nomInstrument),16,gold,'bold','middle');
+  if(data.nomJoueur)s+=tx(BASE+(maxBtns*HGAP)/2,MARG+32,`${t('svgClient')} : ${escSVG(data.nomJoueur)}`,10,subtl,'normal','middle');
+  s+=tx(BASE+(maxBtns*HGAP)/2,MARG+47,`${t('svgLuthier')} : ${escSVG(data.nomLuthier)}  ·  ${fmtDate(data.date)}`,9,subtl,'normal','middle');
 
   // Legend
-  const lx=BW+LPAD,ly=MARG+62;
+  const lx=BASE,ly=MARG+62;
   s+=`<rect x="${lx}" y="${ly-10}" width="13" height="10" rx="2" fill="${pushBg}" stroke="${stroke}" stroke-width="1.2"/>`;
   s+=tx(lx+17,ly,t('svgPush'),8,dark?'#ccc':'#333','normal','start');
   s+=`<rect x="${lx+70}" y="${ly-10}" width="13" height="10" rx="2" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width="1.2"/>`;
@@ -1457,10 +1460,10 @@ function buildSVG_Droite(data,dark){
     const cy=MARG+HEAD+ri*VGAP+VGAP/2;
     const stagger=(ri%2===1)?HGAP/2:0;
     const alignOff=(row.offset||0)*(HGAP/2);
-    s+=`<rect x="${BW+LPAD+alignOff-4}" y="${cy-R-6}" width="${row.boutons.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(BW+LPAD+alignOff-8,cy+4,escSVG(row.nom),9.5,gold,'bold','end');
+    s+=`<rect x="${BASE+alignOff-4}" y="${cy-R-6}" width="${row.boutons.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
+    s+=tx(BASE+alignOff-8,cy+4,escSVG(row.nom),9.5,gold,'bold','end');
     row.boutons.forEach((btn,bi)=>{
-      const cx=BW+LPAD+alignOff+stagger+bi*HGAP;
+      const cx=BASE+alignOff+stagger+bi*HGAP;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#ffffff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
@@ -1478,8 +1481,8 @@ function buildSVG_Droite(data,dark){
   });
 
   const fy=MARG+HEAD+data.droite.length*VGAP+14;
-  s+=`<line x1="${BW+LPAD}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
-  s+=tx(BW+LPAD,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#444':'#bbb','normal','start');
+  s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
+  s+=tx(BASE,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#444':'#bbb','normal','start');
   s+='</svg>';return s;
 }
 
@@ -1558,18 +1561,22 @@ function buildSommierSection(title,rows,dark){
   }
 
   const maxBtns=Math.max(...rows.map(r=>r.boutons?r.boutons.length:(r.items?r.items.length:0)),1);
-  const maxOff=Math.max(...rows.map(r=>r.offset||0),0);
-  const W=LPAD+maxBtns*CW+stagger+maxOff*(CW/2)+MARG;
+  const allOffs=rows.map(r=>r.offset||0);
+  const maxOff=Math.max(...allOffs,0);
+  const minOff=Math.min(...allOffs,0);
+  const leftShift=-minOff*(CW/2);
+  const RBASE=LPAD+leftShift;
+  const W=RBASE+maxBtns*CW+stagger+maxOff*(CW/2)+MARG;
   const H=MARG+HEAD+rows.length*VGAP+FOOT;
   let s=svg_open(W,H,bg);
 
   // Header
   s+=tx(W/2,MARG+15,escSVG(title),12,gold,'bold','middle');
-  s+=`<rect x="${LPAD}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pushBg}" stroke="${dark?'#4a7a40':'#2d5a27'}" stroke-width=".8"/>`;
-  s+=tx(LPAD+17,MARG+33,t('svgPush'),7.5,dark?'#ccc':'#333','normal','start');
-  s+=`<rect x="${LPAD+68}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width=".8"/>`;
-  s+=tx(LPAD+85,MARG+33,t('svgPull'),7.5,dark?'#ccc':'#333','normal','start');
-  if(showMidi)s+=tx(LPAD+135,MARG+33,'MIDI = coin ↗',7,dark?'rgba(100,140,220,.8)':'rgba(21,101,192,.6)','normal','start');
+  s+=`<rect x="${RBASE}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pushBg}" stroke="${dark?'#4a7a40':'#2d5a27'}" stroke-width=".8"/>`;
+  s+=tx(RBASE+17,MARG+33,t('svgPush'),7.5,dark?'#ccc':'#333','normal','start');
+  s+=`<rect x="${RBASE+68}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width=".8"/>`;
+  s+=tx(RBASE+85,MARG+33,t('svgPull'),7.5,dark?'#ccc':'#333','normal','start');
+  if(showMidi)s+=tx(RBASE+135,MARG+33,'MIDI = coin ↗',7,dark?'rgba(100,140,220,.8)':'rgba(21,101,192,.6)','normal','start');
 
   rows.forEach((row,ri)=>{
     const rowY=MARG+HEAD+ri*VGAP;
@@ -1577,8 +1584,8 @@ function buildSommierSection(title,rows,dark){
     const nom=row.nom||(row.label||`R${ri+1}`);
     const items=row.boutons||row.items||[];
     const alignOff=(row.offset||0)*(CW/2);
-    s+=tx(LPAD+alignOff-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
-    items.forEach((btn,bi)=>{s+=cell(LPAD+alignOff+rowStag+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
+    s+=tx(RBASE+alignOff-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
+    items.forEach((btn,bi)=>{s+=cell(RBASE+alignOff+rowStag+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
   });
   s+='</svg>';return s;
 }
