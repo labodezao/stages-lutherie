@@ -1,0 +1,1314 @@
+<!-- =====================================================================
+  STAGE DE LUTHERIE — EWEN D'AVIAU
+  Page WordPress — blocs Gutenberg natifs  (zéro CSS personnalisé)
+  Saint-Nazaire · stages.ewendaviau.com
+
+  COMMENT UTILISER CE FICHIER :
+  ─────────────────────────────────────────────────────────────────────
+  1. Uploadez vos photos dans Médias > Ajouter
+  2. Pour chaque image, copiez son URL depuis la médiathèque
+  3. Remplacez les URLs du type :
+       https://VOTRE-SITE.COM/wp-content/uploads/nom-image.jpg
+     par vos vraies URLs WordPress
+  4. WordPress → Pages → Ajouter une page
+  5. Cliquez sur ⋮ → "Éditeur de code"
+  6. Sélectionnez tout (Ctrl+A) et collez ce fichier
+  7. ⋮ → "Éditeur visuel" → tous les blocs sont éditables !
+  8. Publiez
+
+  IMAGES À UPLOADER (dans l'ordre d'apparition) :
+  ─────────────────────────────────────────────────────────────────────
+  Hero background   : Collage_20220426_192041.jpg
+  Galerie 1         : Collage_20220425_180111.jpg
+  Galerie 2         : Collage_20220425_180332.jpg
+  Galerie 3         : Collage_20220426_192041.jpg
+  Pour qui          : IMG_0931.jpg
+  L'esprit          : IMG_0959.jpg
+  Objectifs         : Jour 10 (25).jpg
+  Jour 1            : FB jour 1.jpg
+  Jour 2            : FB jour 2.jpg
+  Jour 3            : FB jour 3.jpg
+  Jour 4            : Jour 4 (4).jpg
+  Jour 5            : FB jour 5.jpg
+  Jour 6            : FB jour 6.jpg
+  Jour 7            : FB jour 7.jpg
+  Jour 8            : FB jour 8.jpg
+  Jour 9            : FB jour 9.jpg
+  Jour 10           : Jour 10 (25).jpg
+  Bois merisier     : cherrywood.png
+  Bois noyer        : walnut.png
+  Bois érable       : maple.png
+  Atelier           : IMG_1011 2.jpg
+====================================================================== -->
+
+<!-- wp:cover {"url":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","alt":"Stage de fabrication d'accordéon diatonique","dimRatio":60,"customOverlayColor":"#2C1810","minHeight":550,"minHeightUnit":"px"} -->
+<div class="wp-block-cover" style="min-height:550px"><img class="wp-block-cover__image-background" alt="Stage de fabrication d'accordéon diatonique" src="https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-60 has-background-dim" style="background-color:#2C1810"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"25px"},"spacing":{"padding":{"top":"8px","bottom":"8px","left":"24px","right":"24px"}},"typography":{"fontSize":"0.75rem","fontWeight":"800","letterSpacing":"3px","textTransform":"uppercase"}}} -->
+<p class="has-text-align-center has-text-color has-background" style="border-radius:25px;color:#3E2723;background-color:#D4A017;padding-top:8px;padding-right:24px;padding-bottom:8px;padding-left:24px;font-size:0.75rem;font-weight:800;letter-spacing:3px;text-transform:uppercase">✦ Expérience unique · Depuis 2021 ✦</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":1,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"3rem","fontWeight":"700"}}} -->
+<h1 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:3rem;font-weight:700">Fabriquez votre<br><em style="color:#F5D061">accordéon diatonique</em></h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.2rem">🔨 10 jours d'immersion · Repartez avec un instrument fait de vos mains</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">📝 S'inscrire maintenant</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"30px","color":"rgba(255,255,255,0.6)","width":"1px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-border-color wp-element-button" href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_fr.pdf" style="border-color:rgba(255,255,255,0.6);border-width:1px;border-radius:30px;color:#FAFAFA;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">📄 Brochure PDF</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons -->
+
+<!-- wp:spacer {"height":"10px"} -->
+<div style="height:10px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer --></div></div>
+<!-- /wp:cover -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#3E2723"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#3E2723;padding-top:0;padding-bottom:0"><!-- wp:gallery {"columns":3,"linkTo":"none"} -->
+<figure class="wp-block-gallery has-nested-images columns-3 is-cropped"><!-- wp:image {"id":3639,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220425_180111-1024x768.jpg" alt="" class="wp-image-3639"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":3640,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220425_180332-1024x768.jpg" alt="" class="wp-image-3640"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":3641,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-768x1024.jpg" alt="" class="wp-image-3641"/></figure>
+<!-- /wp:image --></figure>
+<!-- /wp:gallery --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">📅 Prochaines sessions</h2>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"top":{"color":"#D4A017","style":"solid","width":"5px"},"radius":"15px"},"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:15px;border-top-color:#D4A017;border-top-style:solid;border-top-width:5px;background-color:#FFFFFF;padding-top:2rem;padding-right:1.5rem;padding-bottom:2rem;padding-left:1.5rem"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🌸</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase">🌸 Printemps</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">8 – 17 avril</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Stage de printemps</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"top":{"color":"#D4A017","style":"solid","width":"5px"},"radius":"15px"},"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:15px;border-top-color:#D4A017;border-top-style:solid;border-top-width:5px;background-color:#FFFFFF;padding-top:2rem;padding-right:1.5rem;padding-bottom:2rem;padding-left:1.5rem"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🍂</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase">🍂 Automne</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">14 – 23 octobre</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Stage d'automne</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Une éxperience unique </h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">10 jours pour créer votre propre instrument, dans un cadre convivial et professionnel</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFF8E1;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:image {"id":3668,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Jour-5-25-300x138.jpg" alt="" class="wp-image-3668" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎯</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Pour qui ?</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Ouvert à tous dès 13 ans</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Débutants bienvenus</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Aucune expérience manuelle requise</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Mineurs avec tuteur majeur</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Accessibilité handicap disponible</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFF8E1;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:image {"id":3669,"sizeSlug":"full","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-full has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Jour-2-29-scaled.jpg" alt="" class="wp-image-3669" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">⚡</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">L'esprit du stage</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Expérience créative et sensorielle dans un cadre calme. Accompagnement personnalisé tout au long du processus de fabrication. Petit groupe (max 6 stagiaires) pour un suivi optimal.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFF8E1;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:image {"id":3660,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Jour-10-25-300x173.png" alt="" class="wp-image-3660" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎓</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Objectifs</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Collage des soufflets sur cadres</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Monter les mécaniques</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Poser grilles et finitions</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Installer et régler les anches</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Prise en main musicale</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Modèles &amp; Tarifs</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Choisissez le modèle qui vous correspond</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:15px;background-color:#FFFFFF;padding-top:0;padding-bottom:0"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"linear-gradient(135deg,#3E2723,#5D4037)"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:linear-gradient(135deg,#3E2723,#5D4037);padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2rem;font-weight:700">21/8</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FAFAFA;font-size:0.95rem"></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">2 820 €</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:8px;background-color:#FFF8E1;padding-top:0.75rem;padding-right:1rem;padding-bottom:0.75rem;padding-left:1rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Acompte : 900 € (40%)</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>21 boutons main droite</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>8 basses main gauche</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Idéal débutant ou voyage</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Léger et maniable</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Tonalités G/C, D/G, A/D</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:15px;background-color:#FFFFFF;padding-top:0;padding-bottom:0"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#D4A017;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">33/12 ⭐</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-size:0.95rem"></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">4 500 €</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:8px;background-color:#FFF8E1;padding-top:0.75rem;padding-right:1rem;padding-bottom:0.75rem;padding-left:1rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Acompte : 1 500 € (40%)</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>33 boutons main droite</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>12 basses main gauche</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Tessiture étendue</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Plus de possibilités musicales</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Layouts Heim / Milleret-Pignol</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:15px;background-color:#FFFFFF;padding-top:0;padding-bottom:0"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"linear-gradient(135deg,#3E2723,#5D4037)"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:linear-gradient(135deg,#3E2723,#5D4037);padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2rem;font-weight:700">33/18</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FAFAFA;font-size:0.95rem"></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">4 880 €</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">Tout inclus</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:8px;background-color:#FFF8E1;padding-top:0.75rem;padding-right:1rem;padding-bottom:0.75rem;padding-left:1rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Acompte : 1 900 € (40%)</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>33 boutons main droite</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>18 basses main gauche</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Maximum de basses</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Harmonies complètes</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Répertoire complexe</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Programme détaillé — 10 jours</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Un parcours progressif de la structure à la musique</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>1</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3644,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-1-300x225.jpg" alt="" class="wp-image-3644" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Accueil &amp; premiers assemblages</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Visite de l'atelier, présentation des outils, choix des options personnalisées (essences de bois, tonalité, grilles). Début de l'assemblage de la structure de base.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>2</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3646,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-2-300x300.jpg" alt="" class="wp-image-3646" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Structure bois</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Fabrication de la caisse main droite et main gauche, ponçage, collage, équerrage. Installation de la base mécanique.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>3</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3648,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-3-300x225.jpg" alt="" class="wp-image-3648" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Claviers &amp; boutons</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Montage des axes, installation des ressorts, réglage du toucher et de la course des touches.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>4</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3649,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-5-300x225.jpg" alt="" class="wp-image-3649" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Mécaniques main droite/gauche</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Assemblage complet des mécaniques, réglage précis des hauteurs et des courses de touches.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>5</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3668,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Jour-5-25-300x138.jpg" alt="" class="wp-image-3668" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Soufflets</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Fabrication et pose des soufflets, ajustements minutieux, vérification de l'étanchéité complète.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>6</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3651,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-6-300x300.jpg" alt="" class="wp-image-3651" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Grilles &amp; finitions</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Fixation des grilles décoratives, travail sur les finitions bois, ponçage final et protection.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>7</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3652,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-7-300x300.jpg" alt="" class="wp-image-3652" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Installation des anches</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Tri et sélection des anches, installation minutieuse, première mise en tension, tests note par note.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>8</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3653,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-8-300x225.jpg" alt="" class="wp-image-3653" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Réglages fins</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Détection et correction des fuites d'air, ajustement de la mécanique, alignement parfait des touches.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>9</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3654,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/FB-jour-9-300x225.jpg" alt="" class="wp-image-3654" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Tests complets</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Tests approfondis main droite et main gauche, évaluation du confort de jeu, corrections personnalisées selon votre morphologie.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-text-color has-background" style="border-radius:50px;color:#FFFFFF;background-color:#D4A017;padding-top:1rem;padding-right:0.5rem;padding-bottom:1rem;padding-left:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Jour<br>10</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"id":3660,"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Jour-10-25-300x173.png" alt="" class="wp-image-3660" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:0 12px 12px 0;border-left-color:#D4A017;border-left-style:solid;border-left-width:4px;background-color:#FFF8E1;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Initiation musicale &amp; finalisation</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Séance de pratique musicale avec intervenant extérieur, prise en main finale de l'instrument, séance photos, bilan et remise de l'instrument.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Options &amp; Personnalisation</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Plus de 100 combinaisons possibles pour créer VOTRE instrument unique</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:cover {"url":"https://ewendaviau.com/wp-content/uploads/2026/02/bois-1024x585.png","id":3671,"dimRatio":40,"customOverlayColor":"#3E2723","isUserOverlayColor":true,"minHeight":280,"minHeightUnit":"px","sizeSlug":"large","style":{"border":{"radius":"12px"},"color":{"duotone":"unset"}}} -->
+<div class="wp-block-cover" style="border-radius:12px;min-height:280px"><img class="wp-block-cover__image-background wp-image-3671 size-large" alt="" src="https://ewendaviau.com/wp-content/uploads/2026/02/bois-1024x585.png" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-40 has-background-dim" style="background-color:#3E2723"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<p class="has-text-align-center" style="font-size:2rem">🌳</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#D4A017"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#D4A017">Essences de bois</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#FFF8E1"}}} -->
+<ul style="color:#FFF8E1" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>Merisier (cherry wood)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Noyer (walnut)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Érable sycomore (maple)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div></div>
+<!-- /wp:cover --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎵</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Tonalités</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul style="color:#555" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>G/C (Sol/Do)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>D/G (Ré/Sol)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>A/D (La/Ré)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">⚙️</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Claviers</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul style="color:#555" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>Heim</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Milleret-Pignol</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Marquage tactile / visuel / sans</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:cover {"url":"https://ewendaviau.com/wp-content/uploads/2026/02/visuels-grille-702x1024.png","id":3655,"dimRatio":20,"customOverlayColor":"#3E2723","isUserOverlayColor":true,"minHeight":280,"minHeightUnit":"px","sizeSlug":"large","style":{"border":{"radius":"12px"}}} -->
+<div class="wp-block-cover" style="border-radius:12px;min-height:280px"><img class="wp-block-cover__image-background wp-image-3655 size-large" alt="" src="https://ewendaviau.com/wp-content/uploads/2026/02/visuels-grille-702x1024.png" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-20 has-background-dim" style="background-color:#3E2723"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎨</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Grilles décoratives</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul style="color:#555" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>Plus de 100 modèles</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Catalogue numéroté</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Choix à l'inscription</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div></div>
+<!-- /wp:cover --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem"></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Soufflets</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul style="color:#555" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>Couleurs : noir, rouge, bleu, vert, orange, mixte</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Coins standard / renforcés / métal</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🔘</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Mécaniques / boutons</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul style="color:#555" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>Champignon bois naturel</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Nacre noire</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Nacre blanche</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.25rem;padding-right:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎺</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Anches</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul style="color:#555" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>Tipo a mano (standard)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>A mano + (premium)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Accordage sec / demi-sec</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Informations pratiques</h2>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"id":3658,"sizeSlug":"large","linkDestination":"none","align":"center","style":{"border":{"radius":"12px"}}} -->
+<figure class="wp-block-image aligncenter size-large has-custom-border"><img src="https://ewendaviau.com/wp-content/uploads/2026/02/Jour-9-30-1024x472.jpg" alt="" class="wp-image-3658" style="border-radius:12px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">📍 Lieu</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><strong>Atelier de lutherie</strong><br>9 rue Fernand de Magellan<br>44600 Saint-Nazaire<br>France</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">⏰ Horaires</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><strong>Journée type :</strong><br>9h30 – 12h30 : Atelier fabrication<br>12h30 – 14h00 : Pause déjeuner<br>14h00 – 17h30 : Montage &amp; réglages<br>Soirées : Concerts, bals, échanges</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">✅ Inclus</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Tous les matériaux</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Outillage professionnel</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Encadrement expert</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Bretelles fournies</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Sac / housse fournie</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Consommables</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">📝 Conditions</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Acompte non remboursable</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Possible de déplacer la session</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Transfert de place autorisé</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Places limitées (petits groupes)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">🏨 Non inclus</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Hébergement</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Repas</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Transport</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">⚠️ Important</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="nm-block-list wp-block-list"><!-- wp:list-item -->
+<li>Travail préparatoire avant le stage</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Instrument non destiné à la revente commerciale</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Retour possible si non terminé (80 €/jour)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:cover {"url":"https://VOTRE-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg","dimRatio":75,"customOverlayColor":"#2C1810","isUserOverlayColor":true,"minHeight":400,"minHeightUnit":"px"} -->
+<div class="wp-block-cover" style="min-height:400px"><img class="wp-block-cover__image-background" alt="" src="https://VOTRE-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-80 has-background-dim" style="background-color:#2C1810"></span><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2.5rem"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2.5rem">Prêt à fabriquer votre accordéon ?</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.2rem">Les places sont limitées à 6 stagiaires. Ne manquez pas cette opportunité unique de créer votre propre instrument !</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"25px"} -->
+<div style="height:25px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem","fontWeight":"700"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-custom-font-size wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem;font-weight:700" target="_blank" rel="noreferrer noopener">📝 S'inscrire maintenant</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"background":"rgba(255,255,255,0.15)","text":"#FAFAFA"},"border":{"radius":"30px","color":"#FAFAFA","width":"2px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-border-color has-custom-font-size wp-element-button" href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_fr.pdf" style="border-color:#FAFAFA;border-width:2px;border-radius:30px;color:#FAFAFA;background-color:rgba(255,255,255,0.15);padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem" target="_blank" rel="noreferrer noopener">📄 Télécharger la brochure</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"30px","color":"rgba(255,255,255,0.5)","width":"1px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1rem"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-border-color has-custom-font-size wp-element-button" href="mailto:postmaster@ewendaviau.com" style="border-color:rgba(255,255,255,0.5);border-width:1px;border-radius:30px;color:#FAFAFA;padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1rem">✉️ Nous contacter</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div></div>
+<!-- /wp:cover -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Contact &amp; Ressources</h2>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🌐</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Site web</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://stages.ewendaviau.com" target="_blank" rel="noopener">stages.ewendaviau.com</a></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://ewendaviau.com" target="_blank" rel="noopener">ewendaviau.com</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">✉️</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Email</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎥</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Vidéo du stage</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank" rel="noopener">Voir sur YouTube →</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="border-radius:12px;background-color:#FFFFFF;padding-top:1.5rem;padding-right:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">📄</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Brochures</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_fr.pdf" target="_blank" rel="noopener">Brochure française →</a></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_en.pdf" target="_blank" rel="noopener">English brochure →</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:paragraph -->
+<p></p>
+<!-- /wp:paragraph -->

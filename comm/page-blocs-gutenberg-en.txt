@@ -1,0 +1,1309 @@
+<!-- =====================================================================
+  DIATONIC ACCORDION MAKING WORKSHOP — EWEN D'AVIAU
+  WordPress page — native Gutenberg blocks  (zero custom CSS)
+  Saint-Nazaire · stages.ewendaviau.com
+
+  HOW TO USE THIS FILE:
+  ─────────────────────────────────────────────────────────────────────
+  1. Upload your photos in Media > Add New
+  2. For each image, copy its URL from the media library
+  3. Replace URLs of the form:
+       https://YOUR-SITE.COM/wp-content/uploads/image-name.jpg
+     with your actual WordPress URLs
+  4. WordPress → Pages → Add New Page
+  5. Click ⋮ → "Code Editor"
+  6. Select all (Ctrl+A) and paste this file
+  7. ⋮ → "Visual Editor" → all blocks are editable!
+  8. Publish
+
+  IMAGES TO UPLOAD (in order of appearance):
+  ─────────────────────────────────────────────────────────────────────
+  Hero background   : Collage_20220426_192041.jpg
+  Gallery 1         : Collage_20220425_180111.jpg
+  Gallery 2         : Collage_20220425_180332.jpg
+  Gallery 3         : Collage_20220426_192041.jpg
+  Who is it for     : IMG_0931.jpg
+  The spirit        : IMG_0959.jpg
+  Goals             : Jour 10 (25).jpg
+  Day 1             : FB jour 1.jpg
+  Day 2             : FB jour 2.jpg
+  Day 3             : FB jour 3.jpg
+  Day 4             : Jour 4 (4).jpg
+  Day 5             : FB jour 5.jpg
+  Day 6             : FB jour 6.jpg
+  Day 7             : FB jour 7.jpg
+  Day 8             : FB jour 8.jpg
+  Day 9             : FB jour 9.jpg
+  Day 10            : Jour 10 (25).jpg
+  Cherry wood       : cherrywood.png
+  Walnut            : walnut.png
+  Maple             : maple.png
+  Workshop          : IMG_1011 2.jpg
+====================================================================== -->
+
+<!-- wp:cover {"url":"https://YOUR-SITE.COM/wp-content/uploads/collage_20220426_192041.jpg","dimRatio":60,"customOverlayColor":"#2C1810","isUserOverlayColor":true,"minHeight":550,"minHeightUnit":"px"} -->
+<div class="wp-block-cover" style="min-height:550px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-60 has-background-dim" style="background-color:#2C1810"></span><img class="wp-block-cover__image-background" alt="Diatonic accordion-making workshop" src="https://YOUR-SITE.COM/wp-content/uploads/collage_20220426_192041.jpg" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"25px"},"spacing":{"padding":{"top":"8px","bottom":"8px","left":"24px","right":"24px"}},"typography":{"fontSize":"0.75rem","fontWeight":"800","letterSpacing":"3px","textTransform":"uppercase"}}} -->
+<p class="has-text-align-center has-text-color has-background" style="background-color:#D4A017;color:#3E2723;border-radius:25px;padding-top:8px;padding-right:24px;padding-bottom:8px;padding-left:24px;font-size:0.75rem;font-weight:800;letter-spacing:3px;text-transform:uppercase">✦ Unique experience · Since 2021 ✦</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":1,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"3rem","fontWeight":"700"}}} -->
+<h1 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:3rem;font-weight:700">Build your own<br><em style="color:#F5D061">diatonic accordion</em></h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.2rem">🔨 10 days of immersion · Leave with an instrument made by your own hands</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">📝 Register now</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"30px","color":"rgba(255,255,255,0.6)","width":"1px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color wp-element-button" href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_en.pdf" style="border-radius:30px;color:#FAFAFA;border:1px solid rgba(255,255,255,0.6);padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">📄 Brochure PDF</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons -->
+
+<!-- wp:spacer {"height":"10px"} -->
+<div style="height:10px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer --></div></div>
+<!-- /wp:cover -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#3E2723"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#3E2723"><!-- wp:gallery {"columns":3,"linkTo":"none","sizeSlug":"large"} -->
+<figure class="wp-block-gallery has-nested-images columns-3 is-cropped"><!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://YOUR-SITE.COM/wp-content/uploads/collage_20220425_180111.jpg" alt="Accordion-making workshop — collage 1"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://YOUR-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg" alt="Accordion-making workshop — collage 2"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://YOUR-SITE.COM/wp-content/uploads/collage_20220426_192041.jpg" alt="Accordion-making workshop — collage 3"/></figure>
+<!-- /wp:image --></figure>
+<!-- /wp:gallery --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">📅 Upcoming sessions</h2>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"top":{"color":"#D4A017","style":"solid","width":"5px"},"radius":"15px"},"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;border-top:5px solid #D4A017;padding-top:2rem;padding-bottom:2rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🌸</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">🌸 Spring</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">April 8 – 17</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Spring workshop</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"top":{"color":"#D4A017","style":"solid","width":"5px"},"radius":"15px"},"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;border-top:5px solid #D4A017;padding-top:2rem;padding-bottom:2rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"}}} -->
+<p class="has-text-align-center" style="font-size:2.5rem">🍂</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#D4A017"},"typography":{"fontSize":"0.85rem","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2px"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#D4A017;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:2px">🍂 Autumn</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">October 14 – 23</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Autumn workshop</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">A unique workshop in France</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">10 days to build your own instrument, in a friendly and professional setting</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/img_0931.jpg" alt="Trainees at the workshop" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎯</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">Who is it for?</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Open to everyone from age 13</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Beginners welcome</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>No manual experience required</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Minors with an adult guardian</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Disability accessibility available</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/img_0959.jpg" alt="Workshop atmosphere" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">⚡</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">The spirit of the workshop</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">A creative and sensory experience in a calm setting. Personalised guidance throughout the making process. Small group (max 6 trainees) for optimal follow-up.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/jour-10-25.jpg" alt="Finished instrument" style="border-radius:8px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎓</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">Goals</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Assemble the bellows</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Mount the action</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Fit grilles &amp; finishings</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Install and tune the reeds</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>First musical play-through</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Models &amp; Pricing</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Choose the model that suits you best</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;overflow:hidden"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"linear-gradient(135deg,#3E2723,#5D4037)"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background:linear-gradient(135deg,#3E2723,#5D4037);padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2rem;font-weight:700">21/8</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FAFAFA;opacity:0.9;font-size:0.95rem">Compact model</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">€2,820</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">All inclusive</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:8px;padding:0.75rem 1rem;text-align:center"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Deposit: €900 (40%)</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>21 right-hand buttons</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>8 left-hand basses</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Ideal for beginners or travel</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Light and easy to carry</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Keys G/C, D/G, A/D</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;overflow:hidden"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#D4A017"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background:linear-gradient(135deg,#D4A017,#B8860B);padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">33/12 ⭐</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;opacity:0.9;font-size:0.95rem">Versatile model</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">€4,500</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">All inclusive</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:8px;padding:0.75rem 1rem;text-align:center"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Deposit: €1,500 (40%)</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>33 right-hand buttons</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>12 left-hand basses</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Extended range</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>More musical possibilities</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Heim / Milleret-Pignol layouts</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"15px"},"spacing":{"padding":{"top":"0","bottom":"0"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:15px;overflow:hidden"><!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"linear-gradient(135deg,#3E2723,#5D4037)"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background:linear-gradient(135deg,#3E2723,#5D4037);padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2rem;font-weight:700">33/18</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"0.95rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FAFAFA;opacity:0.9;font-size:0.95rem">Pro model</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2.5rem","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2.5rem;font-weight:700">€4,880</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#666"},"typography":{"fontSize":"0.9rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#666;font-size:0.9rem">All inclusive</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"border":{"radius":"8px"},"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem","left":"1rem","right":"1rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-radius:8px;padding:0.75rem 1rem;text-align:center"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontWeight":"600"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-weight:600">Deposit: €1,900 (40%)</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"15px"} -->
+<div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>33 right-hand buttons</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>18 left-hand basses</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Maximum bass range</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Full harmonies</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Complex repertoire</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Detailed programme — 10 days</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">A progressive journey from raw structure to finished music</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>1</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-1.jpg" alt="Workshop — day 1" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Welcome &amp; first assemblies</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Tour of the workshop, introduction to tools, choice of personalised options (wood species, key, grilles). Start of basic structure assembly.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>2</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-2.jpg" alt="Workshop — day 2" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Wooden structure</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Building the right- and left-hand casings, sanding, gluing, squaring. Installation of the mechanical base.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>3</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-3.jpg" alt="Workshop — day 3" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Keyboards &amp; buttons</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Mounting the axles, fitting springs, adjusting touch and key travel.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>4</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/jour-4-4.jpg" alt="Workshop — day 4" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Right &amp; left-hand action</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Full action assembly, precise adjustment of heights and key travel on both hands.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>5</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-5.jpg" alt="Workshop — day 5" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Bellows</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Making and fitting the bellows, meticulous adjustments, checking full airtightness.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>6</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-6.jpg" alt="Workshop — day 6" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Grilles &amp; finishings</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Fitting the decorative grilles, working on wood finishings, final sanding and protection.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>7</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-7.jpg" alt="Workshop — day 7" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Reed installation</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Sorting and selecting reeds, careful installation, first tensioning, note-by-note testing.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>8</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-8.jpg" alt="Workshop — day 8" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Fine tuning</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Detecting and fixing air leaks, mechanical adjustments, perfect key alignment.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>9</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/fb-jour-9.jpg" alt="Workshop — day 9" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Full testing</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Thorough testing of right and left hands, evaluating playing comfort, personalised corrections for your morphology.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column {"width":"12%"} -->
+<div class="wp-block-column" style="flex-basis:12%"><!-- wp:group {"style":{"border":{"radius":"50px"},"spacing":{"padding":{"top":"1rem","bottom":"1rem","left":"0.5rem","right":"0.5rem"}},"color":{"background":"#D4A017","text":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background has-text-color" style="background-color:#D4A017;color:#FFFFFF;border-radius:50px;padding-top:1rem;padding-bottom:1rem;padding-left:0.5rem;padding-right:0.5rem"><!-- wp:paragraph {"align":"center","style":{"color":{"text":"#FFFFFF"},"typography":{"fontSize":"0.9rem","fontWeight":"700"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#FFFFFF;font-size:0.9rem;font-weight:700">Day<br>10</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"28%"} -->
+<div class="wp-block-column" style="flex-basis:28%"><!-- wp:image {"sizeSlug":"medium","linkDestination":"none","style":{"border":{"radius":"8px"}}} -->
+<figure class="wp-block-image size-medium" style="border-radius:8px"><img src="https://YOUR-SITE.COM/wp-content/uploads/jour-10-25.jpg" alt="Workshop — day 10" style="border-radius:8px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:group {"style":{"border":{"left":{"color":"#D4A017","style":"solid","width":"4px"},"radius":"0 12px 12px 0"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;border-left:4px solid #D4A017;border-radius:0 12px 12px 0;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"1.2rem"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723;font-size:1.2rem">Musical initiation &amp; handover</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#555"}}} -->
+<p class="has-text-color" style="color:#555">Music session with a guest musician, final hands-on with the instrument, photo session, review and instrument handover.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"#EEEEEE"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#EEEEEE;color:#EEEEEE"/>
+<!-- /wp:separator -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Options &amp; Customisation</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Over 100 combinations to create YOUR unique instrument</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:cover {"url":"https://YOUR-SITE.COM/wp-content/uploads/cherrywood.png","dimRatio":45,"customOverlayColor":"#3E2723","isUserOverlayColor":true,"minHeight":280,"minHeightUnit":"px","style":{"border":{"radius":"12px"}}} -->
+<div class="wp-block-cover" style="border-radius:12px;min-height:280px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-45 has-background-dim" style="background-color:#3E2723"></span><img class="wp-block-cover__image-background" src="https://YOUR-SITE.COM/wp-content/uploads/cherrywood.png" alt="Cherry wood" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
+<p class="has-text-align-center" style="font-size:2rem">🌳</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":4,"style":{"color":{"text":"#D4A017"}}} -->
+<h4 class="wp-block-heading has-text-align-center has-text-color" style="color:#D4A017">Wood species</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#FFF8E1"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#FFF8E1"><!-- wp:list-item -->
+<li>Cherry wood (merisier)</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Walnut (noyer)</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Sycamore maple (érable)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div></div>
+<!-- /wp:cover --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎵</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Keys</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<li>G/C</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>D/G</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>A/D</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">⚙️</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Right-hand layout</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<li>Heim</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Milleret-Pignol</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Tactile / visual / plain marking</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎹</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Left-hand configuration</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<li>Milleret-Pignol</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Heim</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Custom (extra cost)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎨</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Decorative grilles</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<li>Over 100 models</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Numbered catalogue</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Selected at registration</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">💨</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Bellows</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<li>Colours: black, red, blue, green, orange, mixed</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Standard / reinforced / metal corners</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🔘</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Action / buttons</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<li>Natural wood mushroom</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Black mother-of-pearl</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>White mother-of-pearl</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem","left":"1.25rem","right":"1.25rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.25rem;padding-bottom:1.25rem;padding-left:1.25rem;padding-right:1.25rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎺</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
+<h4 class="wp-block-heading has-text-color" style="color:#3E2723">Reeds</h4>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
+<ul class="wp-block-list has-text-color" style="color:#555"><!-- wp:list-item -->
+<li>Tipo a mano (standard)</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>A mano + (premium)</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>Dry / half-dry tuning</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Practical information</h2>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","style":{"border":{"radius":"12px"}}} -->
+<figure class="wp-block-image size-large" style="border-radius:12px"><img src="https://YOUR-SITE.COM/wp-content/uploads/img_1011-2.jpg" alt="Ewen d'Aviau's lutherie workshop in Saint-Nazaire" style="border-radius:12px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">📍 Location</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><strong>Lutherie workshop</strong><br>9 rue Fernand de Magellan<br>44600 Saint-Nazaire<br>France</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">⏰ Schedule</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><strong>Typical day:</strong><br>9:30 – 12:30: Building workshop<br>12:30 – 14:00: Lunch break<br>14:00 – 17:30: Assembly &amp; tuning<br>Evenings: Concerts, dances, exchanges</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">✅ Included</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>All materials</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Professional tooling</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Expert supervision</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Straps provided</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Bag / case provided</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Consumables</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">📝 Terms</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Non-refundable deposit</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Session transfer possible</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Place transfer authorised</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Limited places (small groups)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">🏨 Not included</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Accommodation</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Meals</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Transport</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#777"},"typography":{"fontStyle":"italic"}}} -->
+<p class="has-text-color" style="color:#777;font-style:italic">We can suggest accommodation nearby.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1.5rem;padding-right:1.5rem"><!-- wp:heading {"level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-color" style="color:#3E2723">⚠️ Important</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Preparatory work before the workshop</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Instrument not for commercial resale</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Return possible if unfinished (€80/day)</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:cover {"url":"https://YOUR-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg","dimRatio":75,"customOverlayColor":"#2C1810","isUserOverlayColor":true,"minHeight":400,"minHeightUnit":"px"} -->
+<div class="wp-block-cover" style="min-height:400px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-75 has-background-dim" style="background-color:#2C1810"></span><img class="wp-block-cover__image-background" alt="Accordion lutherie workshop" src="https://YOUR-SITE.COM/wp-content/uploads/collage_20220425_180332.jpg" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2.5rem"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2.5rem">Ready to build your accordion?</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.2rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.2rem">Places are limited to 6 trainees. Don't miss this unique opportunity to create your own instrument!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"25px"} -->
+<div style="height:25px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"30px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem","fontWeight":"700"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:30px;color:#3E2723;background-color:#D4A017;padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem;font-weight:700" target="_blank" rel="noreferrer noopener">📝 Register now</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"background":"rgba(255,255,255,0.15)","text":"#FAFAFA"},"border":{"radius":"30px","color":"#FAFAFA","width":"2px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_en.pdf" style="border-radius:30px;color:#FAFAFA;border:2px solid #FAFAFA;background-color:rgba(255,255,255,0.15);padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem" target="_blank" rel="noreferrer noopener">📄 Download brochure</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"30px","color":"rgba(255,255,255,0.5)","width":"1px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1rem"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color wp-element-button" href="mailto:contact@ewendaviau.com" style="border-radius:30px;color:#FAFAFA;border:1px solid rgba(255,255,255,0.5);padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1rem">✉️ Contact us</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div></div>
+<!-- /wp:cover -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFF8E1"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFF8E1;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Contact &amp; Resources</h2>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
+<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2rem"}}} -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🌐</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Website</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://stages.ewendaviau.com" target="_blank" rel="noopener">stages.ewendaviau.com</a></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://ewendaviau.com" target="_blank" rel="noopener">ewendaviau.com</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">✉️</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Email</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">🎥</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Workshop video</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank" rel="noopener">Watch on YouTube →</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group {"style":{"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#FFFFFF;border-radius:12px;padding:1.5rem"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<p style="font-size:2rem">📄</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":3,"style":{"color":{"text":"#3E2723"}}} -->
+<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Brochures</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_en.pdf" target="_blank" rel="noopener">English brochure →</a></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center"><a href="https://ewendaviau.com/wp-content/uploads/2026/01/stages_lutherie2026_fr.pdf" target="_blank" rel="noopener">Brochure française →</a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
