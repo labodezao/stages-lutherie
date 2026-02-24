@@ -1418,6 +1418,7 @@ function buildSVG_Droite(data,dark){
   const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
 
+  const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
   const allOffs=data.droite.map(r=>r.offset||0);
   const maxOff=Math.max(...allOffs,0);
   const minOff=Math.min(...allOffs,0);
