@@ -1449,12 +1449,16 @@ function buildSVG_Droite(data,dark){
   if(data.nomJoueur)s+=tx(BASE+(maxBtns*HGAP)/2,MARG+32,`${t('svgClient')} : ${escSVG(data.nomJoueur)}`,10,subtl,'normal','middle');
   s+=tx(BASE+(maxBtns*HGAP)/2,MARG+47,`${t('svgLuthier')} : ${escSVG(data.nomLuthier)}  ·  ${fmtDate(data.date)}`,9,subtl,'normal','middle');
 
-  // Legend
+  // Legend – split circle (push=top half, pull=bottom half)
   const lx=BASE,ly=MARG+62;
-  s+=`<rect x="${lx}" y="${ly-10}" width="13" height="10" rx="2" fill="${pushBg}" stroke="${stroke}" stroke-width="1.2"/>`;
-  s+=tx(lx+17,ly,t('svgPush'),8,dark?'#ccc':'#333','normal','start');
-  s+=`<rect x="${lx+70}" y="${ly-10}" width="13" height="10" rx="2" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width="1.2"/>`;
-  s+=tx(lx+87,ly,t('svgPull'),8,dark?'#ccc':'#333','normal','start');
+  const lr=10,lcx=lx+lr,lcy=ly-4;
+  s+=`<circle cx="${lcx}" cy="${lcy}" r="${lr}" fill="${bg}" stroke="${stroke}" stroke-width="1.2"/>`;
+  s+=`<path d="M${lcx-lr},${lcy} A${lr},${lr} 0 0,1 ${lcx+lr},${lcy}" fill="${pushBg}"/>`;
+  s+=`<path d="M${lcx-lr},${lcy} A${lr},${lr} 0 0,0 ${lcx+lr},${lcy}" fill="${pullBg}"/>`;
+  s+=`<circle cx="${lcx}" cy="${lcy}" r="${lr}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
+  s+=`<line x1="${lcx-lr}" y1="${lcy}" x2="${lcx+lr}" y2="${lcy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
+  s+=tx(lcx+lr+5,lcy-1,t('svgPush'),8,dark?'#ccc':'#333','normal','start');
+  s+=tx(lcx+lr+5,lcy+9,t('svgPull'),8,dark?'#ccc':'#333','normal','start');
 
   // Rows
   data.droite.forEach((row,ri)=>{
