@@ -50,6 +50,26 @@ header p{font-size:.75rem;color:var(--gris);margin-top:1px;white-space:nowrap;ov
 .ca-del{background:rgba(184,49,42,.1);color:#b8312a;border:1px solid rgba(184,49,42,.25)}
 .lib-empty{font-size:.83rem;color:var(--gris);font-style:italic;padding:5px 0}
 
+/* ── Sources panel ── */
+#sources-panel{background:#f0f0ee;border-bottom:1px solid var(--brd);padding:0 20px}
+#sources-panel summary{list-style:none;cursor:pointer;padding:10px 0;display:flex;align-items:center;gap:8px;
+  font-size:.86rem;font-weight:700;color:var(--dark);user-select:none}
+#sources-panel summary::-webkit-details-marker{display:none}
+#sources-panel summary .src-toggle{margin-left:auto;font-size:.7rem;color:var(--gris)}
+#sources-panel[open] summary .src-toggle::before{content:"▲ Réduire"}
+#sources-panel:not([open]) summary .src-toggle::before{content:"▼ Afficher"}
+.src-badge{background:rgba(26,102,145,.12);color:var(--bleu);border-radius:20px;padding:1px 7px;
+  font-size:.72rem;font-weight:700}
+.src-body{padding:4px 0 14px}
+.src-cats{display:flex;gap:16px;flex-wrap:wrap}
+.src-cat{flex:1;min-width:180px}
+.src-cat-title{font-size:.72rem;font-weight:700;color:#777;text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--brd);padding-bottom:4px;margin-bottom:7px}
+.src-links{list-style:none;display:flex;flex-direction:column;gap:4px}
+.src-links a{font-size:.78rem;color:var(--bleu);text-decoration:none;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;display:block}
+.src-links a:hover{color:var(--dark);text-decoration:underline}
+
 /* ── Container ── */
 .container{max-width:1380px;margin:0 auto;padding:16px 14px}
 .card{background:var(--card-bg);border-radius:10px;border:1px solid var(--brd);
@@ -267,6 +287,107 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   </div>
   <div id="lib-cards"><div class="lib-empty" data-i="noSaved">Aucun instrument sauvegardé.</div></div>
 </div>
+
+<!-- SOURCES (PDFs de référence) -->
+<details id="sources-panel" class="no-print">
+  <summary>
+    <span>📄 PDFs de référence</span>
+    <span class="src-badge">52</span>
+    <span class="src-toggle"></span>
+  </summary>
+  <div class="src-body">
+    <div class="src-cats">
+
+      <!-- Gabarits -->
+      <div class="src-cat">
+        <div class="src-cat-title">Gabarits</div>
+        <ul class="src-links">
+          <li><a href="../../sources/2r8b.pdf" target="_blank" rel="noopener">2 rangs 8 basses</a></li>
+          <li><a href="../../sources/2%2B2r8b.pdf" target="_blank" rel="noopener">2+2 rangs 8 basses</a></li>
+          <li><a href="../../sources/2%2B5r12b.pdf" target="_blank" rel="noopener">2+5 rangs 12 basses</a></li>
+          <li><a href="../../sources/2%2B6r12b.pdf" target="_blank" rel="noopener">2+6 rangs 12 basses</a></li>
+          <li><a href="../../sources/3r12b-2.pdf" target="_blank" rel="noopener">3 rangs 12 basses</a></li>
+          <li><a href="../../sources/3r18b-2.pdf" target="_blank" rel="noopener">3 rangs 18 basses</a></li>
+          <li><a href="../../sources/3R33-18B_aigu.pdf" target="_blank" rel="noopener">3 rangs 33/18b (aigu)</a></li>
+          <li><a href="../../sources/3R33-18B_grav.pdf" target="_blank" rel="noopener">3 rangs 33/18b (grave)</a></li>
+        </ul>
+      </div>
+
+      <!-- 2 rangs -->
+      <div class="src-cat">
+        <div class="src-cat-title">2 rangs</div>
+        <ul class="src-links">
+          <li><a href="../../sources/AD_2r%2B5.pdf" target="_blank" rel="noopener">AD 2r+5</a></li>
+          <li><a href="../../sources/AD_2r%2B6.pdf" target="_blank" rel="noopener">AD 2r+6</a></li>
+          <li><a href="../../sources/AD_2r8b.pdf" target="_blank" rel="noopener">AD 2r 8b</a></li>
+          <li><a href="../../sources/BC_2r8b.pdf" target="_blank" rel="noopener">BC 2r 8b</a></li>
+          <li><a href="../../sources/BbEb_2r8b.pdf" target="_blank" rel="noopener">Bb/Eb 2r 8b</a></li>
+          <li><a href="../../sources/CF_2%2B6TRIKI.pdf" target="_blank" rel="noopener">CF 2+6 Triki</a></li>
+          <li><a href="../../sources/CF_2r8b.pdf" target="_blank" rel="noopener">CF 2r 8b</a></li>
+          <li><a href="../../sources/CisD_2r8b.pdf" target="_blank" rel="noopener">C#/D 2r 8b</a></li>
+          <li><a href="../../sources/DG_2%2B6-old.pdf" target="_blank" rel="noopener">DG 2+6 (ancien)</a></li>
+          <li><a href="../../sources/DG_2%2B6.pdf" target="_blank" rel="noopener">DG 2+6</a></li>
+          <li><a href="../../sources/DG_2r%2B5-as.pdf" target="_blank" rel="noopener">DG 2r+5 (as)</a></li>
+          <li><a href="../../sources/DG_2r8b.pdf" target="_blank" rel="noopener">DG 2r 8b</a></li>
+          <li><a href="../../sources/F-Bb_2r%2B5.pdf" target="_blank" rel="noopener">F/Bb 2r+5</a></li>
+          <li><a href="../../sources/F-Bb_2r8b.pdf" target="_blank" rel="noopener">F/Bb 2r 8b</a></li>
+        </ul>
+      </div>
+
+      <!-- 3 rangs -->
+      <div class="src-cat">
+        <div class="src-cat-title">3 rangs</div>
+        <ul class="src-links">
+          <li><a href="../../sources/CGF.pdf" target="_blank" rel="noopener">CGF</a></li>
+          <li><a href="../../sources/DG_3r18b-as.pdf" target="_blank" rel="noopener">DG 3r 18b (as)</a></li>
+          <li><a href="../../sources/DG_3r18b.pdf" target="_blank" rel="noopener">DG 3r 18b</a></li>
+          <li><a href="../../sources/F-Bb_3r.pdf" target="_blank" rel="noopener">F/Bb 3 rangs</a></li>
+          <li><a href="../../sources/GCF_12b.pdf" target="_blank" rel="noopener">GCF 12 basses</a></li>
+          <li><a href="../../sources/trois-rangs_33_18_alt-f4_sol-do.pdf" target="_blank" rel="noopener">33/18 alt-F4 Sol-Do</a></li>
+          <li><a href="../../sources/trois-rangs_33_8_corgeron-sol-do.pdf" target="_blank" rel="noopener">33/8 Corgeron Sol-Do</a></li>
+          <li><a href="../../sources/trois-rangs_33_8_heim-sol-do.pdf" target="_blank" rel="noopener">33/8 Heim Sol-Do</a></li>
+          <li><a href="../../sources/trois_rangs_33_12_la-re-sol_0.pdf" target="_blank" rel="noopener">33/12 La-Ré-Sol</a></li>
+          <li><a href="../../sources/trois_rangs_33_12_sib-mib-lab.pdf" target="_blank" rel="noopener">33/12 Sib-Mib-Lab</a></li>
+          <li><a href="../../sources/trois_rangs_33_12_sol-do-fa.pdf" target="_blank" rel="noopener">33/12 Sol-Do-Fa</a></li>
+          <li><a href="../../sources/trois_rangs_33_18_sol-do-_bottasso.pdf" target="_blank" rel="noopener">33/18 Sol-Do (Bottasso)</a></li>
+          <li><a href="../../sources/trois_rangs_33_18_sol-do-_gaillard_0.pdf" target="_blank" rel="noopener">33/18 Sol-Do (Gaillard)</a></li>
+          <li><a href="../../sources/trois_rangs_33_18_sol-do-_jpl.pdf" target="_blank" rel="noopener">33/18 Sol-Do (JPL)</a></li>
+          <li><a href="../../sources/trois_rangs_33_18_sol-do-_ltl_0.pdf" target="_blank" rel="noopener">33/18 Sol-Do (LTL)</a></li>
+        </ul>
+      </div>
+
+      <!-- Spéciaux -->
+      <div class="src-cat">
+        <div class="src-cat-title">Spéciaux</div>
+        <ul class="src-links">
+          <li><a href="../../sources/chroma-3rg.pdf" target="_blank" rel="noopener">Chromatique 3r grave</a></li>
+          <li><a href="../../sources/chroma-YLO.pdf" target="_blank" rel="noopener">Chromatique YLO</a></li>
+          <li><a href="../../sources/P_chroma-C3.pdf" target="_blank" rel="noopener">Chromatique C3</a></li>
+          <li><a href="../../sources/hybrid62d.pdf" target="_blank" rel="noopener">Hybride 62d</a></li>
+          <li><a href="../../sources/deux_rangs_demi_21-5_12_casta_sol-do.pdf" target="_blank" rel="noopener">2r demi 21/5 12b Sol-Do (Casta)</a></li>
+          <li><a href="../../sources/deux_rangs_demi_21-5_12_castajpl_sol-do.pdf" target="_blank" rel="noopener">2r demi 21/5 12b Sol-Do (CastaJPL)</a></li>
+        </ul>
+      </div>
+
+      <!-- Références -->
+      <div class="src-cat">
+        <div class="src-cat-title">Références</div>
+        <ul class="src-links">
+          <li><a href="../../sources/CG_Marimon.pdf" target="_blank" rel="noopener">CG Marimon</a></li>
+          <li><a href="../../sources/CLUB-CF.pdf" target="_blank" rel="noopener">Club CF</a></li>
+          <li><a href="../../sources/GalaadCG.pdf" target="_blank" rel="noopener">Galaad CG</a></li>
+          <li><a href="../../sources/MerlinCG.pdf" target="_blank" rel="noopener">Merlin CG</a></li>
+          <li><a href="../../sources/Melo-C.pdf" target="_blank" rel="noopener">Mélo C</a></li>
+          <li><a href="../../sources/Melo-D.pdf" target="_blank" rel="noopener">Mélo D</a></li>
+          <li><a href="../../sources/Melo-G.pdf" target="_blank" rel="noopener">Mélo G</a></li>
+          <li><a href="../../sources/milleret-pignol%20(1).pdf" target="_blank" rel="noopener">Milleret-Pignol</a></li>
+          <li><a href="../../sources/Touptit_19_CG.pdf" target="_blank" rel="noopener">Touptit 19 CG</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</details>
 
 <div class="container">
 
