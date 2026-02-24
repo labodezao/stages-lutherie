@@ -1063,9 +1063,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(list.length){loadFromDB(list[0]);}
   else{loadPreset('GCD33');document.getElementById('preset-select').value='GCD33';}
   scheduleLivePreview();
+  // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
+  document.getElementById('note-grid').addEventListener('click',e=>{
+    const inp=e.target.closest('.note-input');
+    if(inp){e.stopPropagation();showPicker(inp);}
+  });
+  // Close picker when clicking outside it (use computed style so initial '' != 'none' doesn't trick us)
   document.addEventListener('click',e=>{
     const p=document.getElementById('note-picker');
-    if(p.style.display!=='none'&&!p.contains(e.target)&&!e.target.classList.contains('note-input'))hidePicker();
+    if(getComputedStyle(p).display!=='none'&&!p.contains(e.target)&&!e.target.closest('.note-input'))hidePicker();
   });
 });
 
@@ -1200,8 +1206,8 @@ function generateInputGrid(){
       const n=notes[b]||{p:'',t:''};
       html+=`<div class="btn-cell">
         <div class="btn-num">${lbl} ${b+1}</div>
-        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
-        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
+        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
+        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
       </div>`;
     }
     html+=`</div></div>`;
@@ -1225,8 +1231,8 @@ function generateInputGrid(){
       const n=arr[b]||{p:'',t:''};
       html+=`<div class="btn-cell">
         <div class="btn-num">${label[0].toUpperCase()}${b+1}</div>
-        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
-        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
+        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
+        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
       </div>`;
     }
     html+=`</div></div>`;
