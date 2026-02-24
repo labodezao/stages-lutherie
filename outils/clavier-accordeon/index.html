@@ -50,26 +50,6 @@ header p{font-size:.75rem;color:var(--gris);margin-top:1px;white-space:nowrap;ov
 .ca-del{background:rgba(184,49,42,.1);color:#b8312a;border:1px solid rgba(184,49,42,.25)}
 .lib-empty{font-size:.83rem;color:var(--gris);font-style:italic;padding:5px 0}
 
-/* ── Sources panel ── */
-#sources-panel{background:#f0f0ee;border-bottom:1px solid var(--brd);padding:0 20px}
-#sources-panel summary{list-style:none;cursor:pointer;padding:10px 0;display:flex;align-items:center;gap:8px;
-  font-size:.86rem;font-weight:700;color:var(--dark);user-select:none}
-#sources-panel summary::-webkit-details-marker{display:none}
-#sources-panel summary .src-toggle{margin-left:auto;font-size:.7rem;color:var(--gris)}
-#sources-panel[open] summary .src-toggle::before{content:"▲ Réduire"}
-#sources-panel:not([open]) summary .src-toggle::before{content:"▼ Afficher"}
-.src-badge{background:rgba(26,102,145,.12);color:var(--bleu);border-radius:20px;padding:1px 7px;
-  font-size:.72rem;font-weight:700}
-.src-body{padding:4px 0 14px}
-.src-cats{display:flex;gap:16px;flex-wrap:wrap}
-.src-cat{flex:1;min-width:180px}
-.src-cat-title{font-size:.72rem;font-weight:700;color:#777;text-transform:uppercase;letter-spacing:.05em;
-  border-bottom:1px solid var(--brd);padding-bottom:4px;margin-bottom:7px}
-.src-links{list-style:none;display:flex;flex-direction:column;gap:4px}
-.src-links a{font-size:.78rem;color:var(--bleu);text-decoration:none;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;display:block}
-.src-links a:hover{color:var(--dark);text-decoration:underline}
-
 /* ── Container ── */
 .container{max-width:1380px;margin:0 auto;padding:16px 14px}
 .card{background:var(--card-bg);border-radius:10px;border:1px solid var(--brd);
@@ -288,106 +268,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   <div id="lib-cards"><div class="lib-empty" data-i="noSaved">Aucun instrument sauvegardé.</div></div>
 </div>
 
-<!-- SOURCES (PDFs de référence) -->
-<details id="sources-panel" class="no-print">
-  <summary>
-    <span>📄 PDFs de référence</span>
-    <span class="src-badge">52</span>
-    <span class="src-toggle"></span>
-  </summary>
-  <div class="src-body">
-    <div class="src-cats">
-
-      <!-- Gabarits -->
-      <div class="src-cat">
-        <div class="src-cat-title">Gabarits</div>
-        <ul class="src-links">
-          <li><a href="../../sources/2r8b.pdf" target="_blank" rel="noopener">2 rangs 8 basses</a></li>
-          <li><a href="../../sources/2%2B2r8b.pdf" target="_blank" rel="noopener">2+2 rangs 8 basses</a></li>
-          <li><a href="../../sources/2%2B5r12b.pdf" target="_blank" rel="noopener">2+5 rangs 12 basses</a></li>
-          <li><a href="../../sources/2%2B6r12b.pdf" target="_blank" rel="noopener">2+6 rangs 12 basses</a></li>
-          <li><a href="../../sources/3r12b-2.pdf" target="_blank" rel="noopener">3 rangs 12 basses</a></li>
-          <li><a href="../../sources/3r18b-2.pdf" target="_blank" rel="noopener">3 rangs 18 basses</a></li>
-          <li><a href="../../sources/3R33-18B_aigu.pdf" target="_blank" rel="noopener">3 rangs 33/18b (aigu)</a></li>
-          <li><a href="../../sources/3R33-18B_grav.pdf" target="_blank" rel="noopener">3 rangs 33/18b (grave)</a></li>
-        </ul>
-      </div>
-
-      <!-- 2 rangs -->
-      <div class="src-cat">
-        <div class="src-cat-title">2 rangs</div>
-        <ul class="src-links">
-          <li><a href="../../sources/AD_2r%2B5.pdf" target="_blank" rel="noopener">AD 2r+5</a></li>
-          <li><a href="../../sources/AD_2r%2B6.pdf" target="_blank" rel="noopener">AD 2r+6</a></li>
-          <li><a href="../../sources/AD_2r8b.pdf" target="_blank" rel="noopener">AD 2r 8b</a></li>
-          <li><a href="../../sources/BC_2r8b.pdf" target="_blank" rel="noopener">BC 2r 8b</a></li>
-          <li><a href="../../sources/BbEb_2r8b.pdf" target="_blank" rel="noopener">Bb/Eb 2r 8b</a></li>
-          <li><a href="../../sources/CF_2%2B6TRIKI.pdf" target="_blank" rel="noopener">CF 2+6 Triki</a></li>
-          <li><a href="../../sources/CF_2r8b.pdf" target="_blank" rel="noopener">CF 2r 8b</a></li>
-          <li><a href="../../sources/CisD_2r8b.pdf" target="_blank" rel="noopener">C#/D 2r 8b</a></li>
-          <li><a href="../../sources/DG_2%2B6-old.pdf" target="_blank" rel="noopener">DG 2+6 (ancien)</a></li>
-          <li><a href="../../sources/DG_2%2B6.pdf" target="_blank" rel="noopener">DG 2+6</a></li>
-          <li><a href="../../sources/DG_2r%2B5-as.pdf" target="_blank" rel="noopener">DG 2r+5 (as)</a></li>
-          <li><a href="../../sources/DG_2r8b.pdf" target="_blank" rel="noopener">DG 2r 8b</a></li>
-          <li><a href="../../sources/F-Bb_2r%2B5.pdf" target="_blank" rel="noopener">F/Bb 2r+5</a></li>
-          <li><a href="../../sources/F-Bb_2r8b.pdf" target="_blank" rel="noopener">F/Bb 2r 8b</a></li>
-        </ul>
-      </div>
-
-      <!-- 3 rangs -->
-      <div class="src-cat">
-        <div class="src-cat-title">3 rangs</div>
-        <ul class="src-links">
-          <li><a href="../../sources/CGF.pdf" target="_blank" rel="noopener">CGF</a></li>
-          <li><a href="../../sources/DG_3r18b-as.pdf" target="_blank" rel="noopener">DG 3r 18b (as)</a></li>
-          <li><a href="../../sources/DG_3r18b.pdf" target="_blank" rel="noopener">DG 3r 18b</a></li>
-          <li><a href="../../sources/F-Bb_3r.pdf" target="_blank" rel="noopener">F/Bb 3 rangs</a></li>
-          <li><a href="../../sources/GCF_12b.pdf" target="_blank" rel="noopener">GCF 12 basses</a></li>
-          <li><a href="../../sources/trois-rangs_33_18_alt-f4_sol-do.pdf" target="_blank" rel="noopener">33/18 alt-F4 Sol-Do</a></li>
-          <li><a href="../../sources/trois-rangs_33_8_corgeron-sol-do.pdf" target="_blank" rel="noopener">33/8 Corgeron Sol-Do</a></li>
-          <li><a href="../../sources/trois-rangs_33_8_heim-sol-do.pdf" target="_blank" rel="noopener">33/8 Heim Sol-Do</a></li>
-          <li><a href="../../sources/trois_rangs_33_12_la-re-sol_0.pdf" target="_blank" rel="noopener">33/12 La-Ré-Sol</a></li>
-          <li><a href="../../sources/trois_rangs_33_12_sib-mib-lab.pdf" target="_blank" rel="noopener">33/12 Sib-Mib-Lab</a></li>
-          <li><a href="../../sources/trois_rangs_33_12_sol-do-fa.pdf" target="_blank" rel="noopener">33/12 Sol-Do-Fa</a></li>
-          <li><a href="../../sources/trois_rangs_33_18_sol-do-_bottasso.pdf" target="_blank" rel="noopener">33/18 Sol-Do (Bottasso)</a></li>
-          <li><a href="../../sources/trois_rangs_33_18_sol-do-_gaillard_0.pdf" target="_blank" rel="noopener">33/18 Sol-Do (Gaillard)</a></li>
-          <li><a href="../../sources/trois_rangs_33_18_sol-do-_jpl.pdf" target="_blank" rel="noopener">33/18 Sol-Do (JPL)</a></li>
-          <li><a href="../../sources/trois_rangs_33_18_sol-do-_ltl_0.pdf" target="_blank" rel="noopener">33/18 Sol-Do (LTL)</a></li>
-        </ul>
-      </div>
-
-      <!-- Spéciaux -->
-      <div class="src-cat">
-        <div class="src-cat-title">Spéciaux</div>
-        <ul class="src-links">
-          <li><a href="../../sources/chroma-3rg.pdf" target="_blank" rel="noopener">Chromatique 3r grave</a></li>
-          <li><a href="../../sources/chroma-YLO.pdf" target="_blank" rel="noopener">Chromatique YLO</a></li>
-          <li><a href="../../sources/P_chroma-C3.pdf" target="_blank" rel="noopener">Chromatique C3</a></li>
-          <li><a href="../../sources/hybrid62d.pdf" target="_blank" rel="noopener">Hybride 62d</a></li>
-          <li><a href="../../sources/deux_rangs_demi_21-5_12_casta_sol-do.pdf" target="_blank" rel="noopener">2r demi 21/5 12b Sol-Do (Casta)</a></li>
-          <li><a href="../../sources/deux_rangs_demi_21-5_12_castajpl_sol-do.pdf" target="_blank" rel="noopener">2r demi 21/5 12b Sol-Do (CastaJPL)</a></li>
-        </ul>
-      </div>
-
-      <!-- Références -->
-      <div class="src-cat">
-        <div class="src-cat-title">Références</div>
-        <ul class="src-links">
-          <li><a href="../../sources/CG_Marimon.pdf" target="_blank" rel="noopener">CG Marimon</a></li>
-          <li><a href="../../sources/CLUB-CF.pdf" target="_blank" rel="noopener">Club CF</a></li>
-          <li><a href="../../sources/GalaadCG.pdf" target="_blank" rel="noopener">Galaad CG</a></li>
-          <li><a href="../../sources/MerlinCG.pdf" target="_blank" rel="noopener">Merlin CG</a></li>
-          <li><a href="../../sources/Melo-C.pdf" target="_blank" rel="noopener">Mélo C</a></li>
-          <li><a href="../../sources/Melo-D.pdf" target="_blank" rel="noopener">Mélo D</a></li>
-          <li><a href="../../sources/Melo-G.pdf" target="_blank" rel="noopener">Mélo G</a></li>
-          <li><a href="../../sources/milleret-pignol%20(1).pdf" target="_blank" rel="noopener">Milleret-Pignol</a></li>
-          <li><a href="../../sources/Touptit_19_CG.pdf" target="_blank" rel="noopener">Touptit 19 CG</a></li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</details>
 
 <div class="container">
 
@@ -890,7 +770,17 @@ const PRESET_LABELS={
   GCD33:'Sol/Do/Ré — 33 boutons',BbFC33:'Sib/Fa/Do — 33 boutons',
   ADG33:'La/Ré/Sol — 33 boutons',DGC33:'Ré/Sol/Do — 33 boutons',
   CFBb33:'Do/Fa/Sib — 33 boutons',EAD33:'Mi/La/Ré — 33 boutons',
-  BbEbAb33:'Sib/Mib/Lab — 33 boutons',FCG33:'Fa/Do/Sol — 33 boutons'
+  BbEbAb33:'Sib/Mib/Lab — 33 boutons',FCG33:'Fa/Do/Sol — 33 boutons',
+  // ── Presets from PDF source analysis ──
+  SolDoFa33_12:'Sol/Do/Fa — 33/12 (Continental)',
+  LaReSol33_12:'La/Ré/Sol — 33/12',
+  SibMibLab33_12:'Sib/Mib/Lab — 33/12',
+  SolDo_Corgeron:'Sol/Do Corgeron — 33/8',
+  SolDo_Heim:'Sol/Do Heim — 33/8',
+  SolDoAlts_Bottasso:'Sol/Do/Alts Bottasso — 33/18',
+  SolDoAlts_JPL:'Sol/Do/Alts JPL — 33/18',
+  SolDoAlts_LTL:'Sol/Do/Alts LTL — 33/18',
+  SolDoAlts_Gaillard:'Sol/Do/Alts Gaillard — 33/18'
 };
 
 const NOTE_TO_SEMITONE={Do:0,'Do#':1,Réb:1,Re:2,'Ré':2,'Ré#':3,Mib:3,Mi:4,Fa:5,'Fa#':6,Solb:6,Sol:7,'Sol#':8,Lab:8,La:9,'La#':10,Sib:10,Si:11};
@@ -960,6 +850,70 @@ function addTransposedPresets(){
   PRESETS.FCG33=transposePreset('GCD33',10,['Rangée Fa (intérieure)','Rangée Do (médiane)','Rangée Sol (extérieure)'],true);
 }
 addTransposedPresets();
+
+/* ── Presets from PDF source analysis (Loffet/Comprendre-et-Choisir PDFs) ── */
+// Sol/Do/Fa 33/12 Continental
+PRESETS.SolDoFa33_12={nbRangees:3,rangees:[{nom:'Rangée Fa (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Do3',t:'Si2'},{p:'Mib3',t:'Do#3'},{p:'Do4',t:'Sol3'},{p:'Fa4',t:'Si3'},{p:'La4',t:'Ré4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'Si4'},{p:'La5',t:'Ré5'},{p:'Do6',t:'Sol5'},{p:'Fa6',t:'Si5'},{p:'La6',t:'Ré6'}],
+  [{p:'Do3',t:'Si2'},{p:'Mib3',t:'Do#3'},{p:'La3',t:'Mi3'},{p:'Do4',t:'Sol3'},{p:'Mi4',t:'Sib3'},{p:'Fa#4',t:'Ré4'},{p:'La4',t:'Mi4'},{p:'Do5',t:'Sol4'},{p:'Mi5',t:'Sib4'},{p:'Fa#5',t:'Ré5'},{p:'La5',t:'Mi5'}],
+  [{p:'Sol#3',t:'Do#3'},{p:'Si3',t:'Mi3'},{p:'Ré4',t:'Sol3'},{p:'Fa4',t:'Sib3'},{p:'La4',t:'Ré4'},{p:'Si4',t:'Mi4'},{p:'Ré5',t:'Sol4'},{p:'Fa5',t:'Sib4'},{p:'La5',t:'Ré5'},{p:'Si5',t:'Mi5'}]
+],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Fa3',t:'Do3'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Fa Maj',t:'Do Min'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'}],terzetto:[]}};
+
+// La/Ré/Sol 33/12
+PRESETS.LaReSol33_12={nbRangees:3,rangees:[{nom:'Rangée Sol (extérieure)',nb:10},{nom:'Rangée Ré (médiane)',nb:11},{nom:'Rangée La (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Fa3',t:'Mib3'},{p:'Ré4',t:'La3'},{p:'Sol4',t:'Do#4'},{p:'Si4',t:'Mi4'},{p:'Ré5',t:'La4'},{p:'Sol5',t:'Do#5'},{p:'Si5',t:'Mi5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do#6'},{p:'Si6',t:'Mi6'}],
+  [{p:'La2',t:'Sol#2'},{p:'Fa3',t:'Mib3'},{p:'Si3',t:'Fa#3'},{p:'Ré4',t:'La3'},{p:'Fa#4',t:'Do4'},{p:'Sol#4',t:'Mi4'},{p:'Si4',t:'Fa#4'},{p:'Ré5',t:'La4'},{p:'Fa#5',t:'Do5'},{p:'Sol#5',t:'Mi5'},{p:'Si5',t:'Fa#5'}],
+  [{p:'Sib3',t:'Do#3'},{p:'Do#4',t:'Mi3'},{p:'Mi4',t:'Sol3'},{p:'Sol4',t:'Sib3'},{p:'Si4',t:'Ré4'},{p:'Do#5',t:'Mi4'},{p:'Mi5',t:'Sol4'},{p:'Sol5',t:'Sib4'},{p:'Si5',t:'Ré5'},{p:'Do#6',t:'Mi5'}]
+],basses:[{p:'La2',t:'Mi2'},{p:'Ré3',t:'La2'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Fa#3',t:'Do#3'},{p:'Do#3',t:'Sol#2'}],accords:[{p:'La Maj',t:'Mi Min'},{p:'Ré Maj',t:'La Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Fa# Maj',t:'Do# Min'},{p:'Do# Maj',t:'Sol# Min'}],terzetto:[]}};
+
+// Sib/Mib/Lab 33/12
+PRESETS.SibMibLab33_12={nbRangees:3,rangees:[{nom:'Rangée Lab (extérieure)',nb:10},{nom:'Rangée Mib (médiane)',nb:11},{nom:'Rangée Sib (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Fa#3',t:'Mi3'},{p:'Mib4',t:'Sib3'},{p:'Sib4',t:'Ré4'},{p:'Do5',t:'Fa4'},{p:'Mib5',t:'Sib4'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Fa5'},{p:'Mib6',t:'Sib5'},{p:'Fa6',t:'Ré6'},{p:'Do7',t:'Fa6'}],
+  [{p:'Sib2',t:'La2'},{p:'Fa#3',t:'Mi3'},{p:'Do4',t:'Sol3'},{p:'Mib4',t:'Sib3'},{p:'Sol4',t:'Réb4'},{p:'La4',t:'Fa4'},{p:'Do5',t:'Sol4'},{p:'Mib5',t:'Réb5'},{p:'Sol5',t:'Fa5'},{p:'La5',t:'Sol5'},{p:'Do6',t:'Fa6'}],
+  [{p:'Si3',t:'Ré3'},{p:'Ré4',t:'Fa3'},{p:'Fa4',t:'Lab3'},{p:'Do5',t:'Réb4'},{p:'Ré5',t:'Fa4'},{p:'Fa5',t:'Lab4'},{p:'Do6',t:'Réb5'},{p:'Ré6',t:'Fa5'},{p:'Fa6',t:'Lab5'},{p:'Do7',t:'Réb6'}]
+],basses:[{p:'Sib2',t:'Fa2'},{p:'Mib3',t:'Sib2'},{p:'Lab3',t:'Mib3'},{p:'Fa3',t:'Do3'},{p:'Do3',t:'Sol2'},{p:'Sol3',t:'Ré3'}],accords:[{p:'Sib Maj',t:'Fa Min'},{p:'Mib Maj',t:'Sib Min'},{p:'Lab Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'},{p:'Do Maj',t:'Sol Min'},{p:'Sol Maj',t:'Ré Min'}],terzetto:[]}};
+
+// Sol/Do Corgeron 33/8
+PRESETS.SolDo_Corgeron={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Sol#3',t:'Si3'},{p:'Sib3',t:'Ré4'},{p:'Mib4',t:'Sol4'},{p:'Sol#4',t:'Si4'},{p:'Sib4',t:'Ré5'},{p:'Mib5',t:'Sol5'},{p:'Sol#5',t:'Si5'},{p:'Sib5',t:'Ré6'},{p:'Mib6',t:'Sol6'},{p:'Sol#6',t:'Si6'},{p:'Sib6',t:'Ré7'}],
+  [{p:'Mi3',t:'Sol#3'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
+  [{p:'Sol3',t:'La3'},{p:'Do4',t:'Si3'},{p:'Mi4',t:'Ré4'},{p:'Sol4',t:'Fa#4'},{p:'Do5',t:'La4'},{p:'Mi5',t:'Do5'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Mi5'},{p:'Mi6',t:'La5'},{p:'Sol6',t:'Do6'}]
+],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'}],terzetto:[]}};
+
+// Sol/Do Heim 33/8
+PRESETS.SolDo_Heim={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Sol#3',t:'Si3'},{p:'La3',t:'Ré4'},{p:'Mib4',t:'Sol4'},{p:'Sol#4',t:'Si4'},{p:'La4',t:'Ré5'},{p:'Mib5',t:'Sol5'},{p:'Sol#5',t:'Si5'},{p:'La5',t:'Ré6'},{p:'Mib6',t:'Sol6'},{p:'Sol#6',t:'Si6'},{p:'La6',t:'Ré7'}],
+  [{p:'Mi3',t:'Sol#3'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
+  [{p:'Sol3',t:'La3'},{p:'Do4',t:'Si3'},{p:'Mi4',t:'Ré4'},{p:'Sol4',t:'Fa#4'},{p:'Do5',t:'La4'},{p:'Mi5',t:'Do5'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Mi5'},{p:'Mi6',t:'La5'},{p:'Sol6',t:'Do6'}]
+],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'}],terzetto:[]}};
+
+// Sol/Do/Alts Bottasso 33/18
+PRESETS.SolDoAlts_Bottasso={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Do#3',t:'Si2'},{p:'Sol#3',t:'Ré3'},{p:'Mib4',t:'Sol3'},{p:'Fa4',t:'Si3'},{p:'Fa#4',t:'Ré4'},{p:'Mib5',t:'Sol4'},{p:'Fa5',t:'Si4'},{p:'Fa#5',t:'Ré5'},{p:'Mib6',t:'Sol5'},{p:'Fa6',t:'Si5'},{p:'Fa#6',t:'Ré6'}],
+  [{p:'Mi3',t:'Si2'},{p:'Fa#3',t:'Do#3'},{p:'La3',t:'Mib3'},{p:'Do4',t:'Sol3'},{p:'Mi4',t:'Sib3'},{p:'Fa#4',t:'Do#4'},{p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Mi5',t:'Sib4'},{p:'Fa#5',t:'Do#5'},{p:'La5',t:'Mib5'}],
+  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
+],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
+
+// Sol/Do/Alts JPL 33/18
+PRESETS.SolDoAlts_JPL={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Si2',t:'Si3'},{p:'Sol#3',t:'Ré4'},{p:'La3',t:'Sol4'},{p:'Mib4',t:'Si4'},{p:'Sol#4',t:'Ré5'},{p:'La4',t:'Sol5'},{p:'Mib5',t:'Si5'},{p:'Sol#5',t:'Ré6'},{p:'La5',t:'Sol6'},{p:'Mib6',t:'Si6'},{p:'La6',t:'Ré7'}],
+  [{p:'Mi3',t:'Si2'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Sib3'},{p:'Do4',t:'Do#4'},{p:'Mi4',t:'Sol4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sib5'},{p:'Fa#5',t:'Do6'},{p:'La5',t:'Mi6'}],
+  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
+],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
+
+// Sol/Do/Alts LTL 33/18
+PRESETS.SolDoAlts_LTL={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Do#3',t:'Si2'},{p:'Sol#3',t:'Ré3'},{p:'Sib3',t:'Sol3'},{p:'Mib4',t:'Si3'},{p:'Sol#4',t:'Ré4'},{p:'Sib4',t:'Sol4'},{p:'Mib5',t:'Si4'},{p:'Sol#5',t:'Ré5'},{p:'Sib5',t:'Sol5'},{p:'Mib6',t:'Si5'},{p:'Sol#6',t:'Ré6'}],
+  [{p:'Mi3',t:'Si2'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
+  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
+],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
+
+// Sol/Do/Alts Gaillard 33/18
+PRESETS.SolDoAlts_Gaillard={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
+  [{p:'Mib3',t:'Si3'},{p:'Sol#3',t:'Ré4'},{p:'La3',t:'Sol4'},{p:'Mib4',t:'Si4'},{p:'Sol#4',t:'Ré5'},{p:'La4',t:'Sol5'},{p:'Mib5',t:'Si5'},{p:'Sol#5',t:'Ré6'},{p:'La5',t:'Sol6'},{p:'Mib6',t:'Si6'},{p:'Sol#6',t:'Ré7'}],
+  [{p:'Mi3',t:'Sol#3'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
+  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
+],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
 
 function renderPresetOptions(){
   const sel=document.getElementById('preset-select');
@@ -1765,6 +1719,7 @@ function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeou
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
 function runLivePreview(){
   try{
+    readNoteInputsIntoCFG();
     const data=readInputs();
     const svgD=buildSVG_Droite(data,false);
     const svgG=buildSVG_Gauche(data,false);
