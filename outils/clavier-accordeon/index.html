@@ -305,19 +305,25 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           </div></div>
         <div class="form-group"><label data-i="leftHandConfig">Main gauche — basses libres</label>
           <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 7px;align-items:center;margin-top:2px;">
-            <span class="gauche-label" data-i="basses">Basses</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Basses" data-tip="Bouton produisant une note basse unique (fondamentale). Ex: Do grave, Sol grave.&#10;— Single bass note button (root note). E.g. low C, low G.">ⓘ</span>
+            <div style="display:flex;align-items:center;gap:3px;">
+              <span class="gauche-label" data-i="basses">Basses</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Basses" data-tip="Bouton produisant une note basse unique (fondamentale). Ex: Do grave, Sol grave.&#10;— Single bass note button (root note). E.g. low C, low G.">ⓘ</span>
+            </div>
             <div class="rng-ctrl">
               <button type="button" class="rng-btn" onclick="changeGauche('basses',-1)">−</button>
               <input type="number" id="nb-basses" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('basses')">
               <button type="button" class="rng-btn" onclick="changeGauche('basses',1)">＋</button>
             </div>
-            <span class="gauche-label" data-i="accords">Accords</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Accords" data-tip="Bouton d'accord : 2 voix (fondamentale + quinte). Ex: Do+Sol, Sol+Ré.&#10;— Chord button: 2 voices (root + fifth). E.g. C+G, G+D.">ⓘ</span>
+            <div style="display:flex;align-items:center;gap:3px;">
+              <span class="gauche-label" data-i="accords">Accords</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Accords" data-tip="Bouton d'accord : 2 voix (fondamentale + quinte). Ex: Do+Sol, Sol+Ré.&#10;— Chord button: 2 voices (root + fifth). E.g. C+G, G+D.">ⓘ</span>
+            </div>
             <div class="rng-ctrl">
               <button type="button" class="rng-btn" onclick="changeGauche('accords',-1)">−</button>
               <input type="number" id="nb-accords" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('accords')">
               <button type="button" class="rng-btn" onclick="changeGauche('accords',1)">＋</button>
             </div>
-            <span class="gauche-label" data-i="terzetto">Terzetto</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Terzetto" data-tip="Terzetto (italien : &quot;trio&quot;) : plaque d'anche ajoutant la TIERCE à l'accord.&#10;2 voix : Do+Sol · 3 voix terzetto : Do+Mi+Sol (accord complet).&#10;Optionnel sur accordéon 2-voix ; inclus sur 3-voix.&#10;—&#10;Terzetto (Italian: &quot;trio&quot;): reed plate adding the 3RD to each chord.&#10;2-voice: C+G · 3-voice terzetto: C+E+G (full chord).&#10;Optional on 2-voice; standard on 3-voice instruments.">ⓘ</span>
+            <div style="display:flex;align-items:center;gap:3px;">
+              <span class="gauche-label" data-i="terzetto">Terzetto</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Terzetto" data-tip="Terzetto (italien : &quot;trio&quot;) : plaque d'anche ajoutant la TIERCE à l'accord.&#10;2 voix : Do+Sol · 3 voix terzetto : Do+Mi+Sol (accord complet).&#10;Optionnel sur accordéon 2-voix ; inclus sur 3-voix.&#10;—&#10;Terzetto (Italian: &quot;trio&quot;): reed plate adding the 3RD to each chord.&#10;2-voice: C+G · 3-voice terzetto: C+E+G (full chord).&#10;Optional on 2-voice; standard on 3-voice instruments.">ⓘ</span>
+            </div>
             <div class="rng-ctrl">
               <button type="button" class="rng-btn" onclick="changeGauche('terzetto',-1)">−</button>
               <input type="number" id="nb-terzetto" min="0" max="60" value="0" style="width:48px;text-align:center;" oninput="applyGaucheCount('terzetto')">
@@ -1024,8 +1030,8 @@ function generateInputGrid(){
       const n=notes[b]||{p:'',t:''};
       html+=`<div class="btn-cell">
         <div class="btn-num">${lbl} ${b+1}</div>
-        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
-        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
+        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
+        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
       </div>`;
     }
     html+=`</div></div>`;
@@ -1049,8 +1055,8 @@ function generateInputGrid(){
       const n=arr[b]||{p:'',t:''};
       html+=`<div class="btn-cell">
         <div class="btn-num">${label[0].toUpperCase()}${b+1}</div>
-        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
-        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onfocus="showPicker(this)" readonly>
+        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
+        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
       </div>`;
     }
     html+=`</div></div>`;
