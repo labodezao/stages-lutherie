@@ -289,11 +289,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <div class="form-group"><label data-i="preset">Modèle prédéfini</label>
           <select id="preset-select" onchange="loadPreset(this.value)">
             <option value="" data-i-opt="presetPlaceholder">— Choisir un modèle —</option>
-            <option value="GC21">Sol/Do — 21 boutons</option>
-            <option value="DG21">Ré/Sol — 21 boutons</option>
-            <option value="CF21">Do/Fa — 21 boutons</option>
-            <option value="GCD33">Sol/Do/Ré — 33 boutons</option>
-            <option value="BbFC33">Sib/Fa/Do — 33 boutons</option>
             <option value="custom" data-i-opt="custom">Personnalisé…</option>
           </select></div>
         <div class="form-group"><label data-i="rowsRH">Rangées main droite</label>
@@ -757,6 +752,105 @@ const PRESETS={
     accords:[{p:'Sib Maj',t:'Fa Min'},{p:'Mib Maj',t:'Sib Maj'},{p:'Fa Maj',t:'Do Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Sol Maj',t:'Ré Min'},{p:'Ré Maj',t:'La Min'}],terzetto:[]}}
 };
 
+const PRESET_LABELS={
+  GC21:'Sol/Do — 21 boutons',DG21:'Ré/Sol — 21 boutons',CF21:'Do/Fa — 21 boutons',
+  AD21:'La/Ré — 21 boutons',BE21:'Si/Mi — 21 boutons',EA21:'Mi/La — 21 boutons',
+  FBb21:'Fa/Sib — 21 boutons',EbBb21:'Mib/Sib — 21 boutons',ABb21:'La/Sib — 21 boutons',
+  GDA21:'Sol/Ré/La (layout 2 rangs en La ext.) — 21 boutons',
+  FD21:'Fa/Ré — 21 boutons',
+  CA21:'Do/La — 21 boutons',
+  BC21:'Si/Do (système irlandais) — 21 boutons',
+  CSharpD21:'Do#/Ré (système irlandais) — 21 boutons',
+  DbEb21:'Réb/Mib (système irlandais) — 21 boutons',
+  EbF21:'Mib/Fa (système irlandais) — 21 boutons',
+  FGb21:'Fa/Solb (système irlandais) — 21 boutons',
+  GAb21:'Sol/Lab (système irlandais) — 21 boutons',
+  ADb21:'La/Réb (système irlandais) — 21 boutons',
+  GCD33:'Sol/Do/Ré — 33 boutons',BbFC33:'Sib/Fa/Do — 33 boutons',
+  ADG33:'La/Ré/Sol — 33 boutons',DGC33:'Ré/Sol/Do — 33 boutons',
+  CFBb33:'Do/Fa/Sib — 33 boutons',EAD33:'Mi/La/Ré — 33 boutons',
+  BbEbAb33:'Sib/Mib/Lab — 33 boutons',FCG33:'Fa/Do/Sol — 33 boutons'
+};
+
+const NOTE_TO_SEMITONE={Do:0,'Do#':1,Réb:1,Re:2,'Ré':2,'Ré#':3,Mib:3,Mi:4,Fa:5,'Fa#':6,Solb:6,Sol:7,'Sol#':8,Lab:8,La:9,'La#':10,Sib:10,Si:11};
+const SHARP_NOTES=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+const FLAT_NOTES=['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+function transposeSingleNoteFr(note,semi,preferFlats=true){
+  const m=(note||'').trim().match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)([#b]?)(\d+)$/);
+  if(!m)return note;
+  const base=(m[1]==='Re'?'Ré':m[1])+(m[2]||'');
+  const idx=NOTE_TO_SEMITONE[base];
+  if(idx===undefined)return note;
+  const midi=(parseInt(m[3],10)+1)*12+idx+semi;
+  const oct=Math.floor(midi/12)-1;
+  const arr=preferFlats?FLAT_NOTES:SHARP_NOTES;
+  return `${arr[((midi%12)+12)%12]}${oct}`;
+}
+function transposeChordFr(chord,semi,preferFlats=true){
+  const m=(chord||'').trim().match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)([#b]?)(.*)$/);
+  if(!m)return chord;
+  const base=(m[1]==='Re'?'Ré':m[1])+(m[2]||'');
+  const idx=NOTE_TO_SEMITONE[base];
+  if(idx===undefined)return chord;
+  const arr=preferFlats?FLAT_NOTES:SHARP_NOTES;
+  return `${arr[((idx+semi)%12+12)%12]}${m[3]||''}`;
+}
+function transposePreset(base,semi,rowNames,preferFlats=true){
+  const p=JSON.parse(JSON.stringify(PRESETS[base]));
+  p.rangees=p.rangees.map((r,i)=>({nom:rowNames[i]||r.nom,nb:r.nb}));
+  p.notes.droite=p.notes.droite.map(row=>row.map(n=>({
+    p:transposeSingleNoteFr(n.p,semi,preferFlats),t:transposeSingleNoteFr(n.t,semi,preferFlats)
+  })));
+  p.notes.basses=(p.notes.basses||[]).map(n=>({
+    p:transposeSingleNoteFr(n.p,semi,preferFlats),t:transposeSingleNoteFr(n.t,semi,preferFlats)
+  }));
+  p.notes.accords=(p.notes.accords||[]).map(n=>({
+    p:transposeChordFr(n.p,semi,preferFlats),t:transposeChordFr(n.t,semi,preferFlats)
+  }));
+  return p;
+}
+function addTransposedPresets(){
+  // 2 rangs 21 boutons
+  PRESETS.AD21=transposePreset('GC21',2,['Rangée La (intérieure)','Rangée Ré (extérieure)'],false);
+  PRESETS.BE21=transposePreset('GC21',4,['Rangée Si (intérieure)','Rangée Mi (extérieure)'],false);
+  PRESETS.EA21=transposePreset('DG21',2,['Rangée Mi (intérieure)','Rangée La (extérieure)'],false);
+  PRESETS.FBb21=transposePreset('CF21',5,['Rangée Fa (intérieure)','Rangée Sib (extérieure)'],true);
+  PRESETS.EbBb21=transposePreset('CF21',3,['Rangée Mib (intérieure)','Rangée Sib (extérieure)'],true);
+  PRESETS.ABb21=transposePreset('CF21',9,['Rangée La (intérieure)','Rangée Sib (extérieure)'],true);
+  PRESETS.GDA21=transposePreset('DG21',5,['Rangée Sol (intérieure)','Rangée La (extérieure)'],false);
+  PRESETS.FD21=transposePreset('DG21',3,['Rangée Fa (intérieure)','Rangée Ré (extérieure)'],true);
+  PRESETS.CA21=transposePreset('DG21',-2,['Rangée Do (intérieure)','Rangée La (extérieure)'],false);
+
+  // 2 rangs "systèmes demi-ton"
+  PRESETS.BC21=transposePreset('GC21',4,['Rangée Si (intérieure)','Rangée Do (extérieure)'],false);
+  PRESETS.CSharpD21=transposePreset('GC21',6,['Rangée Do# (intérieure)','Rangée Ré (extérieure)'],false);
+  PRESETS.DbEb21=transposePreset('GC21',7,['Rangée Réb (intérieure)','Rangée Mib (extérieure)'],true);
+  PRESETS.EbF21=transposePreset('GC21',9,['Rangée Mib (intérieure)','Rangée Fa (extérieure)'],true);
+  PRESETS.FGb21=transposePreset('GC21',10,['Rangée Fa (intérieure)','Rangée Solb (extérieure)'],true);
+  PRESETS.GAb21=transposePreset('GC21',0,['Rangée Sol (intérieure)','Rangée Lab (extérieure)'],true);
+  PRESETS.ADb21=transposePreset('GC21',2,['Rangée La (intérieure)','Rangée Réb (extérieure)'],true);
+
+  // 3 rangs 33 boutons
+  PRESETS.ADG33=transposePreset('GCD33',2,['Rangée La (intérieure)','Rangée Ré (médiane)','Rangée Sol (extérieure)'],false);
+  PRESETS.DGC33=transposePreset('GCD33',-5,['Rangée Ré (intérieure)','Rangée Sol (médiane)','Rangée Do (extérieure)'],false);
+  PRESETS.CFBb33=transposePreset('BbFC33',2,['Rangée Do (intérieure)','Rangée Fa (médiane)','Rangée Sib (extérieure)'],true);
+  PRESETS.EAD33=transposePreset('GCD33',4,['Rangée Mi (intérieure)','Rangée La (médiane)','Rangée Ré (extérieure)'],false);
+  PRESETS.BbEbAb33=transposePreset('GCD33',3,['Rangée Sib (intérieure)','Rangée Mib (médiane)','Rangée Lab (extérieure)'],true);
+  PRESETS.FCG33=transposePreset('GCD33',10,['Rangée Fa (intérieure)','Rangée Do (médiane)','Rangée Sol (extérieure)'],true);
+}
+addTransposedPresets();
+
+function renderPresetOptions(){
+  const sel=document.getElementById('preset-select');
+  if(!sel)return;
+  const customOpt=sel.querySelector('option[value="custom"]');
+  Object.keys(PRESET_LABELS).forEach(key=>{
+    const opt=document.createElement('option');
+    opt.value=key;opt.textContent=PRESET_LABELS[key];
+    sel.insertBefore(opt,customOpt);
+  });
+}
+
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  LOCAL STORAGE DB                                    ║
@@ -888,6 +982,7 @@ function onAnyChange(){
    ╚══════════════════════════════════════════════════════╝ */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
+  renderPresetOptions();
   initPicker();renderLibrary();
   const list=DB.all();
   if(list.length){loadFromDB(list[0]);}
