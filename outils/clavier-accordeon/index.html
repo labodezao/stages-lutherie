@@ -101,6 +101,13 @@ select option{background:#fff;color:var(--txt)}
 .rng-btn:hover{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
 .rng-count{font-size:.78rem;font-weight:700;color:var(--gris);min-width:18px;text-align:center}
 
+/* ── Row alignment buttons ── */
+.align-btn{padding:3px 9px;border:1.5px solid var(--brd);background:var(--input-bg);border-radius:5px;
+  cursor:pointer;font-size:.76rem;font-family:inherit;color:var(--gris);
+  transition:background .13s,color .13s,border-color .13s}
+.align-btn.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+.align-btn:hover:not(.active){background:var(--brd)}
+
 /* ── Note grid ── */
 .note-section{margin-bottom:18px}
 .note-section-title{font-size:.86rem;font-weight:700;color:var(--dark);
@@ -415,9 +422,15 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <button class="tab-btn active" onclick="showTab('visual',this)" data-i-btn="clientVisual">🎹 Clavier client</button>
         <button class="tab-btn"        onclick="showTab('fabricant',this)" data-i-btn="manufacturerTable">📋 Fabricant anches</button>
       </div>
-      <div class="btn-group no-print" style="margin-bottom:13px;">
+      <div class="btn-group no-print" style="margin-bottom:13px;flex-wrap:wrap;align-items:center;">
         <button class="btn btn-bleu"    onclick="printSection('visual')"    data-i-btn="pdfClientVisual">🖨️ PDF plan clavier</button>
         <button class="btn btn-primary" onclick="printSection('fabricant')" data-i-btn="pdfManufacturer">🖨️ PDF fabricant</button>
+        <span style="margin-left:auto;display:flex;gap:4px;align-items:center;">
+          <span style="font-size:.72rem;color:var(--gris);white-space:nowrap;" data-i="alignLabel">Rangs :</span>
+          <button class="align-btn active" id="align-left"   onclick="setRowAlign('left')"   data-i-btn="alignLeft">Gauche</button>
+          <button class="align-btn"        id="align-center" onclick="setRowAlign('center')" data-i-btn="alignCenter">Centre</button>
+          <button class="align-btn"        id="align-right"  onclick="setRowAlign('right')"  data-i-btn="alignRight">Droite</button>
+        </span>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -503,6 +516,7 @@ fr:{
   clientVisual:'🎹 Clavier client',manufacturerTable:'📋 Fabricant anches',
   pdfClientVisual:'🖨️ PDF plan clavier',pdfManufacturer:'🖨️ PDF fabricant',
   listView:'📋 Vue liste',sommierView:'🪗 Vue sommier',refresh:'🔄 Actualiser',
+  alignLabel:'Rangs :',alignLeft:'Gauche',alignCenter:'Centre',alignRight:'Droite',
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
@@ -570,6 +584,7 @@ en:{
   clientVisual:'🎹 Client keyboard',manufacturerTable:'📋 Reed manufacturer',
   pdfClientVisual:'🖨️ PDF keyboard plan',pdfManufacturer:'🖨️ PDF manufacturer',
   listView:'📋 List view',sommierView:'🪗 Reed plate view',refresh:'🔄 Refresh',
+  alignLabel:'Rows:',alignLeft:'Left',alignCenter:'Center',alignRight:'Right',
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
@@ -699,6 +714,7 @@ let CFG={
 };
 let currentId=null,saveTimer=null,previewTimer=null,fabricantView='liste';
 let pickerInput=null,pickerNote='',pickerOctave='';
+let rowAlign='left';
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  NOTE → MIDI                                         ║
@@ -1446,10 +1462,11 @@ function buildSVG_Droite(data,dark){
   data.droite.forEach((row,ri)=>{
     const cy=MARG+HEAD+ri*VGAP+VGAP/2;
     const stagger=(ri%2===1)?HGAP/2:0;
-    s+=`<rect x="${BW+LPAD-4}" y="${cy-R-6}" width="${row.boutons.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(BW+LPAD-8,cy+4,escSVG(row.nom),9.5,gold,'bold','end');
+    const alignOff=rowAlign==='center'?Math.round(((maxBtns-row.boutons.length)*HGAP)/2):rowAlign==='right'?(maxBtns-row.boutons.length)*HGAP:0;
+    s+=`<rect x="${BW+LPAD+alignOff-4}" y="${cy-R-6}" width="${row.boutons.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
+    s+=tx(BW+LPAD+alignOff-8,cy+4,escSVG(row.nom),9.5,gold,'bold','end');
     row.boutons.forEach((btn,bi)=>{
-      const cx=BW+LPAD+stagger+bi*HGAP;
+      const cx=BW+LPAD+alignOff+stagger+bi*HGAP;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#ffffff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
@@ -1493,10 +1510,11 @@ function buildSVG_Gauche(data,dark){
   sections.forEach((sec,si)=>{
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
     const stagger=(si%2===1)?HGAP/2:0;
-    s+=`<rect x="${LPAD-4}" y="${cy-R-6}" width="${sec.items.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(LPAD-7,cy+4,escSVG(sec.nom),10,gold,'bold','end');
+    const alignOff=rowAlign==='center'?Math.round(((maxItems-sec.items.length)*HGAP)/2):rowAlign==='right'?(maxItems-sec.items.length)*HGAP:0;
+    s+=`<rect x="${LPAD+alignOff-4}" y="${cy-R-6}" width="${sec.items.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
+    s+=tx(LPAD+alignOff-7,cy+4,escSVG(sec.nom),10,gold,'bold','end');
     sec.items.forEach((btn,bi)=>{
-      const cx=LPAD+stagger+bi*HGAP;
+      const cx=LPAD+alignOff+stagger+bi*HGAP;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
@@ -1564,8 +1582,9 @@ function buildSommierSection(title,rows,dark){
     const rowStag=(ri%2===1)?stagger:0;
     const nom=row.nom||(row.label||`R${ri+1}`);
     const items=row.boutons||row.items||[];
-    s+=tx(LPAD-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
-    items.forEach((btn,bi)=>{s+=cell(LPAD+rowStag+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
+    const alignOff=rowAlign==='center'?Math.round(((maxBtns-items.length)*CW)/2):rowAlign==='right'?(maxBtns-items.length)*CW:0;
+    s+=tx(LPAD+alignOff-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
+    items.forEach((btn,bi)=>{s+=cell(LPAD+alignOff+rowStag+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
   });
   s+='</svg>';return s;
 }
@@ -1750,6 +1769,14 @@ function showFabricantView(mode,btn){
   btn.classList.add('active');
   document.getElementById('fab-view-liste').style.display  =mode==='liste'  ?'':'none';
   document.getElementById('fab-view-sommier').style.display=mode==='sommier'?'':'none';
+}
+function setRowAlign(align){
+  rowAlign=align;
+  ['left','center','right'].forEach(a=>{
+    const el=document.getElementById('align-'+a);
+    if(el)el.classList.toggle('active',a===align);
+  });
+  forcePreview();
 }
 
 /* ╔══════════════════════════════════════════════════════╗
