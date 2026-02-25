@@ -1182,6 +1182,70 @@ function syncGaucheInputs(){
   const s=(k)=>{const el=document.getElementById('nb-'+k);if(el)el.value=(CFG.notes[k]||[]).length;};
   s('basses');s('accords');s('terzetto');
 }
+
+function onLhModeChange(){renderLhRowsCfg();onAnyChange();}
+
+function renderLhRowsCfg(){
+  // Ensure lhRows is consistent: default to 1 row with all basses if missing
+  if(!CFG.lhRows||!CFG.lhRows.length) CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
+  const wrap=document.getElementById('lh-rows-inner');
+  if(!wrap)return;
+  const nRows=CFG.lhRows.length;
+  let html=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+    <span style="font-size:.78rem;">Nb lignes :</span>
+    <button type="button" class="rng-btn" onclick="lhRowsSetN(Math.max(1,${nRows}-1))">−</button>
+    <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${nRows}</span>
+    <button type="button" class="rng-btn" onclick="lhRowsSetN(${nRows}+1)">＋</button>
+  </div>`;
+  CFG.lhRows.forEach((row,ri)=>{
+    html+=`<div style="display:flex;align-items:center;gap:5px;font-size:.78rem;padding:2px 0;">
+      <span style="min-width:42px;color:var(--gris);">L${ri+1} :</span>
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',Math.max(1,(CFG.lhRows[${ri}].nb||1)-1))">−</button>
+      <input type="number" value="${row.nb}" min="1" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'nb',Math.max(1,parseInt(this.value)||1))">
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',(CFG.lhRows[${ri}].nb||1)+1)">＋</button>
+      <span style="color:var(--gris);margin-left:4px;">${t('rowOffset')} :</span>
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)-1)">−</button>
+      <input type="number" value="${row.offset||0}" min="-30" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'offset',parseInt(this.value)||0)">
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)+1)">＋</button>
+    </div>`;
+  });
+  wrap.innerHTML=html;
+  // Sync total basses count to sum of lhRows
+  _syncBassesToLhRows();
+}
+
+function lhRowsSetN(n){
+  n=Math.max(1,n);
+  const cur=CFG.lhRows.length;
+  if(n>cur){for(let i=cur;i<n;i++)CFG.lhRows.push({nb:1,offset:0});}
+  else{CFG.lhRows=CFG.lhRows.slice(0,n);}
+  _syncBassesToLhRows();
+  renderLhRowsCfg();
+  generateInputGrid();
+  onAnyChange();
+}
+
+function lhRowChange(ri,field,val){
+  CFG.lhRows[ri][field]=val;
+  if(field==='nb'){
+    readNoteInputsIntoCFG();
+    _syncBassesToLhRows();
+    generateInputGrid();
+  }
+  renderLhRowsCfg();
+  onAnyChange();
+}
+
+function _syncBassesToLhRows(){
+  // Total basses = sum of nb across all lhRows
+  const total=CFG.lhRows.reduce((s,r)=>s+(r.nb||1),0);
+  while(CFG.notes.basses.length<total)CFG.notes.basses.push({p:'',t:''});
+  while(CFG.notes.basses.length>total)CFG.notes.basses.pop();
+  // Also keep accords in sync (same count as basses by convention)
+  while(CFG.notes.accords.length<total)CFG.notes.accords.push({p:'',t:''});
+  while(CFG.notes.accords.length>total)CFG.notes.accords.pop();
+  syncGaucheInputs();
+}
 function addGaucheBtn(key){
   readNoteInputsIntoCFG();CFG.notes[key].push({p:'',t:''});
   const el=document.getElementById('nb-'+key);if(el)el.value=CFG.notes[key].length;
@@ -1582,21 +1646,36 @@ function buildSVG_Gauche(data,dark){
     s+='</svg>';return s;
   }
 
-  // Separated mode: accords on top (outer), basses below (inner) — conventional accordion layout
-  const sections=[{nom:t('accords'),items:data.accords},{nom:t('basses'),items:data.basses}];
-  if(data.terzetto&&data.terzetto.length)sections.push({nom:t('terzetto'),items:data.terzetto});
-  const maxItems=Math.max(...sections.map(s=>s.items.length),1);
+  // Separated mode: multi-row basses/accords via lhRows
+  const lhRows=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:data.basses.length||1,offset:0}];
+  const secRows=[];
+  let bassIdx=0,accordIdx=0;
+  // Accords (outer rows, displayed first)
+  lhRows.forEach((row,ri)=>{
+    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${ri*row.nb}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),offset:row.offset||0});
+    accordIdx+=row.nb;
+  });
+  // Basses (inner rows, displayed second)
+  lhRows.forEach((row,ri)=>{
+    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${ri*row.nb}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),offset:row.offset||0});
+    bassIdx+=row.nb;
+  });
+  if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,offset:0});
+
+  const maxItems=Math.max(...secRows.map(sc=>sc.items.length),1);
   const W=LPAD+maxItems*HGAP+MARG;
-  const H=MARG+HEAD+sections.length*VGAP+FOOT;
+  const H=MARG+HEAD+secRows.length*VGAP+FOOT;
 
   let s=svg_open(W,H,bg);
   s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
-  sections.forEach((sec,si)=>{
+  secRows.forEach((sec,si)=>{
+    const off=(sec.offset||0)*(HGAP/2);
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
-    s+=`<rect x="${LPAD-4}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
+    if(sec.items.length)
+      s+=`<rect x="${LPAD-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
     s+=tx(LPAD-7,cy+4,escSVG(sec.nom),10,gold,'bold','end');
     sec.items.forEach((btn,bi)=>{
-      const cx=LPAD+bi*HGAP;
+      const cx=LPAD+bi*HGAP+off;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
@@ -1776,23 +1855,25 @@ function buildManufacturerTable(data,dark){
   </tr></thead><tbody>`;
 
   h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:0 0 10px;font-size:.88rem;">${t('mfrRH')}</h4>`;
-  h+=tableStart(showMidi);
-  data.droite.forEach(row=>{
+  data.droite.forEach((row,ri)=>{
     const reg=row.register||'N';
+    h+=`<div style="font-size:.8rem;font-weight:700;color:${gold};margin:${ri>0?'14px':0} 0 6px;opacity:.85;">
+      ▸ ${escHTML(row.nom)} &nbsp;
+      <span style="font-weight:normal;font-size:.76rem;opacity:.8;">${reg} — ${(lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS)[reg]||reg}</span>
+    </div>`;
+    h+=tableStart(showMidi);
     row.boutons.forEach((btn,bi)=>{
       h+=`<tr>`;
-      if(bi===0){
-        h+=`<td ${hdStyle} rowspan="${row.boutons.length}">${escHTML(row.nom)}</td>`;
-        h+=`<td ${hdStyle} rowspan="${row.boutons.length}" style="font-size:.8rem;text-align:center;">${reg}<br><span style="font-weight:normal;opacity:.7;font-size:.7rem;">${(lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS)[reg]||reg}</span></td>`;
-      }
+      h+=`<td ${hdStyle}>${escHTML(row.nom)}</td>`;
+      h+=`<td ${hdStyle} style="font-size:.8rem;text-align:center;">${reg}</td>`;
       h+=`<td ${tdStyle}>${bi+1}</td>`;
       h+=`<td class="note-p" ${tdStyle}>${escHTML(displayNote(btn.p))||'—'}</td>`;
       h+=`<td class="note-t" ${tdStyle}>${escHTML(displayNote(btn.t))||'—'}</td>`;
       if(showMidi){const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);h+=`<td class="midi-c" ${tdStyle}>${mp!==null?mp:'—'}</td><td class="midi-c" ${tdStyle}>${mt!==null?mt:'—'}</td>`;}
       h+=`</tr>`;
     });
+    h+=`</tbody></table>`;
   });
-  h+=`</tbody></table>`;
 
   const lhExtra=data.terzetto.length?` &amp; ${t('terzetto')}`:'';
   h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:18px 0 10px;font-size:.88rem;">${t('mfrLH')}${lhExtra}</h4>`;
@@ -1887,23 +1968,34 @@ function printSection(which){
         ${svgG}
         <p style="font-size:7pt;color:#aaa;text-align:center;margin-top:8mm;border-top:1px solid #e0e0e0;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
       </div>`;
-  } else if(fabricantView==='sommier'){
-    body=`
-      <div style="background:#111;min-height:100vh;padding:12mm 14mm;color:#eee;">
-        <div style="border-bottom:2px solid #c9a227;padding-bottom:4mm;margin-bottom:6mm;">
-          <h2 style="color:#c9a227;font-size:14pt;font-family:'Georgia',serif;">${escHTML(data.nomInstrument)} — ${t('sommierView').replace('🪗 ','')}</h2>
-        </div>
-        ${buildSommierSVG(data,true)}
-        <p style="font-size:7pt;color:#555;text-align:center;margin-top:8mm;border-top:1px solid #333;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
-      </div>`;
   } else {
+    // ── FABRICANT : tout en un — plan client + sommier + tableaux par rangée ──
+    const svgD=buildSVG_Droite(data,true);
+    const svgG=buildSVG_Gauche(data,true);
+    const sommierHtml=buildSommierSVG(data,true);
     const tableHtml=buildManufacturerTable(data,true);
+    const h3s=`color:#c9a227;font-size:10pt;font-weight:700;letter-spacing:.04em;border-bottom:1px solid #333;padding-bottom:3mm;margin:8mm 0 5mm;`;
     body=`
       <div style="background:#111;min-height:100vh;padding:12mm 14mm;color:#eee;">
         <div style="border-bottom:2px solid #c9a227;padding-bottom:4mm;margin-bottom:6mm;">
           <h2 style="color:#c9a227;font-size:14pt;font-family:'Georgia',serif;">${escHTML(data.nomInstrument)} — ${t('pdfMfrTitle')}</h2>
+          <p style="font-size:8pt;color:#aaa;margin:2mm 0 0;">${t('svgClient')} : <b style="color:#ddd;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#ddd;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
         </div>
+
+        <h3 style="${h3s}">🎹 ${t('pdfClientTitle')}</h3>
+        <h4 style="color:#c9a227;font-size:8.5pt;margin:0 0 4mm;opacity:.8;">${t('svgRH')}</h4>
+        ${svgD}
+        <h4 style="color:#c9a227;font-size:8.5pt;margin:6mm 0 4mm;opacity:.8;">${t('svgLH')}</h4>
+        ${svgG}
+
+        <div style="page-break-before:always;"></div>
+        <h3 style="${h3s}">🪗 ${t('sommierView').replace('🪗 ','')}</h3>
+        ${sommierHtml}
+
+        <div style="page-break-before:always;"></div>
+        <h3 style="${h3s}">📋 ${t('pdfMfrTitle')}</h3>
         ${tableHtml}
+
         <p style="font-size:7pt;color:#555;text-align:center;margin-top:8mm;border-top:1px solid #333;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
       </div>`;
   }
