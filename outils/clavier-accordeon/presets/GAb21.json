@@ -1,0 +1,174 @@
+{
+  "nbRangees": 2,
+  "rangees": [
+    {
+      "nom": "Rangée Sol (intérieure)",
+      "nb": 10
+    },
+    {
+      "nom": "Rangée Lab (extérieure)",
+      "nb": 11
+    }
+  ],
+  "notes": {
+    "droite": [
+      [
+        {
+          "p": "Sol3",
+          "t": "La3"
+        },
+        {
+          "p": "Si3",
+          "t": "Do4"
+        },
+        {
+          "p": "Ré4",
+          "t": "Mi4"
+        },
+        {
+          "p": "Sol4",
+          "t": "Solb4"
+        },
+        {
+          "p": "Si4",
+          "t": "La4"
+        },
+        {
+          "p": "Ré5",
+          "t": "Do5"
+        },
+        {
+          "p": "Sol5",
+          "t": "Mi5"
+        },
+        {
+          "p": "Si5",
+          "t": "Solb5"
+        },
+        {
+          "p": "Ré6",
+          "t": "La5"
+        },
+        {
+          "p": "Sol6",
+          "t": "Do6"
+        }
+      ],
+      [
+        {
+          "p": "Do3",
+          "t": "Si2"
+        },
+        {
+          "p": "Mi3",
+          "t": "Ré3"
+        },
+        {
+          "p": "Sol3",
+          "t": "Fa3"
+        },
+        {
+          "p": "Do4",
+          "t": "La3"
+        },
+        {
+          "p": "Mi4",
+          "t": "Sib3"
+        },
+        {
+          "p": "Sol4",
+          "t": "Ré4"
+        },
+        {
+          "p": "Do5",
+          "t": "Mi4"
+        },
+        {
+          "p": "Mi5",
+          "t": "Solb4"
+        },
+        {
+          "p": "Sol5",
+          "t": "La4"
+        },
+        {
+          "p": "Do6",
+          "t": "Si4"
+        },
+        {
+          "p": "Mi6",
+          "t": "Ré5"
+        }
+      ]
+    ],
+    "basses": [
+      {
+        "p": "Sol2",
+        "t": "Ré2"
+      },
+      {
+        "p": "Do3",
+        "t": "Sol2"
+      },
+      {
+        "p": "Ré3",
+        "t": "La2"
+      },
+      {
+        "p": "La3",
+        "t": "Mi3"
+      },
+      {
+        "p": "Mi3",
+        "t": "Si2"
+      },
+      {
+        "p": "Si2",
+        "t": "Solb2"
+      },
+      {
+        "p": "Réb3",
+        "t": "Lab2"
+      },
+      {
+        "p": "Lab3",
+        "t": "Mib3"
+      }
+    ],
+    "accords": [
+      {
+        "p": "Sol Maj",
+        "t": "Ré Min"
+      },
+      {
+        "p": "Do Maj",
+        "t": "Sol Maj"
+      },
+      {
+        "p": "Ré Maj",
+        "t": "La Min"
+      },
+      {
+        "p": "La Maj",
+        "t": "Mi Min"
+      },
+      {
+        "p": "Mi Maj",
+        "t": "Si Min"
+      },
+      {
+        "p": "Si Maj",
+        "t": "Solb Min"
+      },
+      {
+        "p": "Réb Maj",
+        "t": "Lab Min"
+      },
+      {
+        "p": "Lab Maj",
+        "t": "Mib Min"
+      }
+    ],
+    "terzetto": []
+  }
+}

@@ -335,15 +335,12 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,8)">24b</button>
           </div></div>
         <div class="form-group"><label data-i="voices">Nombre de voix (anches) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Voix" data-tip="1 voix : une anche par note (son pur).&#10;2 voix : deux anches par note (ex: M+H ou L+M) → son plus riche.&#10;3 voix : trois anches (L+M+H) → son très plein, avec tremolo.&#10;—&#10;1 voice: one reed per note (pure tone).&#10;2 voices: two reeds per note (e.g. M+H or L+M) → richer sound.&#10;3 voices: three reeds (L+M+H) → full sound with tremolo.">ⓘ</span></label>
-          <select id="nb-voix" onchange="updateVoixTypeOptions();onAnyChange()">
+          <select id="nb-voix" onchange="renderVoixPerRow();onAnyChange()">
             <option value="1">1 voix / 1 voice</option>
             <option value="2" selected>2 voix / voices</option>
             <option value="3">3 voix / voices</option>
           </select>
-          <select id="voix-type-md" onchange="onAnyChange()" style="margin-top:4px;font-size:.82rem;width:100%;">
-            <option value="BN" selected>B+N (16'+8') — profond</option>
-            <option value="NH">N+H (8'+4') — tremolo</option>
-          </select></div>
+          <div id="voix-per-row-wrap" style="margin-top:4px;"></div></div>
         <div class="form-group"><label data-i="voicesLH">Voix main gauche (anches)</label>
           <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 7px;align-items:center;margin-top:2px;">
             <span class="gauche-label" data-i="accords">Accords</span>
@@ -763,210 +760,48 @@ function noteToMidi(s){
 }
 
 /* ╔══════════════════════════════════════════════════════╗
-   ║  PRÉRÉGLAGES                                         ║
+   ║  PRÉRÉGLAGES — chargés depuis presets/*.json         ║
    ╚══════════════════════════════════════════════════════╝ */
-const PRESETS={
-  GC21:{nbRangees:2,rangees:[{nom:'Rangée Sol (intérieure)',nb:10},{nom:'Rangée Do (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}],
-    [{p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},{p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},{p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}]],
-    basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
-    accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],terzetto:[]}},
-  DG21:{nbRangees:2,rangees:[{nom:'Rangée Ré (intérieure)',nb:10},{nom:'Rangée Sol (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Ré3',t:'Mi3'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Ré4',t:'Do#4'},{p:'Fa#4',t:'Mi4'},{p:'La4',t:'Sol4'},{p:'Ré5',t:'Si4'},{p:'Fa#5',t:'Do#5'},{p:'La5',t:'Mi5'},{p:'Ré6',t:'Sol5'}],
-    [{p:'Sol2',t:'La2'},{p:'Si2',t:'Do3'},{p:'Ré3',t:'Mi3'},{p:'Sol3',t:'Fa#3'},{p:'Si3',t:'La3'},{p:'Ré4',t:'Do4'},{p:'Sol4',t:'Mi4'},{p:'Si4',t:'Fa#4'},{p:'Ré5',t:'La4'},{p:'Sol5',t:'Do5'},{p:'Si5',t:'Mi5'}]],
-    basses:[{p:'Ré3',t:'La2'},{p:'Sol2',t:'Ré2'},{p:'La3',t:'Mi3'},{p:'Do3',t:'Sol2'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
-    accords:[{p:'Ré Maj',t:'La Min'},{p:'Sol Maj',t:'Ré Min'},{p:'La Maj',t:'Mi Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],terzetto:[]}},
-  CF21:{nbRangees:2,rangees:[{nom:'Rangée Do (intérieure)',nb:10},{nom:'Rangée Fa (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Do3',t:'Ré3'},{p:'Mi3',t:'Fa3'},{p:'Sol3',t:'La3'},{p:'Do4',t:'Si3'},{p:'Mi4',t:'Ré4'},{p:'Sol4',t:'Fa4'},{p:'Do5',t:'La4'},{p:'Mi5',t:'Si4'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Fa5'}],
-    [{p:'Fa3',t:'Mi3'},{p:'La3',t:'Sol3'},{p:'Do4',t:'Sib3'},{p:'Fa4',t:'Ré4'},{p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'La4'},{p:'La5',t:'Sib4'},{p:'Do6',t:'Ré5'},{p:'Fa6',t:'Mi5'},{p:'La6',t:'Sol5'}]],
-    basses:[{p:'Do3',t:'Sol2'},{p:'Fa3',t:'Do3'},{p:'Sol2',t:'Ré2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'}],
-    accords:[{p:'Do Maj',t:'Sol Maj'},{p:'Fa Maj',t:'Do Maj'},{p:'Sol Maj',t:'Ré Min'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'}],terzetto:[]}},
-  GCD33:{nbRangees:3,rangees:[{nom:'Rangée Sol (intérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Ré (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'},{p:'Si6',t:'Mi6'}],
-    [{p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},{p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},{p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}],
-    [{p:'Ré3',t:'Mi3'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Ré4',t:'Do#4'},{p:'Fa#4',t:'Mi4'},{p:'La4',t:'Sol4'},{p:'Ré5',t:'Si4'},{p:'Fa#5',t:'Do#5'},{p:'La5',t:'Mi5'},{p:'Ré6',t:'Sol5'},{p:'Fa#6',t:'La5'}]],
-    basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
-    accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],terzetto:[]}},
-  BbFC33:{nbRangees:3,rangees:[{nom:'Rangée Sib (intérieure)',nb:11},{nom:'Rangée Fa (médiane)',nb:11},{nom:'Rangée Do (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Sib3',t:'Do4'},{p:'Ré4',t:'Mib4'},{p:'Fa4',t:'Sol4'},{p:'Sib4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Fa5',t:'Mib5'},{p:'Sib5',t:'Sol5'},{p:'Ré6',t:'La5'},{p:'Fa6',t:'Do6'},{p:'Sib6',t:'Mib6'},{p:'Ré7',t:'Sol6'}],
-    [{p:'Fa3',t:'Mib3'},{p:'La3',t:'Sol3'},{p:'Do4',t:'Sib3'},{p:'Fa4',t:'Ré4'},{p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'La4'},{p:'La5',t:'Sib4'},{p:'Do6',t:'Ré5'},{p:'Fa6',t:'Mi5'},{p:'La6',t:'Sol5'}],
-    [{p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},{p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},{p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}]],
-    basses:[{p:'Sib2',t:'Fa2'},{p:'Mib3',t:'Sib2'},{p:'Fa3',t:'Do3'},{p:'Do3',t:'Sol2'},{p:'Sol3',t:'Ré3'},{p:'Ré3',t:'La2'}],
-    accords:[{p:'Sib Maj',t:'Fa Min'},{p:'Mib Maj',t:'Sib Maj'},{p:'Fa Maj',t:'Do Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Sol Maj',t:'Ré Min'},{p:'Ré Maj',t:'La Min'}],terzetto:[]}}
-};
+const _presetCache={};  // id → preset data (lazy-loaded)
+let   _presetIndex=[];  // [{id,label,category}]
 
-const PRESET_LABELS={
-  GC21:'Sol/Do — 21 boutons',DG21:'Ré/Sol — 21 boutons',CF21:'Do/Fa — 21 boutons',
-  AD21:'La/Ré — 21 boutons',BE21:'Si/Mi — 21 boutons',EA21:'Mi/La — 21 boutons',
-  FBb21:'Fa/Sib — 21 boutons',EbBb21:'Mib/Sib — 21 boutons',ABb21:'La/Sib — 21 boutons',
-  GDA21:'Sol/Ré/La (layout 2 rangs en La ext.) — 21 boutons',
-  FD21:'Fa/Ré — 21 boutons',
-  CA21:'Do/La — 21 boutons',
-  BC21:'Si/Do (système irlandais) — 21 boutons',
-  CSharpD21:'Do#/Ré (système irlandais) — 21 boutons',
-  DbEb21:'Réb/Mib (système irlandais) — 21 boutons',
-  EbF21:'Mib/Fa (système irlandais) — 21 boutons',
-  FGb21:'Fa/Solb (système irlandais) — 21 boutons',
-  GAb21:'Sol/Lab (système irlandais) — 21 boutons',
-  ADb21:'La/Réb (système irlandais) — 21 boutons',
-  GCD33:'Sol/Do/Ré — 33 boutons',BbFC33:'Sib/Fa/Do — 33 boutons',
-  ADG33:'La/Ré/Sol — 33 boutons',DGC33:'Ré/Sol/Do — 33 boutons',
-  CFBb33:'Do/Fa/Sib — 33 boutons',EAD33:'Mi/La/Ré — 33 boutons',
-  BbEbAb33:'Sib/Mib/Lab — 33 boutons',FCG33:'Fa/Do/Sol — 33 boutons',
-  // ── Presets from PDF source analysis ──
-  SolDoFa33_12:'Sol/Do/Fa — 33/12 (Continental)',
-  LaReSol33_12:'La/Ré/Sol — 33/12',
-  SibMibLab33_12:'Sib/Mib/Lab — 33/12',
-  SolDo_Corgeron:'Sol/Do Corgeron — 33/8',
-  SolDo_Heim:'Sol/Do Heim — 33/8',
-  SolDoAlts_Bottasso:'Sol/Do/Alts Bottasso — 33/18',
-  SolDoAlts_JPL:'Sol/Do/Alts JPL — 33/18',
-  SolDoAlts_LTL:'Sol/Do/Alts LTL — 33/18',
-  SolDoAlts_Gaillard:'Sol/Do/Alts Gaillard — 33/18',
-};
-
-const NOTE_TO_SEMITONE={Do:0,'Do#':1,Réb:1,Re:2,'Ré':2,'Ré#':3,Mib:3,Mi:4,Fa:5,'Fa#':6,Solb:6,Sol:7,'Sol#':8,Lab:8,La:9,'La#':10,Sib:10,Si:11};
-const SHARP_NOTES=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
-const FLAT_NOTES=['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
-function transposeSingleNoteFr(note,semi,preferFlats=true){
-  const m=(note||'').trim().match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)([#b]?)(\d+)$/);
-  if(!m)return note;
-  const base=(m[1]==='Re'?'Ré':m[1])+(m[2]||'');
-  const idx=NOTE_TO_SEMITONE[base];
-  if(idx===undefined)return note;
-  const midi=(parseInt(m[3],10)+1)*12+idx+semi;
-  const oct=Math.floor(midi/12)-1;
-  const arr=preferFlats?FLAT_NOTES:SHARP_NOTES;
-  return `${arr[((midi%12)+12)%12]}${oct}`;
+async function loadPresetIndex(){
+  const base=document.querySelector('base')?.href||location.href;
+  const url=new URL('presets/index.json',base).href;
+  const r=await fetch(url);
+  _presetIndex=await r.json();
+  renderPresetOptions();
 }
-function transposeChordFr(chord,semi,preferFlats=true){
-  const m=(chord||'').trim().match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)([#b]?)(.*)$/);
-  if(!m)return chord;
-  const base=(m[1]==='Re'?'Ré':m[1])+(m[2]||'');
-  const idx=NOTE_TO_SEMITONE[base];
-  if(idx===undefined)return chord;
-  const arr=preferFlats?FLAT_NOTES:SHARP_NOTES;
-  return `${arr[((idx+semi)%12+12)%12]}${m[3]||''}`;
-}
-function transposePreset(base,semi,rowNames,preferFlats=true){
-  const p=JSON.parse(JSON.stringify(PRESETS[base]));
-  p.rangees=p.rangees.map((r,i)=>({nom:rowNames[i]||r.nom,nb:r.nb}));
-  p.notes.droite=p.notes.droite.map(row=>row.map(n=>({
-    p:transposeSingleNoteFr(n.p,semi,preferFlats),t:transposeSingleNoteFr(n.t,semi,preferFlats)
-  })));
-  p.notes.basses=(p.notes.basses||[]).map(n=>({
-    p:transposeSingleNoteFr(n.p,semi,preferFlats),t:transposeSingleNoteFr(n.t,semi,preferFlats)
-  }));
-  p.notes.accords=(p.notes.accords||[]).map(n=>({
-    p:transposeChordFr(n.p,semi,preferFlats),t:transposeChordFr(n.t,semi,preferFlats)
-  }));
-  return p;
-}
-function addTransposedPresets(){
-  // 2 rangs 21 boutons
-  PRESETS.AD21=transposePreset('GC21',2,['Rangée La (intérieure)','Rangée Ré (extérieure)'],false);
-  PRESETS.BE21=transposePreset('GC21',4,['Rangée Si (intérieure)','Rangée Mi (extérieure)'],false);
-  PRESETS.EA21=transposePreset('DG21',2,['Rangée Mi (intérieure)','Rangée La (extérieure)'],false);
-  PRESETS.FBb21=transposePreset('CF21',5,['Rangée Fa (intérieure)','Rangée Sib (extérieure)'],true);
-  PRESETS.EbBb21=transposePreset('CF21',3,['Rangée Mib (intérieure)','Rangée Sib (extérieure)'],true);
-  PRESETS.ABb21=transposePreset('CF21',9,['Rangée La (intérieure)','Rangée Sib (extérieure)'],true);
-  PRESETS.GDA21=transposePreset('DG21',5,['Rangée Sol (intérieure)','Rangée La (extérieure)'],false);
-  PRESETS.FD21=transposePreset('DG21',3,['Rangée Fa (intérieure)','Rangée Ré (extérieure)'],true);
-  PRESETS.CA21=transposePreset('DG21',-2,['Rangée Do (intérieure)','Rangée La (extérieure)'],false);
-
-  // 2 rangs "systèmes demi-ton"
-  PRESETS.BC21=transposePreset('GC21',4,['Rangée Si (intérieure)','Rangée Do (extérieure)'],false);
-  PRESETS.CSharpD21=transposePreset('GC21',6,['Rangée Do# (intérieure)','Rangée Ré (extérieure)'],false);
-  PRESETS.DbEb21=transposePreset('GC21',7,['Rangée Réb (intérieure)','Rangée Mib (extérieure)'],true);
-  PRESETS.EbF21=transposePreset('GC21',9,['Rangée Mib (intérieure)','Rangée Fa (extérieure)'],true);
-  PRESETS.FGb21=transposePreset('GC21',10,['Rangée Fa (intérieure)','Rangée Solb (extérieure)'],true);
-  PRESETS.GAb21=transposePreset('GC21',0,['Rangée Sol (intérieure)','Rangée Lab (extérieure)'],true);
-  PRESETS.ADb21=transposePreset('GC21',2,['Rangée La (intérieure)','Rangée Réb (extérieure)'],true);
-
-  // 3 rangs 33 boutons
-  PRESETS.ADG33=transposePreset('GCD33',2,['Rangée La (intérieure)','Rangée Ré (médiane)','Rangée Sol (extérieure)'],false);
-  PRESETS.DGC33=transposePreset('GCD33',-5,['Rangée Ré (intérieure)','Rangée Sol (médiane)','Rangée Do (extérieure)'],false);
-  PRESETS.CFBb33=transposePreset('BbFC33',2,['Rangée Do (intérieure)','Rangée Fa (médiane)','Rangée Sib (extérieure)'],true);
-  PRESETS.EAD33=transposePreset('GCD33',4,['Rangée Mi (intérieure)','Rangée La (médiane)','Rangée Ré (extérieure)'],false);
-  PRESETS.BbEbAb33=transposePreset('GCD33',3,['Rangée Sib (intérieure)','Rangée Mib (médiane)','Rangée Lab (extérieure)'],true);
-  PRESETS.FCG33=transposePreset('GCD33',10,['Rangée Fa (intérieure)','Rangée Do (médiane)','Rangée Sol (extérieure)'],true);
-}
-addTransposedPresets();
-
-/* ── Presets from PDF source analysis (Loffet/Comprendre-et-Choisir PDFs) ── */
-// Sol/Do/Fa 33/12 Continental
-PRESETS.SolDoFa33_12={nbRangees:3,rangees:[{nom:'Rangée Fa (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Do3',t:'Si2'},{p:'Mib3',t:'Do#3'},{p:'Do4',t:'Sol3'},{p:'Fa4',t:'Si3'},{p:'La4',t:'Ré4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'Si4'},{p:'La5',t:'Ré5'},{p:'Do6',t:'Sol5'},{p:'Fa6',t:'Si5'},{p:'La6',t:'Ré6'}],
-  [{p:'Do3',t:'Si2'},{p:'Mib3',t:'Do#3'},{p:'La3',t:'Mi3'},{p:'Do4',t:'Sol3'},{p:'Mi4',t:'Sib3'},{p:'Fa#4',t:'Ré4'},{p:'La4',t:'Mi4'},{p:'Do5',t:'Sol4'},{p:'Mi5',t:'Sib4'},{p:'Fa#5',t:'Ré5'},{p:'La5',t:'Mi5'}],
-  [{p:'Sol#3',t:'Do#3'},{p:'Si3',t:'Mi3'},{p:'Ré4',t:'Sol3'},{p:'Fa4',t:'Sib3'},{p:'La4',t:'Ré4'},{p:'Si4',t:'Mi4'},{p:'Ré5',t:'Sol4'},{p:'Fa5',t:'Sib4'},{p:'La5',t:'Ré5'},{p:'Si5',t:'Mi5'}]
-],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Fa3',t:'Do3'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Fa Maj',t:'Do Min'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'}],terzetto:[]}};
-
-// La/Ré/Sol 33/12
-PRESETS.LaReSol33_12={nbRangees:3,rangees:[{nom:'Rangée Sol (extérieure)',nb:10},{nom:'Rangée Ré (médiane)',nb:11},{nom:'Rangée La (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Fa3',t:'Mib3'},{p:'Ré4',t:'La3'},{p:'Sol4',t:'Do#4'},{p:'Si4',t:'Mi4'},{p:'Ré5',t:'La4'},{p:'Sol5',t:'Do#5'},{p:'Si5',t:'Mi5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do#6'},{p:'Si6',t:'Mi6'}],
-  [{p:'La2',t:'Sol#2'},{p:'Fa3',t:'Mib3'},{p:'Si3',t:'Fa#3'},{p:'Ré4',t:'La3'},{p:'Fa#4',t:'Do4'},{p:'Sol#4',t:'Mi4'},{p:'Si4',t:'Fa#4'},{p:'Ré5',t:'La4'},{p:'Fa#5',t:'Do5'},{p:'Sol#5',t:'Mi5'},{p:'Si5',t:'Fa#5'}],
-  [{p:'Sib3',t:'Do#3'},{p:'Do#4',t:'Mi3'},{p:'Mi4',t:'Sol3'},{p:'Sol4',t:'Sib3'},{p:'Si4',t:'Ré4'},{p:'Do#5',t:'Mi4'},{p:'Mi5',t:'Sol4'},{p:'Sol5',t:'Sib4'},{p:'Si5',t:'Ré5'},{p:'Do#6',t:'Mi5'}]
-],basses:[{p:'La2',t:'Mi2'},{p:'Ré3',t:'La2'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Fa#3',t:'Do#3'},{p:'Do#3',t:'Sol#2'}],accords:[{p:'La Maj',t:'Mi Min'},{p:'Ré Maj',t:'La Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Fa# Maj',t:'Do# Min'},{p:'Do# Maj',t:'Sol# Min'}],terzetto:[]}};
-
-// Sib/Mib/Lab 33/12
-PRESETS.SibMibLab33_12={nbRangees:3,rangees:[{nom:'Rangée Lab (extérieure)',nb:10},{nom:'Rangée Mib (médiane)',nb:11},{nom:'Rangée Sib (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Fa#3',t:'Mi3'},{p:'Mib4',t:'Sib3'},{p:'Sib4',t:'Ré4'},{p:'Do5',t:'Fa4'},{p:'Mib5',t:'Sib4'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Fa5'},{p:'Mib6',t:'Sib5'},{p:'Fa6',t:'Ré6'},{p:'Do7',t:'Fa6'}],
-  [{p:'Sib2',t:'La2'},{p:'Fa#3',t:'Mi3'},{p:'Do4',t:'Sol3'},{p:'Mib4',t:'Sib3'},{p:'Sol4',t:'Réb4'},{p:'La4',t:'Fa4'},{p:'Do5',t:'Sol4'},{p:'Mib5',t:'Réb5'},{p:'Sol5',t:'Fa5'},{p:'La5',t:'Sol5'},{p:'Do6',t:'Fa6'}],
-  [{p:'Si3',t:'Ré3'},{p:'Ré4',t:'Fa3'},{p:'Fa4',t:'Lab3'},{p:'Do5',t:'Réb4'},{p:'Ré5',t:'Fa4'},{p:'Fa5',t:'Lab4'},{p:'Do6',t:'Réb5'},{p:'Ré6',t:'Fa5'},{p:'Fa6',t:'Lab5'},{p:'Do7',t:'Réb6'}]
-],basses:[{p:'Sib2',t:'Fa2'},{p:'Mib3',t:'Sib2'},{p:'Lab3',t:'Mib3'},{p:'Fa3',t:'Do3'},{p:'Do3',t:'Sol2'},{p:'Sol3',t:'Ré3'}],accords:[{p:'Sib Maj',t:'Fa Min'},{p:'Mib Maj',t:'Sib Min'},{p:'Lab Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'},{p:'Do Maj',t:'Sol Min'},{p:'Sol Maj',t:'Ré Min'}],terzetto:[]}};
-
-// Sol/Do Corgeron 33/8
-PRESETS.SolDo_Corgeron={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Sol#3',t:'Si3'},{p:'Sib3',t:'Ré4'},{p:'Mib4',t:'Sol4'},{p:'Sol#4',t:'Si4'},{p:'Sib4',t:'Ré5'},{p:'Mib5',t:'Sol5'},{p:'Sol#5',t:'Si5'},{p:'Sib5',t:'Ré6'},{p:'Mib6',t:'Sol6'},{p:'Sol#6',t:'Si6'},{p:'Sib6',t:'Ré7'}],
-  [{p:'Mi3',t:'Sol#3'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
-  [{p:'Sol3',t:'La3'},{p:'Do4',t:'Si3'},{p:'Mi4',t:'Ré4'},{p:'Sol4',t:'Fa#4'},{p:'Do5',t:'La4'},{p:'Mi5',t:'Do5'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Mi5'},{p:'Mi6',t:'La5'},{p:'Sol6',t:'Do6'}]
-],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'}],terzetto:[]}};
-
-// Sol/Do Heim 33/8
-PRESETS.SolDo_Heim={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Sol#3',t:'Si3'},{p:'La3',t:'Ré4'},{p:'Mib4',t:'Sol4'},{p:'Sol#4',t:'Si4'},{p:'La4',t:'Ré5'},{p:'Mib5',t:'Sol5'},{p:'Sol#5',t:'Si5'},{p:'La5',t:'Ré6'},{p:'Mib6',t:'Sol6'},{p:'Sol#6',t:'Si6'},{p:'La6',t:'Ré7'}],
-  [{p:'Mi3',t:'Sol#3'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
-  [{p:'Sol3',t:'La3'},{p:'Do4',t:'Si3'},{p:'Mi4',t:'Ré4'},{p:'Sol4',t:'Fa#4'},{p:'Do5',t:'La4'},{p:'Mi5',t:'Do5'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Mi5'},{p:'Mi6',t:'La5'},{p:'Sol6',t:'Do6'}]
-],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'}],terzetto:[]}};
-
-// Sol/Do/Alts Bottasso 33/18
-PRESETS.SolDoAlts_Bottasso={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Do#3',t:'Si2'},{p:'Sol#3',t:'Ré3'},{p:'Mib4',t:'Sol3'},{p:'Fa4',t:'Si3'},{p:'Fa#4',t:'Ré4'},{p:'Mib5',t:'Sol4'},{p:'Fa5',t:'Si4'},{p:'Fa#5',t:'Ré5'},{p:'Mib6',t:'Sol5'},{p:'Fa6',t:'Si5'},{p:'Fa#6',t:'Ré6'}],
-  [{p:'Mi3',t:'Si2'},{p:'Fa#3',t:'Do#3'},{p:'La3',t:'Mib3'},{p:'Do4',t:'Sol3'},{p:'Mi4',t:'Sib3'},{p:'Fa#4',t:'Do#4'},{p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Mi5',t:'Sib4'},{p:'Fa#5',t:'Do#5'},{p:'La5',t:'Mib5'}],
-  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
-],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
-
-// Sol/Do/Alts JPL 33/18
-PRESETS.SolDoAlts_JPL={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Si2',t:'Si3'},{p:'Sol#3',t:'Ré4'},{p:'La3',t:'Sol4'},{p:'Mib4',t:'Si4'},{p:'Sol#4',t:'Ré5'},{p:'La4',t:'Sol5'},{p:'Mib5',t:'Si5'},{p:'Sol#5',t:'Ré6'},{p:'La5',t:'Sol6'},{p:'Mib6',t:'Si6'},{p:'La6',t:'Ré7'}],
-  [{p:'Mi3',t:'Si2'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Sib3'},{p:'Do4',t:'Do#4'},{p:'Mi4',t:'Sol4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sib5'},{p:'Fa#5',t:'Do6'},{p:'La5',t:'Mi6'}],
-  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
-],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
-
-// Sol/Do/Alts LTL 33/18
-PRESETS.SolDoAlts_LTL={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Do#3',t:'Si2'},{p:'Sol#3',t:'Ré3'},{p:'Sib3',t:'Sol3'},{p:'Mib4',t:'Si3'},{p:'Sol#4',t:'Ré4'},{p:'Sib4',t:'Sol4'},{p:'Mib5',t:'Si4'},{p:'Sol#5',t:'Ré5'},{p:'Sib5',t:'Sol5'},{p:'Mib6',t:'Si5'},{p:'Sol#6',t:'Ré6'}],
-  [{p:'Mi3',t:'Si2'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
-  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
-],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
-
-// Sol/Do/Alts Gaillard 33/18
-PRESETS.SolDoAlts_Gaillard={nbRangees:3,rangees:[{nom:'Rangée Alts (extérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Sol (intérieure)',nb:10}],notes:{droite:[
-  [{p:'Mib3',t:'Si3'},{p:'Sol#3',t:'Ré4'},{p:'La3',t:'Sol4'},{p:'Mib4',t:'Si4'},{p:'Sol#4',t:'Ré5'},{p:'La4',t:'Sol5'},{p:'Mib5',t:'Si5'},{p:'Sol#5',t:'Ré6'},{p:'La5',t:'Sol6'},{p:'Mib6',t:'Si6'},{p:'Sol#6',t:'Ré7'}],
-  [{p:'Mi3',t:'Sol#3'},{p:'Fa#3',t:'Sib3'},{p:'La3',t:'Do#4'},{p:'Do4',t:'Sol4'},{p:'Mi4',t:'Sol#4'},{p:'Fa#4',t:'Sib4'},{p:'La4',t:'Do#5'},{p:'Do5',t:'Sol5'},{p:'Mi5',t:'Sol#5'},{p:'Fa#5',t:'Sib5'},{p:'La5',t:'Do#6'}],
-  [{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}]
-],basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'},{p:'Do#3',t:'Sol#2'},{p:'Sol#3',t:'Mib3'},{p:'Fa3',t:'Do3'}],accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'},{p:'Do# Maj',t:'Sol# Min'},{p:'Sol# Maj',t:'Mib Min'},{p:'Fa Maj',t:'Do Min'}],terzetto:[]}};
-
 
 function renderPresetOptions(){
   const sel=document.getElementById('preset-select');
   if(!sel)return;
+  // Group by category
+  const cats={};
+  _presetIndex.forEach(p=>{(cats[p.category]||(cats[p.category]=[])).push(p);});
   const customOpt=sel.querySelector('option[value="custom"]');
-  Object.keys(PRESET_LABELS).forEach(key=>{
-    const opt=document.createElement('option');
-    opt.value=key;opt.textContent=PRESET_LABELS[key];
-    sel.insertBefore(opt,customOpt);
+  // Remove previously inserted options
+  sel.querySelectorAll('option[data-preset]').forEach(o=>o.remove());
+  Object.entries(cats).forEach(([cat,items])=>{
+    const og=document.createElement('optgroup');og.label=cat;
+    items.forEach(p=>{
+      const o=document.createElement('option');
+      o.value=p.id;o.textContent=p.label;o.dataset.preset='1';
+      og.appendChild(o);
+    });
+    sel.insertBefore(og,customOpt);
   });
+}
+
+async function fetchPresetData(id){
+  if(_presetCache[id])return _presetCache[id];
+  const base=document.querySelector('base')?.href||location.href;
+  const url=new URL(`presets/${id}.json`,base).href;
+  const r=await fetch(url);
+  if(!r.ok)throw new Error(`Preset not found: ${id}`);
+  const data=await r.json();
+  _presetCache[id]=data;
+  return data;
 }
 
 
@@ -997,7 +832,7 @@ function snapshotToDB(){
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
-    voixType:document.getElementById('voix-type-md')?.value||'BN',
+    voixPerRow:readVoixPerRow(),
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
@@ -1020,8 +855,8 @@ function loadFromDB(rec){
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
   document.getElementById('nb-voix').value=String(rec.nbVoix||2);
-  updateVoixTypeOptions();
-  const vtEl=document.getElementById('voix-type-md');if(vtEl)vtEl.value=rec.voixType||'BN';
+  renderVoixPerRow();
+  (function(){const vpr=rec.voixPerRow||(rec.voixType?{N:['N'],BN:['B','N'],NH:['N','A'],BNH:['B','N','A']}[rec.voixType]:null)||['B','N'];for(let i=0;i<vpr.length;i++){const s=document.getElementById('voix-v'+i);if(s)s.value=vpr[i]||'N';}})();
   document.getElementById('nb-voix-accords').value=String(rec.nbVoixAccords||(rec.nbVoixGauche||2));
   document.getElementById('nb-voix-basses').value=String(rec.nbVoixBasses||(rec.nbVoixGauche||2));
   const lhm=rec.lhDisplayMode||'separated';
@@ -1069,8 +904,8 @@ function newInstrument(){
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   document.getElementById('nb-voix').value='2';
-  updateVoixTypeOptions();
-  const vtEl=document.getElementById('voix-type-md');if(vtEl)vtEl.value='BN';
+  renderVoixPerRow();
+  (function(){const d=['B','N'];for(let i=0;i<2;i++){const s=document.getElementById('voix-v'+i);if(s)s.value=d[i];}})();
   document.getElementById('nb-voix-accords').value='2';
   document.getElementById('nb-voix-basses').value='2';
   document.getElementById('lh-separated').checked=true;
@@ -1122,12 +957,12 @@ function onAnyChange(){
    ╚══════════════════════════════════════════════════════╝ */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
-  renderPresetOptions();
-  updateVoixTypeOptions();
+  loadPresetIndex();
+  renderVoixPerRow();
   initPicker();renderLibrary();
   const list=DB.all();
   if(list.length){loadFromDB(list[0]);}
-  else{loadPreset('GCD33');document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();}
+  else{loadPreset('GCD33').then(()=>{document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();});}
   scheduleLivePreview();
   // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
   document.getElementById('note-grid').addEventListener('click',e=>{
@@ -1142,9 +977,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 /* ── Preset ── */
-function loadPreset(key){
+async function loadPreset(key){
   if(!key||key==='custom'){renderRangeesCfg();generateInputGrid();onAnyChange();return;}
-  const p=PRESETS[key];if(!p)return;
+  let p;
+  try{p=await fetchPresetData(key);}catch(e){console.warn('Preset not found:',key);return;}
   CFG.nbRangees=p.nbRangees;CFG.rangees=p.rangees.map(r=>({nom:r.nom,nb:r.nb,offset:r.offset||0}));
   CFG.notes=JSON.parse(JSON.stringify(p.notes));
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
@@ -1487,7 +1323,7 @@ function readInputs(){
     nomLuthier:val('nom-luthier')||"Ewen d'Aviau",
     date:val('date-creation'),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
-    voixType:document.getElementById('voix-type-md')?.value||'BN',
+    voixPerRow:readVoixPerRow(),
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
@@ -1622,7 +1458,7 @@ function buildSVG_Droite(data,dark){
 }
 
 function buildSVG_Gauche(data,dark){
-  const R=24,HGAP=62,VGAP=70,LPAD=110,MARG=12,HEAD=32,FOOT=20;
+  const R=24,HGAP=62,VGAP=70,LPAD=140,MARG=12,HEAD=32,FOOT=20;
   const gold=dark?'#c9a227':'#2d5a27';
   const bg=dark?'#111':'#fff';
   const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
@@ -1729,8 +1565,8 @@ function buildSVG_Gauche(data,dark){
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
     if(sec.items.length)
       s+=`<rect x="${LPAD-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(LPAD-7,cy,escSVG(sec.nom),10,gold,'bold','end');
-    if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-7,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
+    s+=tx(LPAD-R-10,cy,escSVG(sec.nom),10,gold,'bold','end');
+    if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-R-10,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
   });
   // Pass 2: table grid (column + row separator lines, outer border, column numbers)
   if(secRows.length>0&&maxItems>0){
@@ -1773,24 +1609,34 @@ function buildSVG_Gauche(data,dark){
 /* ╔══════════════════════════════════════════════════════╗
    ║  VOICE TYPE HELPERS                                  ║
    ╚══════════════════════════════════════════════════════╝ */
-const VOIX_COMBOS_DATA={
-  N  :[['N', 0,"8'"]],
-  BN :[['B',-1,"16'"],['N',0,"8'"]],
-  NH :[['N', 0,"8'"],['H',+1,"4'"]],
-  BNH:[['B',-1,"16'"],['N',0,"8'"],['H',+1,"4'"]]
+const VOICE_TYPE_DATA={
+  'N' :{label:'N',  oct:0,  reg:"8'",   desc:"Naturel 8'"},
+  'N+':{label:'N+', oct:0,  reg:"8'+",  desc:"Naturel 8' enrichi +"},
+  'N-':{label:'N-', oct:0,  reg:"8'-",  desc:"Naturel 8' enrichi -"},
+  'B' :{label:'B',  oct:-1, reg:"16'",  desc:"Basse 16'"},
+  'A' :{label:'A',  oct:+1, reg:"4'",   desc:"Aigu 4'"},
 };
-const VOIX_COMBOS_BY_NB={
-  1:[{v:'N',  label:"N (8') — naturel"}],
-  2:[{v:'BN', label:"B+N (16'+8') — profond"},{v:'NH',label:"N+H (8'+4') — tremolo"}],
-  3:[{v:'BNH',label:"B+N+H (16'+8'+4') — complet"}]
-};
-function updateVoixTypeOptions(){
+function readVoixPerRow(){
   const nb=parseInt(document.getElementById('nb-voix')?.value)||2;
-  const sel=document.getElementById('voix-type-md');
-  if(!sel)return;
-  const cur=sel.value;
-  const opts=VOIX_COMBOS_BY_NB[nb]||VOIX_COMBOS_BY_NB[2];
-  sel.innerHTML=opts.map(function(o){return '<option value="'+o.v+'"'+(o.v===cur?' selected':'')+'>'+o.label+'</option>';}).join('');
+  const arr=[];
+  for(let i=0;i<nb;i++){const s=document.getElementById('voix-v'+i);arr.push(s?s.value:null);}
+  return arr;
+}
+function renderVoixPerRow(){
+  const nb=parseInt(document.getElementById('nb-voix')?.value)||2;
+  const wrap=document.getElementById('voix-per-row-wrap');if(!wrap)return;
+  const prev=readVoixPerRow();
+  const opts=['N','N+','N-','B','A'];
+  const lbl={'N':"N — 8' naturel",'N+':"N+ — 8' +",'N-':"N- — 8' -",'B':"B — 16' basse",'A':"A — 4' aigu"};
+  const dflt=['B','N','A'];
+  wrap.innerHTML=Array.from({length:nb},(_,i)=>{
+    const val=prev[i]||dflt[i]||'N';
+    return `<div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+      <span style="font-size:.78rem;color:#888;min-width:46px;">Voix ${i+1}</span>
+      <select id="voix-v${i}" onchange="onAnyChange()" style="font-size:.82rem;flex:1;">
+        ${opts.map(o=>`<option value="${o}"${o===val?' selected':''}>${lbl[o]}</option>`).join('')}
+      </select></div>`;
+  }).join('');
 }
 function shiftOctave(noteStr,octaves){
   if(!noteStr||!octaves)return noteStr;
@@ -1798,16 +1644,17 @@ function shiftOctave(noteStr,octaves){
   if(!m)return noteStr;
   return m[1]+Math.max(0,parseInt(m[2])+octaves);
 }
-function expandVoicesForSommier(rows,voixType){
-  const voices=VOIX_COMBOS_DATA[voixType]||VOIX_COMBOS_DATA.N;
-  if(voices.length===1)return rows;
+function expandVoicesForSommier(rows,voixPerRow){
+  const legacyMap={N:['N'],BN:['B','N'],NH:['N','A'],BNH:['B','N','A']};
+  const arr=Array.isArray(voixPerRow)?voixPerRow:(legacyMap[voixPerRow]||['N']);
+  if(arr.length<=1)return rows;
   const result=[];
   for(const row of rows){
-    for(const vd of voices){
-      const vname=vd[0],oct=vd[1],reg=vd[2];
+    for(const vtype of arr){
+      const vd=VOICE_TYPE_DATA[vtype]||VOICE_TYPE_DATA['N'];
       result.push({
-        nom:row.nom+' — '+vname+' ('+reg+')',
-        boutons:(row.boutons||[]).map(function(b){return {p:shiftOctave(b.p,oct),t:shiftOctave(b.t,oct)};}),
+        nom:row.nom+' — '+vd.label+' ('+vd.reg+')',
+        boutons:(row.boutons||[]).map(b=>({p:shiftOctave(b.p,vd.oct),t:shiftOctave(b.t,vd.oct)})),
         offset:row.offset||0
       });
     }
@@ -1871,10 +1718,7 @@ function buildSommierSection(title,rows,dark){
   s+='</svg>';return s;
 }
 
-function buildSommierSVG(data,dark){
-  const rhTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
-  const lhTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
-  // Build LH sections respecting lhRows (separate reed plates per row)
+function buildLhSommierSections(data){
   const lhRows=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:Math.max(data.basses.length,data.accords.length)||1,offset:0}];
   const lhSections=[];
   let bIdx=0,aIdx=0;
@@ -1887,7 +1731,13 @@ function buildSommierSVG(data,dark){
     bIdx+=row.nb;aIdx+=row.nb;
   });
   if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
-  const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixType||'N'),dark);
+  return lhSections;
+}
+function buildSommierSVG(data,dark){
+  const rhTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
+  const lhTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
+  const lhSections=buildLhSommierSections(data);
+  const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
   const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
   const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
@@ -1961,7 +1811,7 @@ function buildManufacturerTable(data,dark){
         </tr>
         <tr>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clVoices')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix}v ${data.voixType||''} · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix}v [${(data.voixPerRow||['N']).join('+')}] · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v</td>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clLuthier')}</td>
           <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomLuthier)} — ${date}</td>
         </tr>
@@ -2024,7 +1874,7 @@ function buildManufacturerTable(data,dark){
 
   h+=`<div style="margin-top:18px;background:${dark?'#1a1500':'#f6f9f5'};border:1.5px solid ${dark?'#333':'#c8e0c5'};border-radius:6px;padding:11px 14px;font-size:.78rem;${dark?'color:#ccc;':''}">
     <strong>${t('specTitle')}</strong><br>
-    &bull; ${t('spec1')}<br>&bull; ${t('spec2')} : <strong>${data.nbVoix}v ${data.voixType||''}</strong><br>
+    &bull; ${t('spec1')}<br>&bull; ${t('spec2')} : <strong>${data.nbVoix}v [${(data.voixPerRow||['N']).join('+')}]</strong><br>
     &bull; ${t('spec3')}<br>&bull; ${t('spec4')}<br><br>
     <em>${t('specGenBy')} ${date} — ${escHTML(data.nomLuthier)} — ewendaviau.com</em></div>`;
   return h;
@@ -2104,13 +1954,14 @@ async function downloadPDF(which){
   const PW=pdf.internal.pageSize.getWidth(),PH=pdf.internal.pageSize.getHeight();
   const M=12,CW=PW-2*M;
   let yPos=M;
-  async function addSvgImg(svgStr,label){
+  async function addSvgImg(svgStr,label,mmPerPx){
     if(label){
       pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
       pdf.text(label,M,yPos+4);yPos+=8;
     }
     const {dataUrl,w,h}=await svgToPngDataUrl(svgStr);
-    const ratio=h/w,imgW=CW,imgH=imgW*ratio;
+    const imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
+    const imgH=h*(imgW/w);
     if(yPos+imgH>PH-M){pdf.addPage();yPos=M;}
     pdf.addImage(dataUrl,'PNG',M,yPos,imgW,imgH);
     yPos+=imgH+4;
@@ -2121,17 +1972,26 @@ async function downloadPDF(which){
   pdf.setFontSize(7.5);pdf.setFont('helvetica','normal');pdf.setTextColor(120,120,120);
   pdf.text(`${t('svgLuthier')}: ${data.nomLuthier||'—'}  ·  ${t('svgClient')}: ${data.nomJoueur||'—'}  ·  ${fmtDate(data.date)}`,M,yPos);yPos+=5;
   pdf.setDrawColor(45,90,39);pdf.setLineWidth(0.5);pdf.line(M,yPos,PW-M,yPos);yPos+=5;
+  // Compute shared mm/px scale from the wider SVG (MD) so both hands have same text size
+  const svgDstr=buildSVG_Droite(data,false),svgGstr=buildSVG_Gauche(data,false);
+  const mwD=svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mwG=svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/);
+  const refW=Math.max(mwD?+mwD[1]:800, mwG?+mwG[1]:400);
+  const mmPerPxPlan=CW/refW;
   // MD
-  await addSvgImg(buildSVG_Droite(data,false),t('svgRH'));
+  await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan);
   // Soufflet
   pdf.setFontSize(7);pdf.setTextColor(170,170,170);
   pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos,{align:'center'});yPos+=6;
-  // MG
-  await addSvgImg(buildSVG_Gauche(data,false),t('svgLH'));
+  // MG — même échelle que MD
+  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan);
   if(which==='fabricant'){
-    // Sommier
+    // Sommier — deux SVGs séparés (RH + LH), pleine largeur chacun
     pdf.addPage();yPos=M;
-    await addSvgImg(buildSommierSVG(data,false),(t('sommierView')||'🪗 Sommier').replace('🪗 ',''));
+    const rhSomTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
+    const lhSomTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
+    await addSvgImg(buildSommierSection(rhSomTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),false),t('svgRH'));
+    const lhSecs=buildLhSommierSections(data);
+    if(lhSecs.length)await addSvgImg(buildSommierSection(lhSomTitle,lhSecs,false),t('svgLH'));
     // Manufacturer table via html2canvas
     const H2C_URL='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
     try{
