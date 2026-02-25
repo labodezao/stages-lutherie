@@ -317,22 +317,18 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               <input type="number" id="nb-accords" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('accords')">
               <button type="button" class="rng-btn" onclick="changeGauche('accords',1)">＋</button>
             </div>
-            <div style="display:flex;align-items:center;gap:3px;">
+            <label style="display:flex;align-items:center;gap:6px;grid-column:1/-1;cursor:pointer;margin-top:2px;">
+              <input type="checkbox" id="terzetto-enabled" onchange="onTerzettoChange()">
               <span class="gauche-label" data-i="terzetto">Terzetto</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Terzetto" data-tip="Terzetto (italien : &quot;trio&quot;) : plaque d'anche ajoutant la TIERCE à l'accord.&#10;2 voix : Do+Sol · 3 voix terzetto : Do+Mi+Sol (accord complet).&#10;Optionnel sur accordéon 2-voix ; inclus sur 3-voix.&#10;—&#10;Terzetto (Italian: &quot;trio&quot;): reed plate adding the 3RD to each chord.&#10;2-voice: C+G · 3-voice terzetto: C+E+G (full chord).&#10;Optional on 2-voice; standard on 3-voice instruments.">ⓘ</span>
-            </div>
-            <div class="rng-ctrl">
-              <button type="button" class="rng-btn" onclick="changeGauche('terzetto',-1)">−</button>
-              <input type="number" id="nb-terzetto" min="0" max="60" value="0" style="width:48px;text-align:center;" oninput="applyGaucheCount('terzetto')">
-              <button type="button" class="rng-btn" onclick="changeGauche('terzetto',1)">＋</button>
-            </div>
+            </label>
           </div>
           <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
             <span style="font-size:.65rem;color:#888;" data-i="quickSet">Rapide :</span>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(2,2,0)">4b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(4,4,0)">8b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,0)">12b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,6)">18b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,8)">24b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(2,2,false)">4b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(4,4,false)">8b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,false)">12b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,true)">18b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,true)">24b</button>
           </div></div>
         <div class="form-group"><label data-i="voices">Nombre de voix (anches) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Voix" data-tip="1 voix : une anche par note (son pur).&#10;2 voix : deux anches par note (ex: M+H ou L+M) → son plus riche.&#10;3 voix : trois anches (L+M+H) → son très plein, avec tremolo.&#10;—&#10;1 voice: one reed per note (pure tone).&#10;2 voices: two reeds per note (e.g. M+H or L+M) → richer sound.&#10;3 voices: three reeds (L+M+H) → full sound with tremolo.">ⓘ</span></label>
           <select id="nb-voix" onchange="renderVoixPerRow();onAnyChange()">
@@ -1025,22 +1021,34 @@ function applyGaucheCount(key){
   el.value=n;
   const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
   CFG.notes[key]=resize(CFG.notes[key]||[],n);
+  if(key==='accords'){const terz=document.getElementById('terzetto-enabled');if(terz&&terz.checked)CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);}
   generateInputGrid();onAnyChange();
 }
-function setGauchePreset(nb,na,nt){
+function setGauchePreset(nb,na,withTerzetto){
   readNoteInputsIntoCFG();
   const resize=(arr,n)=>{const r=arr.slice(0,n);while(r.length<n)r.push({p:'',t:''});return r;};
   document.getElementById('nb-basses').value=nb;
   document.getElementById('nb-accords').value=na;
-  document.getElementById('nb-terzetto').value=nt;
+  const terz=document.getElementById('terzetto-enabled');
+  if(terz)terz.checked=!!withTerzetto;
   CFG.notes.basses=resize(CFG.notes.basses,nb);
   CFG.notes.accords=resize(CFG.notes.accords,na);
-  CFG.notes.terzetto=resize(CFG.notes.terzetto,nt);
+  CFG.notes.terzetto=resize(CFG.notes.terzetto,withTerzetto?na:0);
   generateInputGrid();onAnyChange();
 }
 function syncGaucheInputs(){
   const s=(k)=>{const el=document.getElementById('nb-'+k);if(el)el.value=(CFG.notes[k]||[]).length;};
-  s('basses');s('accords');s('terzetto');
+  s('basses');s('accords');
+  const terz=document.getElementById('terzetto-enabled');
+  if(terz)terz.checked=(CFG.notes.terzetto||[]).length>0;
+}
+function onTerzettoChange(){
+  readNoteInputsIntoCFG();
+  const enabled=document.getElementById('terzetto-enabled').checked;
+  const n=enabled?(CFG.notes.accords||[]).length:0;
+  const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
+  CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);
+  generateInputGrid();onAnyChange();
 }
 
 function onLhModeChange(){renderLhRowsCfg();onAnyChange();}
