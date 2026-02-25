@@ -537,7 +537,7 @@ fr:{
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Poussé',svgPull:'↑ Tiré',
   svgHigh:'AIGU ▶',svgLow:'◀ GRAVE',svgBellowsPush:'POUSSÉ',svgBellowsPull:'TIRÉ',
   svgRH:'Main Droite',svgLH:'Main Gauche',svgSommierRH:'SOMMIER — Main Droite',svgSommierLH:'SOMMIER — Main Gauche',
-  svgMidi:'MIDI',svgGeneratedBy:'Généré le',svgPlan:'Plan de clavier',
+  svgMidi:'MIDI',svgGeneratedBy:'Généré le',svgPlan:'Plan de clavier',svgBellows:'SOUFFLET',
   // Manufacturer table
   mfrRH:'MAIN DROITE — Plaque anches mélodie (bisonore)',
   mfrLH:'MAIN GAUCHE — Plaques basses, accords',
@@ -606,7 +606,7 @@ en:{
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Push',svgPull:'↑ Pull',
   svgHigh:'TREBLE ▶',svgLow:'◀ BASS',svgBellowsPush:'PUSH',svgBellowsPull:'PULL',
   svgRH:'Right Hand',svgLH:'Left Hand',svgSommierRH:'REED PLATE — Right Hand',svgSommierLH:'REED PLATE — Left Hand',
-  svgMidi:'MIDI',svgGeneratedBy:'Generated on',svgPlan:'Keyboard plan',
+  svgMidi:'MIDI',svgGeneratedBy:'Generated on',svgPlan:'Keyboard plan',svgBellows:'BELLOWS',
   mfrRH:'RIGHT HAND — Melody reed plate (bisonoric)',
   mfrLH:'LEFT HAND — Bass & chord plates',
   mfrRow:'Row',mfrNo:'No.',mfrPushNote:'Push Note ↓',mfrPullNote:'Pull Note ↑',
@@ -1533,6 +1533,14 @@ function buildSVG_Droite(data,dark){
       }
     });
   });
+
+  // Bellows annotation: vertical arrow + rotated label on the left margin
+  // Row 0 (top of diagram) = inner row = closest to bellows
+  const bsY1=MARG+HEAD+4, bsY2=MARG+HEAD+data.droite.length*VGAP-4;
+  const bsMid=(bsY1+bsY2)/2, bsX=12;
+  s+=`<line x1="${bsX}" y1="${bsY1+8}" x2="${bsX}" y2="${bsY2}" stroke="${gold}" stroke-width=".8" opacity=".5"/>`;
+  s+=`<polygon points="${bsX},${bsY1} ${bsX-3.5},${bsY1+8} ${bsX+3.5},${bsY1+8}" fill="${gold}" opacity=".65"/>`;
+  s+=`<text x="${bsX}" y="${bsMid}" font-size="7.5" fill="${gold}" font-weight="bold" text-anchor="middle" opacity=".8" transform="rotate(-90,${bsX},${bsMid})">${t('svgBellows')}</text>`;
 
   const fy=MARG+HEAD+data.droite.length*VGAP+14;
   s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
