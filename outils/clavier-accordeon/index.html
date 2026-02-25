@@ -339,10 +339,25 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <option value="1">1 voix / 1 voice</option>
             <option value="2" selected>2 voix / voices (LM ou MH)</option>
             <option value="3">3 voix / voices (LMH)</option>
+          </select></div>
+        <div class="form-group"><label data-i="voicesLH">Voix main gauche (anches)</label>
+          <select id="nb-voix-gauche" onchange="onAnyChange()">
+            <option value="1">1 voix / 1 voice</option>
+            <option value="2" selected>2 voix / voices</option>
+            <option value="3">3 voix / voices</option>
           </select>
           <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
             <input type="checkbox" id="show-midi" onchange="onAnyChange()">
             <label for="show-midi" style="font-size:.82rem;cursor:pointer;font-weight:normal;text-transform:none;letter-spacing:0" data-i="showMidi">Numéros MIDI <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: MIDI" data-tip="Affiche le numéro MIDI de chaque note sur le clavier et dans le tableau fabricant.&#10;Do central (Do4) = MIDI 60. Utile pour les logiciels et fabricants.&#10;—&#10;Shows MIDI note number on keyboard and manufacturer table.&#10;Middle C (C4) = MIDI 60. Useful for software and manufacturers.">ⓘ</span></label>
+          </div>
+          <div style="margin-top:6px;">
+            <div style="font-size:.75rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;" data-i="lhDisplayMode">Affichage main gauche</div>
+            <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;">
+              <input type="radio" name="lh-mode" id="lh-separated" value="separated" checked onchange="onAnyChange()">
+              <span data-i="lhSeparated">Rangées séparées</span></label>
+            <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
+              <input type="radio" name="lh-mode" id="lh-paired" value="paired" onchange="onAnyChange()">
+              <span data-i="lhPaired">Alternés (B-A-B-A…)</span></label>
           </div></div>
       </div>
       <div id="rangees-cfg-wrap">
@@ -554,7 +569,9 @@ fr:{
   clTonality:'Tonalité (clé)',clRowSpec:'Spécification rangées',
   clTuning:'Accord de base',clTremolo:'Tremolo',
   clHarmony:'Harmonie',clBassType:'Type de basses',
-  clBassComp:'Composition basses',clVoices:'Nombre de voix',clLuthier:'Luthier / Date',
+  clBassComp:'Composition basses',clVoices:'Nombre de voix (main droite)',clVoicesLH:'Nombre de voix (main gauche)',clLuthier:'Luthier / Date',
+  voicesLH:'Voix main gauche (anches)',
+  lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -620,7 +637,9 @@ en:{
   clTonality:'Key tonality',clRowSpec:'Row specification',
   clTuning:'Base tuning',clTremolo:'Tremolo',
   clHarmony:'Harmony',clBassType:'Bass type',
-  clBassComp:'Bass composition',clVoices:'Number of voices',clLuthier:'Luthier / Date',
+  clBassComp:'Bass composition',clVoices:'Number of voices (right hand)',clVoicesLH:'Number of voices (left hand)',clLuthier:'Luthier / Date',
+  voicesLH:'Left hand voices (reeds)',
+  lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -784,7 +803,8 @@ const PRESET_LABELS={
   SolDoAlts_LTL:'Sol/Do/Alts LTL — 33/18',
   SolDoAlts_Gaillard:'Sol/Do/Alts Gaillard — 33/18',
   // ── Plans personnalisés ──
-  Evelyne:'Evelyne — Sol/Mi/Fa 33/12 (plan perso)'
+  Evelyne:'Evelyne — Sol/Mi/Fa 33/12 (plan perso)',
+  Thorsen:'Thorsen — Sol/Mi/Fa 33/12 (plan perso)'
 };
 
 const NOTE_TO_SEMITONE={Do:0,'Do#':1,Réb:1,Re:2,'Ré':2,'Ré#':3,Mib:3,Mi:4,Fa:5,'Fa#':6,Solb:6,Sol:7,'Sol#':8,Lab:8,La:9,'La#':10,Sib:10,Si:11};
@@ -925,7 +945,18 @@ PRESETS.Evelyne={nbRangees:3,rangees:[
   {nom:'Rangée Mi (médiane)',nb:11},
   {nom:'Rangée Fa (extérieure)',nb:10,offset:2}
 ],notes:{droite:[
-  [{p:'Do3',t:'Mi3'},{p:'Ré3',t:'Fa#3'},{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}],
+  [{p:'Do3',t:'Mi3'},{p:'Ré3',t:'Fa#3'},{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La6'},{p:'Sol6',t:'Do6'}],
+  [{p:'Mi3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Do4',t:'Ré4'},{p:'Mi4',t:'Fa4'},{p:'La4',t:'Sol4'},{p:'Do5',t:'Si4'},{p:'Mi5',t:'Ré5'},{p:'La5',t:'Fa5'},{p:'Do6',t:'Sol5'},{p:'Mi6',t:'Si5'},{p:'La6',t:'Ré6'}],
+  [{p:'Fa3',t:'Sib3'},{p:'Mib4',t:'Réb4'},{p:'Fa4',t:'Mib4'},{p:'Lab4',t:'Sib4'},{p:'Mib5',t:'Réb5'},{p:'Fa5',t:'Mib5'},{p:'Lab5',t:'Lab5'},{p:'Mib6',t:'Sib5'},{p:'Fa6',t:'Réb6'},{p:'Lab6',t:'Mib6'}]
+],basses:[{p:'Do2',t:'Sol2'},{p:'Do3',t:'Sol3'},{p:'Sol2',t:'Ré2'},{p:'Sol3',t:'Ré3'},{p:'Si2',t:'Fa#2'},{p:'Si3',t:'Fa#3'}],accords:[{p:'La Maj',t:'Fa Maj'},{p:'La Min',t:'Fa Min'},{p:'Mi Maj',t:'La Maj'},{p:'Mi Min',t:'La Min'},{p:'Mib Maj',t:'Sib Maj'},{p:'Mib Min',t:'Sib Min'}],terzetto:[]}};
+
+// Thorsen — plan 3 rangées Sol/Mi/Fa (même layout Evelyne, notation Anglo-Saxonne)
+PRESETS.Thorsen={nbRangees:3,rangees:[
+  {nom:'Rangée Sol (intérieure)',nb:12},
+  {nom:'Rangée Mi (médiane)',nb:11},
+  {nom:'Rangée Fa (extérieure)',nb:10,offset:2}
+],notes:{droite:[
+  [{p:'Do3',t:'Mi3'},{p:'Ré3',t:'Fa#3'},{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La6'},{p:'Sol6',t:'Do6'}],
   [{p:'Mi3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Do4',t:'Ré4'},{p:'Mi4',t:'Fa4'},{p:'La4',t:'Sol4'},{p:'Do5',t:'Si4'},{p:'Mi5',t:'Ré5'},{p:'La5',t:'Fa5'},{p:'Do6',t:'Sol5'},{p:'Mi6',t:'Si5'},{p:'La6',t:'Ré6'}],
   [{p:'Fa3',t:'Sib3'},{p:'Mib4',t:'Réb4'},{p:'Fa4',t:'Mib4'},{p:'Lab4',t:'Sib4'},{p:'Mib5',t:'Réb5'},{p:'Fa5',t:'Mib5'},{p:'Lab5',t:'Lab5'},{p:'Mib6',t:'Sib5'},{p:'Fa6',t:'Réb6'},{p:'Lab6',t:'Mib6'}]
 ],basses:[{p:'Do2',t:'Sol2'},{p:'Do3',t:'Sol3'},{p:'Sol2',t:'Ré2'},{p:'Sol3',t:'Ré3'},{p:'Si2',t:'Fa#2'},{p:'Si3',t:'Fa#3'}],accords:[{p:'La Maj',t:'Fa Maj'},{p:'La Min',t:'Fa Min'},{p:'Mi Maj',t:'La Maj'},{p:'Mi Min',t:'La Min'},{p:'Mib Maj',t:'Sib Maj'},{p:'Mib Min',t:'Sib Min'}],terzetto:[]}};
@@ -969,6 +1000,8 @@ function snapshotToDB(){
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
+    nbVoixGauche:parseInt(document.getElementById('nb-voix-gauche')?.value||'2'),
+    lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -987,6 +1020,10 @@ function loadFromDB(rec){
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
   document.getElementById('nb-voix').value=String(rec.nbVoix||2);
+  document.getElementById('nb-voix-gauche').value=String(rec.nbVoixGauche||2);
+  const lhm=rec.lhDisplayMode||'separated';
+  const lhmEl=document.getElementById('lh-'+lhm);
+  if(lhmEl)lhmEl.checked=true;
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
@@ -1026,6 +1063,8 @@ function newInstrument(){
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   document.getElementById('nb-voix').value='2';
+  document.getElementById('nb-voix-gauche').value='2';
+  document.getElementById('lh-separated').checked=true;
   loadPreset('GCD33');
   document.getElementById('preset-select').value='GCD33';
   renderLibrary();setSaveStatus('dirty');
@@ -1370,6 +1409,8 @@ function readInputs(){
     nomLuthier:val('nom-luthier')||"Ewen d'Aviau",
     date:val('date-creation'),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
+    nbVoixGauche:parseInt(document.getElementById('nb-voix-gauche')?.value||'2'),
+    lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
     basses:CFG.notes.basses,
@@ -1422,7 +1463,7 @@ function bellowsSVG(x,y,w,h,folds,dark){
    ║  SVG KEYBOARD — CLIENT (light preview + dark PDF)    ║
    ╚══════════════════════════════════════════════════════╝ */
 function buildSVG_Droite(data,dark){
-  const R=24,HGAP=60,VGAP=72,BW=26,LPAD=186,MARG=14,HEAD=80,FOOT=34;
+  const R=24,HGAP=60,VGAP=72,LPAD=186,MARG=14,HEAD=80,FOOT=34;
   const gold=dark?'#c9a227':'#2d5a27';
   const bg=dark?'#111111':'#ffffff';
   const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
@@ -1436,16 +1477,11 @@ function buildSVG_Droite(data,dark){
   const maxOff=Math.max(...allOffs,0);
   const minOff=Math.min(...allOffs,0);
   const leftShift=-minOff*(HGAP/2);
-  const BASE=BW+LPAD+leftShift;
+  const BASE=LPAD+leftShift;
   const W=BASE+maxBtns*HGAP+maxOff*(HGAP/2)+MARG;
   const H=MARG+HEAD+data.droite.length*VGAP+FOOT;
 
   let s=svg_open(W,H,bg);
-
-  // Bellows strip
-  s+=bellowsSVG(MARG,MARG+HEAD,BW,data.droite.length*VGAP,Math.max(4,data.droite.length*2),dark);
-  s+=tx(MARG+BW/2,MARG+HEAD-4,t('svgBellowsPush'),6,gold,'bold','middle');
-  s+=tx(MARG+BW/2,MARG+HEAD+data.droite.length*VGAP+10,t('svgBellowsPull'),6,gold,'bold','middle');
 
   // Orientation arrows — horizontal across the top
   const arrowY=MARG+HEAD-10;
@@ -1514,7 +1550,41 @@ function buildSVG_Gauche(data,dark){
   const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
 
-  const sections=[{nom:t('basses'),items:data.basses},{nom:t('accords'),items:data.accords}];
+  // Paired mode: interleave bass and chord buttons on a single row
+  if(data.lhDisplayMode==='paired'){
+    const n=Math.max(data.basses.length,data.accords.length);
+    const items=[];
+    for(let i=0;i<n;i++){
+      if(i<data.basses.length)items.push({btn:data.basses[i],type:'B'});
+      if(i<data.accords.length)items.push({btn:data.accords[i],type:'A'});
+    }
+    if(data.terzetto&&data.terzetto.length)data.terzetto.forEach(btn=>items.push({btn,type:'T'}));
+    const PLPAD=20,PW=PLPAD+items.length*HGAP+MARG;
+    const PH=MARG+HEAD+VGAP+FOOT;
+    let s=svg_open(PW,PH,bg);
+    s+=tx(PW/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
+    const cy=MARG+HEAD+VGAP/2;
+    items.forEach((item,bi)=>{
+      const cx=PLPAD+bi*HGAP;
+      const isB=item.type==='B',isT=item.type==='T';
+      const btnStroke=isB?stroke:(isT?'#888':dark?'#888':'#aaa');
+      const sw=isB?1.8:1.0;
+      s+=tx(cx,cy-R-8,isB?'B':isT?'T':'A',7,btnStroke,'bold','middle');
+      s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+      s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
+      s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
+      s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${btnStroke}" stroke-width="${sw}"/>`;
+      s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${btnStroke}" stroke-width=".5" opacity=".4"/>`;
+      const pairNum=Math.floor(bi/2)+1;
+      s+=tx(cx,cy+3.5,pairNum,7.5,numTx,'normal','middle');
+      if(item.btn.p){const fs=item.btn.p.length>7?6.5:(item.btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(item.btn.p),fs,pushTx,'bold','middle');}
+      if(item.btn.t){const fs=item.btn.t.length>7?6.5:(item.btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(item.btn.t),fs,pullTx,'bold','middle');}
+    });
+    s+='</svg>';return s;
+  }
+
+  // Separated mode: accords on top (outer), basses below (inner) — conventional accordion layout
+  const sections=[{nom:t('accords'),items:data.accords},{nom:t('basses'),items:data.basses}];
   if(data.terzetto&&data.terzetto.length)sections.push({nom:t('terzetto'),items:data.terzetto});
   const maxItems=Math.max(...sections.map(s=>s.items.length),1);
   const W=LPAD+maxItems*HGAP+MARG;
@@ -1524,19 +1594,18 @@ function buildSVG_Gauche(data,dark){
   s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
   sections.forEach((sec,si)=>{
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
-    const stagger=(si%2===1)?HGAP/2:0;
-    s+=`<rect x="${LPAD-4}" y="${cy-R-6}" width="${sec.items.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
+    s+=`<rect x="${LPAD-4}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
     s+=tx(LPAD-7,cy+4,escSVG(sec.nom),10,gold,'bold','end');
     sec.items.forEach((btn,bi)=>{
-      const cx=LPAD+stagger+bi*HGAP;
+      const cx=LPAD+bi*HGAP;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
       s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
-      if(btn.p){const fs=btn.p.length>7?7:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
-      if(btn.t){const fs=btn.t.length>7?7:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
+      if(btn.p){const fs=btn.p.length>7?6.5:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
+      if(btn.t){const fs=btn.t.length>7?6.5:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
       if(data.showMidi){
         const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
         if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
@@ -1689,7 +1758,7 @@ function buildManufacturerTable(data,dark){
         </tr>
         <tr>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clVoices')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix} / ${data.nbVoixGauche||2}</td>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clLuthier')}</td>
           <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomLuthier)} — ${date}</td>
         </tr>
@@ -1812,10 +1881,6 @@ function printSection(which){
             <p style="font-size:9pt;color:#888;margin:1mm 0 0;">${t('svgClient')} : <b style="color:#ddd;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#ddd;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
           </div>
           <div style="font-size:8pt;color:#c9a227;text-align:right;">ewendaviau.com</div>
-        </div>
-        <div style="display:flex;gap:10mm;margin-bottom:5mm;">
-          <span style="font-size:8pt;color:#ccc;"><span style="display:inline-block;width:10mm;height:5mm;background:#0d1f0d;border:1px solid #c9a227;border-radius:2px;vertical-align:middle;margin-right:2mm;"></span>${t('svgPush')}</span>
-          <span style="font-size:8pt;color:#ccc;"><span style="display:inline-block;width:10mm;height:5mm;background:#1f1000;border:1px solid #c9a227;border-radius:2px;vertical-align:middle;margin-right:2mm;"></span>${t('svgPull')}</span>
         </div>
         <h3 style="color:#c9a227;font-size:10pt;margin:3mm 0 2mm;">${t('svgRH')}</h3>
         ${svgD}
