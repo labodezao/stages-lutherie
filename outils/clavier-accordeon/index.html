@@ -1559,7 +1559,7 @@ function buildSVG_Droite(data,dark){
   const minOff=Math.min(...allOffs,0);
   const leftShift=-minOff*(HGAP/2);
   const BASE=LPAD+leftShift;
-  const W=BASE+maxBtns*HGAP+maxOff*(HGAP/2)+MARG;
+  const W=BASE+maxBtns*HGAP+maxOff*(HGAP/2)+(data.droite.length>1?HGAP/2:0)+MARG;
   const H=MARG+HEAD+data.droite.length*VGAP+FOOT;
 
   let s=svg_open(W,H,bg);
@@ -1717,7 +1717,8 @@ function buildSVG_Gauche(data,dark){
   if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,offset:0,type:'T',voix:null});
 
   const maxItems=Math.max(...secRows.map(sc=>sc.items.length),1);
-  const W=LPAD+maxItems*HGAP+MARG;
+  const maxSecOff=Math.max(...secRows.map(sc=>sc.offset||0),0);
+  const W=LPAD+maxItems*HGAP+maxSecOff*(HGAP/2)+MARG;
   const H=MARG+HEAD+secRows.length*VGAP+FOOT;
 
   let s=svg_open(W,H,bg);
