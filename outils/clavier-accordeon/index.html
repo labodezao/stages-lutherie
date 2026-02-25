@@ -1604,14 +1604,6 @@ function buildSVG_Droite(data,dark){
     });
   });
 
-  // Bellows annotation: vertical arrow + rotated label on the left margin
-  // Row 0 (top of diagram) = inner row = closest to bellows
-  const bsY1=MARG+HEAD+4, bsY2=MARG+HEAD+data.droite.length*VGAP-4;
-  const bsMid=(bsY1+bsY2)/2, bsX=12;
-  s+=`<line x1="${bsX}" y1="${bsY1+8}" x2="${bsX}" y2="${bsY2}" stroke="${gold}" stroke-width=".8" opacity=".5"/>`;
-  s+=`<polygon points="${bsX},${bsY1} ${bsX-3.5},${bsY1+8} ${bsX+3.5},${bsY1+8}" fill="${gold}" opacity=".65"/>`;
-  s+=`<text x="${bsX}" y="${bsMid}" font-size="7.5" fill="${gold}" font-weight="bold" text-anchor="middle" opacity=".8" transform="rotate(-90,${bsX},${bsMid})">${t('svgBellows')}</text>`;
-
   const fy=MARG+HEAD+data.droite.length*VGAP+14;
   s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
   s+=tx(BASE,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#444':'#bbb','normal','start');
@@ -1841,7 +1833,7 @@ function buildSommierSVG(data,dark){
   if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
   const svgD=buildSommierSection(rhTitle,data.droite,dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
-  const h3style=`color:var(--vert);font-size:.88rem;margin-bottom:10px;`;
+  const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
   const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
   return `<h3 style="${dark?h3dstyle:h3style}">${t('svgRH')}</h3>${svgD}
     <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}`;
@@ -1995,7 +1987,8 @@ function runLivePreview(){
     const svgG=buildSVG_Gauche(data,false);
     document.getElementById('visual-output').innerHTML=
       `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
-       <h3 style="color:var(--vert);font-size:.88rem;margin:16px 0 9px;">${t('svgLH')}</h3>${svgG}`;
+       <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
+       <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 9px;">${t('svgLH')}</h3>${svgG}`;
     document.getElementById('table-output').innerHTML=buildManufacturerTable(data,false);
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
   }catch(e){console.error('runLivePreview:',e);}
@@ -2041,28 +2034,30 @@ function printSection(which){
         </div>
         <h3 style="color:#2d5a27;font-size:10pt;margin:3mm 0 2mm;">${t('svgRH')}</h3>
         ${svgD}
-        <h3 style="color:#2d5a27;font-size:10pt;margin:6mm 0 2mm;">${t('svgLH')}</h3>
+        <div style="margin:5mm 0 3mm;display:flex;align-items:center;gap:12px;opacity:.75;"><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:#2d5a27;">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div></div>
+        <h3 style="color:#2d5a27;font-size:10pt;margin:3mm 0 2mm;">${t('svgLH')}</h3>
         ${svgG}
         <p style="font-size:7pt;color:#aaa;text-align:center;margin-top:8mm;border-top:1px solid #e0e0e0;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
       </div>`;
   } else {
     // ── FABRICANT : tout en un — plan client + sommier + tableaux par rangée ──
-    const svgD=buildSVG_Droite(data,true);
-    const svgG=buildSVG_Gauche(data,true);
-    const sommierHtml=buildSommierSVG(data,true);
-    const tableHtml=buildManufacturerTable(data,true);
-    const h3s=`color:#c9a227;font-size:10pt;font-weight:700;letter-spacing:.04em;border-bottom:1px solid #333;padding-bottom:3mm;margin:8mm 0 5mm;`;
+    const svgD=buildSVG_Droite(data,false);
+    const svgG=buildSVG_Gauche(data,false);
+    const sommierHtml=buildSommierSVG(data,false);
+    const tableHtml=buildManufacturerTable(data,false);
+    const h3s=`color:#2d5a27;font-size:10pt;font-weight:700;letter-spacing:.04em;border-bottom:1px solid #2d5a27;padding-bottom:3mm;margin:8mm 0 5mm;`;
     body=`
-      <div style="background:#111;min-height:100vh;padding:12mm 14mm;color:#eee;">
-        <div style="border-bottom:2px solid #c9a227;padding-bottom:4mm;margin-bottom:6mm;">
-          <h2 style="color:#c9a227;font-size:14pt;font-family:'Georgia',serif;">${escHTML(data.nomInstrument)} — ${t('pdfMfrTitle')}</h2>
-          <p style="font-size:8pt;color:#aaa;margin:2mm 0 0;">${t('svgClient')} : <b style="color:#ddd;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#ddd;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
+      <div style="background:#fff;min-height:100vh;padding:12mm 14mm;color:#222;">
+        <div style="border-bottom:2px solid #2d5a27;padding-bottom:4mm;margin-bottom:6mm;">
+          <h2 style="color:#2d5a27;font-size:14pt;font-family:'Georgia',serif;">${escHTML(data.nomInstrument)} — ${t('pdfMfrTitle')}</h2>
+          <p style="font-size:8pt;color:#777;margin:2mm 0 0;">${t('svgClient')} : <b style="color:#333;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#333;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
         </div>
 
         <h3 style="${h3s}">🎹 ${t('pdfClientTitle')}</h3>
-        <h4 style="color:#c9a227;font-size:8.5pt;margin:0 0 4mm;opacity:.8;">${t('svgRH')}</h4>
+        <h4 style="color:#2d5a27;font-size:8.5pt;margin:0 0 4mm;opacity:.8;">${t('svgRH')}</h4>
         ${svgD}
-        <h4 style="color:#c9a227;font-size:8.5pt;margin:6mm 0 4mm;opacity:.8;">${t('svgLH')}</h4>
+        <div style="margin:5mm 0 3mm;display:flex;align-items:center;gap:12px;opacity:.75;"><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:#2d5a27;">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div></div>
+        <h4 style="color:#2d5a27;font-size:8.5pt;margin:3mm 0 4mm;opacity:.8;">${t('svgLH')}</h4>
         ${svgG}
 
         <div style="page-break-before:always;"></div>
@@ -2073,27 +2068,28 @@ function printSection(which){
         <h3 style="${h3s}">📋 ${t('pdfMfrTitle')}</h3>
         ${tableHtml}
 
-        <p style="font-size:7pt;color:#555;text-align:center;margin-top:8mm;border-top:1px solid #333;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
+        <p style="font-size:7pt;color:#aaa;text-align:center;margin-top:8mm;border-top:1px solid #ddd;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
       </div>`;
   }
 
   const win=window.open('','_blank','width=960,height=740');
   if(!win){alert(t('popupAlert'));return;}
-  const bgPage=which==='visual'?'#fff':'#111';
+  const bgPage='#fff';
   win.document.write(`<!DOCTYPE html><html lang="${lang}"><head>
     <meta charset="UTF-8"><title>${escHTML(title)}</title>
     <style>
       *{margin:0;padding:0;box-sizing:border-box}
       body{font-family:Arial,Helvetica,sans-serif;background:${bgPage}}
       .mfr-table{width:100%;border-collapse:collapse;font-size:8.5pt;margin-bottom:4mm}
-      .mfr-table th,.mfr-table td{border:1px solid #333;padding:4px 8px;text-align:center}
-      .mfr-table th{background:#1a1500;color:#c9a227;font-size:7.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      .mfr-table tr:nth-child(even) td{background:#1a1a1a}
-      .mfr-table td{background:#111;color:#ddd}
-      td.note-p{color:#6fcf5a;font-weight:700}
-      td.note-t{color:#e8b840;font-weight:700}
-      td.midi-c{color:#82b0ff;font-size:.72rem}
-      .mfr-sub{font-size:8pt;color:#aaa;margin-bottom:4mm}
+      .mfr-table th,.mfr-table td{border:1px solid #ccc;padding:4px 8px;text-align:center}
+      .mfr-table th{background:#2d5a27;color:#fff;font-size:7.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .mfr-table tr:nth-child(even) td{background:#f5f5f3}
+      .mfr-table td{background:#fff;color:#333}
+      td.note-p{color:#1a5c1a;font-weight:700}
+      td.note-t{color:#8b6914;font-weight:700}
+      td.midi-c{color:#1565c0;font-size:.72rem}
+      td.row-hd{background:#f0f0ee;font-weight:700;color:#2d5a27}
+      .mfr-sub{font-size:8pt;color:#666;margin-bottom:4mm}
       svg{display:block;max-width:100%}
       @media print{body{background:${bgPage}!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
     </style>
