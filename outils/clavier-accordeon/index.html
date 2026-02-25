@@ -1694,7 +1694,7 @@ function buildSommierSection(title,rows,dark){
   const minOff=Math.min(...allOffs,0);
   const leftShift=-minOff*(CW/2);
   const RBASE=LPAD+leftShift;
-  const W=RBASE+maxBtns*CW+stagger+maxOff*(CW/2)+MARG;
+  const W=RBASE+maxBtns*CW+stagger+maxOff*(CW/2)+RBASE;
   const H=MARG+HEAD+rows.length*VGAP+FOOT;
   let s=svg_open(W,H,bg);
 
@@ -2126,14 +2126,28 @@ async function downloadPDF(which){
     }));
     yPos=pdf.lastAutoTable.finalY+10;
 
+    // Helper: add a new page if there is not enough vertical room
+    function ensureRoom(needed){
+      if(yPos+needed>CB){pdf.addPage();yPos=MT;}
+    }
+
     // RH note tables — one per register row
+    ensureRoom(25);
     pdf.setFontSize(8);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
     pdf.text(t('mfrRH'),ML,yPos+4);yPos+=8;
     const cols=midi?7:5;
+    // Fixed column widths so every row-table aligns identically (sum = CW = 180mm)
+    const rhColStyle=midi
+      ?{0:{cellWidth:24,textColor:GRN,fontStyle:'bold'},1:{cellWidth:18,textColor:GRN,halign:'center'},
+        2:{cellWidth:10,halign:'center'},3:{cellWidth:33},4:{cellWidth:33},
+        5:{cellWidth:31,halign:'center'},6:{cellWidth:31,halign:'center'}}
+      :{0:{cellWidth:30,textColor:GRN,fontStyle:'bold'},1:{cellWidth:22,textColor:GRN,halign:'center'},
+        2:{cellWidth:12,halign:'center'},3:{cellWidth:58},4:{cellWidth:58}};
     data.droite.forEach(row=>{
       const reg=row.register||'N';
       pdf.autoTable(tableDefaults({
         startY:yPos,
+        showHead:'everyPage',
         head:[
           [{content:`${row.nom}  ·  ${reg}`,colSpan:cols,
             styles:{fillColor:GRN2,textColor:[255,255,255],fontStyle:'bold',fontSize:7.5}}],
@@ -2149,12 +2163,13 @@ async function downloadPDF(which){
           if(midi)r.push(midiCell(btn.p),midiCell(btn.t));
           return r;
         }),
-        columnStyles:{0:{textColor:GRN,fontStyle:'bold'},1:{textColor:GRN,halign:'center'},2:{halign:'center'}},
+        columnStyles:rhColStyle,
       }));
       yPos=pdf.lastAutoTable.finalY+6;
     });
 
     // LH table
+    ensureRoom(25);
     pdf.setFontSize(8);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
     pdf.text(t('mfrLH'),ML,yPos+4);yPos+=8;
     const lhBody=[];
@@ -2169,13 +2184,19 @@ async function downloadPDF(which){
         lhBody.push(r);
       });
     });
+    const lhColStyle=midi
+      ?{0:{cellWidth:28,textColor:GRN,fontStyle:'bold'},1:{cellWidth:10,halign:'center'},
+        2:{cellWidth:28,halign:'center'},3:{cellWidth:28,halign:'center'},
+        4:{cellWidth:43},5:{cellWidth:43}}
+      :{0:{cellWidth:36,textColor:GRN,fontStyle:'bold'},1:{cellWidth:12,halign:'center'},
+        2:{cellWidth:66},3:{cellWidth:66}};
     pdf.autoTable(tableDefaults({
       startY:yPos,
       head:[[t('mfrType'),t('mfrNo'),`${t('mfrNoteChordPush')} ↓`,`${t('mfrNoteChordPull')} ↑`,
              ...(midi?[t('mfrMidiPush'),t('mfrMidiPull')]:[])
             ].map(s=>({content:s}))],
       body:lhBody,
-      columnStyles:{0:{textColor:GRN,fontStyle:'bold'}},
+      columnStyles:lhColStyle,
     }));
   }
 
