@@ -1478,53 +1478,46 @@ function buildSVG_Gauche(data,dark){
   const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
 
-  // Paired mode: 2 horizontal rows — accords top (staggered), basses bottom
-  // Mirrors the physical diatonic LH keyboard layout read left-to-right
+  // Paired mode: B1 A1 B2 A2 / B3 A3 B4 A4 / … (PPROW pairs per display row)
   if(data.lhDisplayMode==='paired'){
-    const n=Math.max(data.basses.length,data.accords.length);
-    const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
-    const stag=HGAP/2; // accords row offset by half a button width
-    const pRows=[
-      {nom:t('accords'),items:data.accords,ox:stag, voix:vA},
-      {nom:t('basses'), items:data.basses, ox:0,    voix:vB},
-    ];
-    if(data.terzetto&&data.terzetto.length)
-      pRows.push({nom:t('terzetto'),items:data.terzetto,ox:stag,voix:null});
-    const W=LPAD+n*HGAP+stag+MARG;
-    const H=MARG+HEAD+pRows.length*VGAP+FOOT;
+    const PPROW=2; // pairs per display row
+    const nPairs=Math.max(data.basses.length,data.accords.length);
+    const nDispRows=Math.ceil(nPairs/PPROW);
+    const nCols=PPROW*2;
+    const bassLbl=dark?'#5aa0d0':'#1a4c9c';
+    const accLbl=dark?'#d09040':'#8b6914';
     const gridCol=dark?'#3a3a3a':'#d0d0d0';
+    const W=LPAD+nCols*HGAP+MARG;
+    const H=MARG+HEAD+nDispRows*VGAP+FOOT;
     let s=svg_open(W,H,bg);
     s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
-    // Column numbers above basses (bottom row, ox=0)
-    for(let ci=0;ci<n;ci++)s+=tx(LPAD+ci*HGAP,MARG+HEAD-4,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');
-    pRows.forEach((row,ri)=>{
-      const cy=MARG+HEAD+ri*VGAP+VGAP/2;
-      // alternating band bg
-      if(row.items.length)
-        s+=`<rect x="${LPAD-4+row.ox}" y="${cy-R-6}" width="${row.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
-      // row separator
-      if(ri>0){const yh=MARG+HEAD+ri*VGAP;s+=`<line x1="${LPAD-HGAP/2}" y1="${yh}" x2="${W-MARG}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
-      // row label + voice count
-      s+=tx(LPAD-R-10,cy,escSVG(row.nom),10,gold,'bold','end');
-      if(row.voix!=null)s+=tx(LPAD-R-10,cy+11,`${row.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
-      // buttons
-      row.items.forEach((btn,bi)=>{
-        const cx=LPAD+bi*HGAP+row.ox;
-        s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
-        s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
-        s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
-        s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
-        s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-        s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
-        if(btn.p){const fs=btn.p.length>7?6.5:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
-        if(btn.t){const fs=btn.t.length>7?6.5:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
-        if(data.showMidi){
-          const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
-          if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
-          if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
-        }
-      });
-    });
+    for(let r=0;r<nDispRows;r++){
+      const cy=MARG+HEAD+r*VGAP+VGAP/2;
+      s+=`<rect x="${LPAD-4}" y="${cy-R-6}" width="${nCols*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${r%2===0?band1:band2}" opacity=".7"/>`;
+      if(r>0){const yh=MARG+HEAD+r*VGAP;s+=`<line x1="${LPAD-4}" y1="${yh}" x2="${W-MARG}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
+      for(let q=0;q<PPROW;q++){
+        const pi=r*PPROW+q;
+        if(pi>=nPairs)break;
+        [[data.basses[pi],'B',q*2,bassLbl],[data.accords[pi],'A',q*2+1,accLbl]].forEach(([btn,lbl,col,lblCol])=>{
+          if(!btn)return;
+          const cx=LPAD+col*HGAP;
+          s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+          s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
+          s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
+          s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
+          s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
+          s+=tx(cx,cy+3.5,pi+1,7.5,numTx,'normal','middle');
+          s+=tx(cx-R+5,cy-R+8,lbl,7,lblCol,'bold','start');
+          if(btn.p){const fs=btn.p.length>7?6.5:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
+          if(btn.t){const fs=btn.t.length>7?6.5:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
+          if(data.showMidi){
+            const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
+            if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
+            if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
+          }
+        });
+      }
+    }
     s+='</svg>';return s;
   }
 
