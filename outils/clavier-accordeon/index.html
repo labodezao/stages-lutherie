@@ -341,11 +341,19 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <option value="3">3 voix / voices (LMH)</option>
           </select></div>
         <div class="form-group"><label data-i="voicesLH">Voix main gauche (anches)</label>
-          <select id="nb-voix-gauche" onchange="onAnyChange()">
-            <option value="1">1 voix / 1 voice</option>
-            <option value="2" selected>2 voix / voices</option>
-            <option value="3">3 voix / voices</option>
-          </select>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 7px;align-items:center;margin-top:2px;">
+            <span class="gauche-label" data-i="accords">Accords</span>
+            <select id="nb-voix-accords" onchange="onAnyChange()" style="font-size:.82rem;">
+              <option value="1">1 voix</option>
+              <option value="2" selected>2 voix</option>
+            </select>
+            <span class="gauche-label" data-i="basses">Basses</span>
+            <select id="nb-voix-basses" onchange="onAnyChange()" style="font-size:.82rem;">
+              <option value="1">1 voix</option>
+              <option value="2" selected>2 voix</option>
+              <option value="3">3 voix</option>
+            </select>
+          </div>
           <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
             <input type="checkbox" id="show-midi" onchange="onAnyChange()">
             <label for="show-midi" style="font-size:.82rem;cursor:pointer;font-weight:normal;text-transform:none;letter-spacing:0" data-i="showMidi">Numéros MIDI <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: MIDI" data-tip="Affiche le numéro MIDI de chaque note sur le clavier et dans le tableau fabricant.&#10;Do central (Do4) = MIDI 60. Utile pour les logiciels et fabricants.&#10;—&#10;Shows MIDI note number on keyboard and manufacturer table.&#10;Middle C (C4) = MIDI 60. Useful for software and manufacturers.">ⓘ</span></label>
@@ -984,7 +992,8 @@ function snapshotToDB(){
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
-    nbVoixGauche:parseInt(document.getElementById('nb-voix-gauche')?.value||'2'),
+    nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
+    nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     notes:JSON.parse(JSON.stringify(CFG.notes)),
@@ -1005,7 +1014,8 @@ function loadFromDB(rec){
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
   document.getElementById('nb-voix').value=String(rec.nbVoix||2);
-  document.getElementById('nb-voix-gauche').value=String(rec.nbVoixGauche||2);
+  document.getElementById('nb-voix-accords').value=String(rec.nbVoixAccords||(rec.nbVoixGauche||2));
+  document.getElementById('nb-voix-basses').value=String(rec.nbVoixBasses||(rec.nbVoixGauche||2));
   const lhm=rec.lhDisplayMode||'separated';
   const lhmEl=document.getElementById('lh-'+lhm);
   if(lhmEl)lhmEl.checked=true;
@@ -1051,7 +1061,8 @@ function newInstrument(){
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   document.getElementById('nb-voix').value='2';
-  document.getElementById('nb-voix-gauche').value='2';
+  document.getElementById('nb-voix-accords').value='2';
+  document.getElementById('nb-voix-basses').value='2';
   document.getElementById('lh-separated').checked=true;
   CFG.lhRows=[{nb:6,offset:0}];
   loadPreset('GCD33');
@@ -1465,7 +1476,8 @@ function readInputs(){
     nomLuthier:val('nom-luthier')||"Ewen d'Aviau",
     date:val('date-creation'),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
-    nbVoixGauche:parseInt(document.getElementById('nb-voix-gauche')?.value||'2'),
+    nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
+    nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     showMidi:document.getElementById('show-midi')?.checked||false,
@@ -1652,17 +1664,18 @@ function buildSVG_Gauche(data,dark){
   const lhRows=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:data.basses.length||1,offset:0}];
   const secRows=[];
   let bassIdx=0,accordIdx=0;
+  const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
   // Accords (outer rows, displayed first)
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),offset:row.offset||0});
+    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),offset:row.offset||0,type:'A',voix:vA});
     accordIdx+=row.nb;
   });
   // Basses (inner rows, displayed second)
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),offset:row.offset||0});
+    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),offset:row.offset||0,type:'B',voix:vB});
     bassIdx+=row.nb;
   });
-  if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,offset:0});
+  if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,offset:0,type:'T',voix:null});
 
   const maxItems=Math.max(...secRows.map(sc=>sc.items.length),1);
   const W=LPAD+maxItems*HGAP+MARG;
@@ -1676,7 +1689,8 @@ function buildSVG_Gauche(data,dark){
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
     if(sec.items.length)
       s+=`<rect x="${LPAD-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(LPAD-7,cy+4,escSVG(sec.nom),10,gold,'bold','end');
+    s+=tx(LPAD-7,cy,escSVG(sec.nom),10,gold,'bold','end');
+    if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-7,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
   });
   // Pass 2: table grid (column + row separator lines, outer border, column numbers)
   if(secRows.length>0&&maxItems>0){
@@ -1863,7 +1877,7 @@ function buildManufacturerTable(data,dark){
         </tr>
         <tr>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clVoices')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix} / ${data.nbVoixGauche||2}</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix} · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v</td>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clLuthier')}</td>
           <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomLuthier)} — ${date}</td>
         </tr>
