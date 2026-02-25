@@ -1959,7 +1959,7 @@ function svgToPngDataUrl(svgStr){
 async function downloadPDF(which){
   const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
   try{ await loadScript(JSPDF_URL); }
-  catch(e){ alert(t('popupAlert'));printSection(which);return; }
+  catch(e){ alert(t('popupAlert'));return; }
   const data=readInputs();
   const {jsPDF}=window.jspdf;
   const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
@@ -1967,14 +1967,15 @@ async function downloadPDF(which){
   const M=12,CW=PW-2*M;
   let yPos=M;
   async function addSvgImg(svgStr,label,mmPerPx){
-    if(label){
-      pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
-      pdf.text(label,M,yPos+4);yPos+=8;
-    }
     const {dataUrl,w,h}=await svgToPngDataUrl(svgStr);
     const imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
-    const imgH=h*(imgW/w);
-    if(yPos+imgH>PH-M){pdf.addPage();yPos=M;}
+    const imgH=Math.min(h*(imgW/w), PH-2*M); // cap to one page max
+    const need=(label?9:0)+imgH;
+    if(yPos+need>PH-M){pdf.addPage();yPos=M;}
+    if(label){
+      pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
+      pdf.text(label,M,yPos+4);yPos+=9;
+    }
     pdf.addImage(dataUrl,'PNG',M,yPos,imgW,imgH);
     yPos+=imgH+4;
   }
@@ -2042,91 +2043,7 @@ async function downloadPDF(which){
   const fileName=`${(data.nomInstrument||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_')}_${which==='visual'?'plan':'fabricant'}.pdf`;
   pdf.save(fileName);
 }
-function printSection(which){
-  const data=readInputs();
-  const title=which==='visual'
-    ?`${t('pdfClientTitle')} — ${data.nomInstrument}`
-    :`${t('pdfMfrTitle')} — ${data.nomInstrument}`;
-  const dark=which!=='visual'; // client keyboard plan uses light background; manufacturer stays dark
-
-  let body='';
-  if(which==='visual'){
-    const svgD=buildSVG_Droite(data,false);
-    const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
-    body=`
-      <div style="background:#fff;min-height:100vh;padding:12mm 14mm;color:#222;">
-        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2d5a27;padding-bottom:4mm;margin-bottom:6mm;">
-          <div>
-            <h2 style="color:#2d5a27;font-size:15pt;font-family:'Georgia',serif;letter-spacing:.05em;margin:0;">${escHTML(data.nomInstrument)}</h2>
-            <p style="font-size:9pt;color:#777;margin:1mm 0 0;">${t('svgClient')} : <b style="color:#333;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#333;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
-          </div>
-          <div style="font-size:8pt;color:#2d5a27;text-align:right;">ewendaviau.com</div>
-        </div>
-        <h3 style="color:#2d5a27;font-size:10pt;margin:3mm 0 2mm;">${t('svgRH')}</h3>
-        ${svgD}
-        <div style="margin:5mm 0 3mm;display:flex;align-items:center;gap:12px;opacity:.75;"><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:#2d5a27;">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div></div>
-        <h3 style="color:#2d5a27;font-size:10pt;margin:3mm 0 2mm;">${t('svgLH')}</h3>
-        ${svgG}
-        <p style="font-size:7pt;color:#aaa;text-align:center;margin-top:8mm;border-top:1px solid #e0e0e0;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
-      </div>`;
-  } else {
-    // ── FABRICANT : tout en un — plan client + sommier + tableaux par rangée ──
-    const svgD=buildSVG_Droite(data,false);
-    const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
-    const sommierHtml=buildSommierSVG(data,false);
-    const tableHtml=buildManufacturerTable(data,false);
-    const h3s=`color:#2d5a27;font-size:10pt;font-weight:700;letter-spacing:.04em;border-bottom:1px solid #2d5a27;padding-bottom:3mm;margin:8mm 0 5mm;`;
-    body=`
-      <div style="background:#fff;min-height:100vh;padding:12mm 14mm;color:#222;">
-        <div style="border-bottom:2px solid #2d5a27;padding-bottom:4mm;margin-bottom:6mm;">
-          <h2 style="color:#2d5a27;font-size:14pt;font-family:'Georgia',serif;">${escHTML(data.nomInstrument)} — ${t('pdfMfrTitle')}</h2>
-          <p style="font-size:8pt;color:#777;margin:2mm 0 0;">${t('svgClient')} : <b style="color:#333;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#333;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
-        </div>
-
-        <h3 style="${h3s}">🎹 ${t('pdfClientTitle')}</h3>
-        <h4 style="color:#2d5a27;font-size:8.5pt;margin:0 0 4mm;opacity:.8;">${t('svgRH')}</h4>
-        ${svgD}
-        <div style="margin:5mm 0 3mm;display:flex;align-items:center;gap:12px;opacity:.75;"><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:#2d5a27;">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed #2d5a27;"></div></div>
-        <h4 style="color:#2d5a27;font-size:8.5pt;margin:3mm 0 4mm;opacity:.8;">${t('svgLH')}</h4>
-        ${svgG}
-
-        <div style="page-break-before:always;"></div>
-        <h3 style="${h3s}">🪗 ${t('sommierView').replace('🪗 ','')}</h3>
-        ${sommierHtml}
-
-        <div style="page-break-before:always;"></div>
-        <h3 style="${h3s}">📋 ${t('pdfMfrTitle')}</h3>
-        ${tableHtml}
-
-        <p style="font-size:7pt;color:#aaa;text-align:center;margin-top:8mm;border-top:1px solid #ddd;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
-      </div>`;
-  }
-
-  const win=window.open('','_blank','width=960,height=740');
-  if(!win){alert(t('popupAlert'));return;}
-  const bgPage='#fff';
-  win.document.write(`<!DOCTYPE html><html lang="${lang}"><head>
-    <meta charset="UTF-8"><title>${escHTML(title)}</title>
-    <style>
-      *{margin:0;padding:0;box-sizing:border-box}
-      body{font-family:Arial,Helvetica,sans-serif;background:${bgPage}}
-      .mfr-table{width:100%;border-collapse:collapse;font-size:8.5pt;margin-bottom:4mm}
-      .mfr-table th,.mfr-table td{border:1px solid #ccc;padding:4px 8px;text-align:center}
-      .mfr-table th{background:#2d5a27;color:#fff;font-size:7.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      .mfr-table tr:nth-child(even) td{background:#f5f5f3}
-      .mfr-table td{background:#fff;color:#333}
-      td.note-p{color:#1a5c1a;font-weight:700}
-      td.note-t{color:#8b6914;font-weight:700}
-      td.midi-c{color:#1565c0;font-size:.72rem}
-      td.row-hd{background:#f0f0ee;font-weight:700;color:#2d5a27}
-      .mfr-sub{font-size:8pt;color:#666;margin-bottom:4mm}
-      svg{display:block;max-width:100%;height:auto}
-      @media print{body{background:${bgPage}!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-    </style>
-  </head><body>${body}</body></html>`);
-  win.document.close();win.focus();
-  setTimeout(()=>win.print(),700);
-}
+function printSection(which){ downloadPDF(which); }
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  MISC ACTIONS                                        ║
