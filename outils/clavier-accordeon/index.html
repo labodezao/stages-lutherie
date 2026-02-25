@@ -325,14 +325,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               <input type="number" id="nb-terzetto" min="0" max="60" value="0" style="width:48px;text-align:center;" oninput="applyGaucheCount('terzetto')">
               <button type="button" class="rng-btn" onclick="changeGauche('terzetto',1)">＋</button>
             </div>
-            <div style="display:flex;align-items:center;gap:3px;">
-              <span class="gauche-label" data-i="accords5">Accords 5</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Accords 5" data-tip="Accord de quinte (5) : fondamentale + quinte, sans tierce.&#10;Accord neutre : Do+Sol sans Mi. Ni majeur ni mineur.&#10;—&#10;Power chord (5): root + fifth, no third.&#10;Neutral chord: C+G without E. Neither major nor minor.">ⓘ</span>
-            </div>
-            <div class="rng-ctrl">
-              <button type="button" class="rng-btn" onclick="changeGauche('accords5',-1)">−</button>
-              <input type="number" id="nb-accords5" min="0" max="60" value="0" style="width:48px;text-align:center;" oninput="applyGaucheCount('accords5')">
-              <button type="button" class="rng-btn" onclick="changeGauche('accords5',1)">＋</button>
-            </div>
           </div>
           <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
             <span style="font-size:.65rem;color:#888;" data-i="quickSet">Rapide :</span>
@@ -542,7 +534,7 @@ fr:{
   pdfClientVisual:'🖨️ PDF plan clavier',pdfManufacturer:'🖨️ PDF fabricant',
   listView:'📋 Vue liste',sommierView:'🪗 Vue sommier',refresh:'🔄 Actualiser',
   rowOffset:'Décalage',
-  basses:'Basses',accords:'Accords',terzetto:'Terzetto',accords5:'Accords 5',
+  basses:'Basses',accords:'Accords',terzetto:'Terzetto',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
   naturals:'Touches naturelles',sharps:'Dièses',flats:'Bémols',octave:'Octave :',
@@ -613,7 +605,7 @@ en:{
   pdfClientVisual:'🖨️ PDF keyboard plan',pdfManufacturer:'🖨️ PDF manufacturer',
   listView:'📋 List view',sommierView:'🪗 Reed plate view',refresh:'🔄 Refresh',
   rowOffset:'Offset',
-  basses:'Basses',accords:'Chords',terzetto:'Terzetto',accords5:'Chords 5',
+  basses:'Basses',accords:'Chords',terzetto:'Terzetto',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
   naturals:'Natural notes',sharps:'Sharps',flats:'Flats',octave:'Octave:',
@@ -742,7 +734,7 @@ let CFG={
   ],
   configGauche:12,
   lhRows:[{nb:6,offset:0}],
-  notes:{droite:[],basses:[],accords:[],terzetto:[],accords5:[]}
+  notes:{droite:[],basses:[],accords:[],terzetto:[]}
 };
 let currentId=null,saveTimer=null,previewTimer=null,fabricantView='liste';
 let pickerInput=null,pickerNote='',pickerOctave='';
@@ -875,9 +867,8 @@ function loadFromDB(rec){
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
   // Restore lhRows — backward compat: default to 1 row covering all basses
   CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes&&rec.notes.basses?rec.notes.basses.length:6),offset:0}];
-  // ensure terzetto and accords5 exist
+  // ensure terzetto exists
   if(!CFG.notes.terzetto) CFG.notes.terzetto=[];
-  if(!CFG.notes.accords5) CFG.notes.accords5=[];
   // backward compat: if notes arrays are missing, init from configGauche
   if(!CFG.notes.basses||!CFG.notes.basses.length){
     const cgMap={4:2,8:4,18:6,24:8};
@@ -993,7 +984,6 @@ async function loadPreset(key){
   CFG.nbRangees=p.nbRangees;CFG.rangees=p.rangees.map(r=>({nom:r.nom,nb:r.nb,offset:r.offset||0}));
   CFG.notes=JSON.parse(JSON.stringify(p.notes));
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
-  if(!CFG.notes.accords5)CFG.notes.accords5=[];
   // Reset lhRows to 1 row matching bass count
   CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
   document.getElementById('nb-rangees').value=p.nbRangees;
@@ -1037,22 +1027,20 @@ function applyGaucheCount(key){
   CFG.notes[key]=resize(CFG.notes[key]||[],n);
   generateInputGrid();onAnyChange();
 }
-function setGauchePreset(nb,na,nt,na5=0){
+function setGauchePreset(nb,na,nt){
   readNoteInputsIntoCFG();
   const resize=(arr,n)=>{const r=arr.slice(0,n);while(r.length<n)r.push({p:'',t:''});return r;};
   document.getElementById('nb-basses').value=nb;
   document.getElementById('nb-accords').value=na;
   document.getElementById('nb-terzetto').value=nt;
-  document.getElementById('nb-accords5').value=na5;
   CFG.notes.basses=resize(CFG.notes.basses,nb);
   CFG.notes.accords=resize(CFG.notes.accords,na);
   CFG.notes.terzetto=resize(CFG.notes.terzetto,nt);
-  CFG.notes.accords5=resize(CFG.notes.accords5,na5);
   generateInputGrid();onAnyChange();
 }
 function syncGaucheInputs(){
   const s=(k)=>{const el=document.getElementById('nb-'+k);if(el)el.value=(CFG.notes[k]||[]).length;};
-  s('basses');s('accords');s('terzetto');s('accords5');
+  s('basses');s('accords');s('terzetto');
 }
 
 function onLhModeChange(){renderLhRowsCfg();onAnyChange();}
@@ -1143,7 +1131,6 @@ function readNoteInputsIntoCFG(){
   CFG.notes.basses =readRow('basses');
   CFG.notes.accords=readRow('accords');
   CFG.notes.terzetto=readRow('terzetto');
-  CFG.notes.accords5=readRow('accords5');
 }
 
 /* ── Render row configs ── */
@@ -1204,7 +1191,6 @@ function generateInputGrid(){
   html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>`;
   const gsec=[{key:'basses',label:t('basses'),type:'note'},{key:'accords',label:t('accords'),type:'chord'}];
   if((CFG.notes.terzetto||[]).length>0)gsec.push({key:'terzetto',label:t('terzetto'),type:'chord'});
-  if((CFG.notes.accords5||[]).length>0)gsec.push({key:'accords5',label:t('accords5'),type:'chord'});
   gsec.forEach(({key,label,type})=>{
     const arr=CFG.notes[key]||[];const count=arr.length;
     if(count===0)return;
@@ -1347,7 +1333,6 @@ function readInputs(){
     basses:CFG.notes.basses,
     accords:CFG.notes.accords,
     terzetto:CFG.notes.terzetto||[],
-    accords5:CFG.notes.accords5||[],
     orderSpecs:{
       qty:val('order-qty')||'1',
       reedType:val('order-reed-type'),
@@ -1489,7 +1474,7 @@ function buildSVG_Gauche(data,dark){
     // 2 button columns + row number column on left
     const NUMW=28,COL=HGAP,COLSEP=8;
     const PW=MARG+NUMW+COL+COLSEP+COL+MARG;
-    const PH=MARG+HEAD+44+n*VGAP+(data.terzetto&&data.terzetto.length?data.terzetto.length*VGAP:0)+(data.accords5&&data.accords5.length?data.accords5.length*VGAP:0)+FOOT;
+    const PH=MARG+HEAD+44+n*VGAP+(data.terzetto&&data.terzetto.length?data.terzetto.length*VGAP:0)+FOOT;
     let s=svg_open(PW,PH,bg);
     s+=tx(PW/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
     // Column headers
@@ -1547,17 +1532,6 @@ function buildSVG_Gauche(data,dark){
         s+=tx(cxB,cy+10,dn(btn.t||''),8,pullTx,'bold','middle');
       });
     }
-    // Accords 5 row(s) below terzetto if any
-    if(data.accords5&&data.accords5.length){
-      const tzOff=(data.terzetto&&data.terzetto.length?data.terzetto.length*VGAP:0);
-      const a5Y=gBot+tzOff;s+=`<line x1="${gLeft}" y1="${a5Y}" x2="${gRight}" y2="${a5Y}" stroke="${gridCol}" stroke-width="1.5"/>`;
-      s+=tx(MARG+NUMW/2,a5Y+VGAP/2+4,'5',8,numTx,'normal','middle');
-      data.accords5.forEach((btn,ai)=>{
-        const cy=a5Y+ai*VGAP+VGAP/2;
-        s+=tx(cxA,cy-4,dn(btn.p||''),8,pushTx,'bold','middle');
-        s+=tx(cxA,cy+10,dn(btn.t||''),8,pullTx,'bold','middle');
-      });
-    }
     s+='</svg>';return s;
   }
 
@@ -1577,7 +1551,6 @@ function buildSVG_Gauche(data,dark){
     bassIdx+=row.nb;
   });
   if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,offset:0,type:'T',voix:null});
-  if(data.accords5&&data.accords5.length)secRows.push({nom:t('accords5'),items:data.accords5,offset:0,type:'A5',voix:null});
 
   const maxItems=Math.max(...secRows.map(sc=>sc.items.length),1);
   const maxSecOff=Math.max(...secRows.map(sc=>sc.offset||0),0);
@@ -1758,7 +1731,6 @@ function buildLhSommierSections(data){
     bIdx+=row.nb;aIdx+=row.nb;
   });
   if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
-  if(data.accords5&&data.accords5.length)lhSections.push({nom:t('accords5'),items:data.accords5,offset:0});
   return lhSections;
 }
 function buildSommierSVG(data,dark){
@@ -1887,7 +1859,6 @@ function buildManufacturerTable(data,dark){
   </tr></thead><tbody>`;
   const gs=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
   if(data.terzetto.length)gs.push({nom:t('terzetto'),arr:data.terzetto});
-  if((data.accords5||[]).length)gs.push({nom:t('accords5'),arr:data.accords5});
   gs.forEach(({nom,arr})=>{
     arr.forEach((btn,bi)=>{
       h+=`<tr>`;
@@ -2206,7 +2177,6 @@ async function downloadPDF(which){
     const lhBody=[];
     const lhSections=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
     if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),arr:data.terzetto});
-    if(data.accords5&&data.accords5.length)lhSections.push({nom:t('accords5'),arr:data.accords5});
     lhSections.forEach(({nom,arr})=>{
       arr.forEach((btn,bi)=>{
         const r=[nom,String(bi+1),
