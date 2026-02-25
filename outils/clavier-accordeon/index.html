@@ -1021,7 +1021,10 @@ function applyGaucheCount(key){
   el.value=n;
   const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
   CFG.notes[key]=resize(CFG.notes[key]||[],n);
-  if(key==='accords'){const terz=document.getElementById('terzetto-enabled');if(terz&&terz.checked)CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);}
+  if(key==='accords'){
+    const terz=document.getElementById('terzetto-enabled');
+    if(terz&&terz.checked) CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);
+  }
   generateInputGrid();onAnyChange();
 }
 function setGauchePreset(nb,na,withTerzetto){
@@ -1475,71 +1478,53 @@ function buildSVG_Gauche(data,dark){
   const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
 
-  // Paired mode: 2-column layout — basses LEFT, accords RIGHT (like real diatonic LH keyboard)
+  // Paired mode: 2 horizontal rows — accords top (staggered), basses bottom
+  // Mirrors the physical diatonic LH keyboard layout read left-to-right
   if(data.lhDisplayMode==='paired'){
     const n=Math.max(data.basses.length,data.accords.length);
     const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
-    // 2 button columns + row number column on left
-    const NUMW=28,COL=HGAP,COLSEP=8;
-    const PW=MARG+NUMW+COL+COLSEP+COL+MARG;
-    const PH=MARG+HEAD+44+n*VGAP+(data.terzetto&&data.terzetto.length?data.terzetto.length*VGAP:0)+FOOT;
-    let s=svg_open(PW,PH,bg);
-    s+=tx(PW/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
-    // Column headers
-    const hY=MARG+30;
-    const cxB=MARG+NUMW+COL/2,cxA=MARG+NUMW+COL+COLSEP+COL/2;
-    s+=tx(cxB,hY,t('basses'),9,stroke,'bold','middle');
-    s+=tx(cxB,hY+11,`${vB}v`,7,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','middle');
-    s+=tx(cxA,hY,t('accords'),9,dark?'#888':'#aaa','bold','middle');
-    s+=tx(cxA,hY+11,`${vA}v`,7,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','middle');
-    // Separator line under headers
-    s+=`<line x1="${MARG}" y1="${hY+17}" x2="${PW-MARG}" y2="${hY+17}" stroke="${dark?'#333':'#ddd'}" stroke-width="1"/>`;
-    // Grid: outer border + column separator
-    const gTop=MARG+HEAD+44,gBot=gTop+n*VGAP;
-    const gLeft=MARG+NUMW,gRight=PW-MARG;
+    const stag=HGAP/2; // accords row offset by half a button width
+    const pRows=[
+      {nom:t('accords'),items:data.accords,ox:stag, voix:vA},
+      {nom:t('basses'), items:data.basses, ox:0,    voix:vB},
+    ];
+    if(data.terzetto&&data.terzetto.length)
+      pRows.push({nom:t('terzetto'),items:data.terzetto,ox:stag,voix:null});
+    const W=LPAD+n*HGAP+stag+MARG;
+    const H=MARG+HEAD+pRows.length*VGAP+FOOT;
     const gridCol=dark?'#3a3a3a':'#d0d0d0';
-    s+=`<rect x="${gLeft}" y="${gTop}" width="${gRight-gLeft}" height="${gBot-gTop}" fill="none" stroke="${dark?'#555':'#aaa'}" stroke-width="1.2" rx="2"/>`;
-    s+=`<line x1="${gLeft+COL+COLSEP/2}" y1="${gTop}" x2="${gLeft+COL+COLSEP/2}" y2="${gBot}" stroke="${gridCol}" stroke-width="1.5"/>`;
-    // Row separator lines
-    for(let ri=1;ri<n;ri++){const yh=gTop+ri*VGAP;s+=`<line x1="${gLeft}" y1="${yh}" x2="${gRight}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
-    // Buttons per row
-    for(let i=0;i<n;i++){
-      const cy=gTop+i*VGAP+VGAP/2;
-      s+=tx(MARG+NUMW/2,cy+4,i+1,8,numTx,'normal','middle');
-      // Bass button (left)
-      if(i<data.basses.length){
-        const btn=data.basses[i];
-        s+=`<circle cx="${cxB}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
-        s+=`<path d="M${cxB-R},${cy} A${R},${R} 0 0,1 ${cxB+R},${cy}" fill="${pushBg}"/>`;
-        s+=`<path d="M${cxB-R},${cy} A${R},${R} 0 0,0 ${cxB+R},${cy}" fill="${pullBg}"/>`;
-        s+=`<circle cx="${cxB}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.8"/>`;
-        s+=`<line x1="${cxB-R}" y1="${cy}" x2="${cxB+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-        if(btn.p){const fs=btn.p.length>7?6:btn.p.length>4?7:8.5;s+=tx(cxB,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
-        if(btn.t){const fs=btn.t.length>7?6:btn.t.length>4?7:8.5;s+=tx(cxB,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
-      }
-      // Accord button (right)
-      if(i<data.accords.length){
-        const btn=data.accords[i];
-        const aStroke=dark?'#888':'#aaa';
-        s+=`<circle cx="${cxA}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
-        s+=`<path d="M${cxA-R},${cy} A${R},${R} 0 0,1 ${cxA+R},${cy}" fill="${pushBg}"/>`;
-        s+=`<path d="M${cxA-R},${cy} A${R},${R} 0 0,0 ${cxA+R},${cy}" fill="${pullBg}"/>`;
-        s+=`<circle cx="${cxA}" cy="${cy}" r="${R}" fill="none" stroke="${aStroke}" stroke-width="1.2"/>`;
-        s+=`<line x1="${cxA-R}" y1="${cy}" x2="${cxA+R}" y2="${cy}" stroke="${aStroke}" stroke-width=".5" opacity=".4"/>`;
-        if(btn.p){const fs=btn.p.length>7?6:btn.p.length>4?7:8.5;s+=tx(cxA,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
-        if(btn.t){const fs=btn.t.length>7?6:btn.t.length>4?7:8.5;s+=tx(cxA,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
-      }
-    }
-    // Terzetto row(s) below if any
-    if(data.terzetto&&data.terzetto.length){
-      const tzY=gBot;s+=`<line x1="${gLeft}" y1="${tzY}" x2="${gRight}" y2="${tzY}" stroke="${gridCol}" stroke-width="1.5"/>`;
-      s+=tx(MARG+NUMW/2,tzY+VGAP/2+4,'T',8,numTx,'normal','middle');
-      data.terzetto.forEach((btn,ti)=>{
-        const cy=tzY+ti*VGAP+VGAP/2;
-        s+=tx(cxB,cy-4,dn(btn.p||''),8,pushTx,'bold','middle');
-        s+=tx(cxB,cy+10,dn(btn.t||''),8,pullTx,'bold','middle');
+    let s=svg_open(W,H,bg);
+    s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
+    // Column numbers above basses (bottom row, ox=0)
+    for(let ci=0;ci<n;ci++)s+=tx(LPAD+ci*HGAP,MARG+HEAD-4,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');
+    pRows.forEach((row,ri)=>{
+      const cy=MARG+HEAD+ri*VGAP+VGAP/2;
+      // alternating band bg
+      if(row.items.length)
+        s+=`<rect x="${LPAD-4+row.ox}" y="${cy-R-6}" width="${row.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
+      // row separator
+      if(ri>0){const yh=MARG+HEAD+ri*VGAP;s+=`<line x1="${LPAD-HGAP/2}" y1="${yh}" x2="${W-MARG}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
+      // row label + voice count
+      s+=tx(LPAD-R-10,cy,escSVG(row.nom),10,gold,'bold','end');
+      if(row.voix!=null)s+=tx(LPAD-R-10,cy+11,`${row.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
+      // buttons
+      row.items.forEach((btn,bi)=>{
+        const cx=LPAD+bi*HGAP+row.ox;
+        s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+        s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
+        s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
+        s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
+        s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
+        s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
+        if(btn.p){const fs=btn.p.length>7?6.5:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
+        if(btn.t){const fs=btn.t.length>7?6.5:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
+        if(data.showMidi){
+          const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
+          if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
+          if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
+        }
       });
-    }
+    });
     s+='</svg>';return s;
   }
 
