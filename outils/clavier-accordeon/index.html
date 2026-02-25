@@ -1126,9 +1126,11 @@ function loadPreset(key){
   CFG.nbRangees=p.nbRangees;CFG.rangees=p.rangees.map(r=>({nom:r.nom,nb:r.nb,offset:r.offset||0}));
   CFG.notes=JSON.parse(JSON.stringify(p.notes));
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
+  // Reset lhRows to 1 row matching bass count
+  CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
   document.getElementById('nb-rangees').value=p.nbRangees;
   syncGaucheInputs();
-  renderRangeesCfg();generateInputGrid();onAnyChange();
+  renderRangeesCfg();renderLhRowsCfg();generateInputGrid();onAnyChange();
 }
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -1652,12 +1654,12 @@ function buildSVG_Gauche(data,dark){
   let bassIdx=0,accordIdx=0;
   // Accords (outer rows, displayed first)
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${ri*row.nb}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),offset:row.offset||0});
+    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),offset:row.offset||0});
     accordIdx+=row.nb;
   });
   // Basses (inner rows, displayed second)
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${ri*row.nb}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),offset:row.offset||0});
+    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),offset:row.offset||0});
     bassIdx+=row.nb;
   });
   if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,offset:0});
@@ -1758,10 +1760,19 @@ function buildSommierSection(title,rows,dark){
 function buildSommierSVG(data,dark){
   const rhTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
   const lhTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
+  // Build LH sections respecting lhRows (separate reed plates per row)
+  const lhRows=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:Math.max(data.basses.length,data.accords.length)||1,offset:0}];
   const lhSections=[];
-  if(data.basses&&data.basses.length)lhSections.push({nom:t('basses'),items:data.basses});
-  if(data.accords&&data.accords.length)lhSections.push({nom:t('accords'),items:data.accords});
-  if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto});
+  let bIdx=0,aIdx=0;
+  lhRows.forEach((row,ri)=>{
+    const rowLabel=lhRows.length===1?'':`${ri+1}`;
+    const bSlice=data.basses?data.basses.slice(bIdx,bIdx+row.nb):[];
+    const aSlice=data.accords?data.accords.slice(aIdx,aIdx+row.nb):[];
+    if(bSlice.length)lhSections.push({nom:(lhRows.length===1?t('basses'):t('basses')+' '+rowLabel),items:bSlice,offset:row.offset||0});
+    if(aSlice.length)lhSections.push({nom:(lhRows.length===1?t('accords'):t('accords')+' '+rowLabel),items:aSlice,offset:row.offset||0});
+    bIdx+=row.nb;aIdx+=row.nb;
+  });
+  if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
   const svgD=buildSommierSection(rhTitle,data.droite,dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
   const h3style=`color:var(--vert);font-size:.88rem;margin-bottom:10px;`;
@@ -1921,7 +1932,7 @@ function runLivePreview(){
        <h3 style="color:var(--vert);font-size:.88rem;margin:16px 0 9px;">${t('svgLH')}</h3>${svgG}`;
     document.getElementById('table-output').innerHTML=buildManufacturerTable(data,false);
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
-  }catch(e){}
+  }catch(e){console.error('runLivePreview:',e);}
 }
 
 /* ── Tabs ── */
