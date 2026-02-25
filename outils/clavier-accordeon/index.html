@@ -445,8 +445,8 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <button class="tab-btn"        onclick="showTab('fabricant',this)" data-i-btn="manufacturerTable">📋 Fabricant anches</button>
       </div>
       <div class="btn-group no-print" style="margin-bottom:13px;">
-        <button class="btn btn-bleu"    onclick="printSection('visual')"    data-i-btn="pdfClientVisual">🖨️ PDF plan clavier</button>
-        <button class="btn btn-primary" onclick="printSection('fabricant')" data-i-btn="pdfManufacturer">🖨️ PDF fabricant</button>
+        <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
+        <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -674,7 +674,7 @@ function displayNote(note){
   if(!note) return '';
   if(lang==='fr') return note;
   // Try full word match first for chords like "Sol Maj"
-  const m=note.match(/^(.+?)(\s+(?:Maj|Min|7|dim|aug|m7|maj7))?(\d?)$/);
+  const m=note.match(/^(.+?)(\s+(?:Maj|Min|7|5|dim|aug|m7|maj7))?(\d?)$/);
   if(!m) return note;
   const root=m[1].trim(), qual=(m[2]||'').trim(), oct=m[3]||'';
   const en=FR2EN[root];
@@ -1377,8 +1377,8 @@ function generateInputGrid(){
 const NOTES_FR={nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
 const NOTES_EN={nat:['C','D','E','F','G','A','B'],sha:['C#','D#',null,'F#','G#','A#',null],fla:['Db','Eb',null,'Gb','Ab','Bb',null]};
 const OCTAVES=['2','3','4','5','6'];
-const CHORDS_FR=()=>{const r=['Do','Ré','Mi','Fa','Sol','La','Si','Do#','Ré#','Fa#','Sol#','Sib','Mib','Lab'];const t=['Maj','Min','7'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
-const CHORDS_EN=()=>{const r=['C','D','E','F','G','A','B','C#','D#','F#','G#','Bb','Eb','Ab'];const t=['Maj','Min','7'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
+const CHORDS_FR=()=>{const r=['Do','Ré','Mi','Fa','Sol','La','Si','Do#','Ré#','Fa#','Sol#','Sib','Mib','Lab'];const t=['Maj','Min','7','5'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
+const CHORDS_EN=()=>{const r=['C','D','E','F','G','A','B','C#','D#','F#','G#','Bb','Eb','Ab'];const t=['Maj','Min','7','5'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
 
 function initPicker(){
   const N=lang==='en'?NOTES_EN:NOTES_FR;
@@ -2012,6 +2012,108 @@ function showFabricantView(mode,btn){
 /* ╔══════════════════════════════════════════════════════╗
    ║  PDF PRINT — DARK/GOLD MIDICORE DESIGN               ║
    ╚══════════════════════════════════════════════════════╝ */
+/* ╔══════════════════════════════════════════════════════╗
+   ║  PDF DOWNLOAD — jsPDF (no print dialog)              ║
+   ╚══════════════════════════════════════════════════════╝ */
+function loadScript(url){
+  return new Promise((res,rej)=>{
+    if(document.querySelector(`script[src="${url}"]`)){res();return;}
+    const s=document.createElement('script');
+    s.src=url;s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+function svgToPngDataUrl(svgStr){
+  return new Promise((res,rej)=>{
+    const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
+    const sw=mw?+mw[1]:800,sh=mh?+mh[1]:600;
+    const SCALE=2;
+    const c=document.createElement('canvas');c.width=sw*SCALE;c.height=sh*SCALE;
+    const ctx=c.getContext('2d');ctx.scale(SCALE,SCALE);
+    const img=new Image();
+    const blob=new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/png'),w:sw,h:sh});};
+    img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};
+    img.src=url;
+  });
+}
+async function downloadPDF(which){
+  const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  try{ await loadScript(JSPDF_URL); }
+  catch(e){ alert(t('popupAlert'));printSection(which);return; }
+  const data=readInputs();
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const PW=pdf.internal.pageSize.getWidth(),PH=pdf.internal.pageSize.getHeight();
+  const M=12,CW=PW-2*M;
+  let yPos=M;
+  async function addSvgImg(svgStr,label){
+    if(label){
+      pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
+      pdf.text(label,M,yPos+4);yPos+=8;
+    }
+    const {dataUrl,w,h}=await svgToPngDataUrl(svgStr);
+    const ratio=h/w,imgW=CW,imgH=imgW*ratio;
+    if(yPos+imgH>PH-M){pdf.addPage();yPos=M;}
+    pdf.addImage(dataUrl,'PNG',M,yPos,imgW,imgH);
+    yPos+=imgH+4;
+  }
+  // Header
+  pdf.setFontSize(13);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
+  pdf.text(data.nomInstrument||'Accordéon',M,yPos+6);yPos+=10;
+  pdf.setFontSize(7.5);pdf.setFont('helvetica','normal');pdf.setTextColor(120,120,120);
+  pdf.text(`${t('svgLuthier')}: ${data.nomLuthier||'—'}  ·  ${t('svgClient')}: ${data.nomJoueur||'—'}  ·  ${fmtDate(data.date)}`,M,yPos);yPos+=5;
+  pdf.setDrawColor(45,90,39);pdf.setLineWidth(0.5);pdf.line(M,yPos,PW-M,yPos);yPos+=5;
+  // MD
+  await addSvgImg(buildSVG_Droite(data,false),t('svgRH'));
+  // Soufflet
+  pdf.setFontSize(7);pdf.setTextColor(170,170,170);
+  pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos,{align:'center'});yPos+=6;
+  // MG
+  await addSvgImg(buildSVG_Gauche(data,false),t('svgLH'));
+  if(which==='fabricant'){
+    // Sommier
+    pdf.addPage();yPos=M;
+    await addSvgImg(buildSommierSVG(data,false),(t('sommierView')||'🪗 Sommier').replace('🪗 ',''));
+    // Manufacturer table via html2canvas
+    const H2C_URL='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    try{
+      await loadScript(H2C_URL);
+      const tableHtml=buildManufacturerTable(data,false);
+      const tmp=document.createElement('div');
+      tmp.style.cssText='position:fixed;left:-9999px;top:0;width:794px;background:#fff;font-family:Arial,sans-serif;font-size:8.5pt;color:#333;';
+      tmp.innerHTML=`<style>.mfr-table{width:100%;border-collapse:collapse;margin-bottom:4mm}.mfr-table th,.mfr-table td{border:1px solid #ccc;padding:4px 8px;text-align:center}.mfr-table th{background:#2d5a27;color:#fff;-webkit-print-color-adjust:exact}.mfr-table tr:nth-child(even) td{background:#f5f5f3}.mfr-table td{background:#fff;color:#333}td.note-p{color:#1a5c1a;font-weight:700}td.note-t{color:#8b6914;font-weight:700}td.row-hd{background:#f0f0ee;font-weight:700;color:#2d5a27}.mfr-sub{font-size:8pt;color:#666;margin-bottom:4mm}</style>${tableHtml}`;
+      document.body.appendChild(tmp);
+      const tc=await window.html2canvas(tmp,{scale:2,backgroundColor:'#fff',width:794,windowWidth:794});
+      document.body.removeChild(tmp);
+      pdf.addPage();yPos=M;
+      pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
+      pdf.text(t('pdfMfrTitle'),M,yPos+4);yPos+=10;
+      const scale=CW/tc.width,tH=tc.height*scale;
+      if(yPos+tH<=PH-M){
+        pdf.addImage(tc.toDataURL('image/png'),'PNG',M,yPos,CW,tH);
+      } else {
+        let srcY=0;
+        while(srcY<tc.height){
+          if(srcY>0){pdf.addPage();yPos=M;}
+          const srcH=Math.min(tc.height-srcY,(PH-yPos-M)/scale);
+          const sl=document.createElement('canvas');sl.width=tc.width;sl.height=Math.ceil(srcH);
+          sl.getContext('2d').drawImage(tc,0,srcY,tc.width,srcH,0,0,tc.width,srcH);
+          pdf.addImage(sl.toDataURL('image/png'),'PNG',M,yPos,CW,srcH*scale);
+          yPos+=srcH*scale+1;srcY+=srcH;
+        }
+      }
+    }catch(e){console.warn('Table render skipped:',e);}
+  }
+  // Footer
+  const lastPage=pdf.internal.getNumberOfPages();
+  pdf.setPage(lastPage);
+  pdf.setFontSize(6);pdf.setTextColor(180,180,180);
+  pdf.text(`${t('svgGeneratedBy')} ${fmtDate(data.date)} — ewendaviau.com`,PW/2,PH-5,{align:'center'});
+  const fileName=`${(data.nomInstrument||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_')}_${which==='visual'?'plan':'fabricant'}.pdf`;
+  pdf.save(fileName);
+}
 function printSection(which){
   const data=readInputs();
   const title=which==='visual'
@@ -2090,7 +2192,7 @@ function printSection(which){
       td.midi-c{color:#1565c0;font-size:.72rem}
       td.row-hd{background:#f0f0ee;font-weight:700;color:#2d5a27}
       .mfr-sub{font-size:8pt;color:#666;margin-bottom:4mm}
-      svg{display:block;max-width:100%}
+      svg{display:block;max-width:100%;height:auto}
       @media print{body{background:${bgPage}!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
     </style>
   </head><body>${body}</body></html>`);
