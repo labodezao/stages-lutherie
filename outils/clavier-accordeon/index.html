@@ -2127,8 +2127,8 @@ async function downloadPDF(which){
     yPos=pdf.lastAutoTable.finalY+10;
 
     // Helper: add a new page if there is not enough vertical room
-    function ensureRoom(needed){
-      if(yPos+needed>CB){pdf.addPage();yPos=MT;}
+    function ensureRoom(neededMm){
+      if(yPos+neededMm>CB){pdf.addPage();yPos=MT;}
     }
 
     // RH note tables — one per register row
