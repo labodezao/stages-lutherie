@@ -2033,6 +2033,7 @@ async function downloadPDF(which){
   function tableDefaults(extra){
     return Object.assign({
       margin:{left:ML,right:MR},theme:'grid',
+      rowPageBreak:'avoid',
       styles:{fontSize:7,cellPadding:[1.8,3],textColor:[30,30,30],
               lineColor:RULE_C,lineWidth:0.22},
       headStyles:{fillColor:GRN,textColor:[255,255,255],fontStyle:'bold',fontSize:7},
@@ -2131,42 +2132,43 @@ async function downloadPDF(which){
       if(yPos+neededMm>CB){pdf.addPage();yPos=MT;}
     }
 
-    // RH note tables — one per register row
+    // RH note tables — single unified table, group header rows per register row
     ensureRoom(25);
     pdf.setFontSize(8);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
     pdf.text(t('mfrRH'),ML,yPos+4);yPos+=8;
     const cols=midi?7:5;
-    // Fixed column widths so every row-table aligns identically (sum = CW = 180mm)
+    // Fixed column widths — all columns defined for one table (sum = CW = 180mm)
     const rhColStyle=midi
       ?{0:{cellWidth:24,textColor:GRN,fontStyle:'bold'},1:{cellWidth:18,textColor:GRN,halign:'center'},
         2:{cellWidth:10,halign:'center'},3:{cellWidth:33},4:{cellWidth:33},
         5:{cellWidth:31,halign:'center'},6:{cellWidth:31,halign:'center'}}
       :{0:{cellWidth:30,textColor:GRN,fontStyle:'bold'},1:{cellWidth:22,textColor:GRN,halign:'center'},
         2:{cellWidth:12,halign:'center'},3:{cellWidth:58},4:{cellWidth:58}};
+    const rhBody=[];
     data.droite.forEach(row=>{
       const reg=row.register||'N';
-      pdf.autoTable(tableDefaults({
-        startY:yPos,
-        showHead:'everyPage',
-        head:[
-          [{content:`${row.nom}  ·  ${reg}`,colSpan:cols,
-            styles:{fillColor:GRN2,textColor:[255,255,255],fontStyle:'bold',fontSize:7.5}}],
-          [t('mfrRow'),t('clRowSpec'),t('mfrNo'),
-           `${t('mfrPushNote')} ↓`,`${t('mfrPullNote')} ↑`,
-           ...(midi?[t('mfrMidiPush'),t('mfrMidiPull')]:[])
-          ].map(s=>({content:s,styles:{fillColor:[55,95,48],textColor:[255,255,255],fontSize:6.5}})),
-        ],
-        body:row.boutons.map((btn,bi)=>{
-          const r=[row.nom,reg,String(bi+1),
-            {content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}},
-            {content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}];
-          if(midi)r.push(midiCell(btn.p),midiCell(btn.t));
-          return r;
-        }),
-        columnStyles:rhColStyle,
-      }));
-      yPos=pdf.lastAutoTable.finalY+6;
+      // Group header spanning all columns
+      rhBody.push([{content:`${row.nom}  ·  ${reg}`,colSpan:cols,
+        styles:{fillColor:GRN2,textColor:[255,255,255],fontStyle:'bold',fontSize:7.5}}]);
+      row.boutons.forEach((btn,bi)=>{
+        const r=[row.nom,reg,String(bi+1),
+          {content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}},
+          {content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}];
+        if(midi)r.push(midiCell(btn.p),midiCell(btn.t));
+        rhBody.push(r);
+      });
     });
+    pdf.autoTable(tableDefaults({
+      startY:yPos,
+      showHead:'everyPage',
+      head:[[t('mfrRow'),t('clRowSpec'),t('mfrNo'),
+             `${t('mfrPushNote')} ↓`,`${t('mfrPullNote')} ↑`,
+             ...(midi?[t('mfrMidiPush'),t('mfrMidiPull')]:[])
+            ].map(s=>({content:s,styles:{fillColor:[55,95,48],textColor:[255,255,255],fontSize:6.5}}))],
+      body:rhBody,
+      columnStyles:rhColStyle,
+    }));
+    yPos=pdf.lastAutoTable.finalY+6;
 
     // LH table
     ensureRoom(25);
