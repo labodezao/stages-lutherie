@@ -1501,7 +1501,7 @@ function readInputs(){
 /* ╔══════════════════════════════════════════════════════╗
    ║  SVG HELPERS                                         ║
    ╚══════════════════════════════════════════════════════╝ */
-function svg_open(w,h,bg){return`<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif"><rect width="${w}" height="${h}" fill="${bg||'white'}"/>`;}
+function svg_open(w,h,bg){return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif"><rect width="${w}" height="${h}" fill="${bg||'white'}"/>`;}
 function tx(x,y,text,size,fill,weight,anchor){return`<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-weight="${weight||'normal'}" text-anchor="${anchor||'start'}">${text}</text>`;}
 function esc(s){if(!s)return'';return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function escSVG(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
