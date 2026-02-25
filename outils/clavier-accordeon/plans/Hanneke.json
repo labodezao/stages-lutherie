@@ -1,19 +1,21 @@
 {
-  "id": "plan_thorsen",
-  "nom": "Thorsen — Sol/Mi/Fa 33/12",
-  "joueur": "Thorsen",
+  "id": "plan_evelyne",
+  "nom": "Evelyne — Sol/Mi/Fa 33/12",
+  "joueur": "Evelyne",
   "luthier": "Ewen d'Aviau",
   "dateCreation": "",
   "lastModified": "2026-02-25T00:00:00.000Z",
   "nbRangees": 3,
   "rangees": [
-    {"nom": "G row (inner)",  "nb": 12, "offset": 0, "register": "N"},
-    {"nom": "E row (middle)", "nb": 11, "offset": 0, "register": "N"},
-    {"nom": "F row (outer)",  "nb": 10, "offset": 2, "register": "N"}
+    {"nom": "Rangée Sol (intérieure)", "nb": 12, "offset": 0, "register": "N"},
+    {"nom": "Rangée Mi (médiane)",     "nb": 11, "offset": 0, "register": "N"},
+    {"nom": "Rangée Fa (extérieure)",  "nb": 10, "offset": 2, "register": "N"}
   ],
   "nbVoix": 2,
-  "nbVoixGauche": 2,
+  "nbVoixAccords": 2,
+  "nbVoixBasses": 2,
   "lhDisplayMode": "separated",
+  "lhRows": [{"nb": 6, "offset": 0}],
   "notes": {
     "droite": [
       [
