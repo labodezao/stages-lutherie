@@ -723,6 +723,7 @@ let CFG={
     {nom:'Rangée Ré (extérieure)',nb:11},
   ],
   configGauche:12,
+  lhRows:[{nb:6,offset:0}],
   notes:{droite:[],basses:[],accords:[],terzetto:[]}
 };
 let currentId=null,saveTimer=null,previewTimer=null,fabricantView='liste';
@@ -985,6 +986,7 @@ function snapshotToDB(){
     nbVoix:parseInt(document.getElementById('nb-voix').value),
     nbVoixGauche:parseInt(document.getElementById('nb-voix-gauche')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -1010,6 +1012,8 @@ function loadFromDB(rec){
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
+  // Restore lhRows — backward compat: default to 1 row covering all basses
+  CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes&&rec.notes.basses?rec.notes.basses.length:6),offset:0}];
   // ensure terzetto exists
   if(!CFG.notes.terzetto) CFG.notes.terzetto=[];
   // backward compat: if notes arrays are missing, init from configGauche
@@ -1029,6 +1033,7 @@ function loadFromDB(rec){
   sv('order-harmony',os.harmony||'');sv('order-bass-type',os.bassType||'');
   sv('order-bass-comp',os.bassComp||'');
   renderRangeesCfg();
+  renderLhRowsCfg();
   generateInputGrid();
   setSaveStatus('saved');
 }
@@ -1048,8 +1053,10 @@ function newInstrument(){
   document.getElementById('nb-voix').value='2';
   document.getElementById('nb-voix-gauche').value='2';
   document.getElementById('lh-separated').checked=true;
+  CFG.lhRows=[{nb:6,offset:0}];
   loadPreset('GCD33');
   document.getElementById('preset-select').value='GCD33';
+  renderLhRowsCfg();
   renderLibrary();setSaveStatus('dirty');
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1098,7 +1105,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   initPicker();renderLibrary();
   const list=DB.all();
   if(list.length){loadFromDB(list[0]);}
-  else{loadPreset('GCD33');document.getElementById('preset-select').value='GCD33';}
+  else{loadPreset('GCD33');document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();}
   scheduleLivePreview();
   // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
   document.getElementById('note-grid').addEventListener('click',e=>{
@@ -1394,6 +1401,7 @@ function readInputs(){
     nbVoix:parseInt(document.getElementById('nb-voix').value),
     nbVoixGauche:parseInt(document.getElementById('nb-voix-gauche')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
     basses:CFG.notes.basses,
