@@ -335,10 +335,14 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,8)">24b</button>
           </div></div>
         <div class="form-group"><label data-i="voices">Nombre de voix (anches) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Voix" data-tip="1 voix : une anche par note (son pur).&#10;2 voix : deux anches par note (ex: M+H ou L+M) → son plus riche.&#10;3 voix : trois anches (L+M+H) → son très plein, avec tremolo.&#10;—&#10;1 voice: one reed per note (pure tone).&#10;2 voices: two reeds per note (e.g. M+H or L+M) → richer sound.&#10;3 voices: three reeds (L+M+H) → full sound with tremolo.">ⓘ</span></label>
-          <select id="nb-voix" onchange="onAnyChange()">
+          <select id="nb-voix" onchange="updateVoixTypeOptions();onAnyChange()">
             <option value="1">1 voix / 1 voice</option>
-            <option value="2" selected>2 voix / voices (LM ou MH)</option>
-            <option value="3">3 voix / voices (LMH)</option>
+            <option value="2" selected>2 voix / voices</option>
+            <option value="3">3 voix / voices</option>
+          </select>
+          <select id="voix-type-md" onchange="onAnyChange()" style="margin-top:4px;font-size:.82rem;width:100%;">
+            <option value="BN" selected>B+N (16'+8') — profond</option>
+            <option value="NH">N+H (8'+4') — tremolo</option>
           </select></div>
         <div class="form-group"><label data-i="voicesLH">Voix main gauche (anches)</label>
           <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 7px;align-items:center;margin-top:2px;">
@@ -993,6 +997,7 @@ function snapshotToDB(){
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
+    voixType:document.getElementById('voix-type-md')?.value||'BN',
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
@@ -1015,6 +1020,8 @@ function loadFromDB(rec){
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
   document.getElementById('nb-voix').value=String(rec.nbVoix||2);
+  updateVoixTypeOptions();
+  const vtEl=document.getElementById('voix-type-md');if(vtEl)vtEl.value=rec.voixType||'BN';
   document.getElementById('nb-voix-accords').value=String(rec.nbVoixAccords||(rec.nbVoixGauche||2));
   document.getElementById('nb-voix-basses').value=String(rec.nbVoixBasses||(rec.nbVoixGauche||2));
   const lhm=rec.lhDisplayMode||'separated';
@@ -1062,6 +1069,8 @@ function newInstrument(){
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   document.getElementById('nb-voix').value='2';
+  updateVoixTypeOptions();
+  const vtEl=document.getElementById('voix-type-md');if(vtEl)vtEl.value='BN';
   document.getElementById('nb-voix-accords').value='2';
   document.getElementById('nb-voix-basses').value='2';
   document.getElementById('lh-separated').checked=true;
@@ -1114,6 +1123,7 @@ function onAnyChange(){
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   renderPresetOptions();
+  updateVoixTypeOptions();
   initPicker();renderLibrary();
   const list=DB.all();
   if(list.length){loadFromDB(list[0]);}
@@ -1477,6 +1487,7 @@ function readInputs(){
     nomLuthier:val('nom-luthier')||"Ewen d'Aviau",
     date:val('date-creation'),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
+    voixType:document.getElementById('voix-type-md')?.value||'BN',
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
@@ -1758,6 +1769,50 @@ function buildSVG_Gauche(data,dark){
 /* ╔══════════════════════════════════════════════════════╗
    ║  SVG SOMMIER (reed plate view)                       ║
    ╚══════════════════════════════════════════════════════╝ */
+/* ╔══════════════════════════════════════════════════════╗
+   ║  VOICE TYPE HELPERS                                  ║
+   ╚══════════════════════════════════════════════════════╝ */
+const VOIX_COMBOS_DATA={
+  N  :[['N', 0,"8'"]],
+  BN :[['B',-1,"16'"],['N',0,"8'"]],
+  NH :[['N', 0,"8'"],['H',+1,"4'"]],
+  BNH:[['B',-1,"16'"],['N',0,"8'"],['H',+1,"4'"]]
+};
+const VOIX_COMBOS_BY_NB={
+  1:[{v:'N',  label:"N (8') — naturel"}],
+  2:[{v:'BN', label:"B+N (16'+8') — profond"},{v:'NH',label:"N+H (8'+4') — tremolo"}],
+  3:[{v:'BNH',label:"B+N+H (16'+8'+4') — complet"}]
+};
+function updateVoixTypeOptions(){
+  const nb=parseInt(document.getElementById('nb-voix')?.value)||2;
+  const sel=document.getElementById('voix-type-md');
+  if(!sel)return;
+  const cur=sel.value;
+  const opts=VOIX_COMBOS_BY_NB[nb]||VOIX_COMBOS_BY_NB[2];
+  sel.innerHTML=opts.map(function(o){return '<option value="'+o.v+'"'+(o.v===cur?' selected':'')+'>'+o.label+'</option>';}).join('');
+}
+function shiftOctave(noteStr,octaves){
+  if(!noteStr||!octaves)return noteStr;
+  const m=noteStr.match(/^(.+?)(\d+)$/);
+  if(!m)return noteStr;
+  return m[1]+Math.max(0,parseInt(m[2])+octaves);
+}
+function expandVoicesForSommier(rows,voixType){
+  const voices=VOIX_COMBOS_DATA[voixType]||VOIX_COMBOS_DATA.N;
+  if(voices.length===1)return rows;
+  const result=[];
+  for(const row of rows){
+    for(const vd of voices){
+      const vname=vd[0],oct=vd[1],reg=vd[2];
+      result.push({
+        nom:row.nom+' — '+vname+' ('+reg+')',
+        boutons:(row.boutons||[]).map(function(b){return {p:shiftOctave(b.p,oct),t:shiftOctave(b.t,oct)};}),
+        offset:row.offset||0
+      });
+    }
+  }
+  return result;
+}
 function buildSommierSection(title,rows,dark){
   const CW=58,CH=46,LPAD=164,MARG=12,HEAD=52,VGAP=CH+6,FOOT=20;
   const gold=dark?'#c9a227':'#2d5a27';
@@ -1831,7 +1886,7 @@ function buildSommierSVG(data,dark){
     bIdx+=row.nb;aIdx+=row.nb;
   });
   if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
-  const svgD=buildSommierSection(rhTitle,data.droite,dark);
+  const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixType||'N'),dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
   const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
   const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
@@ -1905,7 +1960,7 @@ function buildManufacturerTable(data,dark){
         </tr>
         <tr>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clVoices')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix} · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v</td>
+          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix}v ${data.voixType||''} · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v</td>
           <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clLuthier')}</td>
           <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomLuthier)} — ${date}</td>
         </tr>
@@ -1968,7 +2023,7 @@ function buildManufacturerTable(data,dark){
 
   h+=`<div style="margin-top:18px;background:${dark?'#1a1500':'#f6f9f5'};border:1.5px solid ${dark?'#333':'#c8e0c5'};border-radius:6px;padding:11px 14px;font-size:.78rem;${dark?'color:#ccc;':''}">
     <strong>${t('specTitle')}</strong><br>
-    &bull; ${t('spec1')}<br>&bull; ${t('spec2')} : <strong>${data.nbVoix}</strong><br>
+    &bull; ${t('spec1')}<br>&bull; ${t('spec2')} : <strong>${data.nbVoix}v ${data.voixType||''}</strong><br>
     &bull; ${t('spec3')}<br>&bull; ${t('spec4')}<br><br>
     <em>${t('specGenBy')} ${date} — ${escHTML(data.nomLuthier)} — ewendaviau.com</em></div>`;
   return h;
