@@ -1969,15 +1969,44 @@ async function downloadPDF(which){
   async function addSvgImg(svgStr,label,mmPerPx){
     const {dataUrl,w,h}=await svgToPngDataUrl(svgStr);
     const imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
-    const imgH=Math.min(h*(imgW/w), PH-2*M); // cap to one page max
-    const need=(label?9:0)+imgH;
-    if(yPos+need>PH-M){pdf.addPage();yPos=M;}
+    const scale=imgW/w; // mm per px
+    const imgH=h*scale; // full height in mm, may span multiple pages
+    // Label — start new page if not enough room
+    const labelMm=label?9:0;
+    if(yPos+labelMm+4>PH-M){pdf.addPage();yPos=M;}
     if(label){
       pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
       pdf.text(label,M,yPos+4);yPos+=9;
     }
-    pdf.addImage(dataUrl,'PNG',M,yPos,imgW,imgH);
-    yPos+=imgH+4;
+    const availBottom=PH-M;
+    if(imgH<=availBottom-yPos){
+      // fits entirely on current page
+      pdf.addImage(dataUrl,'PNG',M,yPos,imgW,imgH);
+      yPos+=imgH+4;
+      return;
+    }
+    // Image spans multiple pages — slice into strips using a canvas
+    const srcImg=await new Promise((res,rej)=>{
+      const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=dataUrl;
+    });
+    const sliceCanvas=document.createElement('canvas');sliceCanvas.width=w;
+    let srcY=0;let firstStrip=true;
+    while(srcY<h){
+      if(!firstStrip){pdf.addPage();yPos=M;}
+      const stripMm=availBottom-yPos;
+      const maxSrcH=stripMm/scale;
+      const srcH=Math.min(h-srcY,maxSrcH);
+      const dstMm=srcH*scale;
+      sliceCanvas.height=Math.ceil(srcH);
+      const ctx=sliceCanvas.getContext('2d');
+      ctx.clearRect(0,0,sliceCanvas.width,sliceCanvas.height);
+      ctx.drawImage(srcImg,0,srcY,w,srcH,0,0,w,srcH);
+      pdf.addImage(sliceCanvas.toDataURL('image/png'),'PNG',M,yPos,imgW,dstMm);
+      yPos+=dstMm+1;
+      srcY+=srcH;
+      firstStrip=false;
+    }
+    yPos+=3;
   }
   // Header
   pdf.setFontSize(13);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
