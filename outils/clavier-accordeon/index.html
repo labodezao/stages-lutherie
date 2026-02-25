@@ -1670,12 +1670,28 @@ function buildSVG_Gauche(data,dark){
 
   let s=svg_open(W,H,bg);
   s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
+  // Pass 1: alternating row bands + row labels
   secRows.forEach((sec,si)=>{
     const off=(sec.offset||0)*(HGAP/2);
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
     if(sec.items.length)
       s+=`<rect x="${LPAD-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
     s+=tx(LPAD-7,cy+4,escSVG(sec.nom),10,gold,'bold','end');
+  });
+  // Pass 2: table grid (column + row separator lines, outer border, column numbers)
+  if(secRows.length>0&&maxItems>0){
+    const gTop=MARG+HEAD,gBot=MARG+HEAD+secRows.length*VGAP;
+    const gLeft=LPAD-HGAP/2,gRight=LPAD+maxItems*HGAP-HGAP/2;
+    const gridCol=dark?'#3a3a3a':'#d0d0d0';
+    s+=`<rect x="${gLeft}" y="${gTop}" width="${gRight-gLeft}" height="${gBot-gTop}" fill="none" stroke="${dark?'#555':'#aaa'}" stroke-width="1.2" rx="2"/>`;
+    for(let ci=1;ci<maxItems;ci++){const xv=LPAD+ci*HGAP-HGAP/2;s+=`<line x1="${xv}" y1="${gTop}" x2="${xv}" y2="${gBot}" stroke="${gridCol}" stroke-width="1"/>`;}
+    for(let ri=1;ri<secRows.length;ri++){const yh=gTop+ri*VGAP;s+=`<line x1="${gLeft}" y1="${yh}" x2="${gRight}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
+    for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');}
+  }
+  // Pass 3: buttons on top of grid
+  secRows.forEach((sec,si)=>{
+    const off=(sec.offset||0)*(HGAP/2);
+    const cy=MARG+HEAD+si*VGAP+VGAP/2;
     sec.items.forEach((btn,bi)=>{
       const cx=LPAD+bi*HGAP+off;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
