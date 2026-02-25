@@ -1867,26 +1867,26 @@ function printSection(which){
   const title=which==='visual'
     ?`${t('pdfClientTitle')} — ${data.nomInstrument}`
     :`${t('pdfMfrTitle')} — ${data.nomInstrument}`;
-  const dark=true; // always dark/gold for PDF
+  const dark=which!=='visual'; // client keyboard plan uses light background; manufacturer stays dark
 
   let body='';
   if(which==='visual'){
-    const svgD=buildSVG_Droite(data,dark);
-    const svgG=buildSVG_Gauche(data,dark);
+    const svgD=buildSVG_Droite(data,false);
+    const svgG=buildSVG_Gauche(data,false);
     body=`
-      <div style="background:#111;min-height:100vh;padding:12mm 14mm;color:#eee;">
-        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #c9a227;padding-bottom:4mm;margin-bottom:6mm;">
+      <div style="background:#fff;min-height:100vh;padding:12mm 14mm;color:#222;">
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2d5a27;padding-bottom:4mm;margin-bottom:6mm;">
           <div>
-            <h2 style="color:#c9a227;font-size:15pt;font-family:'Georgia',serif;letter-spacing:.05em;margin:0;">${escHTML(data.nomInstrument)}</h2>
-            <p style="font-size:9pt;color:#888;margin:1mm 0 0;">${t('svgClient')} : <b style="color:#ddd;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#ddd;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
+            <h2 style="color:#2d5a27;font-size:15pt;font-family:'Georgia',serif;letter-spacing:.05em;margin:0;">${escHTML(data.nomInstrument)}</h2>
+            <p style="font-size:9pt;color:#777;margin:1mm 0 0;">${t('svgClient')} : <b style="color:#333;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#333;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
           </div>
-          <div style="font-size:8pt;color:#c9a227;text-align:right;">ewendaviau.com</div>
+          <div style="font-size:8pt;color:#2d5a27;text-align:right;">ewendaviau.com</div>
         </div>
-        <h3 style="color:#c9a227;font-size:10pt;margin:3mm 0 2mm;">${t('svgRH')}</h3>
+        <h3 style="color:#2d5a27;font-size:10pt;margin:3mm 0 2mm;">${t('svgRH')}</h3>
         ${svgD}
-        <h3 style="color:#c9a227;font-size:10pt;margin:6mm 0 2mm;">${t('svgLH')}</h3>
+        <h3 style="color:#2d5a27;font-size:10pt;margin:6mm 0 2mm;">${t('svgLH')}</h3>
         ${svgG}
-        <p style="font-size:7pt;color:#555;text-align:center;margin-top:8mm;border-top:1px solid #333;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
+        <p style="font-size:7pt;color:#aaa;text-align:center;margin-top:8mm;border-top:1px solid #e0e0e0;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
       </div>`;
   } else if(fabricantView==='sommier'){
     body=`
@@ -1911,11 +1911,12 @@ function printSection(which){
 
   const win=window.open('','_blank','width=960,height=740');
   if(!win){alert(t('popupAlert'));return;}
+  const bgPage=which==='visual'?'#fff':'#111';
   win.document.write(`<!DOCTYPE html><html lang="${lang}"><head>
     <meta charset="UTF-8"><title>${escHTML(title)}</title>
     <style>
       *{margin:0;padding:0;box-sizing:border-box}
-      body{font-family:Arial,Helvetica,sans-serif;background:#111}
+      body{font-family:Arial,Helvetica,sans-serif;background:${bgPage}}
       .mfr-table{width:100%;border-collapse:collapse;font-size:8.5pt;margin-bottom:4mm}
       .mfr-table th,.mfr-table td{border:1px solid #333;padding:4px 8px;text-align:center}
       .mfr-table th{background:#1a1500;color:#c9a227;font-size:7.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -1926,7 +1927,7 @@ function printSection(which){
       td.midi-c{color:#82b0ff;font-size:.72rem}
       .mfr-sub{font-size:8pt;color:#aaa;margin-bottom:4mm}
       svg{display:block;max-width:100%}
-      @media print{body{background:#111!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+      @media print{body{background:${bgPage}!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
     </style>
   </head><body>${body}</body></html>`);
   win.document.close();win.focus();
