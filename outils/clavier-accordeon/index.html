@@ -1883,6 +1883,18 @@ function buildManufacturerTable(data,dark){
 /* ╔══════════════════════════════════════════════════════╗
    ║  LIVE PREVIEW                                        ║
    ╚══════════════════════════════════════════════════════╝ */
+/* Scale svgTgt to same natural width as svgRef (centers content via viewBox offset).
+   This ensures CSS max-width:100% scales both SVGs identically → same visual text size. */
+function matchSvgWidth(svgRef,svgTgt){
+  const wRef=+(svgRef.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,0])[1];
+  const wTgt=+(svgTgt.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,0])[1];
+  const hTgt=+(svgTgt.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,0])[1];
+  if(wRef<=wTgt||wTgt===0)return svgTgt;
+  const xOff=(wRef-wTgt)/2;
+  return svgTgt.replace(/<svg [^>]+>/,
+    `<svg width="${wRef}" height="${hTgt}" viewBox="${-xOff} 0 ${wRef} ${hTgt}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif">`);
+}
+
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
 function runLivePreview(){
@@ -1890,7 +1902,7 @@ function runLivePreview(){
     readNoteInputsIntoCFG();
     const data=readInputs();
     const svgD=buildSVG_Droite(data,false);
-    const svgG=buildSVG_Gauche(data,false);
+    const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
     document.getElementById('visual-output').innerHTML=
       `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
        <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
@@ -1972,17 +1984,17 @@ async function downloadPDF(which){
   pdf.setFontSize(7.5);pdf.setFont('helvetica','normal');pdf.setTextColor(120,120,120);
   pdf.text(`${t('svgLuthier')}: ${data.nomLuthier||'—'}  ·  ${t('svgClient')}: ${data.nomJoueur||'—'}  ·  ${fmtDate(data.date)}`,M,yPos);yPos+=5;
   pdf.setDrawColor(45,90,39);pdf.setLineWidth(0.5);pdf.line(M,yPos,PW-M,yPos);yPos+=5;
-  // Compute shared mm/px scale from the wider SVG (MD) so both hands have same text size
-  const svgDstr=buildSVG_Droite(data,false),svgGstr=buildSVG_Gauche(data,false);
-  const mwD=svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mwG=svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/);
-  const refW=Math.max(mwD?+mwD[1]:800, mwG?+mwG[1]:400);
-  const mmPerPxPlan=CW/refW;
+  // Build both SVGs; scale MG to same natural width as MD so both fill CW identically
+  const svgDstr=buildSVG_Droite(data,false);
+  const svgGstr=matchSvgWidth(svgDstr,buildSVG_Gauche(data,false));
+  const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+  const mmPerPxPlan=CW/wD;
   // MD
   await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan);
   // Soufflet
   pdf.setFontSize(7);pdf.setTextColor(170,170,170);
   pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos,{align:'center'});yPos+=6;
-  // MG — même échelle que MD
+  // MG — même largeur que MD → même taille de texte
   await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan);
   if(which==='fabricant'){
     // Sommier — deux SVGs séparés (RH + LH), pleine largeur chacun
@@ -2040,7 +2052,7 @@ function printSection(which){
   let body='';
   if(which==='visual'){
     const svgD=buildSVG_Droite(data,false);
-    const svgG=buildSVG_Gauche(data,false);
+    const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
     body=`
       <div style="background:#fff;min-height:100vh;padding:12mm 14mm;color:#222;">
         <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2d5a27;padding-bottom:4mm;margin-bottom:6mm;">
@@ -2060,7 +2072,7 @@ function printSection(which){
   } else {
     // ── FABRICANT : tout en un — plan client + sommier + tableaux par rangée ──
     const svgD=buildSVG_Droite(data,false);
-    const svgG=buildSVG_Gauche(data,false);
+    const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
     const sommierHtml=buildSommierSVG(data,false);
     const tableHtml=buildManufacturerTable(data,false);
     const h3s=`color:#2d5a27;font-size:10pt;font-weight:700;letter-spacing:.04em;border-bottom:1px solid #2d5a27;padding-bottom:3mm;margin:8mm 0 5mm;`;
