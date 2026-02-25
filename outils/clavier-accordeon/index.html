@@ -353,11 +353,16 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <div style="margin-top:6px;">
             <div style="font-size:.75rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;" data-i="lhDisplayMode">Affichage main gauche</div>
             <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;">
-              <input type="radio" name="lh-mode" id="lh-separated" value="separated" checked onchange="onAnyChange()">
+              <input type="radio" name="lh-mode" id="lh-separated" value="separated" checked onchange="onLhModeChange()">
               <span data-i="lhSeparated">Rangées séparées</span></label>
             <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
-              <input type="radio" name="lh-mode" id="lh-paired" value="paired" onchange="onAnyChange()">
+              <input type="radio" name="lh-mode" id="lh-paired" value="paired" onchange="onLhModeChange()">
               <span data-i="lhPaired">Alternés (B-A-B-A…)</span></label>
+            <!-- LH rows + offsets config (shown for both modes) -->
+            <div id="lh-rows-cfg" style="margin-top:6px;padding:6px 8px;background:#f5f5f0;border-radius:5px;border:1px solid #ddd;">
+              <div style="font-size:.74rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;" data-i="lhNbRows">Lignes</div>
+              <div id="lh-rows-inner" style="display:flex;flex-direction:column;gap:4px;"></div>
+            </div>
           </div></div>
       </div>
       <div id="rangees-cfg-wrap">
@@ -572,6 +577,7 @@ fr:{
   clBassComp:'Composition basses',clVoices:'Nombre de voix (main droite)',clVoicesLH:'Nombre de voix (main gauche)',clLuthier:'Luthier / Date',
   voicesLH:'Voix main gauche (anches)',
   lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
+  lhNbRows:'Lignes',lhOffset:'Décalage ligne',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -640,6 +646,7 @@ en:{
   clBassComp:'Bass composition',clVoices:'Number of voices (right hand)',clVoicesLH:'Number of voices (left hand)',clLuthier:'Luthier / Date',
   voicesLH:'Left hand voices (reeds)',
   lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
+  lhNbRows:'Rows',lhOffset:'Row offset',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
