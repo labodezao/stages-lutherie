@@ -1958,117 +1958,240 @@ function svgToPngDataUrl(svgStr){
 }
 async function downloadPDF(which){
   const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-  try{ await loadScript(JSPDF_URL); }
+  const AT_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
+  try{ await loadScript(JSPDF_URL); await loadScript(AT_URL); }
   catch(e){ alert(t('popupAlert'));return; }
+
   const data=readInputs();
   const {jsPDF}=window.jspdf;
   const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  const PW=pdf.internal.pageSize.getWidth(),PH=pdf.internal.pageSize.getHeight();
-  const M=12,CW=PW-2*M;
-  let yPos=M;
+  const PW=pdf.internal.pageSize.getWidth(), PH=pdf.internal.pageSize.getHeight();
+
+  // ── Layout constants ──────────────────────────────
+  const ML=15, MR=15, MT=15;
+  const CW=PW-ML-MR;                 // 180 mm usable width
+  const FOOTER_H=12;                  // mm reserved at bottom for footer area
+  const FOOT_RULE=PH-10;             // Y of footer rule (2mm gap to content)
+  const CB=PH-FOOTER_H;             // content bottom limit
+  let yPos=MT;
+
+  // ── Professional palette ──────────────────────────
+  const GRN=[30,68,30];              // deep forest green — headings
+  const GRN2=[48,100,48];            // medium green — sub-headers
+  const GRAY=[110,110,110];          // muted gray — meta / captions
+  const LGRE=[240,248,240];          // pale green — key cells
+  const ALT=[248,252,247];           // alternate row tint
+  const RULE_C=[190,210,185];        // light sage — table borders / rules
+  const PUSH_C=[20,85,20];           // push note — dark green
+  const PULL_C=[140,100,10];         // pull note — warm amber
+
+  // ── Drawing helpers ───────────────────────────────
+  function hRule(y,color=RULE_C,lw=0.2){
+    pdf.setDrawColor(...color);pdf.setLineWidth(lw);
+    pdf.line(ML,y,PW-MR,y);
+  }
+  function secLabel(txt,y){
+    pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
+    pdf.text(txt.toUpperCase(),ML,y);
+  }
+
+  // ── SVG → PDF with proper 2× scale slicing ────────
   async function addSvgImg(svgStr,label,mmPerPx){
     const {dataUrl,w,h}=await svgToPngDataUrl(svgStr);
     const imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
-    const scale=imgW/w; // mm per px
-    const imgH=h*scale; // full height in mm, may span multiple pages
-    // Label — start new page if not enough room
-    const labelMm=label?9:0;
-    if(yPos+labelMm+4>PH-M){pdf.addPage();yPos=M;}
+    const scale=imgW/w;          // mm per natural pixel
+    const imgH=h*scale;          // total height in mm
     if(label){
-      pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
-      pdf.text(label,M,yPos+4);yPos+=9;
+      if(yPos+8>CB){pdf.addPage();yPos=MT;}
+      secLabel(label,yPos+4);yPos+=7;
     }
-    const availBottom=PH-M;
-    if(imgH<=availBottom-yPos){
-      // fits entirely on current page
-      pdf.addImage(dataUrl,'PNG',M,yPos,imgW,imgH);
-      yPos+=imgH+4;
-      return;
+    if(imgH<=CB-yPos){
+      pdf.addImage(dataUrl,'PNG',ML,yPos,imgW,imgH);
+      yPos+=imgH+5;return;
     }
-    // Image spans multiple pages — slice into strips using a canvas
+    // Spans multiple pages — slice using actual PNG coords (handles SCALE=2)
     const srcImg=await new Promise((res,rej)=>{
       const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=dataUrl;
     });
-    const sliceCanvas=document.createElement('canvas');sliceCanvas.width=w;
-    let srcY=0;let firstStrip=true;
+    const pxW=srcImg.naturalWidth, pngToSvg=srcImg.naturalHeight/h; // e.g. 2 when rendered at 2×
+    const sc=document.createElement('canvas');sc.width=pxW;
+    let srcY=0,first=true;
     while(srcY<h){
-      if(!firstStrip){pdf.addPage();yPos=M;}
-      const stripMm=availBottom-yPos;
-      const maxSrcH=stripMm/scale;
-      const srcH=Math.min(h-srcY,maxSrcH);
-      const dstMm=srcH*scale;
-      sliceCanvas.height=Math.ceil(srcH);
-      const ctx=sliceCanvas.getContext('2d');
-      ctx.clearRect(0,0,sliceCanvas.width,sliceCanvas.height);
-      ctx.drawImage(srcImg,0,srcY,w,srcH,0,0,w,srcH);
-      pdf.addImage(sliceCanvas.toDataURL('image/png'),'PNG',M,yPos,imgW,dstMm);
-      yPos+=dstMm+1;
-      srcY+=srcH;
-      firstStrip=false;
+      if(!first){pdf.addPage();yPos=MT;}
+      const maxH=Math.min(h-srcY,(CB-yPos)/scale);
+      sc.height=Math.ceil(maxH*pngToSvg);
+      const ctx=sc.getContext('2d');
+      ctx.clearRect(0,0,pxW,sc.height);
+      ctx.drawImage(srcImg,0,srcY*pngToSvg,pxW,maxH*pngToSvg,0,0,pxW,sc.height);
+      pdf.addImage(sc.toDataURL('image/png'),'PNG',ML,yPos,imgW,maxH*scale);
+      yPos+=maxH*scale+1;srcY+=maxH;first=false;
     }
     yPos+=3;
   }
-  // Header
-  pdf.setFontSize(13);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
-  pdf.text(data.nomInstrument||'Accordéon',M,yPos+6);yPos+=10;
-  pdf.setFontSize(7.5);pdf.setFont('helvetica','normal');pdf.setTextColor(120,120,120);
-  pdf.text(`${t('svgLuthier')}: ${data.nomLuthier||'—'}  ·  ${t('svgClient')}: ${data.nomJoueur||'—'}  ·  ${fmtDate(data.date)}`,M,yPos);yPos+=5;
-  pdf.setDrawColor(45,90,39);pdf.setLineWidth(0.5);pdf.line(M,yPos,PW-M,yPos);yPos+=5;
-  // Build both SVGs; scale MG to same natural width as MD so both fill CW identically
+
+  // ── AutoTable defaults ─────────────────────────────
+  function tableDefaults(extra){
+    return Object.assign({
+      margin:{left:ML,right:MR},theme:'grid',
+      styles:{fontSize:7,cellPadding:[1.8,3],textColor:[30,30,30],
+              lineColor:RULE_C,lineWidth:0.22},
+      headStyles:{fillColor:GRN,textColor:[255,255,255],fontStyle:'bold',fontSize:7},
+      alternateRowStyles:{fillColor:ALT},
+    },extra);
+  }
+  // Returns MIDI note as string cell, or '—'
+  function midiCell(note){const m=noteToMidi(note);return m!==null?String(m):'—';}
+
+  // ══════════════════════════════════════════════════
+  // PAGE 1 — Cover header
+  // ══════════════════════════════════════════════════
+  hRule(yPos,GRN,0.6);yPos+=5;
+
+  // Instrument name + document type
+  pdf.setFontSize(20);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+  pdf.text(data.nomInstrument||'Accordéon',ML,yPos+8);
+  pdf.setFontSize(7);pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+  const badge=which==='visual'?t('pdfClientTitle'):t('pdfMfrTitle');
+  pdf.text(badge.toUpperCase(),PW-MR,yPos+8,{align:'right'});
+  yPos+=12;
+
+  // Metadata row
+  const meta=[
+    `${t('svgLuthier').toUpperCase()}  ${data.nomLuthier||'—'}`,
+    `${t('svgClient').toUpperCase()}  ${data.nomJoueur||'—'}`,
+    fmtDate(data.date),
+  ].join('    ·    ');
+  pdf.setFontSize(7);pdf.setTextColor(...GRAY);
+  pdf.text(meta,ML,yPos);yPos+=5;
+  hRule(yPos,GRN,0.4);yPos+=8;
+
+  // ── Keyboard SVGs ──────────────────────────────────
   const svgDstr=buildSVG_Droite(data,false);
   const svgGstr=matchSvgWidth(svgDstr,buildSVG_Gauche(data,false));
   const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
   const mmPerPxPlan=CW/wD;
-  // MD
+
   await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan);
-  // Soufflet
-  pdf.setFontSize(7);pdf.setTextColor(170,170,170);
-  pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos,{align:'center'});yPos+=6;
-  // MG — même largeur que MD → même taille de texte
+
+  // Bellows separator
+  if(yPos+7<CB){
+    hRule(yPos,RULE_C,0.15);
+    pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
+    pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
+    yPos+=7;
+  }
   await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan);
+
+  // ══════════════════════════════════════════════════
+  // FABRICANT PAGES
+  // ══════════════════════════════════════════════════
   if(which==='fabricant'){
-    // Sommier — deux SVGs séparés (RH + LH), pleine largeur chacun
-    pdf.addPage();yPos=M;
+
+    // ── Page: Sommier ──────────────────────────────
+    pdf.addPage();yPos=MT;
     const rhSomTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
     const lhSomTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
     await addSvgImg(buildSommierSection(rhSomTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),false),t('svgRH'));
     const lhSecs=buildLhSommierSections(data);
     if(lhSecs.length)await addSvgImg(buildSommierSection(lhSomTitle,lhSecs,false),t('svgLH'));
-    // Manufacturer table via html2canvas
-    const H2C_URL='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    try{
-      await loadScript(H2C_URL);
-      const tableHtml=buildManufacturerTable(data,false);
-      const tmp=document.createElement('div');
-      tmp.style.cssText='position:fixed;left:-9999px;top:0;width:794px;background:#fff;font-family:Arial,sans-serif;font-size:8.5pt;color:#333;';
-      tmp.innerHTML=`<style>.mfr-table{width:100%;border-collapse:collapse;margin-bottom:4mm}.mfr-table th,.mfr-table td{border:1px solid #ccc;padding:4px 8px;text-align:center}.mfr-table th{background:#2d5a27;color:#fff;-webkit-print-color-adjust:exact}.mfr-table tr:nth-child(even) td{background:#f5f5f3}.mfr-table td{background:#fff;color:#333}td.note-p{color:#1a5c1a;font-weight:700}td.note-t{color:#8b6914;font-weight:700}td.row-hd{background:#f0f0ee;font-weight:700;color:#2d5a27}.mfr-sub{font-size:8pt;color:#666;margin-bottom:4mm}</style>${tableHtml}`;
-      document.body.appendChild(tmp);
-      const tc=await window.html2canvas(tmp,{scale:2,backgroundColor:'#fff',width:794,windowWidth:794});
-      document.body.removeChild(tmp);
-      pdf.addPage();yPos=M;
-      pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(45,90,39);
-      pdf.text(t('pdfMfrTitle'),M,yPos+4);yPos+=10;
-      const scale=CW/tc.width,tH=tc.height*scale;
-      if(yPos+tH<=PH-M){
-        pdf.addImage(tc.toDataURL('image/png'),'PNG',M,yPos,CW,tH);
-      } else {
-        let srcY=0;
-        while(srcY<tc.height){
-          if(srcY>0){pdf.addPage();yPos=M;}
-          const srcH=Math.min(tc.height-srcY,(PH-yPos-M)/scale);
-          const sl=document.createElement('canvas');sl.width=tc.width;sl.height=Math.ceil(srcH);
-          sl.getContext('2d').drawImage(tc,0,srcY,tc.width,srcH,0,0,tc.width,srcH);
-          pdf.addImage(sl.toDataURL('image/png'),'PNG',M,yPos,CW,srcH*scale);
-          yPos+=srcH*scale+1;srcY+=srcH;
-        }
-      }
-    }catch(e){console.warn('Table render skipped:',e);}
+
+    // ── Page: Bon de commande ──────────────────────
+    pdf.addPage();yPos=MT;
+    const os=data.orderSpecs||{},date=fmtDate(data.date);
+    const totalBtns=data.droite.reduce((s,r)=>s+r.boutons.length,0);
+    const midi=data.showMidi;
+
+    pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+    pdf.text(t('pdfMfrTitle').toUpperCase(),ML,yPos+5);
+    pdf.setFontSize(7);pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+    pdf.text(data.nomInstrument,PW-MR,yPos+5,{align:'right'});
+    yPos+=8;hRule(yPos,RULE_C,0.2);yPos+=6;
+
+    // Order checklist (4-col key/value)
+    const kw=42,vw=CW/2-kw;
+    pdf.autoTable(tableDefaults({
+      startY:yPos,
+      columnStyles:{0:{cellWidth:kw,fillColor:LGRE,textColor:GRN,fontStyle:'bold'},
+                    1:{cellWidth:vw},
+                    2:{cellWidth:kw,fillColor:LGRE,textColor:GRN,fontStyle:'bold'},
+                    3:{cellWidth:vw}},
+      body:[
+        [t('clQty'),os.qty||'1',t('clReedType'),os.reedType||'—'],
+        [t('clDesc'),`${totalBtns}/${data.basses.length}`,t('clTonality'),data.nomInstrument],
+        [t('clRowSpec'),(data.voixPerRow||['N']).join('/'),t('clTuning'),(os.tuning||'440')+' Hz'],
+        [t('clTremolo'),os.tremolo||'—',t('clHarmony'),os.harmony||'—'],
+        [t('clBassType'),os.bassType||'—',t('clBassComp'),os.bassComp||'—'],
+        [t('clVoices'),`${data.nbVoix}v · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v`,t('clLuthier'),`${data.nomLuthier} — ${date}`],
+      ],
+    }));
+    yPos=pdf.lastAutoTable.finalY+10;
+
+    // RH note tables — one per register row
+    pdf.setFontSize(8);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+    pdf.text(t('mfrRH'),ML,yPos+4);yPos+=8;
+    const cols=midi?7:5;
+    data.droite.forEach(row=>{
+      const reg=row.register||'N';
+      pdf.autoTable(tableDefaults({
+        startY:yPos,
+        head:[
+          [{content:`${row.nom}  ·  ${reg}`,colSpan:cols,
+            styles:{fillColor:GRN2,textColor:[255,255,255],fontStyle:'bold',fontSize:7.5}}],
+          [t('mfrRow'),t('clRowSpec'),t('mfrNo'),
+           `${t('mfrPushNote')} ↓`,`${t('mfrPullNote')} ↑`,
+           ...(midi?[t('mfrMidiPush'),t('mfrMidiPull')]:[])
+          ].map(s=>({content:s,styles:{fillColor:[55,95,48],textColor:[255,255,255],fontSize:6.5}})),
+        ],
+        body:row.boutons.map((btn,bi)=>{
+          const r=[row.nom,reg,String(bi+1),
+            {content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}},
+            {content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}];
+          if(midi)r.push(midiCell(btn.p),midiCell(btn.t));
+          return r;
+        }),
+        columnStyles:{0:{textColor:GRN,fontStyle:'bold'},1:{textColor:GRN,halign:'center'},2:{halign:'center'}},
+      }));
+      yPos=pdf.lastAutoTable.finalY+6;
+    });
+
+    // LH table
+    pdf.setFontSize(8);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+    pdf.text(t('mfrLH'),ML,yPos+4);yPos+=8;
+    const lhBody=[];
+    const lhSections=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
+    if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),arr:data.terzetto});
+    lhSections.forEach(({nom,arr})=>{
+      arr.forEach((btn,bi)=>{
+        const r=[nom,String(bi+1),
+          {content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}},
+          {content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}];
+        if(midi)r.push(midiCell(btn.p),midiCell(btn.t));
+        lhBody.push(r);
+      });
+    });
+    pdf.autoTable(tableDefaults({
+      startY:yPos,
+      head:[[t('mfrType'),t('mfrNo'),`${t('mfrNoteChordPush')} ↓`,`${t('mfrNoteChordPull')} ↑`,
+             ...(midi?[t('mfrMidiPush'),t('mfrMidiPull')]:[])
+            ].map(s=>({content:s}))],
+      body:lhBody,
+      columnStyles:{0:{textColor:GRN,fontStyle:'bold'}},
+    }));
   }
-  // Footer
-  const lastPage=pdf.internal.getNumberOfPages();
-  pdf.setPage(lastPage);
-  pdf.setFontSize(6);pdf.setTextColor(180,180,180);
-  pdf.text(`${t('svgGeneratedBy')} ${fmtDate(data.date)} — ewendaviau.com`,PW/2,PH-5,{align:'center'});
+
+  // ══════════════════════════════════════════════════
+  // FOOTER — stamped on every page
+  // ══════════════════════════════════════════════════
+  const total=pdf.internal.getNumberOfPages();
+  for(let pg=1;pg<=total;pg++){
+    pdf.setPage(pg);
+    hRule(FOOT_RULE,RULE_C,0.2);
+    pdf.setFontSize(6);pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+    pdf.text(`${data.nomLuthier||''}  —  ewendaviau.com`,ML,PH-6.5);
+    pdf.text(`${pg} / ${total}`,PW/2,PH-6.5,{align:'center'});
+    pdf.text(fmtDate(data.date),PW-MR,PH-6.5,{align:'right'});
+  }
+
   const fileName=`${(data.nomInstrument||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_')}_${which==='visual'?'plan':'fabricant'}.pdf`;
   pdf.save(fileName);
 }
