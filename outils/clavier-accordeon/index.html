@@ -2130,7 +2130,7 @@ function doImport(){
     const data=JSON.parse(document.getElementById('modal-json').value);
     if(!Array.isArray(data))throw new Error(t('invalidFormat'));
     DB.save(data);renderLibrary();
-    if(data.length)loadFromDB(data[0]);
+    if(data.length){loadFromDB(data[0]);scheduleLivePreview();}
     closeModal();
     document.getElementById('modal-msg').textContent=t('importSuccess')(data.length);
   }catch(e){document.getElementById('modal-msg').textContent=t('importError')+e.message;}
@@ -2164,7 +2164,7 @@ function loadFromFile(evt){
       const fresh=data.filter(r=>!ids.has(r.id));
       DB.save([...fresh,...existing]);
       renderLibrary();
-      if(data.length)loadFromDB(data[0]);
+      if(data.length){loadFromDB(data[0]);scheduleLivePreview();}
       alert(t('loadedFrom')(data.length));
     }catch(err){alert(t('importError')+err.message);}
   };

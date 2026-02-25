@@ -12,8 +12,10 @@
     {"nom": "Rangée Fa (extérieure)",  "nb": 10, "offset": 2, "register": "N"}
   ],
   "nbVoix": 2,
-  "nbVoixGauche": 2,
+  "nbVoixAccords": 2,
+  "nbVoixBasses": 2,
   "lhDisplayMode": "separated",
+  "lhRows": [{"nb": 6, "offset": 0}],
   "notes": {
     "droite": [
       [
