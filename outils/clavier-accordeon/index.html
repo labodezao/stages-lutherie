@@ -2104,6 +2104,9 @@ async function downloadPDF(which){
     pdf.addPage();yPos=MT;
     const os=data.orderSpecs||{},date=fmtDate(data.date);
     const totalBtns=data.droite.reduce((s,r)=>s+r.boutons.length,0);
+    const totalAnches=totalBtns*(data.nbVoix||2)
+      +(data.basses?data.basses.length:0)*(data.nbVoixBasses||2)
+      +(data.accords?data.accords.length:0)*(data.nbVoixAccords||2);
     const midi=data.showMidi;
 
     pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
@@ -2121,7 +2124,7 @@ async function downloadPDF(which){
                     2:{cellWidth:kw,fillColor:LGRE,textColor:GRN,fontStyle:'bold'},
                     3:{cellWidth:vw}},
       body:[
-        [t('clQty'),os.qty||'1',t('clReedType'),os.reedType||'—'],
+        [t('clQty'),String(totalAnches),t('clReedType'),os.reedType||'—'],
         [t('clDesc'),`${totalBtns}/${data.basses.length}`,t('clTonality'),data.nomInstrument],
         [t('clRowSpec'),(data.voixPerRow||['N']).join('/'),t('clTuning'),(os.tuning||'440')+' Hz'],
         [t('clTremolo'),os.tremolo||'—',t('clHarmony'),os.harmony||'—'],
