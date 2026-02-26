@@ -670,6 +670,8 @@ const EN2FR={
 function displayNote(note){
   if(!note) return '';
   if(lang==='fr') return note;
+  // Handle slash-separated individual notes (e.g. "La3/Do#4/Mi4")
+  if(note.includes('/')){return note.split('/').map(n=>displayNote(n.trim())).join('/');}
   // Try full word match first for chords like "Sol Maj"
   const m=note.match(/^(.+?)(\s+(?:Maj|Min|7|V|dim|aug|m7|maj7))?(\d?)$/);
   if(!m) return note;
@@ -679,10 +681,12 @@ function displayNote(note){
   return note;
 }
 /* Returns array of constituent note-names (FR, no octave) for a chord string.
-   e.g. "La Maj" → ['La','Do#','Mi'],  "Mib Min" → ['Mib','Solb','Sib']
+   e.g. "La Maj" → ['La','Do#','Mi'],  "Fa Min" → ['Fa','Lab','Do']
    Returns null for non-chord strings (bare notes). */
 function chordNotes(chord){
   if(!chord)return null;
+  // Already in note-list format ("La3/Do#4/Mi4") — return the individual notes
+  if(chord.includes('/'))return chord.split('/').map(n=>n.trim());
   const m=chord.match(/^(.+?)\s+(Maj|Min|7|m7|maj7|dim|aug|V)$/);
   if(!m)return null;
   const root=m[1].trim(), quality=m[2];
@@ -690,12 +694,16 @@ function chordNotes(chord){
     'Fa#':6,'Solb':6,'Sol':7,'Sol#':8,'Lab':8,'La':9,'La#':10,'Sib':10,'Si':11,'Dob':11};
   const SHARP=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
   const FLAT =['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
-  const INTERVALS={'Maj':[0,4,7],'Min':[0,3,7],'7':[0,4,7,10],'m7':[0,3,7,10],
+  const IMAP ={'Maj':[0,4,7],'Min':[0,3,7],'7':[0,4,7,10],'m7':[0,3,7,10],
     'maj7':[0,4,7,11],'dim':[0,3,6],'aug':[0,4,8],'V':[0,7]};
   const idx=FR_CHROMA[root]; if(idx===undefined)return null;
-  const intervals=INTERVALS[quality]; if(!intervals)return null;
-  const names=(root.length>2&&root.endsWith('b'))||root==='Réb'?FLAT:SHARP;
-  return intervals.map(i=>names[(idx+i)%12]);
+  const ivs=IMAP[quality]; if(!ivs)return null;
+  // Use flat spelling for "flat" roots and for minor-quality intervals (m3, m6, m7, dim5)
+  const rootFlat=(root.length>2&&root.endsWith('b'))||root==='Réb';
+  return ivs.map(i=>{
+    const preferFlat=rootFlat||[3,6,8,10].includes(i);
+    return (preferFlat?FLAT:SHARP)[(idx+i)%12];
+  });
 }
 function storageNote(note){
   // Convert EN→FR for storage (picker uses current lang)
@@ -1275,8 +1283,8 @@ function generateInputGrid(){
       const n=arr[b]||{p:'',t:''};
       html+=`<div class="btn-cell">
         <div class="btn-num">${label[0].toUpperCase()}${b+1}</div>
-        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
-        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
+        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="${type==='chord'?'ex: Do3/Mi3/Sol3':'↓'}" oninput="onAnyChange()" ${type==='chord'?'':'readonly'}>
+        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="${type==='chord'?'ex: Sol3/Si3/Ré4':'↑'}" oninput="onAnyChange()" ${type==='chord'?'':'readonly'}>
       </div>`;
     }
     html+=`</div></div>`;
@@ -1426,6 +1434,22 @@ function escSVG(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace
 function escHTML(s){if(!s)return'';const d=document.createElement('div');d.appendChild(document.createTextNode(String(s)));return d.innerHTML;}
 function fmtDate(d){if(!d)return new Date().toLocaleDateString('fr-FR');try{return new Date(d).toLocaleDateString('fr-FR');}catch(e){return d;}}
 function dn(note){return escSVG(displayNote(note));}  // display note in current lang
+/* Render a button value (single note OR "N1/N2/N3") as SVG text centred at (cx,baseY).
+   For multi-note values the notes are stacked vertically (tspan lines). */
+function svgBtnVal(v,cx,baseY,color){
+  if(!v)return'';
+  const disp=displayNote(v);
+  if(!disp.includes('/')){
+    const fs=disp.length>8?5.5:disp.length>5?6.8:8;
+    return tx(cx,baseY,escSVG(disp),fs,color,'bold','middle');
+  }
+  const parts=disp.split('/').map(p=>p.trim()).filter(Boolean);
+  const lineH=6.5, fs=5.5;
+  const startY=baseY-((parts.length-1)*lineH)/2;
+  let out=`<text font-size="${fs}" fill="${color}" font-weight="bold" text-anchor="middle">`;
+  parts.forEach((p,i)=>out+=`<tspan x="${cx}" y="${startY+i*lineH}">${escSVG(p)}</tspan>`);
+  return out+'</text>';
+}
 
 /* ─── Bellows SVG ─── */
 function bellowsSVG(x,y,w,h,folds,dark){
@@ -1568,9 +1592,8 @@ function buildSVG_Gauche(data,dark){
           s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
           s+=tx(cx,cy+3.5,pi+1,7.5,numTx,'normal','middle');
           s+=tx(cx-R+5,cy-R+8,lbl,7,lblCol,'bold','start');
-          if(btn.p){const fs=btn.p.length>7?6.5:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
-          if(btn.t){const fs=btn.t.length>7?6.5:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
-          if(data.showMidi){
+          if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
+          if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);          if(data.showMidi){
             const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
             if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
             if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
@@ -1636,9 +1659,8 @@ function buildSVG_Gauche(data,dark){
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
       s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
-      if(btn.p){const fs=btn.p.length>7?6.5:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
-      if(btn.t){const fs=btn.t.length>7?6.5:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
-      if(data.showMidi){
+      if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
+      if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);      if(data.showMidi){
         const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
         if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
         if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
@@ -1878,7 +1900,13 @@ function buildManufacturerTable(data,dark){
 
   // ══ NOTE TABLES — compact transposed grid ══
   // Buttons = columns (max 12 per sub-table), ↓ push / ↑ pull = rows
-  function compactGrid(btns,midi){
+  // chordMode=true: below each chord value show its constituent notes in smaller text
+  function chordCell(val,cssClass){
+    const disp=escHTML(displayNote(val))||'—';
+    const notes=chordNotes(val);
+    const noteStr=notes?notes.map(n=>escHTML(displayNote(n))).join('·'):'';
+    return `<td class="${cssClass}" style="text-align:center;padding:2px 4px;">${disp}${noteStr?`<br><span style="font-size:.65rem;opacity:.7;font-weight:normal;">${noteStr}</span>`:''}</td>`;  }
+  function compactGrid(btns,midi,chordMode){
     const CHUNK=12; let out='';
     for(let s=0;s<btns.length;s+=CHUNK){
       const chunk=btns.slice(s,s+CHUNK);
@@ -1888,11 +1916,11 @@ function buildManufacturerTable(data,dark){
       out+=`</tr></thead><tbody>`;
       // Push row
       out+=`<tr><td class="row-hd" style="text-align:center;font-weight:700;color:#1d6b23;padding:2px 5px;">↓</td>`;
-      chunk.forEach(btn=>out+=`<td class="note-p" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.p))||'—'}</td>`);
+      chunk.forEach(btn=>out+=(chordMode?chordCell(btn.p,'note-p'):`<td class="note-p" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.p))||'—'}</td>`));
       out+=`</tr>`;
       // Pull row
       out+=`<tr><td class="row-hd" style="text-align:center;font-weight:700;color:#b8860b;padding:2px 5px;">↑</td>`;
-      chunk.forEach(btn=>out+=`<td class="note-t" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.t))||'—'}</td>`);
+      chunk.forEach(btn=>out+=(chordMode?chordCell(btn.t,'note-t'):`<td class="note-t" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.t))||'—'}</td>`));
       out+=`</tr>`;
       if(midi){
         out+=`<tr><td class="row-hd" style="text-align:center;font-size:.72rem;padding:2px 5px;">M↓</td>`;
@@ -1913,16 +1941,16 @@ function buildManufacturerTable(data,dark){
       ▸ ${escHTML(row.nom)} &nbsp;
       <span style="font-weight:normal;font-size:.76rem;opacity:.8;">${reg} — ${(lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS)[reg]||reg}</span>
     </div>`;
-    h+=compactGrid(row.boutons,showMidi);
+    h+=compactGrid(row.boutons,showMidi,false);
   });
 
   const lhExtra=data.terzetto.length?` &amp; ${t('terzetto')}`:'';
   h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:18px 0 10px;font-size:.88rem;">${t('mfrLH')}${lhExtra}</h4>`;
-  const gs=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
-  if(data.terzetto.length)gs.push({nom:t('terzetto'),arr:data.terzetto});
-  gs.forEach(({nom,arr},gi)=>{
+  const gs=[{nom:t('basses'),arr:data.basses,chord:false},{nom:t('accords'),arr:data.accords,chord:true}];
+  if(data.terzetto.length)gs.push({nom:t('terzetto'),arr:data.terzetto,chord:true});
+  gs.forEach(({nom,arr,chord},gi)=>{
     h+=`<div style="font-size:.8rem;font-weight:700;color:${gold};margin:${gi>0?'10px':0} 0 4px;opacity:.85;">▸ ${nom}</div>`;
-    h+=compactGrid(arr,showMidi);
+    h+=compactGrid(arr,showMidi,chord);
   });
 
   h+=`<div style="margin-top:18px;background:${dark?'#1a1500':'#f6f9f5'};border:1.5px solid ${dark?'#333':'#c8e0c5'};border-radius:6px;padding:11px 14px;font-size:.78rem;${dark?'color:#ccc;':''}">
@@ -2186,7 +2214,7 @@ async function downloadPDF(which){
     }
 
     // Compact grid helper for PDF: buttons = columns, ↓/↑ = rows (max 12 per sub-table)
-    function pdfCompactGrid(btns,midi){
+    function pdfCompactGrid(btns,midi,chordMode){
       const CHUNK=12;
       for(let s=0;s<btns.length;s+=CHUNK){
         const chunk=btns.slice(s,s+CHUNK);
@@ -2201,6 +2229,16 @@ async function downloadPDF(which){
           .concat(chunk.map(btn=>({content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}})));
         const pullRow=[{content:'↑',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}]
           .concat(chunk.map(btn=>({content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}})));
+        if(chordMode){
+          // For chord cells: append constituent notes on a second line
+          [pushRow,pullRow].forEach((row,ri)=>{
+            const src=ri===0?'p':'t';
+            chunk.forEach((btn,ci)=>{
+              const notes=chordNotes(btn[src]);
+              if(notes){row[ci+1].content+='\n'+notes.join('·');}
+            });
+          });
+        }
         const body=[pushRow,pullRow];
         if(midi){
           body.push([{content:'M↓',styles:{textColor:[20,90,140],fontStyle:'bold',halign:'center',fontSize:5.5}}]
@@ -2230,14 +2268,13 @@ async function downloadPDF(which){
     ensureRoom(25);
     pdf.setFontSize(8);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
     pdf.text(t('mfrLH'),ML,yPos+4);yPos+=8;
-    const lhBody=[];
-    const lhSections=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
-    if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),arr:data.terzetto});
-    lhSections.forEach(({nom,arr})=>{
+    const lhSections=[{nom:t('basses'),arr:data.basses,chord:false},{nom:t('accords'),arr:data.accords,chord:true}];
+    if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),arr:data.terzetto,chord:true});
+    lhSections.forEach(({nom,arr,chord})=>{
       ensureRoom(14);
       pdf.setFontSize(7);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN2);
       pdf.text(`▸ ${nom}`,ML,yPos+4);yPos+=6;
-      pdfCompactGrid(arr,midi);
+      pdfCompactGrid(arr,midi,chord);
       yPos+=1;
     });
   }
