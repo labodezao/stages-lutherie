@@ -2105,8 +2105,8 @@ async function downloadPDF(which){
     const os=data.orderSpecs||{},date=fmtDate(data.date);
     const totalBtns=data.droite.reduce((s,r)=>s+r.boutons.length,0);
     const totalAnches=totalBtns*(data.nbVoix||2)
-      +(data.basses?data.basses.length:0)*(data.nbVoixBasses||2)
-      +(data.accords?data.accords.length:0)*(data.nbVoixAccords||2);
+      +(data.basses?data.basses.length*2:0)*(data.nbVoixBasses||2)
+      +(data.accords?data.accords.length*2:0)*(data.nbVoixAccords||2);
     const midi=data.showMidi;
 
     pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
