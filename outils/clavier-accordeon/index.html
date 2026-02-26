@@ -1949,13 +1949,13 @@ function svgToPngDataUrl(svgStr){
   return new Promise((res,rej)=>{
     const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
     const sw=mw?+mw[1]:800,sh=mh?+mh[1]:600;
-    const SCALE=1;
+    const SCALE=3;
     const c=document.createElement('canvas');c.width=sw*SCALE;c.height=sh*SCALE;
     const ctx=c.getContext('2d');ctx.scale(SCALE,SCALE);
     const img=new Image();
     const blob=new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob);
-    img.onload=()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,sw,sh);ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/jpeg',0.82),w:sw,h:sh});};
+    img.onload=()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,sw,sh);ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/jpeg',0.92),w:sw,h:sh});};
     img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};
     img.src=url;
   });
@@ -1988,7 +1988,6 @@ async function downloadPDF(which){
   const RULE_C=[190,210,185];        // light sage — table borders / rules
   const PUSH_C=[20,85,20];           // push note — dark green
   const PULL_C=[140,100,10];         // pull note — warm amber
-  const PULL_BG=[255,252,235];       // pull row background — pale amber
 
   // ── Drawing helpers ───────────────────────────────
   function hRule(y,color=RULE_C,lw=0.2){
@@ -2048,23 +2047,26 @@ async function downloadPDF(which){
   // Returns MIDI note as string cell, or '—'
   function midiCell(note){const m=noteToMidi(note);return m!==null?String(m):'—';}
 
-  // ── Keyboard as vector table (sharp text, copy-pastable) ───
-  function addKeyboardTable(rows,title){
+  // ── Sommier as vector table (sharp text, copy-pastable) ───
+  const PULL_BG=[255,252,235];
+  function addSommierTable(sections,title){
     if(yPos+8>CB){pdf.addPage();yPos=MT;}
     secLabel(title,yPos+4);yPos+=6;
-    rows.forEach(function(row){
-      if(!row.items||!row.items.length)return;
+    sections.forEach(function(row){
+      const btns=row.items||row.boutons||[];
+      if(!btns.length)return;
       if(yPos+16>CB){pdf.addPage();yPos=MT;}
-      const n=row.items.length;
+      const n=btns.length;
       const labelW=18;
+      const numRow=[{content:'#',styles:{fillColor:LGRE,textColor:GRAY,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(btns.map(function(_,i){return{content:String(i+1),styles:{halign:'center',textColor:GRAY,fontSize:6}};}));
       const pushRow=[{content:'↓ '+t('svgPush'),styles:{fillColor:LGRE,textColor:PUSH_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
-        .concat(row.items.map(function(b){return{content:b&&b.p?displayNote(b.p):'—',styles:{halign:'center',fontStyle:'bold',textColor:PUSH_C}};}));
+        .concat(btns.map(function(b){return{content:b&&b.p?displayNote(b.p):'—',styles:{halign:'center',fontStyle:'bold',textColor:PUSH_C}};}));
       const pullRow=[{content:'↑ '+t('svgPull'),styles:{fillColor:PULL_BG,textColor:PULL_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
-        .concat(row.items.map(function(b){return{content:b&&b.t?displayNote(b.t):'—',styles:{halign:'center',fontStyle:'bold',textColor:PULL_C}};}));
+        .concat(btns.map(function(b){return{content:b&&b.t?displayNote(b.t):'—',styles:{halign:'center',fontStyle:'bold',textColor:PULL_C}};}));
       pdf.autoTable(tableDefaults({
         startY:yPos,
-        // colSpan: n (buttons) + 1 (label column)
-        head:[[{content:row.nom||'',colSpan:n+1,styles:{fillColor:GRN2,textColor:[255,255,255],fontSize:7.5,fontStyle:'bold',halign:'center'}}]],
+        head:[[{content:row.nom||'',colSpan:n+1,styles:{fillColor:GRN2,textColor:[255,255,255],fontSize:7.5,fontStyle:'bold',halign:'center'}}],numRow],
         body:[pushRow,pullRow],
         columnStyles:{0:{cellWidth:labelW,fillColor:LGRE}},
       }));
@@ -2096,11 +2098,13 @@ async function downloadPDF(which){
   pdf.text(meta,ML,yPos);yPos+=5;
   hRule(yPos,GRN,0.4);yPos+=8;
 
-  // ── Keyboard plan — vector tables (sharp, copy-pastable) ──
-  addKeyboardTable(
-    data.droite.map(function(row){return{nom:row.nom,items:row.boutons};}),
-    t('svgRH')
-  );
+  // ── Keyboard SVGs ──────────────────────────────────
+  const svgDstr=buildSVG_Droite(data,false);
+  const svgGstr=matchSvgWidth(svgDstr,buildSVG_Gauche(data,false));
+  const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+  const mmPerPxPlan=CW/wD;
+
+  await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan);
 
   // Bellows separator
   if(yPos+7<CB){
@@ -2109,12 +2113,7 @@ async function downloadPDF(which){
     pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
     yPos+=7;
   }
-
-  const lhKbRows=[];
-  lhKbRows.push({nom:t('accords'),items:data.accords});
-  lhKbRows.push({nom:t('basses'),items:data.basses});
-  if(data.terzetto&&data.terzetto.length)lhKbRows.push({nom:t('terzetto'),items:data.terzetto});
-  addKeyboardTable(lhKbRows,t('svgLH'));
+  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan);
 
   // ══════════════════════════════════════════════════
   // FABRICANT PAGES
@@ -2125,9 +2124,9 @@ async function downloadPDF(which){
     pdf.addPage();yPos=MT;
     const rhSomTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
     const lhSomTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
-    await addSvgImg(buildSommierSection(rhSomTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),false),t('svgRH'));
+    addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
     const lhSecs=buildLhSommierSections(data);
-    if(lhSecs.length)await addSvgImg(buildSommierSection(lhSomTitle,lhSecs,false),t('svgLH'));
+    if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
 
     // ── Page: Bon de commande ──────────────────────
     pdf.addPage();yPos=MT;
