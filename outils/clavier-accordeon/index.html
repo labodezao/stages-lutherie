@@ -583,7 +583,7 @@ fr:{
   clBassComp:'Composition basses',clVoices:'Nombre de voix (main droite)',clVoicesLH:'Nombre de voix (main gauche)',clLuthier:'Luthier / Date',
   voicesLH:'Voix main gauche (anches)',
   lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
-  lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',
+  lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',lhNbDuosTotal:'Nb duos total',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -652,7 +652,7 @@ en:{
   clBassComp:'Bass composition',clVoices:'Number of voices (right hand)',clVoicesLH:'Number of voices (left hand)',clLuthier:'Luthier / Date',
   voicesLH:'Left hand voices (reeds)',
   lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
-  lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',
+  lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',lhNbDuosTotal:'Total duos',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -1065,8 +1065,15 @@ function renderLhRowsCfg(){
   const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
   if(isPaired){
     const pprow=CFG.lhPairsPerRow||2;
-    wrap.innerHTML=`<div style="display:flex;align-items:center;gap:6px;">
-      <span style="font-size:.78rem;" data-i="lhDuosPerRow">${t('lhDuosPerRow')} :</span>
+    const totalDuos=Math.max(1,(CFG.notes&&CFG.notes.basses&&CFG.notes.basses.length)||6);
+    wrap.innerHTML=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+      <span style="font-size:.78rem;min-width:80px;" data-i="lhNbDuosTotal">${t('lhNbDuosTotal')} :</span>
+      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos-1})">−</button>
+      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${totalDuos}</span>
+      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos+1})">＋</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:.78rem;min-width:80px;" data-i="lhDuosPerRow">${t('lhDuosPerRow')} :</span>
       <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(Math.max(1,${pprow}-1))">−</button>
       <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pprow}</span>
       <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(${pprow}+1)">＋</button>
@@ -1125,6 +1132,19 @@ function lhSetPairsPerRow(n){
   CFG.lhPairsPerRow=Math.max(1,Math.floor(n));
   renderLhRowsCfg();
   onAnyChange();
+}
+
+function lhSetTotalDuos(n){
+  n=Math.max(1,Math.floor(n));
+  readNoteInputsIntoCFG();
+  const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
+  CFG.notes.basses=resize(CFG.notes.basses||[],n);
+  CFG.notes.accords=resize(CFG.notes.accords||[],n);
+  const terz=document.getElementById('terzetto-enabled');
+  if(terz&&terz.checked)CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);
+  document.getElementById('nb-basses').value=n;
+  document.getElementById('nb-accords').value=n;
+  generateInputGrid();renderLhRowsCfg();onAnyChange();
 }
 
 function _syncBassesToLhRows(){
@@ -1680,7 +1700,6 @@ function buildSommierSection(title,rows,dark){
   const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
   const numTx=dark?'rgba(200,162,39,.4)':'rgba(0,0,0,.3)';
   const sep=dark?'#3a3a1a':'#cccccc';
-  const stagger=CW/2;
   const showMidi=document.getElementById('show-midi')?.checked;
 
   function cell(cx,cy,num,pNote,tNote){
@@ -1705,7 +1724,7 @@ function buildSommierSection(title,rows,dark){
   const minOff=Math.min(...allOffs,0);
   const leftShift=-minOff*(CW/2);
   const RBASE=LPAD+leftShift;
-  const W=RBASE+maxBtns*CW+stagger+maxOff*(CW/2)+MARG;
+  const W=RBASE+maxBtns*CW+maxOff*(CW/2)+MARG;
   const H=MARG+HEAD+rows.length*VGAP+FOOT;
   let s=svg_open(W,H,bg);
 
@@ -1719,12 +1738,11 @@ function buildSommierSection(title,rows,dark){
 
   rows.forEach((row,ri)=>{
     const rowY=MARG+HEAD+ri*VGAP;
-    const rowStag=(ri%2===1)?stagger:0;
     const nom=row.nom||(row.label||`R${ri+1}`);
     const items=row.boutons||row.items||[];
     const alignOff=(row.offset||0)*(CW/2);
     s+=tx(RBASE+alignOff-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
-    items.forEach((btn,bi)=>{s+=cell(RBASE+alignOff+rowStag+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
+    items.forEach((btn,bi)=>{s+=cell(RBASE+alignOff+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
   });
   s+='</svg>';return s;
 }
