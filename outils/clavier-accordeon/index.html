@@ -1955,7 +1955,7 @@ function svgToPngDataUrl(svgStr){
     const img=new Image();
     const blob=new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob);
-    img.onload=()=>{ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/jpeg',0.82),w:sw,h:sh});};
+    img.onload=()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,sw,sh);ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/jpeg',0.82),w:sw,h:sh});};
     img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};
     img.src=url;
   });
