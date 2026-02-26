@@ -2060,8 +2060,8 @@ async function downloadPDF(which){
       const labelW=18;
       const numRow=[{content:'#',styles:{fillColor:LGRE,textColor:GRAY,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
         .concat(btns.map(function(_,i){return{content:String(i+1),styles:{halign:'center',textColor:GRAY,fontSize:6}};}));
-      const pushLabel=lang==='fr'?'v Poussé':'v Push';
-      const pullLabel=lang==='fr'?'^ Tiré':'^ Pull';
+      const pushLabel=t('svgPush').replace('\u2193','v').replace('\u2191','^');
+      const pullLabel=t('svgPull').replace('\u2191','^').replace('\u2193','v');
       const pushRow=[{content:pushLabel,styles:{fillColor:LGRE,textColor:PUSH_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
         .concat(btns.map(function(b){return{content:b&&b.p?displayNote(b.p):'-',styles:{halign:'center',fontStyle:'bold',textColor:PUSH_C}};}));
       const pullRow=[{content:pullLabel,styles:{fillColor:PULL_BG,textColor:PULL_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
