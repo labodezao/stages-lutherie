@@ -1,15 +1,15 @@
 {
-  "id": "plan_evelyne",
-  "nom": "Evelyne — Sol/Mi/Fa 33/12",
-  "joueur": "Evelyne",
+  "id": "plan_thorsen",
+  "nom": "Thorsen — Sol/Mi/Fa 33/12",
+  "joueur": "Thorsen",
   "luthier": "Ewen d'Aviau",
   "dateCreation": "",
   "lastModified": "2026-02-26T00:00:00.000Z",
   "nbRangees": 3,
   "rangees": [
-    {"nom": "Rangée Sol (intérieure)", "nb": 12, "offset": 0, "register": "N"},
-    {"nom": "Rangée Mi (médiane)",     "nb": 11, "offset": 0, "register": "N"},
-    {"nom": "Rangée Fa (extérieure)",  "nb": 10, "offset": 2, "register": "N"}
+    {"nom": "G row (inner)",  "nb": 12, "offset": 0, "register": "N"},
+    {"nom": "E row (middle)", "nb": 11, "offset": 0, "register": "N"},
+    {"nom": "F row (outer)",  "nb": 10, "offset": 2, "register": "N"}
   ],
   "nbVoix": 2,
   "nbVoixAccords": 2,
@@ -51,11 +51,11 @@
   },
   "orderSpecs": {
     "qty": "1",
-    "reedType": "",
+    "reedType": "Tipo a mano",
     "tuning": "440",
-    "tremolo": "",
-    "harmony": "",
-    "bassType": "",
+    "tremolo": "0",
+    "harmony": "Basson flute",
+    "bassType": "20.5 mm width",
     "bassComp": ""
   }
 }

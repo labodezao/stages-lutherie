@@ -671,7 +671,7 @@ function displayNote(note){
   if(!note) return '';
   if(lang==='fr') return note;
   // Try full word match first for chords like "Sol Maj"
-  const m=note.match(/^(.+?)(\s+(?:Maj|Min|7|5|dim|aug|m7|maj7))?(\d?)$/);
+  const m=note.match(/^(.+?)(\s+(?:Maj|Min|7|V|dim|aug|m7|maj7))?(\d?)$/);
   if(!m) return note;
   const root=m[1].trim(), qual=(m[2]||'').trim(), oct=m[3]||'';
   const en=FR2EN[root];
@@ -1274,8 +1274,8 @@ function generateInputGrid(){
 const NOTES_FR={nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
 const NOTES_EN={nat:['C','D','E','F','G','A','B'],sha:['C#','D#',null,'F#','G#','A#',null],fla:['Db','Eb',null,'Gb','Ab','Bb',null]};
 const OCTAVES=['2','3','4','5','6'];
-const CHORDS_FR=()=>{const r=['Do','Ré','Mi','Fa','Sol','La','Si','Do#','Ré#','Fa#','Sol#','Sib','Mib','Lab'];const t=['Maj','Min','7','5'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
-const CHORDS_EN=()=>{const r=['C','D','E','F','G','A','B','C#','D#','F#','G#','Bb','Eb','Ab'];const t=['Maj','Min','7','5'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
+const CHORDS_FR=()=>{const r=['Do','Ré','Mi','Fa','Sol','La','Si','Do#','Ré#','Fa#','Sol#','Sib','Mib','Lab'];const t=['Maj','Min','7','V'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
+const CHORDS_EN=()=>{const r=['C','D','E','F','G','A','B','C#','D#','F#','G#','Bb','Eb','Ab'];const t=['Maj','Min','7','V'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
 
 function initPicker(){
   const N=lang==='en'?NOTES_EN:NOTES_FR;
@@ -1751,12 +1751,21 @@ function buildLhSommierSections(data){
   const lhRows=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:Math.max(data.basses.length,data.accords.length)||1,offset:0}];
   const lhSections=[];
   let bIdx=0,aIdx=0;
+  const vB=data.nbVoixBasses||2, vA=data.nbVoixAccords||2;
   lhRows.forEach((row,ri)=>{
     const rowLabel=lhRows.length===1?'':`${ri+1}`;
     const bSlice=data.basses?data.basses.slice(bIdx,bIdx+row.nb):[];
     const aSlice=data.accords?data.accords.slice(aIdx,aIdx+row.nb):[];
-    if(bSlice.length)lhSections.push({nom:(lhRows.length===1?t('basses'):t('basses')+' '+rowLabel),items:bSlice,offset:row.offset||0});
-    if(aSlice.length)lhSections.push({nom:(lhRows.length===1?t('accords'):t('accords')+' '+rowLabel),items:aSlice,offset:row.offset||0});
+    if(bSlice.length){
+      const basNom=lhRows.length===1?t('basses'):t('basses')+' '+rowLabel;
+      for(let v=0;v<vB;v++)
+        lhSections.push({nom:basNom+(vB>1?` — v${v+1}`:''),items:bSlice,offset:row.offset||0});
+    }
+    if(aSlice.length){
+      const accNom=lhRows.length===1?t('accords'):t('accords')+' '+rowLabel;
+      for(let v=0;v<vA;v++)
+        lhSections.push({nom:accNom+(vA>1?` — v${v+1}`:''),items:aSlice,offset:row.offset||0});
+    }
     bIdx+=row.nb;aIdx+=row.nb;
   });
   if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
