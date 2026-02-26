@@ -175,25 +175,7 @@ select option{background:#fff;color:var(--txt)}
 #visual-output{overflow-x:auto}
 #visual-output svg{display:block;margin:0 auto;max-width:100%}
 
-/* ── Fab view toggle ── */
-.fab-view-wrap{display:flex;gap:0;margin-bottom:12px}
-.fab-view-btn{padding:6px 15px;border:1.5px solid var(--brd);background:#fff;
-  font-family:inherit;font-size:.78rem;font-weight:700;color:#555;cursor:pointer;transition:background .15s,color .15s}
-.fab-view-btn:first-child{border-radius:6px 0 0 6px}
-.fab-view-btn:last-child{border-radius:0 6px 6px 0;border-left:none}
-.fab-view-btn.active{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
 
-/* ── Tables ── */
-.mfr-table{width:100%;border-collapse:collapse;font-size:.8rem}
-.mfr-table th,.mfr-table td{border:1px solid #e0e0d8;padding:5px 9px;text-align:center}
-.mfr-table th{background:var(--dark);color:var(--or-c);font-size:.75rem;font-weight:700}
-.mfr-table tr:nth-child(even) td{background:#fafaf8}
-.mfr-table td{background:#fff;color:var(--txt)}
-.mfr-table td.note-p{color:#1d6b23;font-weight:700}
-.mfr-table td.note-t{color:var(--gold-d);font-weight:700}
-.mfr-table td.row-hd{background:#f0f0ee;font-weight:700;color:var(--dark)}
-.mfr-table td.midi-c{color:#1a6691;font-size:.72rem}
-.mfr-sub{color:var(--gris);font-style:italic;font-size:.76rem;margin-bottom:12px}
 
 /* ── Modal ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);
@@ -449,12 +431,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
       </div>
       <div id="tab-fabricant" style="display:none">
-        <div class="fab-view-wrap no-print">
-          <button class="fab-view-btn active" onclick="showFabricantView('liste',this)" data-i-btn="listView">📋 Vue liste</button>
-          <button class="fab-view-btn"        onclick="showFabricantView('sommier',this)" data-i-btn="sommierView">🪗 Vue sommier</button>
-        </div>
-        <div id="fab-view-liste"><div id="table-output"></div></div>
-        <div id="fab-view-sommier" style="display:none"><div id="sommier-output"></div></div>
+        <div id="sommier-output"></div>
       </div>
     </div>
   </div>
@@ -760,7 +737,7 @@ let CFG={
   lhPairsPerRow:2,
   notes:{droite:[],basses:[],accords:[],terzetto:[]}
 };
-let currentId=null,saveTimer=null,previewTimer=null,fabricantView='liste';
+let currentId=null,saveTimer=null,previewTimer=null;
 let pickerInput=null,pickerNote='',pickerOctave='';
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -1824,142 +1801,6 @@ function buildSommierSVG(data,dark){
     <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}`;
 }
 
-/* ╔══════════════════════════════════════════════════════╗
-   ║  MANUFACTURER TABLE                                  ║
-   ╚══════════════════════════════════════════════════════╝ */
-function buildManufacturerTable(data,dark){
-  const date=fmtDate(data.date);
-  const showMidi=data.showMidi;
-  const gold=dark?'#c9a227':'#2d5a27';
-  const subStyle=dark?'color:#aaa;':'color:#666;';
-  const os=data.orderSpecs||{};
-
-  // ── Description générale (nb touches / nb accords)
-  const totalBtns=data.droite.reduce((s,r)=>s+r.boutons.length,0);
-  const nbBasses=data.basses.length;
-  const genDesc=`${totalBtns}/${nbBasses}`;
-  // ── Row spec string  e.g.  "1B / 2N"  or  "3N"
-  const rowSpecStr=data.droite.map(r=>r.register||'N').join(' / ');
-
-  const thStyle=dark?`style="background:#1a1500;color:#c9a227;border-color:#333;"`:'';
-  const tdStyle=dark?`style="background:#1a1a1a;border-color:#333;color:#ddd;"`:'';
-  const hdStyle=dark?`style="background:#111;color:#c9a227;border-color:#333;font-weight:700;"`:'class="row-hd"';
-  const clStyle=dark?`style="background:#0d0d00;border-color:#333;color:#ddd;"`:`style="background:#fafdf8;"`;
-  const clHdStyle=dark?`style="background:#0d0d00;color:#c9a227;border-color:#333;font-weight:700;"`:`style="background:#e8f5e3;color:#2d5a27;font-weight:700;"`;
-  const clValStyle=dark?`style="background:#1a1a1a;border-color:#333;color:#e8e8c8;font-weight:700;"`:`style="background:#fff;font-weight:700;"`;
-
-  let h='';
-
-  // ══ VOCI ARMONICHE CHECKLIST HEADER ══
-  h+=`<div style="border:2px solid ${dark?'#c9a227':'#2d5a27'};border-radius:8px;overflow:hidden;margin-bottom:18px;">
-    <div style="background:${dark?'#1a1500':'#2d5a27'};color:${dark?'#c9a227':'#fff'};padding:8px 14px;font-size:.86rem;font-weight:700;letter-spacing:.04em;">
-      📋 ${t('orderChecklistTitle')} &nbsp;—&nbsp; ${escHTML(data.nomInstrument)}
-    </div>
-    <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
-      <tbody>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;width:36%">${t('clQty')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.qty||'1')}</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;width:36%">${t('clReedType')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.reedType||'—')}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clDesc')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${genDesc} <span style="opacity:.6;font-weight:normal;font-size:.76rem;">(${t('clDescHint')})</span></td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTonality')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomInstrument)}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clRowSpec')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(rowSpecStr)}
-            <span style="opacity:.6;font-weight:normal;font-size:.72rem;">&nbsp;(B=16' · N=8' · N+=8'+ · N-=8'- · A=4')</span></td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTuning')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.tuning||'440')} Hz</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTremolo')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.tremolo||'—')}</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clHarmony')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.harmony||'—')}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clBassType')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.bassType||'—')}</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clBassComp')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.bassComp||'—')}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clVoices')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix}v [${(data.voixPerRow||['N']).join('+')}] · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clLuthier')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomLuthier)} — ${date}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>`;
-
-  // ══ NOTE TABLES — compact transposed grid ══
-  // Buttons = columns (max 12 per sub-table), ↓ push / ↑ pull = rows
-  // chordMode=true: below each chord value show its constituent notes in smaller text
-  function chordCell(val,cssClass){
-    const disp=escHTML(displayNote(val))||'—';
-    const notes=chordNotes(val);
-    const noteStr=notes?notes.map(n=>escHTML(displayNote(n))).join('·'):'';
-    return `<td class="${cssClass}" style="text-align:center;padding:2px 4px;">${disp}${noteStr?`<br><span style="font-size:.65rem;opacity:.7;font-weight:normal;">${noteStr}</span>`:''}</td>`;  }
-  function compactGrid(btns,midi,chordMode){
-    const CHUNK=12; let out='';
-    for(let s=0;s<btns.length;s+=CHUNK){
-      const chunk=btns.slice(s,s+CHUNK);
-      out+=`<table class="mfr-table" style="${dark?'color:#ddd;':''}margin-bottom:3px;table-layout:auto;width:auto;"><thead><tr>`;
-      out+=`<th ${thStyle} style="min-width:22px;padding:2px 5px;">N°</th>`;
-      chunk.forEach((_,ci)=>out+=`<th ${thStyle} style="min-width:30px;padding:2px 4px;text-align:center;">${s+ci+1}</th>`);
-      out+=`</tr></thead><tbody>`;
-      // Push row
-      out+=`<tr><td class="row-hd" style="text-align:center;font-weight:700;color:#1d6b23;padding:2px 5px;">↓</td>`;
-      chunk.forEach(btn=>out+=(chordMode?chordCell(btn.p,'note-p'):`<td class="note-p" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.p))||'—'}</td>`));
-      out+=`</tr>`;
-      // Pull row
-      out+=`<tr><td class="row-hd" style="text-align:center;font-weight:700;color:#b8860b;padding:2px 5px;">↑</td>`;
-      chunk.forEach(btn=>out+=(chordMode?chordCell(btn.t,'note-t'):`<td class="note-t" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.t))||'—'}</td>`));
-      out+=`</tr>`;
-      if(midi){
-        out+=`<tr><td class="row-hd" style="text-align:center;font-size:.72rem;padding:2px 5px;">M↓</td>`;
-        chunk.forEach(btn=>{const m=noteToMidi(btn.p);out+=`<td class="midi-c" style="text-align:center;padding:2px 4px;">${m!==null?m:'—'}</td>`;});
-        out+=`</tr><tr><td class="row-hd" style="text-align:center;font-size:.72rem;padding:2px 5px;">M↑</td>`;
-        chunk.forEach(btn=>{const m=noteToMidi(btn.t);out+=`<td class="midi-c" style="text-align:center;padding:2px 4px;">${m!==null?m:'—'}</td>`;});
-        out+=`</tr>`;
-      }
-      out+=`</tbody></table>`;
-    }
-    return out;
-  }
-
-  h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:0 0 10px;font-size:.88rem;">${t('mfrRH')}</h4>`;
-  data.droite.forEach((row,ri)=>{
-    const reg=row.register||'N';
-    h+=`<div style="font-size:.8rem;font-weight:700;color:${gold};margin:${ri>0?'12px':0} 0 4px;opacity:.85;">
-      ▸ ${escHTML(row.nom)} &nbsp;
-      <span style="font-weight:normal;font-size:.76rem;opacity:.8;">${reg} — ${(lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS)[reg]||reg}</span>
-    </div>`;
-    h+=compactGrid(row.boutons,showMidi,false);
-  });
-
-  const lhExtra=data.terzetto.length?` &amp; ${t('terzetto')}`:'';
-  h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:18px 0 10px;font-size:.88rem;">${t('mfrLH')}${lhExtra}</h4>`;
-  const gs=[{nom:t('basses'),arr:data.basses,chord:false},{nom:t('accords'),arr:data.accords,chord:true}];
-  if(data.terzetto.length)gs.push({nom:t('terzetto'),arr:data.terzetto,chord:true});
-  gs.forEach(({nom,arr,chord},gi)=>{
-    h+=`<div style="font-size:.8rem;font-weight:700;color:${gold};margin:${gi>0?'10px':0} 0 4px;opacity:.85;">▸ ${nom}</div>`;
-    h+=compactGrid(arr,showMidi,chord);
-  });
-
-  h+=`<div style="margin-top:18px;background:${dark?'#1a1500':'#f6f9f5'};border:1.5px solid ${dark?'#333':'#c8e0c5'};border-radius:6px;padding:11px 14px;font-size:.78rem;${dark?'color:#ccc;':''}">
-    <strong>${t('specTitle')}</strong><br>
-    &bull; ${t('spec1')}<br>&bull; ${t('spec2')} : <strong>${data.nbVoix}v [${(data.voixPerRow||['N']).join('+')}]</strong><br>
-    &bull; ${t('spec3')}<br>&bull; ${t('spec4')}<br><br>
-    <em>${t('specGenBy')} ${date} — ${escHTML(data.nomLuthier)} — ewendaviau.com</em></div>`;
-  return h;
-}
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  LIVE PREVIEW                                        ║
@@ -1988,7 +1829,6 @@ function runLivePreview(){
       `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
        <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
        <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 9px;">${t('svgLH')}</h3>${svgG}`;
-    document.getElementById('table-output').innerHTML=buildManufacturerTable(data,false);
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
   }catch(e){console.error('runLivePreview:',e);}
 }
@@ -1999,13 +1839,6 @@ function showTab(name,btn){
   btn.classList.add('active');
   document.getElementById('tab-visual').style.display   =name==='visual'   ?'':'none';
   document.getElementById('tab-fabricant').style.display=name==='fabricant'?'':'none';
-}
-function showFabricantView(mode,btn){
-  fabricantView=mode;
-  document.querySelectorAll('.fab-view-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('fab-view-liste').style.display  =mode==='liste'  ?'':'none';
-  document.getElementById('fab-view-sommier').style.display=mode==='sommier'?'':'none';
 }
 
 /* ╔══════════════════════════════════════════════════════╗
