@@ -1988,6 +1988,7 @@ async function downloadPDF(which){
   const RULE_C=[190,210,185];        // light sage — table borders / rules
   const PUSH_C=[20,85,20];           // push note — dark green
   const PULL_C=[140,100,10];         // pull note — warm amber
+  const PULL_BG=[255,252,235];       // pull row background — pale amber
 
   // ── Drawing helpers ───────────────────────────────
   function hRule(y,color=RULE_C,lw=0.2){
@@ -2047,6 +2048,31 @@ async function downloadPDF(which){
   // Returns MIDI note as string cell, or '—'
   function midiCell(note){const m=noteToMidi(note);return m!==null?String(m):'—';}
 
+  // ── Keyboard as vector table (sharp text, copy-pastable) ───
+  function addKeyboardTable(rows,title){
+    if(yPos+8>CB){pdf.addPage();yPos=MT;}
+    secLabel(title,yPos+4);yPos+=6;
+    rows.forEach(function(row){
+      if(!row.items||!row.items.length)return;
+      if(yPos+16>CB){pdf.addPage();yPos=MT;}
+      const n=row.items.length;
+      const labelW=18;
+      const pushRow=[{content:'↓ '+t('svgPush'),styles:{fillColor:LGRE,textColor:PUSH_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(row.items.map(function(b){return{content:b&&b.p?displayNote(b.p):'—',styles:{halign:'center',fontStyle:'bold',textColor:PUSH_C}};}));
+      const pullRow=[{content:'↑ '+t('svgPull'),styles:{fillColor:PULL_BG,textColor:PULL_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(row.items.map(function(b){return{content:b&&b.t?displayNote(b.t):'—',styles:{halign:'center',fontStyle:'bold',textColor:PULL_C}};}));
+      pdf.autoTable(tableDefaults({
+        startY:yPos,
+        // colSpan: n (buttons) + 1 (label column)
+        head:[[{content:row.nom||'',colSpan:n+1,styles:{fillColor:GRN2,textColor:[255,255,255],fontSize:7.5,fontStyle:'bold',halign:'center'}}]],
+        body:[pushRow,pullRow],
+        columnStyles:{0:{cellWidth:labelW,fillColor:LGRE}},
+      }));
+      yPos=pdf.lastAutoTable.finalY+3;
+    });
+    yPos+=2;
+  }
+
   // ══════════════════════════════════════════════════
   // PAGE 1 — Cover header
   // ══════════════════════════════════════════════════
@@ -2070,13 +2096,11 @@ async function downloadPDF(which){
   pdf.text(meta,ML,yPos);yPos+=5;
   hRule(yPos,GRN,0.4);yPos+=8;
 
-  // ── Keyboard SVGs ──────────────────────────────────
-  const svgDstr=buildSVG_Droite(data,false);
-  const svgGstr=matchSvgWidth(svgDstr,buildSVG_Gauche(data,false));
-  const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
-  const mmPerPxPlan=CW/wD;
-
-  await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan);
+  // ── Keyboard plan — vector tables (sharp, copy-pastable) ──
+  addKeyboardTable(
+    data.droite.map(function(row){return{nom:row.nom,items:row.boutons};}),
+    t('svgRH')
+  );
 
   // Bellows separator
   if(yPos+7<CB){
@@ -2085,7 +2109,12 @@ async function downloadPDF(which){
     pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
     yPos+=7;
   }
-  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan);
+
+  const lhKbRows=[];
+  lhKbRows.push({nom:t('accords'),items:data.accords});
+  lhKbRows.push({nom:t('basses'),items:data.basses});
+  if(data.terzetto&&data.terzetto.length)lhKbRows.push({nom:t('terzetto'),items:data.terzetto});
+  addKeyboardTable(lhKbRows,t('svgLH'));
 
   // ══════════════════════════════════════════════════
   // FABRICANT PAGES
