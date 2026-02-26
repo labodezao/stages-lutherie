@@ -678,6 +678,25 @@ function displayNote(note){
   if(en) return en+oct+(qual?' '+qual:'');
   return note;
 }
+/* Returns array of constituent note-names (FR, no octave) for a chord string.
+   e.g. "La Maj" → ['La','Do#','Mi'],  "Mib Min" → ['Mib','Solb','Sib']
+   Returns null for non-chord strings (bare notes). */
+function chordNotes(chord){
+  if(!chord)return null;
+  const m=chord.match(/^(.+?)\s+(Maj|Min|7|m7|maj7|dim|aug|V)$/);
+  if(!m)return null;
+  const root=m[1].trim(), quality=m[2];
+  const FR_CHROMA={'Do':0,'Do#':1,'Réb':1,'Ré':2,'Re':2,'Ré#':3,'Mib':3,'Mi':4,'Fa':5,
+    'Fa#':6,'Solb':6,'Sol':7,'Sol#':8,'Lab':8,'La':9,'La#':10,'Sib':10,'Si':11,'Dob':11};
+  const SHARP=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+  const FLAT =['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+  const INTERVALS={'Maj':[0,4,7],'Min':[0,3,7],'7':[0,4,7,10],'m7':[0,3,7,10],
+    'maj7':[0,4,7,11],'dim':[0,3,6],'aug':[0,4,8],'V':[0,7]};
+  const idx=FR_CHROMA[root]; if(idx===undefined)return null;
+  const intervals=INTERVALS[quality]; if(!intervals)return null;
+  const names=(root.length>2&&root.endsWith('b'))||root==='Réb'?FLAT:SHARP;
+  return intervals.map(i=>names[(idx+i)%12]);
+}
 function storageNote(note){
   // Convert EN→FR for storage (picker uses current lang)
   if(lang==='fr') return note;
@@ -1857,58 +1876,54 @@ function buildManufacturerTable(data,dark){
     </table>
   </div>`;
 
-  // ══ NOTE TABLES ══
-  const tableStart=(midi)=>`<table class="mfr-table" style="${dark?'color:#ddd;':''}"><thead><tr>
-    <th ${thStyle}>${t('mfrRow')}</th>
-    <th ${thStyle}>${t('clRowSpec')}</th>
-    <th ${thStyle}>${t('mfrNo')}</th>
-    <th ${thStyle}>${t('mfrPushNote')}<br><small style="font-weight:400;opacity:.8">${t('mfrPushSub')}</small></th>
-    <th ${thStyle}>${t('mfrPullNote')}<br><small style="font-weight:400;opacity:.8">${t('mfrPullSub')}</small></th>
-    ${midi?`<th ${thStyle}>${t('mfrMidiPush')}</th><th ${thStyle}>${t('mfrMidiPull')}</th>`:''}
-  </tr></thead><tbody>`;
+  // ══ NOTE TABLES — compact transposed grid ══
+  // Buttons = columns (max 12 per sub-table), ↓ push / ↑ pull = rows
+  function compactGrid(btns,midi){
+    const CHUNK=12; let out='';
+    for(let s=0;s<btns.length;s+=CHUNK){
+      const chunk=btns.slice(s,s+CHUNK);
+      out+=`<table class="mfr-table" style="${dark?'color:#ddd;':''}margin-bottom:3px;table-layout:auto;width:auto;"><thead><tr>`;
+      out+=`<th ${thStyle} style="min-width:22px;padding:2px 5px;">N°</th>`;
+      chunk.forEach((_,ci)=>out+=`<th ${thStyle} style="min-width:30px;padding:2px 4px;text-align:center;">${s+ci+1}</th>`);
+      out+=`</tr></thead><tbody>`;
+      // Push row
+      out+=`<tr><td class="row-hd" style="text-align:center;font-weight:700;color:#1d6b23;padding:2px 5px;">↓</td>`;
+      chunk.forEach(btn=>out+=`<td class="note-p" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.p))||'—'}</td>`);
+      out+=`</tr>`;
+      // Pull row
+      out+=`<tr><td class="row-hd" style="text-align:center;font-weight:700;color:#b8860b;padding:2px 5px;">↑</td>`;
+      chunk.forEach(btn=>out+=`<td class="note-t" style="text-align:center;padding:2px 4px;">${escHTML(displayNote(btn.t))||'—'}</td>`);
+      out+=`</tr>`;
+      if(midi){
+        out+=`<tr><td class="row-hd" style="text-align:center;font-size:.72rem;padding:2px 5px;">M↓</td>`;
+        chunk.forEach(btn=>{const m=noteToMidi(btn.p);out+=`<td class="midi-c" style="text-align:center;padding:2px 4px;">${m!==null?m:'—'}</td>`;});
+        out+=`</tr><tr><td class="row-hd" style="text-align:center;font-size:.72rem;padding:2px 5px;">M↑</td>`;
+        chunk.forEach(btn=>{const m=noteToMidi(btn.t);out+=`<td class="midi-c" style="text-align:center;padding:2px 4px;">${m!==null?m:'—'}</td>`;});
+        out+=`</tr>`;
+      }
+      out+=`</tbody></table>`;
+    }
+    return out;
+  }
 
   h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:0 0 10px;font-size:.88rem;">${t('mfrRH')}</h4>`;
   data.droite.forEach((row,ri)=>{
     const reg=row.register||'N';
-    h+=`<div style="font-size:.8rem;font-weight:700;color:${gold};margin:${ri>0?'14px':0} 0 6px;opacity:.85;">
+    h+=`<div style="font-size:.8rem;font-weight:700;color:${gold};margin:${ri>0?'12px':0} 0 4px;opacity:.85;">
       ▸ ${escHTML(row.nom)} &nbsp;
       <span style="font-weight:normal;font-size:.76rem;opacity:.8;">${reg} — ${(lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS)[reg]||reg}</span>
     </div>`;
-    h+=tableStart(showMidi);
-    row.boutons.forEach((btn,bi)=>{
-      h+=`<tr>`;
-      h+=`<td ${hdStyle}>${escHTML(row.nom)}</td>`;
-      h+=`<td ${hdStyle} style="font-size:.8rem;text-align:center;">${reg}</td>`;
-      h+=`<td ${tdStyle}>${bi+1}</td>`;
-      h+=`<td class="note-p" ${tdStyle}>${escHTML(displayNote(btn.p))||'—'}</td>`;
-      h+=`<td class="note-t" ${tdStyle}>${escHTML(displayNote(btn.t))||'—'}</td>`;
-      if(showMidi){const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);h+=`<td class="midi-c" ${tdStyle}>${mp!==null?mp:'—'}</td><td class="midi-c" ${tdStyle}>${mt!==null?mt:'—'}</td>`;}
-      h+=`</tr>`;
-    });
-    h+=`</tbody></table>`;
+    h+=compactGrid(row.boutons,showMidi);
   });
 
   const lhExtra=data.terzetto.length?` &amp; ${t('terzetto')}`:'';
   h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:18px 0 10px;font-size:.88rem;">${t('mfrLH')}${lhExtra}</h4>`;
-  h+=`<table class="mfr-table" style="${dark?'color:#ddd;':''}"><thead><tr>
-    <th ${thStyle}>${t('mfrType')}</th><th ${thStyle}>${t('mfrNo')}</th>
-    <th ${thStyle}>${t('mfrNoteChordPush')}</th><th ${thStyle}>${t('mfrNoteChordPull')}</th>
-    ${showMidi?`<th ${thStyle}>${t('mfrMidiPush')}</th><th ${thStyle}>${t('mfrMidiPull')}</th>`:''}
-  </tr></thead><tbody>`;
   const gs=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
   if(data.terzetto.length)gs.push({nom:t('terzetto'),arr:data.terzetto});
-  gs.forEach(({nom,arr})=>{
-    arr.forEach((btn,bi)=>{
-      h+=`<tr>`;
-      if(bi===0)h+=`<td ${hdStyle} rowspan="${arr.length}">${nom}</td>`;
-      h+=`<td ${tdStyle}>${bi+1}</td>`;
-      h+=`<td class="note-p" ${tdStyle}>${escHTML(displayNote(btn.p))||'—'}</td>`;
-      h+=`<td class="note-t" ${tdStyle}>${escHTML(displayNote(btn.t))||'—'}</td>`;
-      if(showMidi){const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);h+=`<td class="midi-c" ${tdStyle}>${mp!==null?mp:'—'}</td><td class="midi-c" ${tdStyle}>${mt!==null?mt:'—'}</td>`;}
-      h+=`</tr>`;
-    });
+  gs.forEach(({nom,arr},gi)=>{
+    h+=`<div style="font-size:.8rem;font-weight:700;color:${gold};margin:${gi>0?'10px':0} 0 4px;opacity:.85;">▸ ${nom}</div>`;
+    h+=compactGrid(arr,showMidi);
   });
-  h+=`</tbody></table>`;
 
   h+=`<div style="margin-top:18px;background:${dark?'#1a1500':'#f6f9f5'};border:1.5px solid ${dark?'#333':'#c8e0c5'};border-radius:6px;padding:11px 14px;font-size:.78rem;${dark?'color:#ccc;':''}">
     <strong>${t('specTitle')}</strong><br>
@@ -2170,43 +2185,46 @@ async function downloadPDF(which){
       if(yPos+neededMm>CB){pdf.addPage();yPos=MT;}
     }
 
-    // RH note tables — single unified table, group header rows per register row
+    // Compact grid helper for PDF: buttons = columns, ↓/↑ = rows (max 12 per sub-table)
+    function pdfCompactGrid(btns,midi){
+      const CHUNK=12;
+      for(let s=0;s<btns.length;s+=CHUNK){
+        const chunk=btns.slice(s,s+CHUNK);
+        ensureRoom(14);
+        const n=chunk.length;
+        const btnW=Math.min(Math.floor((CW-12)/n),14);
+        const colStyles={0:{cellWidth:12,halign:'center',fontStyle:'bold'}};
+        chunk.forEach((_,ci)=>colStyles[ci+1]={cellWidth:btnW,halign:'center'});
+        const numHead=[{content:'N°',styles:{fillColor:GRN2,textColor:[255,255,255],fontStyle:'bold',halign:'center',fontSize:6.5}}]
+          .concat(chunk.map((_,ci)=>({content:String(s+ci+1),styles:{fillColor:GRN2,textColor:[255,255,255],fontStyle:'bold',halign:'center',fontSize:6.5}})));
+        const pushRow=[{content:'↓',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}}]
+          .concat(chunk.map(btn=>({content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}})));
+        const pullRow=[{content:'↑',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}]
+          .concat(chunk.map(btn=>({content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}})));
+        const body=[pushRow,pullRow];
+        if(midi){
+          body.push([{content:'M↓',styles:{textColor:[20,90,140],fontStyle:'bold',halign:'center',fontSize:5.5}}]
+            .concat(chunk.map(btn=>({content:midiCell(btn.p),styles:{textColor:[20,90,140],fontSize:5.5,halign:'center'}}))));
+          body.push([{content:'M↑',styles:{textColor:[20,90,140],fontStyle:'bold',halign:'center',fontSize:5.5}}]
+            .concat(chunk.map(btn=>({content:midiCell(btn.t),styles:{textColor:[20,90,140],fontSize:5.5,halign:'center'}}))));
+        }
+        pdf.autoTable(tableDefaults({startY:yPos,head:[numHead],body,columnStyles:colStyles}));
+        yPos=pdf.lastAutoTable.finalY+2;
+      }
+    }
+
+    // RH note tables
     ensureRoom(25);
     pdf.setFontSize(8);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
     pdf.text(t('mfrRH'),ML,yPos+4);yPos+=8;
-    const cols=midi?7:5;
-    // Fixed column widths — all columns defined for one table (sum = CW = 180mm)
-    const rhColStyle=midi
-      ?{0:{cellWidth:24,textColor:GRN,fontStyle:'bold'},1:{cellWidth:18,textColor:GRN,halign:'center'},
-        2:{cellWidth:10,halign:'center'},3:{cellWidth:33},4:{cellWidth:33},
-        5:{cellWidth:31,halign:'center'},6:{cellWidth:31,halign:'center'}}
-      :{0:{cellWidth:30,textColor:GRN,fontStyle:'bold'},1:{cellWidth:22,textColor:GRN,halign:'center'},
-        2:{cellWidth:12,halign:'center'},3:{cellWidth:58},4:{cellWidth:58}};
-    const rhBody=[];
-    data.droite.forEach(row=>{
+    data.droite.forEach((row,ri)=>{
       const reg=row.register||'N';
-      // Group header spanning all columns
-      rhBody.push([{content:`${row.nom}  ·  ${reg}`,colSpan:cols,
-        styles:{fillColor:GRN2,textColor:[255,255,255],fontStyle:'bold',fontSize:7.5}}]);
-      row.boutons.forEach((btn,bi)=>{
-        const r=[row.nom,reg,String(bi+1),
-          {content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}},
-          {content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}];
-        if(midi)r.push(midiCell(btn.p),midiCell(btn.t));
-        rhBody.push(r);
-      });
+      ensureRoom(14);
+      pdf.setFontSize(7);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN2);
+      pdf.text(`▸ ${row.nom}  ·  ${reg}`,ML,yPos+4);yPos+=6;
+      pdfCompactGrid(row.boutons,midi);
+      yPos+=1;
     });
-    pdf.autoTable(tableDefaults({
-      startY:yPos,
-      showHead:'everyPage',
-      head:[[t('mfrRow'),t('clRowSpec'),t('mfrNo'),
-             `${t('mfrPushNote')} ↓`,`${t('mfrPullNote')} ↑`,
-             ...(midi?[t('mfrMidiPush'),t('mfrMidiPull')]:[])
-            ].map(s=>({content:s,styles:{fillColor:[55,95,48],textColor:[255,255,255],fontSize:6.5}}))],
-      body:rhBody,
-      columnStyles:rhColStyle,
-    }));
-    yPos=pdf.lastAutoTable.finalY+6;
 
     // LH table
     ensureRoom(25);
@@ -2216,28 +2234,12 @@ async function downloadPDF(which){
     const lhSections=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
     if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),arr:data.terzetto});
     lhSections.forEach(({nom,arr})=>{
-      arr.forEach((btn,bi)=>{
-        const r=[nom,String(bi+1),
-          {content:displayNote(btn.p)||'—',styles:{textColor:PUSH_C,fontStyle:'bold',halign:'center'}},
-          {content:displayNote(btn.t)||'—',styles:{textColor:PULL_C,fontStyle:'bold',halign:'center'}}];
-        if(midi)r.push(midiCell(btn.p),midiCell(btn.t));
-        lhBody.push(r);
-      });
+      ensureRoom(14);
+      pdf.setFontSize(7);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN2);
+      pdf.text(`▸ ${nom}`,ML,yPos+4);yPos+=6;
+      pdfCompactGrid(arr,midi);
+      yPos+=1;
     });
-    const lhColStyle=midi
-      ?{0:{cellWidth:28,textColor:GRN,fontStyle:'bold'},1:{cellWidth:10,halign:'center'},
-        2:{cellWidth:28,halign:'center'},3:{cellWidth:28,halign:'center'},
-        4:{cellWidth:43},5:{cellWidth:43}}
-      :{0:{cellWidth:36,textColor:GRN,fontStyle:'bold'},1:{cellWidth:12,halign:'center'},
-        2:{cellWidth:66},3:{cellWidth:66}};
-    pdf.autoTable(tableDefaults({
-      startY:yPos,
-      head:[[t('mfrType'),t('mfrNo'),`${t('mfrNoteChordPush')} ↓`,`${t('mfrNoteChordPull')} ↑`,
-             ...(midi?[t('mfrMidiPush'),t('mfrMidiPull')]:[])
-            ].map(s=>({content:s}))],
-      body:lhBody,
-      columnStyles:lhColStyle,
-    }));
   }
 
   // ══════════════════════════════════════════════════
