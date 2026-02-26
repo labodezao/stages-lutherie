@@ -1949,13 +1949,13 @@ function svgToPngDataUrl(svgStr){
   return new Promise((res,rej)=>{
     const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
     const sw=mw?+mw[1]:800,sh=mh?+mh[1]:600;
-    const SCALE=2;
+    const SCALE=1;
     const c=document.createElement('canvas');c.width=sw*SCALE;c.height=sh*SCALE;
     const ctx=c.getContext('2d');ctx.scale(SCALE,SCALE);
     const img=new Image();
     const blob=new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob);
-    img.onload=()=>{ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/png'),w:sw,h:sh});};
+    img.onload=()=>{ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/jpeg',0.82),w:sw,h:sh});};
     img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};
     img.src=url;
   });
@@ -2010,10 +2010,10 @@ async function downloadPDF(which){
       secLabel(label,yPos+4);yPos+=7;
     }
     if(imgH<=CB-yPos){
-      pdf.addImage(dataUrl,'PNG',ML,yPos,imgW,imgH);
+      pdf.addImage(dataUrl,'JPEG',ML,yPos,imgW,imgH);
       yPos+=imgH+5;return;
     }
-    // Spans multiple pages — slice using actual PNG coords (handles SCALE=2)
+    // Spans multiple pages — slice using actual canvas coords
     const srcImg=await new Promise((res,rej)=>{
       const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=dataUrl;
     });
@@ -2027,7 +2027,7 @@ async function downloadPDF(which){
       const ctx=sc.getContext('2d');
       ctx.clearRect(0,0,pxW,sc.height);
       ctx.drawImage(srcImg,0,srcY*pngToSvg,pxW,maxH*pngToSvg,0,0,pxW,sc.height);
-      pdf.addImage(sc.toDataURL('image/png'),'PNG',ML,yPos,imgW,maxH*scale);
+      pdf.addImage(sc.toDataURL('image/jpeg',0.82),'JPEG',ML,yPos,imgW,maxH*scale);
       yPos+=maxH*scale+1;srcY+=maxH;first=false;
     }
     yPos+=3;
