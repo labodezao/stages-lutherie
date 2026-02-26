@@ -442,7 +442,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 <div id="note-picker">
   <div class="picker-tabs">
     <button class="picker-tab-btn active" onclick="showPickerTab('notes',this)" data-i-btn="noteTab">🎵 Note</button>
-    <button class="picker-tab-btn"        onclick="showPickerTab('chords',this)" data-i-btn="chordTab">🎼 Accord</button>
     <button style="margin-left:auto;padding:4px 8px;border:none;background:none;font-size:.73rem;color:var(--gris);cursor:pointer;" onclick="hidePicker()" data-i-btn="close">✕ Fermer</button>
   </div>
   <div class="picker-tab active" id="picker-tab-notes">
@@ -456,10 +455,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <span class="picker-octave-label" data-i="octave">Octave :</span>
       <div id="picker-octaves" style="display:flex;gap:3px;"></div>
     </div>
-  </div>
-  <div class="picker-tab" id="picker-tab-chords">
-    <div class="picker-title" data-i="chordTitle">Accords (cliquez pour insérer)</div>
-    <div class="chord-grid" id="picker-chords-grid"></div>
   </div>
   <div class="picker-preview" id="picker-preview">
     <span id="picker-preview-text" data-i="selectNoteOctave">— sélectionnez une note et une octave —</span>
@@ -1336,8 +1331,8 @@ function generateInputGrid(){
     for(let b=0;b<count;b++){
       const n=arr[b]||{p:'',t:''};
       html+=`<div class="btn-cell"><div class="btn-num">T${b+1}</div>
-        <input class="note-input pousse" id="g-terzetto-${b}-p" data-type="chord" value="${esc(n.p)}" placeholder="ex: Do3/Mi3/Sol3" oninput="onAnyChange()">
-        <input class="note-input tire"   id="g-terzetto-${b}-t" data-type="chord" value="${esc(n.t)}" placeholder="ex: Sol3/Si3/Ré4" oninput="onAnyChange()">
+        <input class="note-input pousse" id="g-terzetto-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
+        <input class="note-input tire"   id="g-terzetto-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
       </div>`;
     }
     html+=`</div></div>`;
@@ -1364,8 +1359,6 @@ function initPicker(){
   document.getElementById('picker-flats').innerHTML=N.fla.map(n=>n?`<button class="pn flat" onclick="pickerSetNote('${n}')">${n}</button>`:`<span style="min-width:34px;"></span>`).join('');
   const oWrap=document.getElementById('picker-octaves');
   oWrap.innerHTML=OCTAVES.map(o=>`<button class="po" onclick="pickerSetOctave('${o}')">${o}</button>`).join('');
-  const C=lang==='en'?CHORDS_EN():CHORDS_FR();
-  document.getElementById('picker-chords-grid').innerHTML=C.map(c=>`<button class="pc" onclick="pickerInsertDirect('${c}')">${c}</button>`).join('');
 }
 function showPicker(input){
   pickerInput=input;pickerNote='';pickerOctave='';
@@ -1374,8 +1367,7 @@ function showPicker(input){
     const m=v.match(/^(.+?)([2-6])$/);
     if(m){pickerNote=m[1];pickerOctave=m[2];}else pickerNote=v;
   }
-  const isChord=input.dataset.type==='chord';
-  showPickerTab(isChord?'chords':'notes',document.querySelector(isChord?'.picker-tab-btn:nth-child(2)':'.picker-tab-btn:first-child'));
+  showPickerTab('notes',document.querySelector('.picker-tab-btn:first-child'));
   updatePickerHighlights();updatePickerPreview();
   const pk=document.getElementById('note-picker');pk.style.display='block';
   const rect=input.getBoundingClientRect(),sy=window.scrollY,sx=window.scrollX;
@@ -1395,7 +1387,6 @@ function showPickerTab(name,btn){
   document.querySelectorAll('.picker-tab-btn').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
   document.getElementById('picker-tab-notes').classList.toggle('active',name==='notes');
-  document.getElementById('picker-tab-chords').classList.toggle('active',name==='chords');
 }
 function pickerSetNote(n){pickerNote=n;updatePickerHighlights();updatePickerPreview();if(pickerNote&&pickerOctave)pickerInsert();}
 function pickerSetOctave(o){pickerOctave=o;updatePickerHighlights();updatePickerPreview();if(pickerNote&&pickerOctave)pickerInsert();}
