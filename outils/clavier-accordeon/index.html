@@ -2060,10 +2060,12 @@ async function downloadPDF(which){
       const labelW=18;
       const numRow=[{content:'#',styles:{fillColor:LGRE,textColor:GRAY,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
         .concat(btns.map(function(_,i){return{content:String(i+1),styles:{halign:'center',textColor:GRAY,fontSize:6}};}));
-      const pushRow=[{content:'↓ '+t('svgPush'),styles:{fillColor:LGRE,textColor:PUSH_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
-        .concat(btns.map(function(b){return{content:b&&b.p?displayNote(b.p):'—',styles:{halign:'center',fontStyle:'bold',textColor:PUSH_C}};}));
-      const pullRow=[{content:'↑ '+t('svgPull'),styles:{fillColor:PULL_BG,textColor:PULL_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
-        .concat(btns.map(function(b){return{content:b&&b.t?displayNote(b.t):'—',styles:{halign:'center',fontStyle:'bold',textColor:PULL_C}};}));
+      const pushLabel=lang==='fr'?'v Poussé':'v Push';
+      const pullLabel=lang==='fr'?'^ Tiré':'^ Pull';
+      const pushRow=[{content:pushLabel,styles:{fillColor:LGRE,textColor:PUSH_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(btns.map(function(b){return{content:b&&b.p?displayNote(b.p):'-',styles:{halign:'center',fontStyle:'bold',textColor:PUSH_C}};}));
+      const pullRow=[{content:pullLabel,styles:{fillColor:PULL_BG,textColor:PULL_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(btns.map(function(b){return{content:b&&b.t?displayNote(b.t):'-',styles:{halign:'center',fontStyle:'bold',textColor:PULL_C}};}));
       pdf.autoTable(tableDefaults({
         startY:yPos,
         head:[[{content:row.nom||'',colSpan:n+1,styles:{fillColor:GRN2,textColor:[255,255,255],fontSize:7.5,fontStyle:'bold',halign:'center'}}],numRow],
@@ -2122,8 +2124,8 @@ async function downloadPDF(which){
 
     // ── Page: Sommier ──────────────────────────────
     pdf.addPage();yPos=MT;
-    const rhSomTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
-    const lhSomTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
+    const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
+    const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
     addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
     const lhSecs=buildLhSommierSections(data);
     if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
