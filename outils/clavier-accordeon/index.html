@@ -583,7 +583,7 @@ fr:{
   clBassComp:'Composition basses',clVoices:'Nombre de voix (main droite)',clVoicesLH:'Nombre de voix (main gauche)',clLuthier:'Luthier / Date',
   voicesLH:'Voix main gauche (anches)',
   lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
-  lhNbRows:'Lignes',lhOffset:'Décalage ligne',
+  lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -652,7 +652,7 @@ en:{
   clBassComp:'Bass composition',clVoices:'Number of voices (right hand)',clVoicesLH:'Number of voices (left hand)',clLuthier:'Luthier / Date',
   voicesLH:'Left hand voices (reeds)',
   lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
-  lhNbRows:'Rows',lhOffset:'Row offset',
+  lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -730,6 +730,7 @@ let CFG={
   ],
   configGauche:12,
   lhRows:[{nb:6,offset:0}],
+  lhPairsPerRow:2,
   notes:{droite:[],basses:[],accords:[],terzetto:[]}
 };
 let currentId=null,saveTimer=null,previewTimer=null,fabricantView='liste';
@@ -833,6 +834,7 @@ function snapshotToDB(){
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
+    lhPairsPerRow:CFG.lhPairsPerRow||2,
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -863,6 +865,7 @@ function loadFromDB(rec){
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
   // Restore lhRows — backward compat: default to 1 row covering all basses
   CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes&&rec.notes.basses?rec.notes.basses.length:6),offset:0}];
+  CFG.lhPairsPerRow=rec.lhPairsPerRow||2;
   // ensure terzetto exists
   if(!CFG.notes.terzetto) CFG.notes.terzetto=[];
   // backward compat: if notes arrays are missing, init from configGauche
@@ -1057,10 +1060,21 @@ function onTerzettoChange(){
 function onLhModeChange(){renderLhRowsCfg();onAnyChange();}
 
 function renderLhRowsCfg(){
-  // Ensure lhRows is consistent: default to 1 row with all basses if missing
-  if(!CFG.lhRows||!CFG.lhRows.length) CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
   const wrap=document.getElementById('lh-rows-inner');
   if(!wrap)return;
+  const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
+  if(isPaired){
+    const pprow=CFG.lhPairsPerRow||2;
+    wrap.innerHTML=`<div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:.78rem;" data-i="lhDuosPerRow">${t('lhDuosPerRow')} :</span>
+      <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(Math.max(1,${pprow}-1))">−</button>
+      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pprow}</span>
+      <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(${pprow}+1)">＋</button>
+    </div>`;
+    return;
+  }
+  // Ensure lhRows is consistent: default to 1 row with all basses if missing
+  if(!CFG.lhRows||!CFG.lhRows.length) CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
   const nRows=CFG.lhRows.length;
   let html=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
     <span style="font-size:.78rem;">Nb lignes :</span>
@@ -1103,6 +1117,12 @@ function lhRowChange(ri,field,val){
     _syncBassesToLhRows();
     generateInputGrid();
   }
+  renderLhRowsCfg();
+  onAnyChange();
+}
+
+function lhSetPairsPerRow(n){
+  CFG.lhPairsPerRow=Math.max(1,Math.floor(n));
   renderLhRowsCfg();
   onAnyChange();
 }
@@ -1339,6 +1359,7 @@ function readInputs(){
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
+    lhPairsPerRow:CFG.lhPairsPerRow||2,
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
     basses:CFG.notes.basses,
@@ -1480,7 +1501,7 @@ function buildSVG_Gauche(data,dark){
 
   // Paired mode: B1 A1 B2 A2 / B3 A3 B4 A4 / … (PPROW pairs per display row)
   if(data.lhDisplayMode==='paired'){
-    const PPROW=2; // pairs per display row
+    const PPROW=Math.max(1,data.lhPairsPerRow||2); // pairs per display row
     const nPairs=Math.max(data.basses.length,data.accords.length);
     const nDispRows=Math.ceil(nPairs/PPROW);
     const nCols=PPROW*2;
@@ -1648,7 +1669,11 @@ function expandVoicesForSommier(rows,voixPerRow){
   return result;
 }
 function buildSommierSection(title,rows,dark){
-  const CW=58,CH=46,LPAD=164,MARG=12,HEAD=52,VGAP=CH+6,FOOT=20;
+  const CW=58,CH=46,MARG=12,HEAD=52,VGAP=CH+6,FOOT=20;
+  // Compute LPAD dynamically from the longest row label
+  // Estimate: ~5.6px per char at font-size 9 bold + 14px padding
+  const maxLabelLen=Math.max(...rows.map(r=>(r.nom||r.label||'').length),0);
+  const LPAD=Math.max(120,Math.ceil(maxLabelLen*5.6)+14);
   const gold=dark?'#c9a227':'#2d5a27';
   const bg=dark?'#111':'#fff';
   const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
@@ -1680,7 +1705,7 @@ function buildSommierSection(title,rows,dark){
   const minOff=Math.min(...allOffs,0);
   const leftShift=-minOff*(CW/2);
   const RBASE=LPAD+leftShift;
-  const W=RBASE+maxBtns*CW+stagger+maxOff*(CW/2)+RBASE;
+  const W=RBASE+maxBtns*CW+stagger+maxOff*(CW/2)+MARG;
   const H=MARG+HEAD+rows.length*VGAP+FOOT;
   let s=svg_open(W,H,bg);
 
