@@ -754,6 +754,9 @@ function noteToMidi(s){
   }
   return null;
 }
+const MIDI_TO_FR=['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+function midiToFr(midi){if(midi===null||midi===undefined)return'';const oct=Math.floor(midi/12)-1;return MIDI_TO_FR[((midi%12)+12)%12]+oct;}
+function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi):'';}
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  PRÉRÉGLAGES — chargés depuis presets/*.json         ║
@@ -1183,6 +1186,16 @@ function bassesOctaveShift(){
   CFG.notes.basses3=CFG.notes.basses2.map(b=>({p:shiftUp(b.p),t:shiftUp(b.t)}));
   generateInputGrid();onAnyChange();
 }
+function accordsFifthShift(){
+  readNoteInputsIntoCFG();
+  CFG.notes.accords2=(CFG.notes.accords||[]).map(a=>({p:shiftNote(a.p,7),t:shiftNote(a.t,7)}));
+  generateInputGrid();onAnyChange();
+}
+function basseV2ToAccordV1Shift(){
+  readNoteInputsIntoCFG();
+  CFG.notes.accords=(CFG.notes.basses2||[]).map(b=>({p:shiftNote(b.p,12),t:shiftNote(b.t,12)}));
+  generateInputGrid();onAnyChange();
+}
 function addGaucheBtn(key){
   readNoteInputsIntoCFG();CFG.notes[key].push({p:'',t:''});
   if(key==='basses'){CFG.notes.basses2.push({p:'',t:''});CFG.notes.basses3.push({p:'',t:''});}
@@ -1308,7 +1321,7 @@ function generateInputGrid(){
       const label=t('accords')+(nbVA>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
       </div><div class="btn-grid">`;
       for(let b=0;b<_aCount;b++){
         const n=arr[b]||{p:'',t:''};
