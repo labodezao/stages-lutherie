@@ -217,7 +217,8 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   .mfr-table th{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 /* ── Rotation 90° visual ── */
-#visual-output.rotated{overflow-x:auto;overflow-y:hidden;}
+#visual-output.rotated{overflow:auto;}
+#visual-output.rotated .rotate-scale-wrap{transform-origin:top left;display:inline-block;}
 #visual-output.rotated .svg-rotate-wrap{display:inline-block;transform-origin:top left;}
 .btn-or.active-rotate{background:var(--dark);color:var(--or-c);border-color:var(--dark);}
 @media(max-width:680px){
@@ -510,7 +511,7 @@ fr:{
   rowOffset:'Décalage',
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
   swapRowTitle:'Inverser poussé/tiré (toute la rangée)',mirrorRowTitle:'Miroir — inverser ordre des colonnes (1er↔dernier)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
-  rotateView:'↩ Rotation 90°',rotateViewTitle:'Afficher le plan de clavier en rotation 90° (soufflet vertical)',
+  rotateView:'↩ Rotation 90°',rotateViewTitle:'Cliquer pour tourner : +90° → −90° → normal (soufflet vertical)',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
   naturals:'Touches naturelles',sharps:'Dièses',flats:'Bémols',octave:'Octave :',
@@ -583,7 +584,7 @@ en:{
   rowOffset:'Offset',
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
   swapRowTitle:'Swap push/pull (entire row)',mirrorRowTitle:'Mirror — reverse column order (1st↔last)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
-  rotateView:'↩ Rotate 90°',rotateViewTitle:'Display keyboard plan rotated 90° (vertical bellows)',
+  rotateView:'↩ Rotate 90°',rotateViewTitle:'Click to rotate: +90° → −90° → normal (vertical bellows)',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
   naturals:'Natural notes',sharps:'Sharps',flats:'Flats',octave:'Octave:',
@@ -717,9 +718,13 @@ function setLang(l){
     const v=t(k);
     if(typeof v==='string') el.textContent=v;
   });
-  // Update rotate button title
+  // Update rotate button title and text (preserve active rotation label)
   const rotBtn=document.getElementById('rotate-btn');
-  if(rotBtn)rotBtn.title=t('rotateViewTitle');
+  if(rotBtn){
+    rotBtn.title=t('rotateViewTitle');
+    if(rotateMode===1) rotBtn.textContent='↩ +90°';
+    else if(rotateMode===-1) rotBtn.textContent='↺ −90°';
+  }
   // Update save status text
   const ss=document.getElementById('save-status');
   if(ss) ss.textContent=t(ss.className)||ss.textContent;
@@ -1958,11 +1963,19 @@ function matchSvgWidth(svgRef,svgTgt){
 
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
-let viewRotated=false;
+let rotateMode=0; // 0=normal, 1=+90°, -1=-90°
 function toggleRotateView(){
-  viewRotated=!viewRotated;
+  // Cycle: 0 (normal) → 1 (+90°) → -1 (-90°) → 0
+  if(rotateMode===0) rotateMode=1;
+  else if(rotateMode===1) rotateMode=-1;
+  else rotateMode=0;
   const btn=document.getElementById('rotate-btn');
-  if(btn)btn.classList.toggle('active-rotate',viewRotated);
+  if(btn){
+    btn.classList.toggle('active-rotate',rotateMode!==0);
+    if(rotateMode===0) btn.textContent=t('rotateView');
+    else if(rotateMode===1) btn.textContent='↩ +90°';
+    else btn.textContent='↺ −90°';
+  }
   runLivePreview();
 }
 function runLivePreview(){
@@ -1972,21 +1985,30 @@ function runLivePreview(){
     const svgD=buildSVG_Droite(data,false);
     const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
     const outEl=document.getElementById('visual-output');
-    if(viewRotated){
+    if(rotateMode!==0){
       outEl.classList.add('rotated');
-      // Build combined vertical layout then rotate 90°
+      // Combined SVG dimensions
       const mhD=svgD.match(/\bheight="(\d+(?:\.\d+)?)"/),mwD=svgD.match(/\bwidth="(\d+(?:\.\d+)?)"/);
       const mhG=svgG.match(/\bheight="(\d+(?:\.\d+)?)"/),mwG=svgG.match(/\bwidth="(\d+(?:\.\d+)?)"/);
       const wD=mwD?+mwD[1]:800,hD=mhD?+mhD[1]:600;
       const wG=mwG?+mwG[1]:800,hG=mhG?+mhG[1]:600;
       const gap=24,totalW=Math.max(wD,wG),totalH=hD+gap+hG;
-      outEl.innerHTML=`<div class="svg-rotate-wrap" style="width:${totalH}px;height:${totalW}px;transform:rotate(90deg) translateY(-${totalW}px);">
-        <div style="display:flex;flex-direction:column;gap:0;">
+      // Scale to fill available viewport height (fallback 200 = estimated header height when element not yet laid out)
+      const topOffset=outEl.getBoundingClientRect().top||200;
+      const availH=Math.max(300,window.innerHeight-topOffset-20); // 300=min height; 20=bottom margin
+      const scale=availH/totalH;
+      const visW=Math.round(totalW*scale);
+      // CSS transform: +90° = rotate(90deg) translateY(-totalW)
+      //               -90° = translateY(totalH) rotate(-90deg)
+      const transform = rotateMode===1
+        ? `rotate(90deg) translateY(-${totalW}px)`
+        : `translateY(${totalH}px) rotate(-90deg)`;
+      const inner=`<div style="display:flex;flex-direction:column;gap:0;">
           <h3 style="color:var(--vert);font-size:.88rem;margin-bottom:6px;">${t('svgRH')}</h3>${svgD}
           <div style="margin:${gap/2}px 0;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
           <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 6px;">${t('svgLH')}</h3>${svgG}
-        </div>
-      </div>`;
+        </div>`;
+      outEl.innerHTML=`<div style="width:${visW}px;height:${availH}px;overflow:hidden;"><div class="rotate-scale-wrap" style="transform:scale(${scale});"><div class="svg-rotate-wrap" style="width:${totalH}px;height:${totalW}px;transform:${transform};">${inner}</div></div></div>`;
     } else {
       outEl.classList.remove('rotated');
       outEl.innerHTML=
