@@ -216,6 +216,10 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   .card-head{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .mfr-table th{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+/* ── Rotation 90° visual ── */
+#visual-output.rotated{overflow-x:auto;overflow-y:hidden;}
+#visual-output.rotated .svg-rotate-wrap{display:inline-block;transform-origin:top left;}
+.btn-or.active-rotate{background:var(--dark);color:var(--or-c);border-color:var(--dark);}
 @media(max-width:680px){
   header{flex-wrap:wrap}
   .form-grid{grid-template-columns:1fr}
@@ -427,6 +431,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <div class="btn-group no-print" style="margin-bottom:13px;">
         <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
         <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
+        <button class="btn btn-or" id="rotate-btn" onclick="toggleRotateView()" data-i-btn="rotateView" style="margin-left:auto;">↩ Rotation 90°</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -504,7 +509,8 @@ fr:{
   listView:'📋 Vue liste',sommierView:'🪗 Vue sommier',refresh:'🔄 Actualiser',
   rowOffset:'Décalage',
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
-  swapRowTitle:'Inverser poussé/tiré (toute la rangée)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
+  swapRowTitle:'Inverser poussé/tiré (toute la rangée)',mirrorRowTitle:'Miroir — inverser ordre des colonnes (1er↔dernier)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
+  rotateView:'↩ Rotation 90°',rotateViewTitle:'Afficher le plan de clavier en rotation 90° (soufflet vertical)',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
   naturals:'Touches naturelles',sharps:'Dièses',flats:'Bémols',octave:'Octave :',
@@ -576,7 +582,8 @@ en:{
   listView:'📋 List view',sommierView:'🪗 Reed plate view',refresh:'🔄 Refresh',
   rowOffset:'Offset',
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
-  swapRowTitle:'Swap push/pull (entire row)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
+  swapRowTitle:'Swap push/pull (entire row)',mirrorRowTitle:'Mirror — reverse column order (1st↔last)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
+  rotateView:'↩ Rotate 90°',rotateViewTitle:'Display keyboard plan rotated 90° (vertical bellows)',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
   naturals:'Natural notes',sharps:'Sharps',flats:'Flats',octave:'Octave:',
@@ -710,6 +717,9 @@ function setLang(l){
     const v=t(k);
     if(typeof v==='string') el.textContent=v;
   });
+  // Update rotate button title
+  const rotBtn=document.getElementById('rotate-btn');
+  if(rotBtn)rotBtn.title=t('rotateViewTitle');
   // Update save status text
   const ss=document.getElementById('save-status');
   if(ss) ss.textContent=t(ss.className)||ss.textContent;
@@ -969,6 +979,9 @@ function onAnyChange(){
    ╚══════════════════════════════════════════════════════╝ */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
+  // Set rotate button tooltip (title set here so it respects current lang at load time)
+  const rotBtn=document.getElementById('rotate-btn');
+  if(rotBtn)rotBtn.title=t('rotateViewTitle');
   loadPresetIndex();
   renderVoixPerRow();
   initPicker();renderLibrary();
@@ -1281,6 +1294,7 @@ function generateInputGrid(){
     html+=`<div class="row-wrap" id="rw-d-${r}"><div class="sec-hd" style="margin-bottom:4px;">
       <span class="sec-label">${esc(rc.nom)}</span>
       <button type="button" class="rng-btn" onclick="swapPushPull('rw-d-${r}')" title="${t('swapRowTitle')}">⇅</button>
+      <button type="button" class="rng-btn" onclick="mirrorRow('rw-d-${r}')" title="${t('mirrorRowTitle')}">⇆</button>
       <button type="button" class="rng-btn" onclick="copyRow('rw-d-${r}')" title="${t('copyRowTitle')}">📋</button>
       <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-d-${r}')" title="${t('pasteRowTitle')}">⬆</button>
     </div><div class="btn-grid">`;
@@ -1313,6 +1327,7 @@ function generateInputGrid(){
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_bCount})</span></span>
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
+        <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
         <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
@@ -1336,6 +1351,7 @@ function generateInputGrid(){
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
+        <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
         <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
@@ -1357,6 +1373,7 @@ function generateInputGrid(){
       <button type="button" class="rng-btn" onclick="removeGaucheBtn('terzetto')" title="−">−</button>
       <button type="button" class="rng-btn" onclick="addGaucheBtn('terzetto')" title="＋">＋</button>
       <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-terzetto')" title="${t('swapRowTitle')}">⇅</button>
+      <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-terzetto')" title="${t('mirrorRowTitle')}">⇆</button>
       <button type="button" class="rng-btn" onclick="copyRow('rw-g-terzetto')" title="${t('copyRowTitle')}">📋</button>
       <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-terzetto')" title="${t('pasteRowTitle')}">⬆</button>
     </div><div class="btn-grid">`;
@@ -1691,15 +1708,15 @@ function buildSVG_Gauche(data,dark){
   const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
   // Accords (outer rows, displayed first)
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),offset:row.offset||0,type:'A',voix:vA});
+    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(accordIdx,accordIdx+row.nb):null,offset:row.offset||0,type:'A',voix:vA});
     accordIdx+=row.nb;
   });
   // Basses (inner rows, displayed second)
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),offset:row.offset||0,type:'B',voix:vB});
+    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bassIdx,bassIdx+row.nb):null,offset:row.offset||0,type:'B',voix:vB});
     bassIdx+=row.nb;
   });
-  if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,offset:0,type:'T',voix:null});
+  if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0,type:'T',voix:null});
 
   const maxItems=Math.max(...secRows.map(sc=>sc.items.length),1);
   const maxSecOff=Math.max(...secRows.map(sc=>sc.offset||0),0);
@@ -1728,19 +1745,32 @@ function buildSVG_Gauche(data,dark){
     for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');}
   }
   // Pass 3: buttons on top of grid
+  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)'; // V2 push color (faded)
+  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)'; // V2 pull color (faded)
   secRows.forEach((sec,si)=>{
     const off=(sec.offset||0)*(HGAP/2);
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
+    const has2=sec.items2&&sec.items2.length>0;
     sec.items.forEach((btn,bi)=>{
       const cx=LPAD+bi*HGAP+off;
+      const btn2=has2?(sec.items2[bi]||null):null;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
       s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
-      if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
-      if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);      if(data.showMidi){
+      if(has2&&btn2){
+        // 2-voice layout: shift V1 slightly up/down, add V2 closer to center
+        if(btn.p)s+=svgBtnVal(btn.p,cx,cy-15,pushTx);
+        if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-6,pushTx2);
+        if(btn.t)s+=svgBtnVal(btn.t,cx,cy+10,pullTx);
+        if(btn2.t)s+=svgBtnVal(btn2.t,cx,cy+19,pullTx2);
+      } else {
+        if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
+        if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);
+      }
+      if(data.showMidi){
         const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
         if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
         if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
@@ -1928,16 +1958,42 @@ function matchSvgWidth(svgRef,svgTgt){
 
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
+let viewRotated=false;
+function toggleRotateView(){
+  viewRotated=!viewRotated;
+  const btn=document.getElementById('rotate-btn');
+  if(btn)btn.classList.toggle('active-rotate',viewRotated);
+  runLivePreview();
+}
 function runLivePreview(){
   try{
     readNoteInputsIntoCFG();
     const data=readInputs();
     const svgD=buildSVG_Droite(data,false);
     const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
-    document.getElementById('visual-output').innerHTML=
-      `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
-       <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
-       <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 9px;">${t('svgLH')}</h3>${svgG}`;
+    const outEl=document.getElementById('visual-output');
+    if(viewRotated){
+      outEl.classList.add('rotated');
+      // Build combined vertical layout then rotate 90°
+      const mhD=svgD.match(/\bheight="(\d+(?:\.\d+)?)"/),mwD=svgD.match(/\bwidth="(\d+(?:\.\d+)?)"/);
+      const mhG=svgG.match(/\bheight="(\d+(?:\.\d+)?)"/),mwG=svgG.match(/\bwidth="(\d+(?:\.\d+)?)"/);
+      const wD=mwD?+mwD[1]:800,hD=mhD?+mhD[1]:600;
+      const wG=mwG?+mwG[1]:800,hG=mhG?+mhG[1]:600;
+      const gap=24,totalW=Math.max(wD,wG),totalH=hD+gap+hG;
+      outEl.innerHTML=`<div class="svg-rotate-wrap" style="width:${totalH}px;height:${totalW}px;transform:rotate(90deg) translateY(-${totalW}px);">
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <h3 style="color:var(--vert);font-size:.88rem;margin-bottom:6px;">${t('svgRH')}</h3>${svgD}
+          <div style="margin:${gap/2}px 0;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
+          <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 6px;">${t('svgLH')}</h3>${svgG}
+        </div>
+      </div>`;
+    } else {
+      outEl.classList.remove('rotated');
+      outEl.innerHTML=
+        `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
+         <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
+         <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 9px;">${t('svgLH')}</h3>${svgG}`;
+    }
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
   }catch(e){console.error('runLivePreview:',e);}
 }
@@ -2212,6 +2268,26 @@ function swapPushPull(rwId){
     const ti=cell.querySelector('.note-input.tire');
     if(!p||!ti)return;
     const tmp=p.value;p.value=ti.value;ti.value=tmp;
+  });
+  readNoteInputsIntoCFG();onAnyChange();
+}
+function mirrorRow(rwId){
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  const grid=wrap.querySelector('.btn-grid');if(!grid)return;
+  const cells=Array.from(grid.querySelectorAll('.btn-cell'));
+  // Collect values
+  const vals=cells.map(function(cell){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    return{p:p?p.value:'',t:ti?ti.value:''};
+  });
+  // Reverse and re-apply
+  vals.reverse();
+  cells.forEach(function(cell,i){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    if(p)p.value=vals[i].p;
+    if(ti)ti.value=vals[i].t;
   });
   readNoteInputsIntoCFG();onAnyChange();
 }
