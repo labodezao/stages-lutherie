@@ -119,6 +119,7 @@ select option{background:#fff;color:var(--txt)}
 .note-input.pousse:focus{border-color:#2d8a20;box-shadow:0 0 0 2px rgba(45,138,32,.12)}
 .note-input.tire:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,134,11,.12)}
 .note-input.picker-open{box-shadow:0 0 0 3px rgba(184,134,11,.2)!important;border-color:var(--gold)!important}
+.row-paste-btn.has-clip{background:#fff3cd!important;border-color:#d4a017!important;color:#5c4000!important}
 .legend{display:flex;gap:14px;margin-bottom:11px;flex-wrap:wrap;align-items:center}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:.8rem}
 .legend-swatch{width:30px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;
@@ -503,6 +504,7 @@ fr:{
   listView:'📋 Vue liste',sommierView:'🪗 Vue sommier',refresh:'🔄 Actualiser',
   rowOffset:'Décalage',
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
+  swapRowTitle:'Inverser poussé/tiré (toute la rangée)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
   naturals:'Touches naturelles',sharps:'Dièses',flats:'Bémols',octave:'Octave :',
@@ -574,6 +576,7 @@ en:{
   listView:'📋 List view',sommierView:'🪗 Reed plate view',refresh:'🔄 Refresh',
   rowOffset:'Offset',
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
+  swapRowTitle:'Swap push/pull (entire row)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
   naturals:'Natural notes',sharps:'Sharps',flats:'Flats',octave:'Octave:',
@@ -732,6 +735,7 @@ let CFG={
   lhPairsPerRow:2,
   notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
+let rowClipboard=null;
 let currentId=null,saveTimer=null,previewTimer=null;
 let pickerInput=null,pickerNote='',pickerOctave='';
 
@@ -1267,19 +1271,25 @@ function renderRangeesCfg(){
 /* ── Generate note input grid ── */
 function generateInputGrid(){
   let html='';
+  const clip=rowClipboard?' has-clip':'';
   // Right hand
   html+=`<div class="note-section"><div class="note-section-title">${t('rightHand')}</div>`;
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11};
     const nb=rc.nb;const notes=CFG.notes.droite[r]||[];
     const lbl=rc.nom.split(' ')[1]||`R${r+1}`;
-    html+=`<div class="row-wrap"><div class="sec-label" style="margin-bottom:4px;">${esc(rc.nom)}</div><div class="btn-grid">`;
+    html+=`<div class="row-wrap" id="rw-d-${r}"><div class="sec-hd" style="margin-bottom:4px;">
+      <span class="sec-label">${esc(rc.nom)}</span>
+      <button type="button" class="rng-btn" onclick="swapPushPull('rw-d-${r}')" title="${t('swapRowTitle')}">⇅</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-d-${r}')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-d-${r}')" title="${t('pasteRowTitle')}">⬆</button>
+    </div><div class="btn-grid">`;
     for(let b=0;b<nb;b++){
       const n=notes[b]||{p:'',t:''};
       html+=`<div class="btn-cell">
         <div class="btn-num">${lbl} ${b+1}</div>
-        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
-        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
+        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
       </div>`;
     }
     html+=`</div></div>`;
@@ -1299,15 +1309,18 @@ function generateInputGrid(){
       const vkey=_vkeys_b[v];
       const arr=CFG.notes[vkey]||[];
       const label=t('basses')+(nbVB>1?` — V${v+1}`:'');
-      html+=`<div class="row-wrap"><div class="sec-hd">
+      html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_bCount})</span></span>
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
+        <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
       for(let b=0;b<_bCount;b++){
         const n=arr[b]||{p:'',t:''};
         html+=`<div class="btn-cell"><div class="btn-num">B${b+1}</div>
-          <input class="note-input pousse" id="g-${vkey}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
-          <input class="note-input tire"   id="g-${vkey}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
+          <input class="note-input pousse" id="g-${vkey}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+          <input class="note-input tire"   id="g-${vkey}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
         </div>`;
       }
       html+=`</div></div>`;
@@ -1319,33 +1332,39 @@ function generateInputGrid(){
       const vkey=_vkeys_a[v];
       const arr=CFG.notes[vkey]||[];
       const label=t('accords')+(nbVA>1?` — V${v+1}`:'');
-      html+=`<div class="row-wrap"><div class="sec-hd">
+      html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
+        <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
       for(let b=0;b<_aCount;b++){
         const n=arr[b]||{p:'',t:''};
         html+=`<div class="btn-cell"><div class="btn-num">A${b+1}</div>
-          <input class="note-input pousse" id="g-${vkey}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
-          <input class="note-input tire"   id="g-${vkey}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
+          <input class="note-input pousse" id="g-${vkey}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+          <input class="note-input tire"   id="g-${vkey}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
         </div>`;
       }
       html+=`</div></div>`;
     }
   }
-  // Terzetto (kept as-is)
+  // Terzetto
   if((CFG.notes.terzetto||[]).length>0){
     const arr=CFG.notes.terzetto||[];const count=arr.length;
-    html+=`<div class="row-wrap"><div class="sec-hd">
+    html+=`<div class="row-wrap" id="rw-g-terzetto"><div class="sec-hd">
       <span class="sec-label">${t('terzetto')} <span style="color:var(--gris);font-weight:normal;">(${count})</span></span>
       <button type="button" class="rng-btn" onclick="removeGaucheBtn('terzetto')" title="−">−</button>
       <button type="button" class="rng-btn" onclick="addGaucheBtn('terzetto')" title="＋">＋</button>
+      <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-terzetto')" title="${t('swapRowTitle')}">⇅</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-g-terzetto')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-terzetto')" title="${t('pasteRowTitle')}">⬆</button>
     </div><div class="btn-grid">`;
     for(let b=0;b<count;b++){
       const n=arr[b]||{p:'',t:''};
       html+=`<div class="btn-cell"><div class="btn-num">T${b+1}</div>
-        <input class="note-input pousse" id="g-terzetto-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" readonly>
-        <input class="note-input tire"   id="g-terzetto-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" readonly>
+        <input class="note-input pousse" id="g-terzetto-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+        <input class="note-input tire"   id="g-terzetto-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
       </div>`;
     }
     html+=`</div></div>`;
@@ -2186,6 +2205,40 @@ function printSection(which){ downloadPDF(which); }
 /* ╔══════════════════════════════════════════════════════╗
    ║  MISC ACTIONS                                        ║
    ╚══════════════════════════════════════════════════════╝ */
+function swapPushPull(rwId){
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  wrap.querySelectorAll('.btn-cell').forEach(function(cell){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    if(!p||!ti)return;
+    const tmp=p.value;p.value=ti.value;ti.value=tmp;
+  });
+  readNoteInputsIntoCFG();onAnyChange();
+}
+function copyRow(rwId){
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  rowClipboard=[];
+  wrap.querySelectorAll('.btn-cell').forEach(function(cell){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    rowClipboard.push({p:p?p.value:'',t:ti?ti.value:''});
+  });
+  document.querySelectorAll('.row-paste-btn').forEach(function(b){b.classList.add('has-clip');});
+}
+function pasteRow(rwId){
+  if(!rowClipboard)return;
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  const cells=wrap.querySelectorAll('.btn-cell');
+  const count=Math.min(cells.length,rowClipboard.length);
+  for(let i=0;i<count;i++){
+    const clip=rowClipboard[i];
+    const p=cells[i].querySelector('.note-input.pousse');
+    const ti=cells[i].querySelector('.note-input.tire');
+    if(p)p.value=clip.p||'';
+    if(ti)ti.value=clip.t||'';
+  }
+  readNoteInputsIntoCFG();onAnyChange();
+}
 function clearNotes(){
   if(!confirm(t('clearConfirm')))return;
   document.querySelectorAll('#note-grid input').forEach(el=>{el.value='';});
