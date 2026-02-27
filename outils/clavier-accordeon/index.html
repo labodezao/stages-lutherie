@@ -1663,6 +1663,8 @@ function buildSVG_Gauche(data,dark){
   const stroke=dark?'#c9a227':'#2d5a27';
   const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
+  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)';
+  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)';
 
   // Paired mode: B1 A1 B2 A2 / B3 A3 B4 A4 / … (PPROW pairs per display row)
   if(data.lhDisplayMode==='paired'){
@@ -1684,9 +1686,10 @@ function buildSVG_Gauche(data,dark){
       for(let q=0;q<PPROW;q++){
         const pi=r*PPROW+q;
         if(pi>=nPairs)break;
-        [[data.basses[pi],'B',q*2,bassLbl],[data.accords[pi],'A',q*2+1,accLbl]].forEach(([btn,lbl,col,lblCol])=>{
+        [[data.basses[pi],'B',q*2,bassLbl,data.nbVoixBasses||2,data.basses2],[data.accords[pi],'A',q*2+1,accLbl,data.nbVoixAccords||2,data.accords2]].forEach(([btn,lbl,col,lblCol,voix,arr2])=>{
           if(!btn)return;
           const cx=LPAD+col*HGAP;
+          const btn2=(voix>1&&arr2&&arr2.length>pi)?arr2[pi]:null;
           s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
           s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
           s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
@@ -1694,8 +1697,16 @@ function buildSVG_Gauche(data,dark){
           s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
           s+=tx(cx,cy+3.5,pi+1,7.5,numTx,'normal','middle');
           s+=tx(cx-R+5,cy-R+8,lbl,7,lblCol,'bold','start');
-          if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
-          if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);          if(data.showMidi){
+          if(btn2){
+            if(btn.p)s+=svgBtnVal(btn.p,cx,cy-15,pushTx);
+            if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-6,pushTx2);
+            if(btn.t)s+=svgBtnVal(btn.t,cx,cy+10,pullTx);
+            if(btn2.t)s+=svgBtnVal(btn2.t,cx,cy+19,pullTx2);
+          }else{
+            if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
+            if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);
+          }
+          if(data.showMidi){
             const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
             if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
             if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
@@ -1750,8 +1761,6 @@ function buildSVG_Gauche(data,dark){
     for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');}
   }
   // Pass 3: buttons on top of grid
-  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)'; // V2 push color (faded)
-  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)'; // V2 pull color (faded)
   secRows.forEach((sec,si)=>{
     const off=(sec.offset||0)*(HGAP/2);
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
