@@ -109,7 +109,9 @@ select option{background:#fff;color:var(--txt)}
 .sec-label{font-size:.76rem;font-weight:700;color:var(--dark)}
 .row-wrap{margin-bottom:11px}
 .btn-grid{display:flex;flex-wrap:wrap;gap:4px}
-.btn-cell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.btn-cell{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:grab;user-select:none;}
+.btn-cell.dragging{opacity:.4;cursor:grabbing;}
+.btn-cell.drag-over{outline:2px dashed var(--gold);border-radius:5px;background:rgba(200,160,30,.08);}
 .btn-num{font-size:.63rem;color:var(--gris);font-weight:700}
 .note-input{width:62px;padding:4px 3px;text-align:center;font-size:.76rem;border-radius:5px;
   border:1.5px solid var(--input-brd);cursor:pointer;background:var(--input-bg);color:var(--txt)}
@@ -352,6 +354,9 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
               <input type="radio" name="lh-mode" id="lh-paired" value="paired" onchange="onLhModeChange()">
               <span data-i="lhPaired">Alternés (B-A-B-A…)</span></label>
+            <div style="margin-top:5px;">
+              <button type="button" id="lh-order-btn" class="rng-btn" style="font-size:.75rem;padding:3px 8px;" onclick="toggleLhBassFirst()" data-i-btn="lhOrderBtn">🔄 Accords → Basses</button>
+            </div>
             <!-- LH rows + offsets config (shown for both modes) -->
             <div id="lh-rows-cfg" style="margin-top:6px;padding:6px 8px;background:#f5f5f0;border-radius:5px;border:1px solid #ddd;">
               <div style="font-size:.74rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;" data-i="lhNbRows">Lignes</div>
@@ -512,6 +517,7 @@ fr:{
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
   swapRowTitle:'Inverser poussé/tiré (toute la rangée)',mirrorRowTitle:'Miroir — inverser ordre des colonnes (1er↔dernier)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
   rotateView:'↩ Rotation 90°',rotateViewTitle:'Cliquer pour tourner : +90° → −90° → normal (soufflet vertical)',
+  lhOrderBtn:'🔄 Accords → Basses',lhOrderBtnInv:'🔄 Basses → Accords',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
   naturals:'Touches naturelles',sharps:'Dièses',flats:'Bémols',octave:'Octave :',
@@ -585,6 +591,7 @@ en:{
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
   swapRowTitle:'Swap push/pull (entire row)',mirrorRowTitle:'Mirror — reverse column order (1st↔last)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
   rotateView:'↩ Rotate 90°',rotateViewTitle:'Click to rotate: +90° → −90° → normal (vertical bellows)',
+  lhOrderBtn:'🔄 Chords → Basses',lhOrderBtnInv:'🔄 Basses → Chords',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
   naturals:'Natural notes',sharps:'Sharps',flats:'Flats',octave:'Octave:',
@@ -725,6 +732,7 @@ function setLang(l){
     if(rotateMode===1) rotBtn.textContent='↩ +90°';
     else if(rotateMode===-1) rotBtn.textContent='↺ −90°';
   }
+  updateLhOrderBtn();
   // Update save status text
   const ss=document.getElementById('save-status');
   if(ss) ss.textContent=t(ss.className)||ss.textContent;
@@ -748,6 +756,7 @@ let CFG={
   configGauche:12,
   lhRows:[{nb:6,offset:0}],
   lhPairsPerRow:2,
+  lhBassFirst:false,
   notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
 let rowClipboard=null;
@@ -856,6 +865,7 @@ function snapshotToDB(){
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhBassFirst:CFG.lhBassFirst||false,
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -887,6 +897,8 @@ function loadFromDB(rec){
   // Restore lhRows — backward compat: default to 1 row covering all basses
   CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes&&rec.notes.basses?rec.notes.basses.length:6),offset:0}];
   CFG.lhPairsPerRow=rec.lhPairsPerRow||2;
+  CFG.lhBassFirst=rec.lhBassFirst||false;
+  updateLhOrderBtn();
   // ensure terzetto exists
   if(!CFG.notes.terzetto) CFG.notes.terzetto=[];
   // backward compat: if notes arrays are missing, init from configGauche
@@ -1095,6 +1107,17 @@ function onTerzettoChange(){
 }
 
 function onLhModeChange(){renderLhRowsCfg();onAnyChange();}
+function toggleLhBassFirst(){
+  CFG.lhBassFirst=!CFG.lhBassFirst;
+  updateLhOrderBtn();
+  onAnyChange();
+}
+function updateLhOrderBtn(){
+  const btn=document.getElementById('lh-order-btn');
+  if(!btn)return;
+  const key=CFG.lhBassFirst?'lhOrderBtnInv':'lhOrderBtn';
+  btn.textContent=t(key);
+}
 
 function renderLhRowsCfg(){
   const wrap=document.getElementById('lh-rows-inner');
@@ -1393,6 +1416,59 @@ function generateInputGrid(){
   }
   html+=`</div>`;
   document.getElementById('note-grid').innerHTML=html;
+  initBtnCellDragDrop();
+}
+
+/* ── Drag-and-swap columns in bass/chord grid ── */
+let _dragSrc=null;
+function initBtnCellDragDrop(){
+  document.querySelectorAll('#note-grid .btn-grid').forEach(grid=>{
+    grid.querySelectorAll('.btn-cell').forEach(cell=>{
+      cell.draggable=true;
+      cell.addEventListener('dragstart',e=>{
+        _dragSrc=cell;
+        e.dataTransfer.effectAllowed='move';
+        setTimeout(()=>cell.classList.add('dragging'),0);
+      });
+      cell.addEventListener('dragend',()=>{
+        cell.classList.remove('dragging');
+        grid.querySelectorAll('.btn-cell').forEach(c=>c.classList.remove('drag-over'));
+        _dragSrc=null;
+      });
+      cell.addEventListener('dragover',e=>{
+        e.preventDefault();e.dataTransfer.dropEffect='move';
+        if(_dragSrc&&_dragSrc!==cell&&_dragSrc.closest('.btn-grid')===grid){
+          grid.querySelectorAll('.btn-cell').forEach(c=>c.classList.remove('drag-over'));
+          cell.classList.add('drag-over');
+        }
+      });
+      cell.addEventListener('dragleave',()=>cell.classList.remove('drag-over'));
+      cell.addEventListener('drop',e=>{
+        e.preventDefault();
+        if(!_dragSrc||_dragSrc===cell)return;
+        const srcGrid=_dragSrc.closest('.btn-grid');
+        if(srcGrid!==grid)return;
+        // Determine indices
+        const cells=[...grid.querySelectorAll('.btn-cell')];
+        const si=cells.indexOf(_dragSrc),ti=cells.indexOf(cell);
+        if(si<0||ti<0||si===ti)return;
+        // Get the note key from the row-wrap id (e.g. "rw-g-basses" → "basses")
+        const rowWrap=grid.closest('.row-wrap');
+        const rowId=rowWrap?rowWrap.id:'';
+        const keyMatch=rowId.match(/^rw-g-(.+)$/);
+        if(!keyMatch)return;
+        const key=keyMatch[1];
+        if(!CFG.notes[key])return;
+        // Swap in CFG
+        const arr=CFG.notes[key];
+        if(si<arr.length&&ti<arr.length){
+          const tmp=arr[si];arr[si]=arr[ti];arr[ti]=tmp;
+        }
+        generateInputGrid();
+        onAnyChange();
+      });
+    });
+  });
 }
 
 
@@ -1505,6 +1581,7 @@ function readInputs(){
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhBassFirst:CFG.lhBassFirst||false,
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
     basses:CFG.notes.basses,
@@ -1637,7 +1714,7 @@ function buildSVG_Droite(data,dark){
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-      s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
+      s+=tx(cx,cy+3.5,row.boutons.length-bi,7.5,numTx,'normal','middle');
       if(btn.p){const fs=btn.p.length>6?7:8.5;s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
       if(btn.t){const fs=btn.t.length>6?7:8.5;s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
       if(data.showMidi){
@@ -1697,10 +1774,11 @@ function buildSVG_Gauche(data,dark){
           s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
           s+=tx(cx,cy+3.5,pi+1,7.5,numTx,'normal','middle');
           s+=tx(cx-R+5,cy-R+8,lbl,7,lblCol,'bold','start');
-          if(btn2){
-            if(btn.p)s+=svgBtnVal(btn.p,cx,cy-15,pushTx);
-            if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-6,pushTx2);
-            if(btn.t)s+=svgBtnVal(btn.t,cx,cy+10,pullTx);
+          const btn2HasNotes=btn2&&(btn2.p||btn2.t);
+          if(btn2HasNotes){
+            if(btn.p)s+=svgBtnVal(btn.p,cx,cy-17,pushTx);
+            if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-7,pushTx2);
+            if(btn.t)s+=svgBtnVal(btn.t,cx,cy+9,pullTx);
             if(btn2.t)s+=svgBtnVal(btn2.t,cx,cy+19,pullTx2);
           }else{
             if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
@@ -1722,16 +1800,22 @@ function buildSVG_Gauche(data,dark){
   const secRows=[];
   let bassIdx=0,accordIdx=0;
   const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
-  // Accords (outer rows, displayed first)
+  const bassFirst=data.lhBassFirst||false;
+  // Build accords sections
+  const accordSecs=[];
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(accordIdx,accordIdx+row.nb):null,offset:row.offset||0,type:'A',voix:vA});
+    accordSecs.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(accordIdx,accordIdx+row.nb):null,offset:row.offset||0,type:'A',voix:vA});
     accordIdx+=row.nb;
   });
-  // Basses (inner rows, displayed second)
+  // Build basses sections
+  const basseSecs=[];
   lhRows.forEach((row,ri)=>{
-    secRows.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bassIdx,bassIdx+row.nb):null,offset:row.offset||0,type:'B',voix:vB});
+    basseSecs.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bassIdx,bassIdx+row.nb):null,offset:row.offset||0,type:'B',voix:vB});
     bassIdx+=row.nb;
   });
+  // Order: bassFirst → basses then accords, else accords then basses
+  if(bassFirst){basseSecs.forEach(s=>secRows.push(s));accordSecs.forEach(s=>secRows.push(s));}
+  else{accordSecs.forEach(s=>secRows.push(s));basseSecs.forEach(s=>secRows.push(s));}
   if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0,type:'T',voix:null});
 
   const maxItems=Math.max(...secRows.map(sc=>sc.items.length),1);
@@ -1774,11 +1858,12 @@ function buildSVG_Gauche(data,dark){
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
       s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
-      if(has2&&btn2){
-        // 2-voice layout: shift V1 slightly up/down, add V2 closer to center
-        if(btn.p)s+=svgBtnVal(btn.p,cx,cy-15,pushTx);
-        if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-6,pushTx2);
-        if(btn.t)s+=svgBtnVal(btn.t,cx,cy+10,pullTx);
+      const btn2HasNotes=has2&&btn2&&(btn2.p||btn2.t);
+      if(btn2HasNotes){
+        // 2-voice layout: V1 outer, V2 inner (closer to center divider)
+        if(btn.p)s+=svgBtnVal(btn.p,cx,cy-17,pushTx);
+        if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-7,pushTx2);
+        if(btn.t)s+=svgBtnVal(btn.t,cx,cy+9,pullTx);
         if(btn2.t)s+=svgBtnVal(btn2.t,cx,cy+19,pullTx2);
       } else {
         if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
@@ -2051,17 +2136,28 @@ function loadScript(url){
     document.head.appendChild(s);
   });
 }
-function svgToPngDataUrl(svgStr){
+function svgToPngDataUrl(svgStr,rotAngle){
   return new Promise((res,rej)=>{
     const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
     const sw=mw?+mw[1]:800,sh=mh?+mh[1]:600;
     const SCALE=3;
-    const c=document.createElement('canvas');c.width=sw*SCALE;c.height=sh*SCALE;
+    const rot=rotAngle||0;
+    // If rotated ±90, swap canvas dimensions
+    const cw=(rot===90||rot===-90)?sh:sw;
+    const ch=(rot===90||rot===-90)?sw:sh;
+    const c=document.createElement('canvas');c.width=cw*SCALE;c.height=ch*SCALE;
     const ctx=c.getContext('2d');ctx.scale(SCALE,SCALE);
     const img=new Image();
     const blob=new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob);
-    img.onload=()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,sw,sh);ctx.drawImage(img,0,0,sw,sh);URL.revokeObjectURL(url);res({dataUrl:c.toDataURL('image/jpeg',0.92),w:sw,h:sh});};
+    img.onload=()=>{
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch);
+      if(rot===90){ctx.translate(ch,0);ctx.rotate(Math.PI/2);}
+      else if(rot===-90){ctx.translate(0,cw);ctx.rotate(-Math.PI/2);}
+      ctx.drawImage(img,0,0,sw,sh);
+      URL.revokeObjectURL(url);
+      res({dataUrl:c.toDataURL('image/jpeg',0.92),w:cw,h:ch});
+    };
     img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};
     img.src=url;
   });
@@ -2074,7 +2170,10 @@ async function downloadPDF(which){
 
   const data=readInputs();
   const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  // Use landscape orientation when keyboard is rotated ±90°
+  const pdfRotAngle=rotateMode===1?90:(rotateMode===-1?-90:0);
+  const pdfOrientation=(pdfRotAngle!==0)?'landscape':'portrait';
+  const pdf=new jsPDF({orientation:pdfOrientation,unit:'mm',format:'a4'});
   const PW=pdf.internal.pageSize.getWidth(), PH=pdf.internal.pageSize.getHeight();
 
   // ── Layout constants ──────────────────────────────
@@ -2107,7 +2206,7 @@ async function downloadPDF(which){
 
   // ── SVG → PDF with proper 2× scale slicing ────────
   async function addSvgImg(svgStr,label,mmPerPx){
-    const {dataUrl,w,h}=await svgToPngDataUrl(svgStr);
+    const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,pdfRotAngle);
     const imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
     const scale=imgW/w;          // mm per natural pixel
     const imgH=h*scale;          // total height in mm
