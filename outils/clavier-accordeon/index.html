@@ -1111,6 +1111,7 @@ function toggleLhBassFirst(){
   CFG.lhBassFirst=!CFG.lhBassFirst;
   updateLhOrderBtn();
   onAnyChange();
+  forcePreview();
 }
 function updateLhOrderBtn(){
   const btn=document.getElementById('lh-order-btn');
@@ -2316,9 +2317,11 @@ async function downloadPDF(which){
 
   // ── Keyboard SVGs ──────────────────────────────────
   const svgDstr=buildSVG_Droite(data,false);
-  const svgGstr=matchSvgWidth(svgDstr,buildSVG_Gauche(data,false));
+  const svgGstr=buildSVG_Gauche(data,false);
   const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+  const wG=+(svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
   const mmPerPxPlan=CW/wD;
+  const mmPerPxPlanG=CW/wG;
 
   await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan,pdfRotAngle!==0);
 
@@ -2329,7 +2332,7 @@ async function downloadPDF(which){
     pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
     yPos+=7;
   }
-  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan,pdfRotAngle!==0);
+  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlanG,pdfRotAngle!==0);
 
   // ══════════════════════════════════════════════════
   // FABRICANT PAGES
