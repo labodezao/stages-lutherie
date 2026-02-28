@@ -1763,7 +1763,8 @@ function buildSVG_Gauche(data,dark){
       for(let q=0;q<PPROW;q++){
         const pi=r*PPROW+q;
         if(pi>=nPairs)break;
-        [[data.basses[pi],'B',q*2,bassLbl,data.nbVoixBasses||2,data.basses2],[data.accords[pi],'A',q*2+1,accLbl,data.nbVoixAccords||2,data.accords2]].forEach(([btn,lbl,col,lblCol,voix,arr2])=>{
+        {const bCol=data.lhBassFirst?q*2:q*2+1,aCol=data.lhBassFirst?q*2+1:q*2;
+        [[data.basses[pi],'B',bCol,bassLbl,data.nbVoixBasses||2,data.basses2],[data.accords[pi],'A',aCol,accLbl,data.nbVoixAccords||2,data.accords2]].forEach(([btn,lbl,col,lblCol,voix,arr2])=>{
           if(!btn)return;
           const cx=LPAD+col*HGAP;
           const btn2=(voix>1&&arr2&&arr2.length>pi)?arr2[pi]:null;
@@ -1789,7 +1790,7 @@ function buildSVG_Gauche(data,dark){
             if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
             if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
           }
-        });
+        });}
       }
     }
     s+='</svg>';return s;
@@ -2205,17 +2206,25 @@ async function downloadPDF(which){
   }
 
   // ── SVG → PDF with proper 2× scale slicing ────────
-  async function addSvgImg(svgStr,label,mmPerPx){
+  // forceOnePage: if true, scale down so the image fits on one page (used when rotated)
+  async function addSvgImg(svgStr,label,mmPerPx,forceOnePage){
     const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,pdfRotAngle);
-    const imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
-    const scale=imgW/w;          // mm per natural pixel
-    const imgH=h*scale;          // total height in mm
+    let imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
+    let scale=imgW/w;            // mm per natural pixel
+    let imgH=h*scale;            // total height in mm
     if(label){
       if(yPos+8>CB){pdf.addPage();yPos=MT;}
       secLabel(label,yPos+4);yPos+=7;
     }
+    // When forceOnePage, scale down so image fits in remaining space on this page
+    if(forceOnePage&&imgH>CB-yPos){
+      scale=(CB-yPos)/h;
+      imgH=CB-yPos;
+      imgW=w*scale;
+    }
+    const xImg=ML+(CW-imgW)/2;  // center horizontally
     if(imgH<=CB-yPos){
-      pdf.addImage(dataUrl,'JPEG',ML,yPos,imgW,imgH);
+      pdf.addImage(dataUrl,'JPEG',xImg,yPos,imgW,imgH);
       yPos+=imgH+5;return;
     }
     // Spans multiple pages — slice using actual canvas coords
@@ -2232,7 +2241,7 @@ async function downloadPDF(which){
       const ctx=sc.getContext('2d');
       ctx.clearRect(0,0,pxW,sc.height);
       ctx.drawImage(srcImg,0,srcY*pngToSvg,pxW,maxH*pngToSvg,0,0,pxW,sc.height);
-      pdf.addImage(sc.toDataURL('image/jpeg',0.82),'JPEG',ML,yPos,imgW,maxH*scale);
+      pdf.addImage(sc.toDataURL('image/jpeg',0.82),'JPEG',xImg,yPos,imgW,maxH*scale);
       yPos+=maxH*scale+1;srcY+=maxH;first=false;
     }
     yPos+=3;
@@ -2311,7 +2320,7 @@ async function downloadPDF(which){
   const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
   const mmPerPxPlan=CW/wD;
 
-  await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan);
+  await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan,pdfRotAngle!==0);
 
   // Bellows separator
   if(yPos+7<CB){
@@ -2320,7 +2329,7 @@ async function downloadPDF(which){
     pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
     yPos+=7;
   }
-  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan);
+  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlan,pdfRotAngle!==0);
 
   // ══════════════════════════════════════════════════
   // FABRICANT PAGES
