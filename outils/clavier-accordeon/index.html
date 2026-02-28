@@ -1763,7 +1763,7 @@ function buildSVG_Gauche(data,dark){
       for(let q=0;q<PPROW;q++){
         const pi=r*PPROW+q;
         if(pi>=nPairs)break;
-        {const bCol=data.lhBassFirst?q*2:q*2+1,aCol=data.lhBassFirst?q*2+1:q*2;
+        const bCol=data.lhBassFirst?q*2:q*2+1,aCol=data.lhBassFirst?q*2+1:q*2;
         [[data.basses[pi],'B',bCol,bassLbl,data.nbVoixBasses||2,data.basses2],[data.accords[pi],'A',aCol,accLbl,data.nbVoixAccords||2,data.accords2]].forEach(([btn,lbl,col,lblCol,voix,arr2])=>{
           if(!btn)return;
           const cx=LPAD+col*HGAP;
@@ -1790,7 +1790,7 @@ function buildSVG_Gauche(data,dark){
             if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
             if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
           }
-        });}
+        });
       }
     }
     s+='</svg>';return s;
@@ -2222,7 +2222,7 @@ async function downloadPDF(which){
       imgH=CB-yPos;
       imgW=w*scale;
     }
-    const xImg=ML+(CW-imgW)/2;  // center horizontally
+    const xImg=ML+(CW-imgW)/2;  // center horizontally (computed after forceOnePage adjustment)
     if(imgH<=CB-yPos){
       pdf.addImage(dataUrl,'JPEG',xImg,yPos,imgW,imgH);
       yPos+=imgH+5;return;
