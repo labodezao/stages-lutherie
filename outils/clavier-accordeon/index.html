@@ -1607,7 +1607,9 @@ function readInputs(){
 /* ╔══════════════════════════════════════════════════════╗
    ║  SVG HELPERS                                         ║
    ╚══════════════════════════════════════════════════════╝ */
-function svg_open(w,h,bg){return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif"><rect width="${w}" height="${h}" fill="${bg||'white'}"/>`;}
+let _svgId=0;
+function svg_open(w,h,bg){const id='vp'+(++_svgId);return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif" overflow="hidden"><defs><clipPath id="${id}"><rect width="${w}" height="${h}"/></clipPath></defs><rect width="${w}" height="${h}" fill="${bg||'white'}"/><g clip-path="url(#${id})">`;}
+function svg_close(){return'</g></svg>';}
 function tx(x,y,text,size,fill,weight,anchor){return`<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-weight="${weight||'normal'}" text-anchor="${anchor||'start'}">${text}</text>`;}
 function esc(s){if(!s)return'';return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function escSVG(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -1729,7 +1731,7 @@ function buildSVG_Droite(data,dark){
   const fy=MARG+HEAD+data.droite.length*VGAP+14;
   s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
   s+=tx(BASE,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#444':'#bbb','normal','start');
-  s+='</svg>';return s;
+  s+=svg_close();return s;
 }
 
 function buildSVG_Gauche(data,dark){
@@ -1794,7 +1796,7 @@ function buildSVG_Gauche(data,dark){
         });
       }
     }
-    s+='</svg>';return s;
+    s+=svg_close();return s;
   }
 
   // Separated mode: multi-row basses/accords via lhRows
@@ -1878,7 +1880,7 @@ function buildSVG_Gauche(data,dark){
       }
     });
   });
-  s+='</svg>';return s;
+  s+=svg_close();return s;
 }
 
 
@@ -1996,7 +1998,7 @@ function buildSommierSection(title,rows,dark){
     s+=tx(RBASE+alignOff-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
     items.forEach((btn,bi)=>{s+=cell(RBASE+alignOff+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
   });
-  s+='</svg>';return s;
+  s+=svg_close();return s;
 }
 
 function buildLhSommierSections(data){
@@ -2150,18 +2152,16 @@ function svgToPngDataUrl(svgStr,rotAngle){
     const c=document.createElement('canvas');c.width=cw*SCALE;c.height=ch*SCALE;
     const ctx=c.getContext('2d');ctx.scale(SCALE,SCALE);
     const img=new Image();
-    const blob=new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
     img.onload=()=>{
       ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch);
       if(rot===90){ctx.translate(ch,0);ctx.rotate(Math.PI/2);}
       else if(rot===-90){ctx.translate(0,cw);ctx.rotate(-Math.PI/2);}
       ctx.drawImage(img,0,0,sw,sh);
-      URL.revokeObjectURL(url);
-      res({dataUrl:c.toDataURL('image/jpeg',0.92),w:cw,h:ch});
+      res({dataUrl:c.toDataURL('image/png'),w:cw,h:ch});
     };
-    img.onerror=e=>{URL.revokeObjectURL(url);rej(e);};
-    img.src=url;
+    img.onerror=e=>rej(e);
+    // encodeURIComponent data URL: more reliable than Blob URL across browsers
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgStr);
   });
 }
 async function downloadPDF(which){
@@ -2225,24 +2225,24 @@ async function downloadPDF(which){
     }
     const xImg=ML+(CW-imgW)/2;  // center horizontally (computed after forceOnePage adjustment)
     if(imgH<=CB-yPos){
-      pdf.addImage(dataUrl,'JPEG',xImg,yPos,imgW,imgH);
+      pdf.addImage(dataUrl,'PNG',xImg,yPos,imgW,imgH);
       yPos+=imgH+5;return;
     }
     // Spans multiple pages — slice using actual canvas coords
     const srcImg=await new Promise((res,rej)=>{
       const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=dataUrl;
     });
-    const pxW=srcImg.naturalWidth, pngToSvg=srcImg.naturalHeight/h; // e.g. 2 when rendered at 2×
+    const pxW=srcImg.naturalWidth, canvasScale=srcImg.naturalHeight/h; // canvas pixels per SVG pixel (=SCALE=3)
     const sc=document.createElement('canvas');sc.width=pxW;
     let srcY=0,first=true;
     while(srcY<h){
       if(!first){pdf.addPage();yPos=MT;}
       const maxH=Math.min(h-srcY,(CB-yPos)/scale);
-      sc.height=Math.ceil(maxH*pngToSvg);
+      sc.height=Math.ceil(maxH*canvasScale);
       const ctx=sc.getContext('2d');
       ctx.clearRect(0,0,pxW,sc.height);
-      ctx.drawImage(srcImg,0,srcY*pngToSvg,pxW,maxH*pngToSvg,0,0,pxW,sc.height);
-      pdf.addImage(sc.toDataURL('image/jpeg',0.82),'JPEG',xImg,yPos,imgW,maxH*scale);
+      ctx.drawImage(srcImg,0,srcY*canvasScale,pxW,maxH*canvasScale,0,0,pxW,sc.height);
+      pdf.addImage(sc.toDataURL('image/png'),'PNG',xImg,yPos,imgW,maxH*scale);
       yPos+=maxH*scale+1;srcY+=maxH;first=false;
     }
     yPos+=3;
