@@ -109,7 +109,9 @@ select option{background:#fff;color:var(--txt)}
 .sec-label{font-size:.76rem;font-weight:700;color:var(--dark)}
 .row-wrap{margin-bottom:11px}
 .btn-grid{display:flex;flex-wrap:wrap;gap:4px}
-.btn-cell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.btn-cell{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:grab;user-select:none;}
+.btn-cell.dragging{opacity:.4;cursor:grabbing;}
+.btn-cell.drag-over{outline:2px dashed var(--gold);border-radius:5px;background:rgba(200,160,30,.08);}
 .btn-num{font-size:.63rem;color:var(--gris);font-weight:700}
 .note-input{width:62px;padding:4px 3px;text-align:center;font-size:.76rem;border-radius:5px;
   border:1.5px solid var(--input-brd);cursor:pointer;background:var(--input-bg);color:var(--txt)}
@@ -119,6 +121,7 @@ select option{background:#fff;color:var(--txt)}
 .note-input.pousse:focus{border-color:#2d8a20;box-shadow:0 0 0 2px rgba(45,138,32,.12)}
 .note-input.tire:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,134,11,.12)}
 .note-input.picker-open{box-shadow:0 0 0 3px rgba(184,134,11,.2)!important;border-color:var(--gold)!important}
+.row-paste-btn.has-clip{background:#fff3cd!important;border-color:#d4a017!important;color:#5c4000!important}
 .legend{display:flex;gap:14px;margin-bottom:11px;flex-wrap:wrap;align-items:center}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:.8rem}
 .legend-swatch{width:30px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;
@@ -175,25 +178,7 @@ select option{background:#fff;color:var(--txt)}
 #visual-output{overflow-x:auto}
 #visual-output svg{display:block;margin:0 auto;max-width:100%}
 
-/* ── Fab view toggle ── */
-.fab-view-wrap{display:flex;gap:0;margin-bottom:12px}
-.fab-view-btn{padding:6px 15px;border:1.5px solid var(--brd);background:#fff;
-  font-family:inherit;font-size:.78rem;font-weight:700;color:#555;cursor:pointer;transition:background .15s,color .15s}
-.fab-view-btn:first-child{border-radius:6px 0 0 6px}
-.fab-view-btn:last-child{border-radius:0 6px 6px 0;border-left:none}
-.fab-view-btn.active{background:var(--dark);color:var(--or-c);border-color:var(--dark)}
 
-/* ── Tables ── */
-.mfr-table{width:100%;border-collapse:collapse;font-size:.8rem}
-.mfr-table th,.mfr-table td{border:1px solid #e0e0d8;padding:5px 9px;text-align:center}
-.mfr-table th{background:var(--dark);color:var(--or-c);font-size:.75rem;font-weight:700}
-.mfr-table tr:nth-child(even) td{background:#fafaf8}
-.mfr-table td{background:#fff;color:var(--txt)}
-.mfr-table td.note-p{color:#1d6b23;font-weight:700}
-.mfr-table td.note-t{color:var(--gold-d);font-weight:700}
-.mfr-table td.row-hd{background:#f0f0ee;font-weight:700;color:var(--dark)}
-.mfr-table td.midi-c{color:#1a6691;font-size:.72rem}
-.mfr-sub{color:var(--gris);font-style:italic;font-size:.76rem;margin-bottom:12px}
 
 /* ── Modal ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);
@@ -233,6 +218,11 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   .card-head{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .mfr-table th{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+/* ── Rotation 90° visual ── */
+#visual-output.rotated{overflow:auto;}
+#visual-output.rotated .rotate-scale-wrap{transform-origin:top left;display:inline-block;}
+#visual-output.rotated .svg-rotate-wrap{display:inline-block;transform-origin:top left;}
+.btn-or.active-rotate{background:var(--dark);color:var(--or-c);border-color:var(--dark);}
 @media(max-width:680px){
   header{flex-wrap:wrap}
   .form-grid{grid-template-columns:1fr}
@@ -267,6 +257,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   </div>
   <div id="lib-cards"><div class="lib-empty" data-i="noSaved">Aucun instrument sauvegardé.</div></div>
 </div>
+
 
 <div class="container">
 
@@ -316,32 +307,61 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               <input type="number" id="nb-accords" min="0" max="60" value="6" style="width:48px;text-align:center;" oninput="applyGaucheCount('accords')">
               <button type="button" class="rng-btn" onclick="changeGauche('accords',1)">＋</button>
             </div>
-            <div style="display:flex;align-items:center;gap:3px;">
+            <label style="display:flex;align-items:center;gap:6px;grid-column:1/-1;cursor:pointer;margin-top:2px;">
+              <input type="checkbox" id="terzetto-enabled" onchange="onTerzettoChange()">
               <span class="gauche-label" data-i="terzetto">Terzetto</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Terzetto" data-tip="Terzetto (italien : &quot;trio&quot;) : plaque d'anche ajoutant la TIERCE à l'accord.&#10;2 voix : Do+Sol · 3 voix terzetto : Do+Mi+Sol (accord complet).&#10;Optionnel sur accordéon 2-voix ; inclus sur 3-voix.&#10;—&#10;Terzetto (Italian: &quot;trio&quot;): reed plate adding the 3RD to each chord.&#10;2-voice: C+G · 3-voice terzetto: C+E+G (full chord).&#10;Optional on 2-voice; standard on 3-voice instruments.">ⓘ</span>
-            </div>
-            <div class="rng-ctrl">
-              <button type="button" class="rng-btn" onclick="changeGauche('terzetto',-1)">−</button>
-              <input type="number" id="nb-terzetto" min="0" max="60" value="0" style="width:48px;text-align:center;" oninput="applyGaucheCount('terzetto')">
-              <button type="button" class="rng-btn" onclick="changeGauche('terzetto',1)">＋</button>
-            </div>
+            </label>
           </div>
           <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
             <span style="font-size:.65rem;color:#888;" data-i="quickSet">Rapide :</span>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(2,2,0)">4b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(4,4,0)">8b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,0)">12b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,6)">18b</button>
-            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,8)">24b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(2,2,false)">4b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(4,4,false)">8b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,false)">12b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(6,6,true)">18b</button>
+            <button type="button" class="rng-btn preset-btn" onclick="setGauchePreset(8,8,true)">24b</button>
           </div></div>
         <div class="form-group"><label data-i="voices">Nombre de voix (anches) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Voix" data-tip="1 voix : une anche par note (son pur).&#10;2 voix : deux anches par note (ex: M+H ou L+M) → son plus riche.&#10;3 voix : trois anches (L+M+H) → son très plein, avec tremolo.&#10;—&#10;1 voice: one reed per note (pure tone).&#10;2 voices: two reeds per note (e.g. M+H or L+M) → richer sound.&#10;3 voices: three reeds (L+M+H) → full sound with tremolo.">ⓘ</span></label>
-          <select id="nb-voix" onchange="onAnyChange()">
+          <select id="nb-voix" onchange="renderVoixPerRow();onAnyChange()">
             <option value="1">1 voix / 1 voice</option>
-            <option value="2" selected>2 voix / voices (LM ou MH)</option>
-            <option value="3">3 voix / voices (LMH)</option>
+            <option value="2" selected>2 voix / voices</option>
+            <option value="3">3 voix / voices</option>
           </select>
+          <div id="voix-per-row-wrap" style="margin-top:4px;"></div></div>
+        <div class="form-group"><label data-i="voicesLH">Voix main gauche (anches)</label>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 7px;align-items:center;margin-top:2px;">
+            <span class="gauche-label" data-i="accords">Accords</span>
+            <select id="nb-voix-accords" onchange="generateInputGrid();onAnyChange()" style="font-size:.82rem;">
+              <option value="1">1 voix</option>
+              <option value="2" selected>2 voix</option>
+              <option value="3">3 voix</option>
+            </select>
+            <span class="gauche-label" data-i="basses">Basses</span>
+            <select id="nb-voix-basses" onchange="generateInputGrid();onAnyChange()" style="font-size:.82rem;">
+              <option value="1">1 voix</option>
+              <option value="2" selected>2 voix</option>
+              <option value="3">3 voix</option>
+            </select>
+          </div>
           <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
             <input type="checkbox" id="show-midi" onchange="onAnyChange()">
             <label for="show-midi" style="font-size:.82rem;cursor:pointer;font-weight:normal;text-transform:none;letter-spacing:0" data-i="showMidi">Numéros MIDI <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: MIDI" data-tip="Affiche le numéro MIDI de chaque note sur le clavier et dans le tableau fabricant.&#10;Do central (Do4) = MIDI 60. Utile pour les logiciels et fabricants.&#10;—&#10;Shows MIDI note number on keyboard and manufacturer table.&#10;Middle C (C4) = MIDI 60. Useful for software and manufacturers.">ⓘ</span></label>
+          </div>
+          <div style="margin-top:6px;">
+            <div style="font-size:.75rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;" data-i="lhDisplayMode">Affichage main gauche</div>
+            <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;">
+              <input type="radio" name="lh-mode" id="lh-separated" value="separated" checked onchange="onLhModeChange()">
+              <span data-i="lhSeparated">Rangées séparées</span></label>
+            <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
+              <input type="radio" name="lh-mode" id="lh-paired" value="paired" onchange="onLhModeChange()">
+              <span data-i="lhPaired">Alternés (B-A-B-A…)</span></label>
+            <div style="margin-top:5px;">
+              <button type="button" id="lh-order-btn" class="rng-btn" style="font-size:.75rem;padding:3px 8px;" onclick="toggleLhBassFirst()" data-i-btn="lhOrderBtn">🔄 Accords → Basses</button>
+            </div>
+            <!-- LH rows + offsets config (shown for both modes) -->
+            <div id="lh-rows-cfg" style="margin-top:6px;padding:6px 8px;background:#f5f5f0;border-radius:5px;border:1px solid #ddd;">
+              <div style="font-size:.74rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;" data-i="lhNbRows">Lignes</div>
+              <div id="lh-rows-inner" style="display:flex;flex-direction:column;gap:4px;"></div>
+            </div>
           </div></div>
       </div>
       <div id="rangees-cfg-wrap">
@@ -415,19 +435,15 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <button class="tab-btn"        onclick="showTab('fabricant',this)" data-i-btn="manufacturerTable">📋 Fabricant anches</button>
       </div>
       <div class="btn-group no-print" style="margin-bottom:13px;">
-        <button class="btn btn-bleu"    onclick="printSection('visual')"    data-i-btn="pdfClientVisual">🖨️ PDF plan clavier</button>
-        <button class="btn btn-primary" onclick="printSection('fabricant')" data-i-btn="pdfManufacturer">🖨️ PDF fabricant</button>
+        <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
+        <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
+        <button class="btn btn-or" id="rotate-btn" onclick="toggleRotateView()" data-i-btn="rotateView" style="margin-left:auto;">↩ Rotation 90°</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
       </div>
       <div id="tab-fabricant" style="display:none">
-        <div class="fab-view-wrap no-print">
-          <button class="fab-view-btn active" onclick="showFabricantView('liste',this)" data-i-btn="listView">📋 Vue liste</button>
-          <button class="fab-view-btn"        onclick="showFabricantView('sommier',this)" data-i-btn="sommierView">🪗 Vue sommier</button>
-        </div>
-        <div id="fab-view-liste"><div id="table-output"></div></div>
-        <div id="fab-view-sommier" style="display:none"><div id="sommier-output"></div></div>
+        <div id="sommier-output"></div>
       </div>
     </div>
   </div>
@@ -438,7 +454,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 <div id="note-picker">
   <div class="picker-tabs">
     <button class="picker-tab-btn active" onclick="showPickerTab('notes',this)" data-i-btn="noteTab">🎵 Note</button>
-    <button class="picker-tab-btn"        onclick="showPickerTab('chords',this)" data-i-btn="chordTab">🎼 Accord</button>
     <button style="margin-left:auto;padding:4px 8px;border:none;background:none;font-size:.73rem;color:var(--gris);cursor:pointer;" onclick="hidePicker()" data-i-btn="close">✕ Fermer</button>
   </div>
   <div class="picker-tab active" id="picker-tab-notes">
@@ -452,10 +467,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <span class="picker-octave-label" data-i="octave">Octave :</span>
       <div id="picker-octaves" style="display:flex;gap:3px;"></div>
     </div>
-  </div>
-  <div class="picker-tab" id="picker-tab-chords">
-    <div class="picker-title" data-i="chordTitle">Accords (cliquez pour insérer)</div>
-    <div class="chord-grid" id="picker-chords-grid"></div>
   </div>
   <div class="picker-preview" id="picker-preview">
     <span id="picker-preview-text" data-i="selectNoteOctave">— sélectionnez une note et une octave —</span>
@@ -502,7 +513,11 @@ fr:{
   clientVisual:'🎹 Clavier client',manufacturerTable:'📋 Fabricant anches',
   pdfClientVisual:'🖨️ PDF plan clavier',pdfManufacturer:'🖨️ PDF fabricant',
   listView:'📋 Vue liste',sommierView:'🪗 Vue sommier',refresh:'🔄 Actualiser',
+  rowOffset:'Décalage',
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
+  swapRowTitle:'Inverser poussé/tiré (toute la rangée)',mirrorRowTitle:'Miroir — inverser ordre des colonnes (1er↔dernier)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
+  rotateView:'↩ Rotation 90°',rotateViewTitle:'Cliquer pour tourner : +90° → −90° → normal (soufflet vertical)',
+  lhOrderBtn:'🔄 Accords → Basses',lhOrderBtnInv:'🔄 Basses → Accords',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
   naturals:'Touches naturelles',sharps:'Dièses',flats:'Bémols',octave:'Octave :',
@@ -520,7 +535,7 @@ fr:{
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Poussé',svgPull:'↑ Tiré',
   svgHigh:'AIGU ▶',svgLow:'◀ GRAVE',svgBellowsPush:'POUSSÉ',svgBellowsPull:'TIRÉ',
   svgRH:'Main Droite',svgLH:'Main Gauche',svgSommierRH:'SOMMIER — Main Droite',svgSommierLH:'SOMMIER — Main Gauche',
-  svgMidi:'MIDI',svgGeneratedBy:'Généré le',svgPlan:'Plan de clavier',
+  svgMidi:'MIDI',svgGeneratedBy:'Généré le',svgPlan:'Plan de clavier',svgBellows:'SOUFFLET',
   // Manufacturer table
   mfrRH:'MAIN DROITE — Plaque anches mélodie (bisonore)',
   mfrLH:'MAIN GAUCHE — Plaques basses, accords',
@@ -552,7 +567,10 @@ fr:{
   clTonality:'Tonalité (clé)',clRowSpec:'Spécification rangées',
   clTuning:'Accord de base',clTremolo:'Tremolo',
   clHarmony:'Harmonie',clBassType:'Type de basses',
-  clBassComp:'Composition basses',clVoices:'Nombre de voix',clLuthier:'Luthier / Date',
+  clBassComp:'Composition basses',clVoices:'Nombre de voix (main droite)',clVoicesLH:'Nombre de voix (main gauche)',clLuthier:'Luthier / Date',
+  voicesLH:'Voix main gauche (anches)',
+  lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
+  lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',lhNbDuosTotal:'Nb duos total',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -569,7 +587,11 @@ en:{
   clientVisual:'🎹 Client keyboard',manufacturerTable:'📋 Reed manufacturer',
   pdfClientVisual:'🖨️ PDF keyboard plan',pdfManufacturer:'🖨️ PDF manufacturer',
   listView:'📋 List view',sommierView:'🪗 Reed plate view',refresh:'🔄 Refresh',
+  rowOffset:'Offset',
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
+  swapRowTitle:'Swap push/pull (entire row)',mirrorRowTitle:'Mirror — reverse column order (1st↔last)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
+  rotateView:'↩ Rotate 90°',rotateViewTitle:'Click to rotate: +90° → −90° → normal (vertical bellows)',
+  lhOrderBtn:'🔄 Chords → Basses',lhOrderBtnInv:'🔄 Basses → Chords',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
   naturals:'Natural notes',sharps:'Sharps',flats:'Flats',octave:'Octave:',
@@ -586,7 +608,7 @@ en:{
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Push',svgPull:'↑ Pull',
   svgHigh:'TREBLE ▶',svgLow:'◀ BASS',svgBellowsPush:'PUSH',svgBellowsPull:'PULL',
   svgRH:'Right Hand',svgLH:'Left Hand',svgSommierRH:'REED PLATE — Right Hand',svgSommierLH:'REED PLATE — Left Hand',
-  svgMidi:'MIDI',svgGeneratedBy:'Generated on',svgPlan:'Keyboard plan',
+  svgMidi:'MIDI',svgGeneratedBy:'Generated on',svgPlan:'Keyboard plan',svgBellows:'BELLOWS',
   mfrRH:'RIGHT HAND — Melody reed plate (bisonoric)',
   mfrLH:'LEFT HAND — Bass & chord plates',
   mfrRow:'Row',mfrNo:'No.',mfrPushNote:'Push Note ↓',mfrPullNote:'Pull Note ↑',
@@ -617,7 +639,10 @@ en:{
   clTonality:'Key tonality',clRowSpec:'Row specification',
   clTuning:'Base tuning',clTremolo:'Tremolo',
   clHarmony:'Harmony',clBassType:'Bass type',
-  clBassComp:'Bass composition',clVoices:'Number of voices',clLuthier:'Luthier / Date',
+  clBassComp:'Bass composition',clVoices:'Number of voices (right hand)',clVoicesLH:'Number of voices (left hand)',clLuthier:'Luthier / Date',
+  voicesLH:'Left hand voices (reeds)',
+  lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
+  lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',lhNbDuosTotal:'Total duos',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -635,13 +660,40 @@ const EN2FR={
 function displayNote(note){
   if(!note) return '';
   if(lang==='fr') return note;
+  // Handle slash-separated individual notes (e.g. "La3/Do#4/Mi4")
+  if(note.includes('/')){return note.split('/').map(n=>displayNote(n.trim())).join('/');}
   // Try full word match first for chords like "Sol Maj"
-  const m=note.match(/^(.+?)(\s+(?:Maj|Min|7|dim|aug|m7|maj7))?(\d?)$/);
+  const m=note.match(/^(.+?)(\s+(?:Maj|Min|7|V|dim|aug|m7|maj7))?(\d?)$/);
   if(!m) return note;
   const root=m[1].trim(), qual=(m[2]||'').trim(), oct=m[3]||'';
   const en=FR2EN[root];
   if(en) return en+oct+(qual?' '+qual:'');
   return note;
+}
+/* Returns array of constituent note-names (FR, no octave) for a chord string.
+   e.g. "La Maj" → ['La','Do#','Mi'],  "Fa Min" → ['Fa','Lab','Do']
+   Returns null for non-chord strings (bare notes). */
+function chordNotes(chord){
+  if(!chord)return null;
+  // Already in note-list format ("La3/Do#4/Mi4") — return the individual notes
+  if(chord.includes('/'))return chord.split('/').map(n=>n.trim());
+  const m=chord.match(/^(.+?)\s+(Maj|Min|7|m7|maj7|dim|aug|V)$/);
+  if(!m)return null;
+  const root=m[1].trim(), quality=m[2];
+  const FR_CHROMA={'Do':0,'Do#':1,'Réb':1,'Ré':2,'Re':2,'Ré#':3,'Mib':3,'Mi':4,'Fa':5,
+    'Fa#':6,'Solb':6,'Sol':7,'Sol#':8,'Lab':8,'La':9,'La#':10,'Sib':10,'Si':11,'Dob':11};
+  const SHARP=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+  const FLAT =['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+  const IMAP ={'Maj':[0,4,7],'Min':[0,3,7],'7':[0,4,7,10],'m7':[0,3,7,10],
+    'maj7':[0,4,7,11],'dim':[0,3,6],'aug':[0,4,8],'V':[0,7]};
+  const idx=FR_CHROMA[root]; if(idx===undefined)return null;
+  const ivs=IMAP[quality]; if(!ivs)return null;
+  // Use flat spelling for "flat" roots and for minor-quality intervals (m3, m6, m7, dim5)
+  const rootFlat=(root.length>2&&root.endsWith('b'))||root==='Réb';
+  return ivs.map(i=>{
+    const preferFlat=rootFlat||[3,6,8,10].includes(i);
+    return (preferFlat?FLAT:SHARP)[(idx+i)%12];
+  });
 }
 function storageNote(note){
   // Convert EN→FR for storage (picker uses current lang)
@@ -673,6 +725,14 @@ function setLang(l){
     const v=t(k);
     if(typeof v==='string') el.textContent=v;
   });
+  // Update rotate button title and text (preserve active rotation label)
+  const rotBtn=document.getElementById('rotate-btn');
+  if(rotBtn){
+    rotBtn.title=t('rotateViewTitle');
+    if(rotateMode===1) rotBtn.textContent='↩ +90°';
+    else if(rotateMode===-1) rotBtn.textContent='↺ −90°';
+  }
+  updateLhOrderBtn();
   // Update save status text
   const ss=document.getElementById('save-status');
   if(ss) ss.textContent=t(ss.className)||ss.textContent;
@@ -694,9 +754,13 @@ let CFG={
     {nom:'Rangée Ré (extérieure)',nb:11},
   ],
   configGauche:12,
-  notes:{droite:[],basses:[],accords:[],terzetto:[]}
+  lhRows:[{nb:6,offset:0}],
+  lhPairsPerRow:2,
+  lhBassFirst:false,
+  notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
-let currentId=null,saveTimer=null,previewTimer=null,fabricantView='liste';
+let rowClipboard=null;
+let currentId=null,saveTimer=null,previewTimer=null;
 let pickerInput=null,pickerNote='',pickerOctave='';
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -718,137 +782,53 @@ function noteToMidi(s){
   }
   return null;
 }
+const MIDI_TO_FR=['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+function midiToFr(midi){if(midi===null||midi===undefined)return'';const oct=Math.floor(midi/12)-1;return MIDI_TO_FR[((midi%12)+12)%12]+oct;}
+function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi):'';}
 
 /* ╔══════════════════════════════════════════════════════╗
-   ║  PRÉRÉGLAGES                                         ║
+   ║  PRÉRÉGLAGES — chargés depuis presets/*.json         ║
    ╚══════════════════════════════════════════════════════╝ */
-const PRESETS={
-  GC21:{nbRangees:2,rangees:[{nom:'Rangée Sol (intérieure)',nb:10},{nom:'Rangée Do (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'}],
-    [{p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},{p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},{p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}]],
-    basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
-    accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],terzetto:[]}},
-  DG21:{nbRangees:2,rangees:[{nom:'Rangée Ré (intérieure)',nb:10},{nom:'Rangée Sol (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Ré3',t:'Mi3'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Ré4',t:'Do#4'},{p:'Fa#4',t:'Mi4'},{p:'La4',t:'Sol4'},{p:'Ré5',t:'Si4'},{p:'Fa#5',t:'Do#5'},{p:'La5',t:'Mi5'},{p:'Ré6',t:'Sol5'}],
-    [{p:'Sol2',t:'La2'},{p:'Si2',t:'Do3'},{p:'Ré3',t:'Mi3'},{p:'Sol3',t:'Fa#3'},{p:'Si3',t:'La3'},{p:'Ré4',t:'Do4'},{p:'Sol4',t:'Mi4'},{p:'Si4',t:'Fa#4'},{p:'Ré5',t:'La4'},{p:'Sol5',t:'Do5'},{p:'Si5',t:'Mi5'}]],
-    basses:[{p:'Ré3',t:'La2'},{p:'Sol2',t:'Ré2'},{p:'La3',t:'Mi3'},{p:'Do3',t:'Sol2'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
-    accords:[{p:'Ré Maj',t:'La Min'},{p:'Sol Maj',t:'Ré Min'},{p:'La Maj',t:'Mi Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],terzetto:[]}},
-  CF21:{nbRangees:2,rangees:[{nom:'Rangée Do (intérieure)',nb:10},{nom:'Rangée Fa (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Do3',t:'Ré3'},{p:'Mi3',t:'Fa3'},{p:'Sol3',t:'La3'},{p:'Do4',t:'Si3'},{p:'Mi4',t:'Ré4'},{p:'Sol4',t:'Fa4'},{p:'Do5',t:'La4'},{p:'Mi5',t:'Si4'},{p:'Sol5',t:'Ré5'},{p:'Do6',t:'Fa5'}],
-    [{p:'Fa3',t:'Mi3'},{p:'La3',t:'Sol3'},{p:'Do4',t:'Sib3'},{p:'Fa4',t:'Ré4'},{p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'La4'},{p:'La5',t:'Sib4'},{p:'Do6',t:'Ré5'},{p:'Fa6',t:'Mi5'},{p:'La6',t:'Sol5'}]],
-    basses:[{p:'Do3',t:'Sol2'},{p:'Fa3',t:'Do3'},{p:'Sol2',t:'Ré2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'}],
-    accords:[{p:'Do Maj',t:'Sol Maj'},{p:'Fa Maj',t:'Do Maj'},{p:'Sol Maj',t:'Ré Min'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'}],terzetto:[]}},
-  GCD33:{nbRangees:3,rangees:[{nom:'Rangée Sol (intérieure)',nb:11},{nom:'Rangée Do (médiane)',nb:11},{nom:'Rangée Ré (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Sol3',t:'La3'},{p:'Si3',t:'Do4'},{p:'Ré4',t:'Mi4'},{p:'Sol4',t:'Fa#4'},{p:'Si4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Sol5',t:'Mi5'},{p:'Si5',t:'Fa#5'},{p:'Ré6',t:'La5'},{p:'Sol6',t:'Do6'},{p:'Si6',t:'Mi6'}],
-    [{p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},{p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},{p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}],
-    [{p:'Ré3',t:'Mi3'},{p:'Fa#3',t:'Sol3'},{p:'La3',t:'Si3'},{p:'Ré4',t:'Do#4'},{p:'Fa#4',t:'Mi4'},{p:'La4',t:'Sol4'},{p:'Ré5',t:'Si4'},{p:'Fa#5',t:'Do#5'},{p:'La5',t:'Mi5'},{p:'Ré6',t:'Sol5'},{p:'Fa#6',t:'La5'}]],
-    basses:[{p:'Sol2',t:'Ré2'},{p:'Do3',t:'Sol2'},{p:'Ré3',t:'La2'},{p:'La3',t:'Mi3'},{p:'Mi3',t:'Si2'},{p:'Si2',t:'Fa#2'}],
-    accords:[{p:'Sol Maj',t:'Ré Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Ré Maj',t:'La Min'},{p:'La Maj',t:'Mi Min'},{p:'Mi Maj',t:'Si Min'},{p:'Si Maj',t:'Fa# Min'}],terzetto:[]}},
-  BbFC33:{nbRangees:3,rangees:[{nom:'Rangée Sib (intérieure)',nb:11},{nom:'Rangée Fa (médiane)',nb:11},{nom:'Rangée Do (extérieure)',nb:11}],
-    notes:{droite:[[{p:'Sib3',t:'Do4'},{p:'Ré4',t:'Mib4'},{p:'Fa4',t:'Sol4'},{p:'Sib4',t:'La4'},{p:'Ré5',t:'Do5'},{p:'Fa5',t:'Mib5'},{p:'Sib5',t:'Sol5'},{p:'Ré6',t:'La5'},{p:'Fa6',t:'Do6'},{p:'Sib6',t:'Mib6'},{p:'Ré7',t:'Sol6'}],
-    [{p:'Fa3',t:'Mib3'},{p:'La3',t:'Sol3'},{p:'Do4',t:'Sib3'},{p:'Fa4',t:'Ré4'},{p:'La4',t:'Mib4'},{p:'Do5',t:'Sol4'},{p:'Fa5',t:'La4'},{p:'La5',t:'Sib4'},{p:'Do6',t:'Ré5'},{p:'Fa6',t:'Mi5'},{p:'La6',t:'Sol5'}],
-    [{p:'Do3',t:'Si2'},{p:'Mi3',t:'Ré3'},{p:'Sol3',t:'Fa3'},{p:'Do4',t:'La3'},{p:'Mi4',t:'Sib3'},{p:'Sol4',t:'Ré4'},{p:'Do5',t:'Mi4'},{p:'Mi5',t:'Fa#4'},{p:'Sol5',t:'La4'},{p:'Do6',t:'Si4'},{p:'Mi6',t:'Ré5'}]],
-    basses:[{p:'Sib2',t:'Fa2'},{p:'Mib3',t:'Sib2'},{p:'Fa3',t:'Do3'},{p:'Do3',t:'Sol2'},{p:'Sol3',t:'Ré3'},{p:'Ré3',t:'La2'}],
-    accords:[{p:'Sib Maj',t:'Fa Min'},{p:'Mib Maj',t:'Sib Maj'},{p:'Fa Maj',t:'Do Min'},{p:'Do Maj',t:'Sol Maj'},{p:'Sol Maj',t:'Ré Min'},{p:'Ré Maj',t:'La Min'}],terzetto:[]}}
-};
+const _presetCache={};  // id → preset data (lazy-loaded)
+let   _presetIndex=[];  // [{id,label,category}]
 
-const PRESET_LABELS={
-  GC21:'Sol/Do — 21 boutons',DG21:'Ré/Sol — 21 boutons',CF21:'Do/Fa — 21 boutons',
-  AD21:'La/Ré — 21 boutons',BE21:'Si/Mi — 21 boutons',EA21:'Mi/La — 21 boutons',
-  FBb21:'Fa/Sib — 21 boutons',EbBb21:'Mib/Sib — 21 boutons',ABb21:'La/Sib — 21 boutons',
-  GDA21:'Sol/Ré/La (layout 2 rangs en La ext.) — 21 boutons',
-  FD21:'Fa/Ré — 21 boutons',
-  CA21:'Do/La — 21 boutons',
-  BC21:'Si/Do (système irlandais) — 21 boutons',
-  CSharpD21:'Do#/Ré (système irlandais) — 21 boutons',
-  DbEb21:'Réb/Mib (système irlandais) — 21 boutons',
-  EbF21:'Mib/Fa (système irlandais) — 21 boutons',
-  FGb21:'Fa/Solb (système irlandais) — 21 boutons',
-  GAb21:'Sol/Lab (système irlandais) — 21 boutons',
-  ADb21:'La/Réb (système irlandais) — 21 boutons',
-  GCD33:'Sol/Do/Ré — 33 boutons',BbFC33:'Sib/Fa/Do — 33 boutons',
-  ADG33:'La/Ré/Sol — 33 boutons',DGC33:'Ré/Sol/Do — 33 boutons',
-  CFBb33:'Do/Fa/Sib — 33 boutons',EAD33:'Mi/La/Ré — 33 boutons',
-  BbEbAb33:'Sib/Mib/Lab — 33 boutons',FCG33:'Fa/Do/Sol — 33 boutons'
-};
-
-const NOTE_TO_SEMITONE={Do:0,'Do#':1,Réb:1,Re:2,'Ré':2,'Ré#':3,Mib:3,Mi:4,Fa:5,'Fa#':6,Solb:6,Sol:7,'Sol#':8,Lab:8,La:9,'La#':10,Sib:10,Si:11};
-const SHARP_NOTES=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
-const FLAT_NOTES=['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
-function transposeSingleNoteFr(note,semi,preferFlats=true){
-  const m=(note||'').trim().match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)([#b]?)(\d+)$/);
-  if(!m)return note;
-  const base=(m[1]==='Re'?'Ré':m[1])+(m[2]||'');
-  const idx=NOTE_TO_SEMITONE[base];
-  if(idx===undefined)return note;
-  const midi=(parseInt(m[3],10)+1)*12+idx+semi;
-  const oct=Math.floor(midi/12)-1;
-  const arr=preferFlats?FLAT_NOTES:SHARP_NOTES;
-  return `${arr[((midi%12)+12)%12]}${oct}`;
+async function loadPresetIndex(){
+  const base=document.querySelector('base')?.href||location.href;
+  const url=new URL('presets/index.json',base).href;
+  const r=await fetch(url);
+  _presetIndex=await r.json();
+  renderPresetOptions();
 }
-function transposeChordFr(chord,semi,preferFlats=true){
-  const m=(chord||'').trim().match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)([#b]?)(.*)$/);
-  if(!m)return chord;
-  const base=(m[1]==='Re'?'Ré':m[1])+(m[2]||'');
-  const idx=NOTE_TO_SEMITONE[base];
-  if(idx===undefined)return chord;
-  const arr=preferFlats?FLAT_NOTES:SHARP_NOTES;
-  return `${arr[((idx+semi)%12+12)%12]}${m[3]||''}`;
-}
-function transposePreset(base,semi,rowNames,preferFlats=true){
-  const p=JSON.parse(JSON.stringify(PRESETS[base]));
-  p.rangees=p.rangees.map((r,i)=>({nom:rowNames[i]||r.nom,nb:r.nb}));
-  p.notes.droite=p.notes.droite.map(row=>row.map(n=>({
-    p:transposeSingleNoteFr(n.p,semi,preferFlats),t:transposeSingleNoteFr(n.t,semi,preferFlats)
-  })));
-  p.notes.basses=(p.notes.basses||[]).map(n=>({
-    p:transposeSingleNoteFr(n.p,semi,preferFlats),t:transposeSingleNoteFr(n.t,semi,preferFlats)
-  }));
-  p.notes.accords=(p.notes.accords||[]).map(n=>({
-    p:transposeChordFr(n.p,semi,preferFlats),t:transposeChordFr(n.t,semi,preferFlats)
-  }));
-  return p;
-}
-function addTransposedPresets(){
-  // 2 rangs 21 boutons
-  PRESETS.AD21=transposePreset('GC21',2,['Rangée La (intérieure)','Rangée Ré (extérieure)'],false);
-  PRESETS.BE21=transposePreset('GC21',4,['Rangée Si (intérieure)','Rangée Mi (extérieure)'],false);
-  PRESETS.EA21=transposePreset('DG21',2,['Rangée Mi (intérieure)','Rangée La (extérieure)'],false);
-  PRESETS.FBb21=transposePreset('CF21',5,['Rangée Fa (intérieure)','Rangée Sib (extérieure)'],true);
-  PRESETS.EbBb21=transposePreset('CF21',3,['Rangée Mib (intérieure)','Rangée Sib (extérieure)'],true);
-  PRESETS.ABb21=transposePreset('CF21',9,['Rangée La (intérieure)','Rangée Sib (extérieure)'],true);
-  PRESETS.GDA21=transposePreset('DG21',5,['Rangée Sol (intérieure)','Rangée La (extérieure)'],false);
-  PRESETS.FD21=transposePreset('DG21',3,['Rangée Fa (intérieure)','Rangée Ré (extérieure)'],true);
-  PRESETS.CA21=transposePreset('DG21',-2,['Rangée Do (intérieure)','Rangée La (extérieure)'],false);
-
-  // 2 rangs "systèmes demi-ton"
-  PRESETS.BC21=transposePreset('GC21',4,['Rangée Si (intérieure)','Rangée Do (extérieure)'],false);
-  PRESETS.CSharpD21=transposePreset('GC21',6,['Rangée Do# (intérieure)','Rangée Ré (extérieure)'],false);
-  PRESETS.DbEb21=transposePreset('GC21',7,['Rangée Réb (intérieure)','Rangée Mib (extérieure)'],true);
-  PRESETS.EbF21=transposePreset('GC21',9,['Rangée Mib (intérieure)','Rangée Fa (extérieure)'],true);
-  PRESETS.FGb21=transposePreset('GC21',10,['Rangée Fa (intérieure)','Rangée Solb (extérieure)'],true);
-  PRESETS.GAb21=transposePreset('GC21',0,['Rangée Sol (intérieure)','Rangée Lab (extérieure)'],true);
-  PRESETS.ADb21=transposePreset('GC21',2,['Rangée La (intérieure)','Rangée Réb (extérieure)'],true);
-
-  // 3 rangs 33 boutons
-  PRESETS.ADG33=transposePreset('GCD33',2,['Rangée La (intérieure)','Rangée Ré (médiane)','Rangée Sol (extérieure)'],false);
-  PRESETS.DGC33=transposePreset('GCD33',-5,['Rangée Ré (intérieure)','Rangée Sol (médiane)','Rangée Do (extérieure)'],false);
-  PRESETS.CFBb33=transposePreset('BbFC33',2,['Rangée Do (intérieure)','Rangée Fa (médiane)','Rangée Sib (extérieure)'],true);
-  PRESETS.EAD33=transposePreset('GCD33',4,['Rangée Mi (intérieure)','Rangée La (médiane)','Rangée Ré (extérieure)'],false);
-  PRESETS.BbEbAb33=transposePreset('GCD33',3,['Rangée Sib (intérieure)','Rangée Mib (médiane)','Rangée Lab (extérieure)'],true);
-  PRESETS.FCG33=transposePreset('GCD33',10,['Rangée Fa (intérieure)','Rangée Do (médiane)','Rangée Sol (extérieure)'],true);
-}
-addTransposedPresets();
 
 function renderPresetOptions(){
   const sel=document.getElementById('preset-select');
   if(!sel)return;
+  // Group by category
+  const cats={};
+  _presetIndex.forEach(p=>{(cats[p.category]||(cats[p.category]=[])).push(p);});
   const customOpt=sel.querySelector('option[value="custom"]');
-  Object.keys(PRESET_LABELS).forEach(key=>{
-    const opt=document.createElement('option');
-    opt.value=key;opt.textContent=PRESET_LABELS[key];
-    sel.insertBefore(opt,customOpt);
+  // Remove previously inserted options
+  sel.querySelectorAll('option[data-preset]').forEach(o=>o.remove());
+  Object.entries(cats).forEach(([cat,items])=>{
+    const og=document.createElement('optgroup');og.label=cat;
+    items.forEach(p=>{
+      const o=document.createElement('option');
+      o.value=p.id;o.textContent=p.label;o.dataset.preset='1';
+      og.appendChild(o);
+    });
+    sel.insertBefore(og,customOpt);
   });
+}
+
+async function fetchPresetData(id){
+  if(_presetCache[id])return _presetCache[id];
+  const base=document.querySelector('base')?.href||location.href;
+  const url=new URL(`presets/${id}.json`,base).href;
+  const r=await fetch(url);
+  if(!r.ok)throw new Error(`Preset not found: ${id}`);
+  const data=await r.json();
+  _presetCache[id]=data;
+  return data;
 }
 
 
@@ -879,6 +859,13 @@ function snapshotToDB(){
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
+    voixPerRow:readVoixPerRow(),
+    nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
+    nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
+    lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
+    lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhBassFirst:CFG.lhBassFirst||false,
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -897,9 +884,21 @@ function loadFromDB(rec){
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
   document.getElementById('nb-voix').value=String(rec.nbVoix||2);
+  renderVoixPerRow();
+  (function(){const vpr=rec.voixPerRow||(rec.voixType?{N:['N'],BN:['B','N'],NH:['N','A'],BNH:['B','N','A']}[rec.voixType]:null)||['B','N'];for(let i=0;i<vpr.length;i++){const s=document.getElementById('voix-v'+i);if(s)s.value=vpr[i]||'N';}})();
+  document.getElementById('nb-voix-accords').value=String(rec.nbVoixAccords||(rec.nbVoixGauche||2));
+  document.getElementById('nb-voix-basses').value=String(rec.nbVoixBasses||(rec.nbVoixGauche||2));
+  const lhm=rec.lhDisplayMode||'separated';
+  const lhmEl=document.getElementById('lh-'+lhm);
+  if(lhmEl)lhmEl.checked=true;
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
+  // Restore lhRows — backward compat: default to 1 row covering all basses
+  CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes&&rec.notes.basses?rec.notes.basses.length:6),offset:0}];
+  CFG.lhPairsPerRow=rec.lhPairsPerRow||2;
+  CFG.lhBassFirst=rec.lhBassFirst||false;
+  updateLhOrderBtn();
   // ensure terzetto exists
   if(!CFG.notes.terzetto) CFG.notes.terzetto=[];
   // backward compat: if notes arrays are missing, init from configGauche
@@ -909,6 +908,13 @@ function loadFromDB(rec){
     CFG.notes.basses=Array.from({length:nb},()=>({p:'',t:''}));
     CFG.notes.accords=Array.from({length:nb},()=>({p:'',t:''}));
   }
+  // ensure voice copies exist with correct length
+  {const _nb=CFG.notes.basses.length,_na=CFG.notes.accords.length;
+  const _ensureLen=(arr,n)=>{const r=(arr||[]).slice(0,n);while(r.length<n)r.push({p:'',t:''});return r;};
+  CFG.notes.basses2=_ensureLen(CFG.notes.basses2,_nb);
+  CFG.notes.basses3=_ensureLen(CFG.notes.basses3,_nb);
+  CFG.notes.accords2=_ensureLen(CFG.notes.accords2,_na);
+  CFG.notes.accords3=_ensureLen(CFG.notes.accords3,_na);}
   document.getElementById('nb-rangees').value=String(CFG.nbRangees);
   syncGaucheInputs();
   // Load order specs
@@ -919,6 +925,7 @@ function loadFromDB(rec){
   sv('order-harmony',os.harmony||'');sv('order-bass-type',os.bassType||'');
   sv('order-bass-comp',os.bassComp||'');
   renderRangeesCfg();
+  renderLhRowsCfg();
   generateInputGrid();
   setSaveStatus('saved');
 }
@@ -936,8 +943,15 @@ function newInstrument(){
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   document.getElementById('nb-voix').value='2';
+  renderVoixPerRow();
+  (function(){const d=['B','N'];for(let i=0;i<2;i++){const s=document.getElementById('voix-v'+i);if(s)s.value=d[i];}})();
+  document.getElementById('nb-voix-accords').value='2';
+  document.getElementById('nb-voix-basses').value='2';
+  document.getElementById('lh-separated').checked=true;
+  CFG.lhRows=[{nb:6,offset:0}];
   loadPreset('GCD33');
   document.getElementById('preset-select').value='GCD33';
+  renderLhRowsCfg();
   renderLibrary();setSaveStatus('dirty');
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -982,28 +996,41 @@ function onAnyChange(){
    ╚══════════════════════════════════════════════════════╝ */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
-  renderPresetOptions();
+  // Set rotate button tooltip (title set here so it respects current lang at load time)
+  const rotBtn=document.getElementById('rotate-btn');
+  if(rotBtn)rotBtn.title=t('rotateViewTitle');
+  loadPresetIndex();
+  renderVoixPerRow();
   initPicker();renderLibrary();
   const list=DB.all();
   if(list.length){loadFromDB(list[0]);}
-  else{loadPreset('GCD33');document.getElementById('preset-select').value='GCD33';}
+  else{loadPreset('GCD33').then(()=>{document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();});}
   scheduleLivePreview();
+  // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
+  document.getElementById('note-grid').addEventListener('click',e=>{
+    const inp=e.target.closest('.note-input');
+    if(inp){e.stopPropagation();showPicker(inp);}
+  });
+  // Close picker when clicking outside it (use computed style so initial '' != 'none' doesn't trick us)
   document.addEventListener('click',e=>{
     const p=document.getElementById('note-picker');
-    if(p.style.display!=='none'&&!p.contains(e.target)&&!e.target.classList.contains('note-input'))hidePicker();
+    if(getComputedStyle(p).display!=='none'&&!p.contains(e.target)&&!e.target.closest('.note-input'))hidePicker();
   });
 });
 
 /* ── Preset ── */
-function loadPreset(key){
+async function loadPreset(key){
   if(!key||key==='custom'){renderRangeesCfg();generateInputGrid();onAnyChange();return;}
-  const p=PRESETS[key];if(!p)return;
-  CFG.nbRangees=p.nbRangees;CFG.rangees=p.rangees.map(r=>({nom:r.nom,nb:r.nb}));
+  let p;
+  try{p=await fetchPresetData(key);}catch(e){console.warn('Preset not found:',key);return;}
+  CFG.nbRangees=p.nbRangees;CFG.rangees=p.rangees.map(r=>({nom:r.nom,nb:r.nb,offset:r.offset||0}));
   CFG.notes=JSON.parse(JSON.stringify(p.notes));
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
+  // Reset lhRows to 1 row matching bass count
+  CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
   document.getElementById('nb-rangees').value=p.nbRangees;
   syncGaucheInputs();
-  renderRangeesCfg();generateInputGrid();onAnyChange();
+  renderRangeesCfg();renderLhRowsCfg();generateInputGrid();onAnyChange();
 }
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -1040,31 +1067,193 @@ function applyGaucheCount(key){
   el.value=n;
   const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
   CFG.notes[key]=resize(CFG.notes[key]||[],n);
+  if(key==='basses'){CFG.notes.basses2=resize(CFG.notes.basses2||[],n);CFG.notes.basses3=resize(CFG.notes.basses3||[],n);}
+  if(key==='accords'){
+    CFG.notes.accords2=resize(CFG.notes.accords2||[],n);CFG.notes.accords3=resize(CFG.notes.accords3||[],n);
+    const terz=document.getElementById('terzetto-enabled');
+    if(terz&&terz.checked) CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);
+  }
   generateInputGrid();onAnyChange();
 }
-function setGauchePreset(nb,na,nt){
+function setGauchePreset(nb,na,withTerzetto){
   readNoteInputsIntoCFG();
   const resize=(arr,n)=>{const r=arr.slice(0,n);while(r.length<n)r.push({p:'',t:''});return r;};
   document.getElementById('nb-basses').value=nb;
   document.getElementById('nb-accords').value=na;
-  document.getElementById('nb-terzetto').value=nt;
+  const terz=document.getElementById('terzetto-enabled');
+  if(terz)terz.checked=!!withTerzetto;
   CFG.notes.basses=resize(CFG.notes.basses,nb);
+  CFG.notes.basses2=resize(CFG.notes.basses2||[],nb);
+  CFG.notes.basses3=resize(CFG.notes.basses3||[],nb);
   CFG.notes.accords=resize(CFG.notes.accords,na);
-  CFG.notes.terzetto=resize(CFG.notes.terzetto,nt);
+  CFG.notes.accords2=resize(CFG.notes.accords2||[],na);
+  CFG.notes.accords3=resize(CFG.notes.accords3||[],na);
+  CFG.notes.terzetto=resize(CFG.notes.terzetto,withTerzetto?na:0);
   generateInputGrid();onAnyChange();
 }
 function syncGaucheInputs(){
   const s=(k)=>{const el=document.getElementById('nb-'+k);if(el)el.value=(CFG.notes[k]||[]).length;};
-  s('basses');s('accords');s('terzetto');
+  s('basses');s('accords');
+  const terz=document.getElementById('terzetto-enabled');
+  if(terz)terz.checked=(CFG.notes.terzetto||[]).length>0;
+}
+function onTerzettoChange(){
+  readNoteInputsIntoCFG();
+  const enabled=document.getElementById('terzetto-enabled').checked;
+  const n=enabled?(CFG.notes.accords||[]).length:0;
+  const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
+  CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);
+  generateInputGrid();onAnyChange();
+}
+
+function onLhModeChange(){renderLhRowsCfg();onAnyChange();}
+function toggleLhBassFirst(){
+  CFG.lhBassFirst=!CFG.lhBassFirst;
+  updateLhOrderBtn();
+  onAnyChange();
+  forcePreview();
+}
+function updateLhOrderBtn(){
+  const btn=document.getElementById('lh-order-btn');
+  if(!btn)return;
+  const key=CFG.lhBassFirst?'lhOrderBtnInv':'lhOrderBtn';
+  btn.textContent=t(key);
+}
+
+function renderLhRowsCfg(){
+  const wrap=document.getElementById('lh-rows-inner');
+  if(!wrap)return;
+  const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
+  if(isPaired){
+    const pprow=CFG.lhPairsPerRow||2;
+    const totalDuos=Math.max(1,(CFG.notes&&CFG.notes.basses&&CFG.notes.basses.length)||6);
+    wrap.innerHTML=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+      <span style="font-size:.78rem;min-width:80px;" data-i="lhNbDuosTotal">${t('lhNbDuosTotal')} :</span>
+      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos-1})">−</button>
+      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${totalDuos}</span>
+      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos+1})">＋</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:.78rem;min-width:80px;" data-i="lhDuosPerRow">${t('lhDuosPerRow')} :</span>
+      <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(Math.max(1,${pprow}-1))">−</button>
+      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pprow}</span>
+      <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(${pprow}+1)">＋</button>
+    </div>`;
+    return;
+  }
+  // Ensure lhRows is consistent: default to 1 row with all basses if missing
+  if(!CFG.lhRows||!CFG.lhRows.length) CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
+  const nRows=CFG.lhRows.length;
+  let html=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+    <span style="font-size:.78rem;">Nb lignes :</span>
+    <button type="button" class="rng-btn" onclick="lhRowsSetN(Math.max(1,${nRows}-1))">−</button>
+    <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${nRows}</span>
+    <button type="button" class="rng-btn" onclick="lhRowsSetN(${nRows}+1)">＋</button>
+  </div>`;
+  CFG.lhRows.forEach((row,ri)=>{
+    html+=`<div style="display:flex;align-items:center;gap:5px;font-size:.78rem;padding:2px 0;">
+      <span style="min-width:42px;color:var(--gris);">L${ri+1} :</span>
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',Math.max(1,(CFG.lhRows[${ri}].nb||1)-1))">−</button>
+      <input type="number" value="${row.nb}" min="1" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'nb',Math.max(1,parseInt(this.value)||1))">
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',(CFG.lhRows[${ri}].nb||1)+1)">＋</button>
+      <span style="color:var(--gris);margin-left:4px;">${t('rowOffset')} :</span>
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)-1)">−</button>
+      <input type="number" value="${row.offset||0}" min="-30" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'offset',parseInt(this.value)||0)">
+      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)+1)">＋</button>
+    </div>`;
+  });
+  wrap.innerHTML=html;
+  // Sync total basses count to sum of lhRows
+  _syncBassesToLhRows();
+}
+
+function lhRowsSetN(n){
+  n=Math.max(1,n);
+  const cur=CFG.lhRows.length;
+  if(n>cur){for(let i=cur;i<n;i++)CFG.lhRows.push({nb:1,offset:0});}
+  else{CFG.lhRows=CFG.lhRows.slice(0,n);}
+  _syncBassesToLhRows();
+  renderLhRowsCfg();
+  generateInputGrid();
+  onAnyChange();
+}
+
+function lhRowChange(ri,field,val){
+  CFG.lhRows[ri][field]=val;
+  if(field==='nb'){
+    readNoteInputsIntoCFG();
+    _syncBassesToLhRows();
+    generateInputGrid();
+  }
+  renderLhRowsCfg();
+  onAnyChange();
+}
+
+function lhSetPairsPerRow(n){
+  CFG.lhPairsPerRow=Math.max(1,Math.floor(n));
+  renderLhRowsCfg();
+  onAnyChange();
+}
+
+function lhSetTotalDuos(n){
+  n=Math.max(1,Math.floor(n));
+  readNoteInputsIntoCFG();
+  const resize=(arr,count)=>{const r=arr.slice(0,count);while(r.length<count)r.push({p:'',t:''});return r;};
+  CFG.notes.basses=resize(CFG.notes.basses||[],n);
+  CFG.notes.basses2=resize(CFG.notes.basses2||[],n);
+  CFG.notes.basses3=resize(CFG.notes.basses3||[],n);
+  CFG.notes.accords=resize(CFG.notes.accords||[],n);
+  CFG.notes.accords2=resize(CFG.notes.accords2||[],n);
+  CFG.notes.accords3=resize(CFG.notes.accords3||[],n);
+  const terz=document.getElementById('terzetto-enabled');
+  if(terz&&terz.checked)CFG.notes.terzetto=resize(CFG.notes.terzetto||[],n);
+  document.getElementById('nb-basses').value=n;
+  document.getElementById('nb-accords').value=n;
+  generateInputGrid();renderLhRowsCfg();onAnyChange();
+}
+
+function _syncBassesToLhRows(){
+  // Total basses = sum of nb across all lhRows
+  const total=CFG.lhRows.reduce((s,r)=>s+(r.nb||1),0);
+  const resize=(arr,n)=>{const r=arr.slice(0,n);while(r.length<n)r.push({p:'',t:''});return r;};
+  CFG.notes.basses=resize(CFG.notes.basses||[],total);
+  CFG.notes.basses2=resize(CFG.notes.basses2||[],total);
+  CFG.notes.basses3=resize(CFG.notes.basses3||[],total);
+  // Also keep accords in sync (same count as basses by convention)
+  CFG.notes.accords=resize(CFG.notes.accords||[],total);
+  CFG.notes.accords2=resize(CFG.notes.accords2||[],total);
+  CFG.notes.accords3=resize(CFG.notes.accords3||[],total);
+  syncGaucheInputs();
+}
+function bassesOctaveShift(){
+  readNoteInputsIntoCFG();
+  const shiftUp=n=>{if(!n)return'';const m=n.match(/^(.+?)(\d+)$/);return m?m[1]+(parseInt(m[2])+1):n;};
+  CFG.notes.basses2=CFG.notes.basses.map(b=>({p:shiftUp(b.p),t:shiftUp(b.t)}));
+  CFG.notes.basses3=CFG.notes.basses2.map(b=>({p:shiftUp(b.p),t:shiftUp(b.t)}));
+  generateInputGrid();onAnyChange();
+}
+function accordsFifthShift(){
+  readNoteInputsIntoCFG();
+  CFG.notes.accords2=(CFG.notes.accords||[]).map(a=>({p:shiftNote(a.p,7),t:shiftNote(a.t,7)}));
+  generateInputGrid();onAnyChange();
+}
+function basseV2ToAccordV1Shift(){
+  readNoteInputsIntoCFG();
+  CFG.notes.accords=(CFG.notes.basses2||[]).map(b=>({p:shiftNote(b.p,12),t:shiftNote(b.t,12)}));
+  generateInputGrid();onAnyChange();
 }
 function addGaucheBtn(key){
   readNoteInputsIntoCFG();CFG.notes[key].push({p:'',t:''});
+  if(key==='basses'){CFG.notes.basses2.push({p:'',t:''});CFG.notes.basses3.push({p:'',t:''});}
+  if(key==='accords'){CFG.notes.accords2.push({p:'',t:''});CFG.notes.accords3.push({p:'',t:''});}
   const el=document.getElementById('nb-'+key);if(el)el.value=CFG.notes[key].length;
   generateInputGrid();onAnyChange();
 }
 function removeGaucheBtn(key){
   readNoteInputsIntoCFG();
   if(CFG.notes[key].length>0){CFG.notes[key].pop();
+    if(key==='basses'){if(CFG.notes.basses2.length>0)CFG.notes.basses2.pop();if(CFG.notes.basses3.length>0)CFG.notes.basses3.pop();}
+    if(key==='accords'){if(CFG.notes.accords2.length>0)CFG.notes.accords2.pop();if(CFG.notes.accords3.length>0)CFG.notes.accords3.pop();}
     const el=document.getElementById('nb-'+key);if(el)el.value=CFG.notes[key].length;
     generateInputGrid();onAnyChange();}
 }
@@ -1080,7 +1269,11 @@ function readNoteInputsIntoCFG(){
   CFG.notes.droite=newD;
   const readRow=key=>{const n=(CFG.notes[key]||[]).length;const a=[];for(let b=0;b<n;b++)a.push({p:val(`g-${key}-${b}-p`),t:val(`g-${key}-${b}-t`)});return a;};
   CFG.notes.basses =readRow('basses');
-  CFG.notes.accords=readRow('accords');
+  CFG.notes.basses2=readRow('basses2');
+  CFG.notes.basses3=readRow('basses3');
+  CFG.notes.accords =readRow('accords');
+  CFG.notes.accords2=readRow('accords2');
+  CFG.notes.accords3=readRow('accords3');
   CFG.notes.terzetto=readRow('terzetto');
 }
 
@@ -1106,6 +1299,12 @@ function renderRangeesCfg(){
         <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].nb=Math.max(1,(CFG.rangees[${r}].nb||11)-1);document.getElementById('rnb-${r}').value=CFG.rangees[${r}].nb;onRangeesChange()">−</button>
         <input type="number" id="rnb-${r}" value="${rc.nb}" min="1" max="30" style="width:54px;text-align:center;font-size:.82rem;padding:3px;font-weight:700;" oninput="CFG.rangees[${r}].nb=Math.max(1,parseInt(this.value)||1);onRangeesChange()">
         <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].nb=Math.min(30,(CFG.rangees[${r}].nb||11)+1);document.getElementById('rnb-${r}').value=CFG.rangees[${r}].nb;onRangeesChange()">＋</button>
+      </div>
+      <label style="margin-top:3px;">${t('rowOffset')}</label>
+      <div class="rng-ctrl">
+        <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].offset=Math.max(-30,(CFG.rangees[${r}].offset||0)-1);document.getElementById('roff-${r}').value=CFG.rangees[${r}].offset;scheduleLivePreview()">−</button>
+        <input type="number" id="roff-${r}" value="${rc.offset||0}" min="-30" max="30" style="width:54px;text-align:center;font-size:.82rem;padding:3px;font-weight:700;" oninput="CFG.rangees[${r}].offset=Math.min(30,Math.max(-30,parseInt(this.value)||0));scheduleLivePreview()">
+        <button type="button" class="rng-btn" onclick="CFG.rangees[${r}].offset=Math.min(30,(CFG.rangees[${r}].offset||0)+1);document.getElementById('roff-${r}').value=CFG.rangees[${r}].offset;scheduleLivePreview()">＋</button>
       </div></div>`;
   }
   wrap.innerHTML=html;
@@ -1114,50 +1313,163 @@ function renderRangeesCfg(){
 /* ── Generate note input grid ── */
 function generateInputGrid(){
   let html='';
+  const clip=rowClipboard?' has-clip':'';
   // Right hand
   html+=`<div class="note-section"><div class="note-section-title">${t('rightHand')}</div>`;
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11};
     const nb=rc.nb;const notes=CFG.notes.droite[r]||[];
     const lbl=rc.nom.split(' ')[1]||`R${r+1}`;
-    html+=`<div class="row-wrap"><div class="sec-label" style="margin-bottom:4px;">${esc(rc.nom)}</div><div class="btn-grid">`;
+    html+=`<div class="row-wrap" id="rw-d-${r}"><div class="sec-hd" style="margin-bottom:4px;">
+      <span class="sec-label">${esc(rc.nom)}</span>
+      <button type="button" class="rng-btn" onclick="swapPushPull('rw-d-${r}')" title="${t('swapRowTitle')}">⇅</button>
+      <button type="button" class="rng-btn" onclick="mirrorRow('rw-d-${r}')" title="${t('mirrorRowTitle')}">⇆</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-d-${r}')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-d-${r}')" title="${t('pasteRowTitle')}">⬆</button>
+    </div><div class="btn-grid">`;
     for(let b=0;b<nb;b++){
       const n=notes[b]||{p:'',t:''};
       html+=`<div class="btn-cell">
         <div class="btn-num">${lbl} ${b+1}</div>
-        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
-        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
+        <input class="note-input pousse" id="d-${r}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+        <input class="note-input tire"   id="d-${r}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
       </div>`;
     }
     html+=`</div></div>`;
   }
   html+=`</div>`;
-  // Left hand — all sections including terzetto if count > 0
+  // Left hand — voice sections for basses and accords
   html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>`;
-  const gsec=[{key:'basses',label:t('basses'),type:'note'},{key:'accords',label:t('accords'),type:'chord'}];
-  if((CFG.notes.terzetto||[]).length>0)gsec.push({key:'terzetto',label:t('terzetto'),type:'chord'});
-  gsec.forEach(({key,label,type})=>{
-    const arr=CFG.notes[key]||[];const count=arr.length;
-    if(count===0)return;
-    html+=`<div class="row-wrap">
-      <div class="sec-hd">
-        <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${count})</span></span>
-        <button type="button" class="rng-btn" onclick="removeGaucheBtn('${key}')" title="−">−</button>
-        <button type="button" class="rng-btn" onclick="addGaucheBtn('${key}')" title="＋">＋</button>
-      </div>
-      <div class="btn-grid">`;
+  const nbVB=parseInt(document.getElementById('nb-voix-basses')?.value||'2');
+  const nbVA=parseInt(document.getElementById('nb-voix-accords')?.value||'2');
+  const _bCount=(CFG.notes.basses||[]).length;
+  const _aCount=(CFG.notes.accords||[]).length;
+  const _vkeys_b=['basses','basses2','basses3'];
+  const _vkeys_a=['accords','accords2','accords3'];
+  // Basses — one section per voice
+  if(_bCount>0){
+    for(let v=0;v<Math.min(nbVB,3);v++){
+      const vkey=_vkeys_b[v];
+      const arr=CFG.notes[vkey]||[];
+      const label=t('basses')+(nbVB>1?` — V${v+1}`:'');
+      html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
+        <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_bCount})</span></span>
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
+        <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
+        <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
+      </div><div class="btn-grid">`;
+      for(let b=0;b<_bCount;b++){
+        const n=arr[b]||{p:'',t:''};
+        html+=`<div class="btn-cell"><div class="btn-num">B${b+1}</div>
+          <input class="note-input pousse" id="g-${vkey}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+          <input class="note-input tire"   id="g-${vkey}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
+        </div>`;
+      }
+      html+=`</div></div>`;
+    }
+  }
+  // Accords — one section per voice (individual notes, no chord notation)
+  if(_aCount>0){
+    for(let v=0;v<Math.min(nbVA,3);v++){
+      const vkey=_vkeys_a[v];
+      const arr=CFG.notes[vkey]||[];
+      const label=t('accords')+(nbVA>1?` — V${v+1}`:'');
+      html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
+        <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
+        <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
+        <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
+      </div><div class="btn-grid">`;
+      for(let b=0;b<_aCount;b++){
+        const n=arr[b]||{p:'',t:''};
+        html+=`<div class="btn-cell"><div class="btn-num">A${b+1}</div>
+          <input class="note-input pousse" id="g-${vkey}-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+          <input class="note-input tire"   id="g-${vkey}-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
+        </div>`;
+      }
+      html+=`</div></div>`;
+    }
+  }
+  // Terzetto
+  if((CFG.notes.terzetto||[]).length>0){
+    const arr=CFG.notes.terzetto||[];const count=arr.length;
+    html+=`<div class="row-wrap" id="rw-g-terzetto"><div class="sec-hd">
+      <span class="sec-label">${t('terzetto')} <span style="color:var(--gris);font-weight:normal;">(${count})</span></span>
+      <button type="button" class="rng-btn" onclick="removeGaucheBtn('terzetto')" title="−">−</button>
+      <button type="button" class="rng-btn" onclick="addGaucheBtn('terzetto')" title="＋">＋</button>
+      <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-terzetto')" title="${t('swapRowTitle')}">⇅</button>
+      <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-terzetto')" title="${t('mirrorRowTitle')}">⇆</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-g-terzetto')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-terzetto')" title="${t('pasteRowTitle')}">⬆</button>
+    </div><div class="btn-grid">`;
     for(let b=0;b<count;b++){
       const n=arr[b]||{p:'',t:''};
-      html+=`<div class="btn-cell">
-        <div class="btn-num">${label[0].toUpperCase()}${b+1}</div>
-        <input class="note-input pousse" id="g-${key}-${b}-p" data-type="${type}" value="${esc(n.p)}" placeholder="↓" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
-        <input class="note-input tire"   id="g-${key}-${b}-t" data-type="${type}" value="${esc(n.t)}" placeholder="↑" oninput="onAnyChange()" onclick="showPicker(this)" readonly>
+      html+=`<div class="btn-cell"><div class="btn-num">T${b+1}</div>
+        <input class="note-input pousse" id="g-terzetto-${b}-p" data-type="note" value="${esc(n.p)}" placeholder="v" oninput="onAnyChange()" readonly>
+        <input class="note-input tire"   id="g-terzetto-${b}-t" data-type="note" value="${esc(n.t)}" placeholder="^" oninput="onAnyChange()" readonly>
       </div>`;
     }
     html+=`</div></div>`;
-  });
+  }
   html+=`</div>`;
   document.getElementById('note-grid').innerHTML=html;
+  initBtnCellDragDrop();
+}
+
+/* ── Drag-and-swap columns in bass/chord grid ── */
+let _dragSrc=null;
+function initBtnCellDragDrop(){
+  document.querySelectorAll('#note-grid .btn-grid').forEach(grid=>{
+    grid.querySelectorAll('.btn-cell').forEach(cell=>{
+      cell.draggable=true;
+      cell.addEventListener('dragstart',e=>{
+        _dragSrc=cell;
+        e.dataTransfer.effectAllowed='move';
+        setTimeout(()=>cell.classList.add('dragging'),0);
+      });
+      cell.addEventListener('dragend',()=>{
+        cell.classList.remove('dragging');
+        grid.querySelectorAll('.btn-cell').forEach(c=>c.classList.remove('drag-over'));
+        _dragSrc=null;
+      });
+      cell.addEventListener('dragover',e=>{
+        e.preventDefault();e.dataTransfer.dropEffect='move';
+        if(_dragSrc&&_dragSrc!==cell&&_dragSrc.closest('.btn-grid')===grid){
+          grid.querySelectorAll('.btn-cell').forEach(c=>c.classList.remove('drag-over'));
+          cell.classList.add('drag-over');
+        }
+      });
+      cell.addEventListener('dragleave',()=>cell.classList.remove('drag-over'));
+      cell.addEventListener('drop',e=>{
+        e.preventDefault();
+        if(!_dragSrc||_dragSrc===cell)return;
+        const srcGrid=_dragSrc.closest('.btn-grid');
+        if(srcGrid!==grid)return;
+        // Determine indices
+        const cells=[...grid.querySelectorAll('.btn-cell')];
+        const si=cells.indexOf(_dragSrc),ti=cells.indexOf(cell);
+        if(si<0||ti<0||si===ti)return;
+        // Get the note key from the row-wrap id (e.g. "rw-g-basses" → "basses")
+        const rowWrap=grid.closest('.row-wrap');
+        const rowId=rowWrap?rowWrap.id:'';
+        const keyMatch=rowId.match(/^rw-g-(.+)$/);
+        if(!keyMatch)return;
+        const key=keyMatch[1];
+        if(!CFG.notes[key])return;
+        // Swap in CFG
+        const arr=CFG.notes[key];
+        if(si<arr.length&&ti<arr.length){
+          const tmp=arr[si];arr[si]=arr[ti];arr[ti]=tmp;
+        }
+        generateInputGrid();
+        onAnyChange();
+      });
+    });
+  });
 }
 
 
@@ -1168,8 +1480,8 @@ function generateInputGrid(){
 const NOTES_FR={nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
 const NOTES_EN={nat:['C','D','E','F','G','A','B'],sha:['C#','D#',null,'F#','G#','A#',null],fla:['Db','Eb',null,'Gb','Ab','Bb',null]};
 const OCTAVES=['2','3','4','5','6'];
-const CHORDS_FR=()=>{const r=['Do','Ré','Mi','Fa','Sol','La','Si','Do#','Ré#','Fa#','Sol#','Sib','Mib','Lab'];const t=['Maj','Min','7'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
-const CHORDS_EN=()=>{const r=['C','D','E','F','G','A','B','C#','D#','F#','G#','Bb','Eb','Ab'];const t=['Maj','Min','7'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
+const CHORDS_FR=()=>{const r=['Do','Ré','Mi','Fa','Sol','La','Si','Do#','Ré#','Fa#','Sol#','Sib','Mib','Lab'];const t=['Maj','Min','7','V'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
+const CHORDS_EN=()=>{const r=['C','D','E','F','G','A','B','C#','D#','F#','G#','Bb','Eb','Ab'];const t=['Maj','Min','7','V'];const o=[];r.forEach(n=>t.forEach(q=>o.push(`${n} ${q}`)));return o;};
 
 function initPicker(){
   const N=lang==='en'?NOTES_EN:NOTES_FR;
@@ -1178,8 +1490,6 @@ function initPicker(){
   document.getElementById('picker-flats').innerHTML=N.fla.map(n=>n?`<button class="pn flat" onclick="pickerSetNote('${n}')">${n}</button>`:`<span style="min-width:34px;"></span>`).join('');
   const oWrap=document.getElementById('picker-octaves');
   oWrap.innerHTML=OCTAVES.map(o=>`<button class="po" onclick="pickerSetOctave('${o}')">${o}</button>`).join('');
-  const C=lang==='en'?CHORDS_EN():CHORDS_FR();
-  document.getElementById('picker-chords-grid').innerHTML=C.map(c=>`<button class="pc" onclick="pickerInsertDirect('${c}')">${c}</button>`).join('');
 }
 function showPicker(input){
   pickerInput=input;pickerNote='';pickerOctave='';
@@ -1188,8 +1498,7 @@ function showPicker(input){
     const m=v.match(/^(.+?)([2-6])$/);
     if(m){pickerNote=m[1];pickerOctave=m[2];}else pickerNote=v;
   }
-  const isChord=input.dataset.type==='chord';
-  showPickerTab(isChord?'chords':'notes',document.querySelector(isChord?'.picker-tab-btn:nth-child(2)':'.picker-tab-btn:first-child'));
+  showPickerTab('notes',document.querySelector('.picker-tab-btn:first-child'));
   updatePickerHighlights();updatePickerPreview();
   const pk=document.getElementById('note-picker');pk.style.display='block';
   const rect=input.getBoundingClientRect(),sy=window.scrollY,sx=window.scrollX;
@@ -1209,7 +1518,6 @@ function showPickerTab(name,btn){
   document.querySelectorAll('.picker-tab-btn').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
   document.getElementById('picker-tab-notes').classList.toggle('active',name==='notes');
-  document.getElementById('picker-tab-chords').classList.toggle('active',name==='chords');
 }
 function pickerSetNote(n){pickerNote=n;updatePickerHighlights();updatePickerPreview();if(pickerNote&&pickerOctave)pickerInsert();}
 function pickerSetOctave(o){pickerOctave=o;updatePickerHighlights();updatePickerPreview();if(pickerNote&&pickerOctave)pickerInsert();}
@@ -1259,6 +1567,7 @@ function readInputs(){
   const droite=CFG.notes.droite.map((row,ri)=>({
     nom:CFG.rangees[ri]?CFG.rangees[ri].nom:`Rangée ${ri+1}`,
     register:(CFG.rangees[ri]||{}).register||'N',
+    offset:(CFG.rangees[ri]||{}).offset||0,
     boutons:row
   }));
   return{
@@ -1267,10 +1576,21 @@ function readInputs(){
     nomLuthier:val('nom-luthier')||"Ewen d'Aviau",
     date:val('date-creation'),
     nbVoix:parseInt(document.getElementById('nb-voix').value),
+    voixPerRow:readVoixPerRow(),
+    nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
+    nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
+    lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
+    lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhBassFirst:CFG.lhBassFirst||false,
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
     basses:CFG.notes.basses,
+    basses2:CFG.notes.basses2||[],
+    basses3:CFG.notes.basses3||[],
     accords:CFG.notes.accords,
+    accords2:CFG.notes.accords2||[],
+    accords3:CFG.notes.accords3||[],
     terzetto:CFG.notes.terzetto||[],
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -1287,13 +1607,31 @@ function readInputs(){
 /* ╔══════════════════════════════════════════════════════╗
    ║  SVG HELPERS                                         ║
    ╚══════════════════════════════════════════════════════╝ */
-function svg_open(w,h,bg){return`<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif"><rect width="${w}" height="${h}" fill="${bg||'white'}"/>`;}
+let _svgId=0;
+function svg_open(w,h,bg){const id='vp'+(++_svgId);return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif" overflow="hidden"><defs><clipPath id="${id}"><rect width="${w}" height="${h}"/></clipPath></defs><rect width="${w}" height="${h}" fill="${bg||'white'}"/><g clip-path="url(#${id})">`;}
+function svg_close(){return'</g></svg>';}
 function tx(x,y,text,size,fill,weight,anchor){return`<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-weight="${weight||'normal'}" text-anchor="${anchor||'start'}">${text}</text>`;}
 function esc(s){if(!s)return'';return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function escSVG(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function escHTML(s){if(!s)return'';const d=document.createElement('div');d.appendChild(document.createTextNode(String(s)));return d.innerHTML;}
 function fmtDate(d){if(!d)return new Date().toLocaleDateString('fr-FR');try{return new Date(d).toLocaleDateString('fr-FR');}catch(e){return d;}}
 function dn(note){return escSVG(displayNote(note));}  // display note in current lang
+/* Render a button value (single note OR "N1/N2/N3") as SVG text centred at (cx,baseY).
+   For multi-note values the notes are stacked vertically (tspan lines). */
+function svgBtnVal(v,cx,baseY,color){
+  if(!v)return'';
+  const disp=displayNote(v);
+  if(!disp.includes('/')){
+    const fs=disp.length>8?5.5:disp.length>5?6.8:8;
+    return tx(cx,baseY,escSVG(disp),fs,color,'bold','middle');
+  }
+  const parts=disp.split('/').map(p=>p.trim()).filter(Boolean);
+  const lineH=6.5, fs=5.5;
+  const startY=baseY-((parts.length-1)*lineH)/2;
+  let out=`<text font-size="${fs}" fill="${color}" font-weight="bold" text-anchor="middle">`;
+  parts.forEach((p,i)=>out+=`<tspan x="${cx}" y="${startY+i*lineH}">${escSVG(p)}</tspan>`);
+  return out+'</text>';
+}
 
 /* ─── Bellows SVG ─── */
 function bellowsSVG(x,y,w,h,folds,dark){
@@ -1319,7 +1657,7 @@ function bellowsSVG(x,y,w,h,folds,dark){
    ║  SVG KEYBOARD — CLIENT (light preview + dark PDF)    ║
    ╚══════════════════════════════════════════════════════╝ */
 function buildSVG_Droite(data,dark){
-  const R=24,HGAP=60,VGAP=72,BW=26,LPAD=186,MARG=14,HEAD=80,FOOT=34;
+  const R=24,HGAP=60,VGAP=72,LPAD=186,MARG=14,HEAD=80,FOOT=34;
   const gold=dark?'#c9a227':'#2d5a27';
   const bg=dark?'#111111':'#ffffff';
   const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
@@ -1329,19 +1667,19 @@ function buildSVG_Droite(data,dark){
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
 
   const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
-  const W=BW+LPAD+maxBtns*HGAP+MARG;
+  const allOffs=data.droite.map(r=>r.offset||0);
+  const maxOff=Math.max(...allOffs,0);
+  const minOff=Math.min(...allOffs,0);
+  const leftShift=-minOff*(HGAP/2);
+  const BASE=LPAD+leftShift;
+  const W=BASE+maxBtns*HGAP+maxOff*(HGAP/2)+(data.droite.length>1?HGAP/2:0)+MARG;
   const H=MARG+HEAD+data.droite.length*VGAP+FOOT;
 
   let s=svg_open(W,H,bg);
 
-  // Bellows strip
-  s+=bellowsSVG(MARG,MARG+HEAD,BW,data.droite.length*VGAP,Math.max(4,data.droite.length*2),dark);
-  s+=tx(MARG+BW/2,MARG+HEAD-4,t('svgBellowsPush'),6,gold,'bold','middle');
-  s+=tx(MARG+BW/2,MARG+HEAD+data.droite.length*VGAP+10,t('svgBellowsPull'),6,gold,'bold','middle');
-
   // Orientation arrows — horizontal across the top
   const arrowY=MARG+HEAD-10;
-  const ax1=BW+LPAD,ax2=W-MARG-2;
+  const ax1=BASE,ax2=W-MARG-2;
   const arrowMid=(ax1+ax2)/2;
   s+=`<line x1="${ax1+2}" y1="${arrowY}" x2="${ax2-2}" y2="${arrowY}" stroke="${gold}" stroke-width="1" opacity=".5"/>`;
   s+=`<polygon points="${ax1+2},${arrowY} ${ax1+10},${arrowY-4} ${ax1+10},${arrowY+4}" fill="${gold}" opacity=".7"/>`;
@@ -1350,31 +1688,36 @@ function buildSVG_Droite(data,dark){
   s+=tx(ax2-14,arrowY+4,t('svgHigh'),8,gold,'bold','end');
 
   // Title
-  s+=tx(BW+LPAD+(maxBtns*HGAP)/2,MARG+16,escSVG(data.nomInstrument),16,gold,'bold','middle');
-  if(data.nomJoueur)s+=tx(BW+LPAD+(maxBtns*HGAP)/2,MARG+32,`${t('svgClient')} : ${escSVG(data.nomJoueur)}`,10,subtl,'normal','middle');
-  s+=tx(BW+LPAD+(maxBtns*HGAP)/2,MARG+47,`${t('svgLuthier')} : ${escSVG(data.nomLuthier)}  ·  ${fmtDate(data.date)}`,9,subtl,'normal','middle');
+  s+=tx(BASE+(maxBtns*HGAP)/2,MARG+16,escSVG(data.nomInstrument),16,gold,'bold','middle');
+  if(data.nomJoueur)s+=tx(BASE+(maxBtns*HGAP)/2,MARG+32,`${t('svgClient')} : ${escSVG(data.nomJoueur)}`,10,subtl,'normal','middle');
+  s+=tx(BASE+(maxBtns*HGAP)/2,MARG+47,`${t('svgLuthier')} : ${escSVG(data.nomLuthier)}  ·  ${fmtDate(data.date)}`,9,subtl,'normal','middle');
 
-  // Legend
-  const lx=BW+LPAD,ly=MARG+62;
-  s+=`<rect x="${lx}" y="${ly-10}" width="13" height="10" rx="2" fill="${pushBg}" stroke="${stroke}" stroke-width="1.2"/>`;
-  s+=tx(lx+17,ly,t('svgPush'),8,dark?'#ccc':'#333','normal','start');
-  s+=`<rect x="${lx+70}" y="${ly-10}" width="13" height="10" rx="2" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width="1.2"/>`;
-  s+=tx(lx+87,ly,t('svgPull'),8,dark?'#ccc':'#333','normal','start');
+  // Legend – split circle (push=top half, pull=bottom half)
+  const lx=BASE,ly=MARG+62;
+  const lr=10,lcx=lx+lr,lcy=ly-4;
+  s+=`<circle cx="${lcx}" cy="${lcy}" r="${lr}" fill="${bg}" stroke="${stroke}" stroke-width="1.2"/>`;
+  s+=`<path d="M${lcx-lr},${lcy} A${lr},${lr} 0 0,1 ${lcx+lr},${lcy}" fill="${pushBg}"/>`;
+  s+=`<path d="M${lcx-lr},${lcy} A${lr},${lr} 0 0,0 ${lcx+lr},${lcy}" fill="${pullBg}"/>`;
+  s+=`<circle cx="${lcx}" cy="${lcy}" r="${lr}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
+  s+=`<line x1="${lcx-lr}" y1="${lcy}" x2="${lcx+lr}" y2="${lcy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
+  s+=tx(lcx+lr+5,lcy-1,t('svgPush'),8,dark?'#ccc':'#333','normal','start');
+  s+=tx(lcx+lr+5,lcy+9,t('svgPull'),8,dark?'#ccc':'#333','normal','start');
 
   // Rows
   data.droite.forEach((row,ri)=>{
     const cy=MARG+HEAD+ri*VGAP+VGAP/2;
     const stagger=(ri%2===1)?HGAP/2:0;
-    s+=`<rect x="${BW+LPAD-4}" y="${cy-R-6}" width="${row.boutons.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(BW+LPAD-8,cy+4,escSVG(row.nom),9.5,gold,'bold','end');
+    const alignOff=(row.offset||0)*(HGAP/2);
+    s+=`<rect x="${BASE+alignOff-4}" y="${cy-R-6}" width="${row.boutons.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${ri%2===0?band1:band2}" opacity=".7"/>`;
+    s+=tx(BASE+alignOff-8,cy+4,escSVG(row.nom),9.5,gold,'bold','end');
     row.boutons.forEach((btn,bi)=>{
-      const cx=BW+LPAD+stagger+bi*HGAP;
+      const cx=BASE+alignOff+stagger+bi*HGAP;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#ffffff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-      s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
+      s+=tx(cx,cy+3.5,row.boutons.length-bi,7.5,numTx,'normal','middle');
       if(btn.p){const fs=btn.p.length>6?7:8.5;s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
       if(btn.t){const fs=btn.t.length>6?7:8.5;s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
       if(data.showMidi){
@@ -1386,13 +1729,13 @@ function buildSVG_Droite(data,dark){
   });
 
   const fy=MARG+HEAD+data.droite.length*VGAP+14;
-  s+=`<line x1="${BW+LPAD}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
-  s+=tx(BW+LPAD,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#444':'#bbb','normal','start');
-  s+='</svg>';return s;
+  s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
+  s+=tx(BASE,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#444':'#bbb','normal','start');
+  s+=svg_close();return s;
 }
 
 function buildSVG_Gauche(data,dark){
-  const R=24,HGAP=62,VGAP=70,LPAD=110,MARG=12,HEAD=32,FOOT=20;
+  const R=24,HGAP=62,VGAP=70,LPAD=140,MARG=12,HEAD=32,FOOT=20;
   const gold=dark?'#c9a227':'#2d5a27';
   const bg=dark?'#111':'#fff';
   const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
@@ -1400,30 +1743,136 @@ function buildSVG_Gauche(data,dark){
   const stroke=dark?'#c9a227':'#2d5a27';
   const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
   const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
+  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)';
+  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)';
 
-  const sections=[{nom:t('basses'),items:data.basses},{nom:t('accords'),items:data.accords}];
-  if(data.terzetto&&data.terzetto.length)sections.push({nom:t('terzetto'),items:data.terzetto});
-  const maxItems=Math.max(...sections.map(s=>s.items.length),1);
-  const W=LPAD+maxItems*HGAP+MARG;
-  const H=MARG+HEAD+sections.length*VGAP+FOOT;
+  // Paired mode: B1 A1 B2 A2 / B3 A3 B4 A4 / … (PPROW pairs per display row)
+  if(data.lhDisplayMode==='paired'){
+    const PPROW=Math.max(1,data.lhPairsPerRow||2); // pairs per display row
+    const nPairs=Math.max(data.basses.length,data.accords.length);
+    const nDispRows=Math.ceil(nPairs/PPROW);
+    const nCols=PPROW*2;
+    const bassLbl=dark?'#5aa0d0':'#1a4c9c';
+    const accLbl=dark?'#d09040':'#8b6914';
+    const gridCol=dark?'#3a3a3a':'#d0d0d0';
+    const W=LPAD+nCols*HGAP+MARG;
+    const H=MARG+HEAD+nDispRows*VGAP+FOOT;
+    let s=svg_open(W,H,bg);
+    s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
+    for(let r=0;r<nDispRows;r++){
+      const cy=MARG+HEAD+r*VGAP+VGAP/2;
+      s+=`<rect x="${LPAD-4}" y="${cy-R-6}" width="${nCols*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${r%2===0?band1:band2}" opacity=".7"/>`;
+      if(r>0){const yh=MARG+HEAD+r*VGAP;s+=`<line x1="${LPAD-4}" y1="${yh}" x2="${W-MARG}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
+      for(let q=0;q<PPROW;q++){
+        const pi=r*PPROW+q;
+        if(pi>=nPairs)break;
+        const bCol=data.lhBassFirst?q*2:q*2+1,aCol=data.lhBassFirst?q*2+1:q*2;
+        [[data.basses[pi],'B',bCol,bassLbl,data.nbVoixBasses||2,data.basses2],[data.accords[pi],'A',aCol,accLbl,data.nbVoixAccords||2,data.accords2]].forEach(([btn,lbl,col,lblCol,voix,arr2])=>{
+          if(!btn)return;
+          const cx=LPAD+col*HGAP;
+          const btn2=(voix>1&&arr2&&arr2.length>pi)?arr2[pi]:null;
+          s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+          s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
+          s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
+          s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
+          s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
+          s+=tx(cx,cy+3.5,pi+1,7.5,numTx,'normal','middle');
+          s+=tx(cx-R+5,cy-R+8,lbl,7,lblCol,'bold','start');
+          const btn2HasNotes=btn2&&(btn2.p||btn2.t);
+          if(btn2HasNotes){
+            if(btn.p)s+=svgBtnVal(btn.p,cx,cy-17,pushTx);
+            if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-7,pushTx2);
+            if(btn.t)s+=svgBtnVal(btn.t,cx,cy+9,pullTx);
+            if(btn2.t)s+=svgBtnVal(btn2.t,cx,cy+19,pullTx2);
+          }else{
+            if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
+            if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);
+          }
+          if(data.showMidi){
+            const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
+            if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
+            if(mt!==null)s+=tx(cx+R-2,cy+R-2,mt,5.5,'rgba(100,140,220,.8)','normal','end');
+          }
+        });
+      }
+    }
+    s+=svg_close();return s;
+  }
+
+  // Separated mode: multi-row basses/accords via lhRows
+  const lhRows=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:data.basses.length||1,offset:0}];
+  const secRows=[];
+  let bassIdx=0,accordIdx=0;
+  const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
+  const bassFirst=data.lhBassFirst||false;
+  // Build accords sections
+  const accordSecs=[];
+  lhRows.forEach((row,ri)=>{
+    accordSecs.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(accordIdx,accordIdx+row.nb):null,offset:row.offset||0,type:'A',voix:vA});
+    accordIdx+=row.nb;
+  });
+  // Build basses sections
+  const basseSecs=[];
+  lhRows.forEach((row,ri)=>{
+    basseSecs.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bassIdx,bassIdx+row.nb):null,offset:row.offset||0,type:'B',voix:vB});
+    bassIdx+=row.nb;
+  });
+  // Order: bassFirst → basses then accords, else accords then basses
+  if(bassFirst){basseSecs.forEach(s=>secRows.push(s));accordSecs.forEach(s=>secRows.push(s));}
+  else{accordSecs.forEach(s=>secRows.push(s));basseSecs.forEach(s=>secRows.push(s));}
+  if(data.terzetto&&data.terzetto.length)secRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0,type:'T',voix:null});
+
+  const maxItems=Math.max(...secRows.map(sc=>sc.items.length),1);
+  const maxSecOff=Math.max(...secRows.map(sc=>sc.offset||0),0);
+  const W=LPAD+maxItems*HGAP+maxSecOff*(HGAP/2)+MARG;
+  const H=MARG+HEAD+secRows.length*VGAP+FOOT;
 
   let s=svg_open(W,H,bg);
   s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
-  sections.forEach((sec,si)=>{
+  // Pass 1: alternating row bands + row labels
+  secRows.forEach((sec,si)=>{
+    const off=(sec.offset||0)*(HGAP/2);
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
-    const stagger=(si%2===1)?HGAP/2:0;
-    s+=`<rect x="${LPAD-4}" y="${cy-R-6}" width="${sec.items.length*HGAP+stagger+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(LPAD-7,cy+4,escSVG(sec.nom),10,gold,'bold','end');
+    if(sec.items.length)
+      s+=`<rect x="${LPAD-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
+    s+=tx(LPAD-R-10,cy,escSVG(sec.nom),10,gold,'bold','end');
+    if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-R-10,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
+  });
+  // Pass 2: table grid (column + row separator lines, outer border, column numbers)
+  if(secRows.length>0&&maxItems>0){
+    const gTop=MARG+HEAD,gBot=MARG+HEAD+secRows.length*VGAP;
+    const gLeft=LPAD-HGAP/2,gRight=LPAD+maxItems*HGAP-HGAP/2;
+    const gridCol=dark?'#3a3a3a':'#d0d0d0';
+    s+=`<rect x="${gLeft}" y="${gTop}" width="${gRight-gLeft}" height="${gBot-gTop}" fill="none" stroke="${dark?'#555':'#aaa'}" stroke-width="1.2" rx="2"/>`;
+    for(let ci=1;ci<maxItems;ci++){const xv=LPAD+ci*HGAP-HGAP/2;s+=`<line x1="${xv}" y1="${gTop}" x2="${xv}" y2="${gBot}" stroke="${gridCol}" stroke-width="1"/>`;}
+    for(let ri=1;ri<secRows.length;ri++){const yh=gTop+ri*VGAP;s+=`<line x1="${gLeft}" y1="${yh}" x2="${gRight}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
+    for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');}
+  }
+  // Pass 3: buttons on top of grid
+  secRows.forEach((sec,si)=>{
+    const off=(sec.offset||0)*(HGAP/2);
+    const cy=MARG+HEAD+si*VGAP+VGAP/2;
+    const has2=sec.items2&&sec.items2.length>0;
     sec.items.forEach((btn,bi)=>{
-      const cx=LPAD+stagger+bi*HGAP;
+      const cx=LPAD+bi*HGAP+off;
+      const btn2=has2?(sec.items2[bi]||null):null;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
       s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
-      if(btn.p){const fs=btn.p.length>7?7:(btn.p.length>4?7.5:8.5);s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
-      if(btn.t){const fs=btn.t.length>7?7:(btn.t.length>4?7.5:8.5);s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
+      const btn2HasNotes=has2&&btn2&&(btn2.p||btn2.t);
+      if(btn2HasNotes){
+        // 2-voice layout: V1 outer, V2 inner (closer to center divider)
+        if(btn.p)s+=svgBtnVal(btn.p,cx,cy-17,pushTx);
+        if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-7,pushTx2);
+        if(btn.t)s+=svgBtnVal(btn.t,cx,cy+9,pullTx);
+        if(btn2.t)s+=svgBtnVal(btn2.t,cx,cy+19,pullTx2);
+      } else {
+        if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
+        if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);
+      }
       if(data.showMidi){
         const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);
         if(mp!==null)s+=tx(cx+R-2,cy-R+6,mp,5.5,'rgba(100,140,220,.8)','normal','end');
@@ -1431,22 +1880,108 @@ function buildSVG_Gauche(data,dark){
       }
     });
   });
-  s+='</svg>';return s;
+  s+=svg_close();return s;
 }
 
+/* ── Combined landscape SVG: Right Hand + Left Hand side-by-side ── */
+function buildSVG_Combined(data,dark){
+  const svgD=buildSVG_Droite(data,dark);
+  const svgG=buildSVG_Gauche(data,dark);
+  const wD=+(svgD.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+  const hD=+(svgD.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,600])[1];
+  const wG=+(svgG.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+  const hG=+(svgG.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,600])[1];
+  const GAP=28;
+  const W=wD+GAP+wG;
+  const H=Math.max(hD,hG);
+  const bg=dark?'#111111':'#ffffff';
+  const gold=dark?'#c9a227':'#2d5a27';
+  // Re-root each SVG into the outer canvas by adding x/y to the outer <svg> tag
+  // (nested SVG keeps its own viewBox and clipPath — fully supported per SVG spec)
+  const yD=Math.round((H-hD)/2);
+  const yG=Math.round((H-hG)/2);
+  const innerD=svgD.replace(/^<svg\b/,`<svg x="0" y="${yD}"`);
+  const innerG=svgG.replace(/^<svg\b/,`<svg x="${wD+GAP}" y="${yG}"`);
+  return [
+    `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif" overflow="hidden">`,
+    `<rect width="${W}" height="${H}" fill="${bg}"/>`,
+    innerD,
+    `<line x1="${wD+GAP/2}" y1="10" x2="${wD+GAP/2}" y2="${H-10}" stroke="${gold}" stroke-width="1.2" opacity=".25" stroke-dasharray="5,4"/>`,
+    innerG,
+    `</svg>`
+  ].join('');
+}
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  SVG SOMMIER (reed plate view)                       ║
    ╚══════════════════════════════════════════════════════╝ */
+/* ╔══════════════════════════════════════════════════════╗
+   ║  VOICE TYPE HELPERS                                  ║
+   ╚══════════════════════════════════════════════════════╝ */
+const VOICE_TYPE_DATA={
+  'N' :{label:'N',  oct:0,  reg:"8'",   desc:"Naturel 8'"},
+  'N+':{label:'N+', oct:0,  reg:"8'+",  desc:"Naturel 8' enrichi +"},
+  'N-':{label:'N-', oct:0,  reg:"8'-",  desc:"Naturel 8' enrichi -"},
+  'B' :{label:'B',  oct:-1, reg:"16'",  desc:"Basse 16'"},
+  'A' :{label:'A',  oct:+1, reg:"4'",   desc:"Aigu 4'"},
+};
+function readVoixPerRow(){
+  const nb=parseInt(document.getElementById('nb-voix')?.value)||2;
+  const arr=[];
+  for(let i=0;i<nb;i++){const s=document.getElementById('voix-v'+i);arr.push(s?s.value:null);}
+  return arr;
+}
+function renderVoixPerRow(){
+  const nb=parseInt(document.getElementById('nb-voix')?.value)||2;
+  const wrap=document.getElementById('voix-per-row-wrap');if(!wrap)return;
+  const prev=readVoixPerRow();
+  const opts=['N','N+','N-','B','A'];
+  const lbl={'N':"N — 8' naturel",'N+':"N+ — 8' +",'N-':"N- — 8' -",'B':"B — 16' basse",'A':"A — 4' aigu"};
+  const dflt=['B','N','A'];
+  wrap.innerHTML=Array.from({length:nb},(_,i)=>{
+    const val=prev[i]||dflt[i]||'N';
+    return `<div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+      <span style="font-size:.78rem;color:#888;min-width:46px;">Voix ${i+1}</span>
+      <select id="voix-v${i}" onchange="onAnyChange()" style="font-size:.82rem;flex:1;">
+        ${opts.map(o=>`<option value="${o}"${o===val?' selected':''}>${lbl[o]}</option>`).join('')}
+      </select></div>`;
+  }).join('');
+}
+function shiftOctave(noteStr,octaves){
+  if(!noteStr||!octaves)return noteStr;
+  const m=noteStr.match(/^(.+?)(\d+)$/);
+  if(!m)return noteStr;
+  return m[1]+Math.max(0,parseInt(m[2])+octaves);
+}
+function expandVoicesForSommier(rows,voixPerRow){
+  const legacyMap={N:['N'],BN:['B','N'],NH:['N','A'],BNH:['B','N','A']};
+  const arr=Array.isArray(voixPerRow)?voixPerRow:(legacyMap[voixPerRow]||['N']);
+  if(arr.length<=1)return rows;
+  const result=[];
+  for(const row of rows){
+    for(const vtype of arr){
+      const vd=VOICE_TYPE_DATA[vtype]||VOICE_TYPE_DATA['N'];
+      result.push({
+        nom:row.nom+' — '+vd.label+' ('+vd.reg+')',
+        boutons:(row.boutons||[]).map(b=>({p:shiftOctave(b.p,vd.oct),t:shiftOctave(b.t,vd.oct)})),
+        offset:row.offset||0
+      });
+    }
+  }
+  return result;
+}
 function buildSommierSection(title,rows,dark){
-  const CW=58,CH=46,LPAD=164,MARG=12,HEAD=52,VGAP=CH+6,FOOT=20;
+  const CW=58,CH=46,MARG=12,HEAD=52,VGAP=CH+6,FOOT=20;
+  // Compute LPAD dynamically from the longest row label
+  // Estimate: ~5.6px per char at font-size 9 bold + 14px padding
+  const maxLabelLen=Math.max(...rows.map(r=>(r.nom||r.label||'').length),0);
+  const LPAD=Math.max(120,Math.ceil(maxLabelLen*5.6)+14);
   const gold=dark?'#c9a227':'#2d5a27';
   const bg=dark?'#111':'#fff';
   const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
   const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
   const numTx=dark?'rgba(200,162,39,.4)':'rgba(0,0,0,.3)';
   const sep=dark?'#3a3a1a':'#cccccc';
-  const stagger=CW/2;
   const showMidi=document.getElementById('show-midi')?.checked;
 
   function cell(cx,cy,num,pNote,tNote){
@@ -1466,193 +2001,149 @@ function buildSommierSection(title,rows,dark){
   }
 
   const maxBtns=Math.max(...rows.map(r=>r.boutons?r.boutons.length:(r.items?r.items.length:0)),1);
-  const W=LPAD+maxBtns*CW+stagger+MARG;
+  const allOffs=rows.map(r=>r.offset||0);
+  const maxOff=Math.max(...allOffs,0);
+  const minOff=Math.min(...allOffs,0);
+  const leftShift=-minOff*(CW/2);
+  const RBASE=LPAD+leftShift;
+  const W=RBASE+maxBtns*CW+maxOff*(CW/2)+MARG;
   const H=MARG+HEAD+rows.length*VGAP+FOOT;
   let s=svg_open(W,H,bg);
 
   // Header
   s+=tx(W/2,MARG+15,escSVG(title),12,gold,'bold','middle');
-  s+=`<rect x="${LPAD}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pushBg}" stroke="${dark?'#4a7a40':'#2d5a27'}" stroke-width=".8"/>`;
-  s+=tx(LPAD+17,MARG+33,t('svgPush'),7.5,dark?'#ccc':'#333','normal','start');
-  s+=`<rect x="${LPAD+68}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width=".8"/>`;
-  s+=tx(LPAD+85,MARG+33,t('svgPull'),7.5,dark?'#ccc':'#333','normal','start');
-  if(showMidi)s+=tx(LPAD+135,MARG+33,'MIDI = coin ↗',7,dark?'rgba(100,140,220,.8)':'rgba(21,101,192,.6)','normal','start');
+  s+=`<rect x="${RBASE}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pushBg}" stroke="${dark?'#4a7a40':'#2d5a27'}" stroke-width=".8"/>`;
+  s+=tx(RBASE+17,MARG+33,t('svgPush'),7.5,dark?'#ccc':'#333','normal','start');
+  s+=`<rect x="${RBASE+68}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width=".8"/>`;
+  s+=tx(RBASE+85,MARG+33,t('svgPull'),7.5,dark?'#ccc':'#333','normal','start');
+  if(showMidi)s+=tx(RBASE+135,MARG+33,'MIDI = coin ↗',7,dark?'rgba(100,140,220,.8)':'rgba(21,101,192,.6)','normal','start');
 
   rows.forEach((row,ri)=>{
     const rowY=MARG+HEAD+ri*VGAP;
-    const rowStag=(ri%2===1)?stagger:0;
     const nom=row.nom||(row.label||`R${ri+1}`);
     const items=row.boutons||row.items||[];
-    s+=tx(LPAD-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
-    items.forEach((btn,bi)=>{s+=cell(LPAD+rowStag+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
+    const alignOff=(row.offset||0)*(CW/2);
+    s+=tx(RBASE+alignOff-5,rowY+CH/2+4,escSVG(nom),9,gold,'bold','end');
+    items.forEach((btn,bi)=>{s+=cell(RBASE+alignOff+bi*CW,rowY,bi+1,btn.p||'',btn.t||'');});
   });
-  s+='</svg>';return s;
+  s+=svg_close();return s;
 }
 
+function buildLhSommierSections(data){
+  const lhRows=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:Math.max(data.basses.length,data.accords.length)||1,offset:0}];
+  const lhSections=[];
+  let bIdx=0,aIdx=0;
+  const vB=data.nbVoixBasses||2, vA=data.nbVoixAccords||2;
+  lhRows.forEach((row,ri)=>{
+    const rowLabel=lhRows.length===1?'':`${ri+1}`;
+    const bSlice=data.basses?data.basses.slice(bIdx,bIdx+row.nb):[];
+    const aSlice=data.accords?data.accords.slice(aIdx,aIdx+row.nb):[];
+    if(bSlice.length){
+      const basNom=lhRows.length===1?t('basses'):t('basses')+' '+rowLabel;
+      const _bkeys=['basses','basses2','basses3'];
+      for(let v=0;v<vB;v++){
+        const vSlice=(data[_bkeys[v]]||data.basses||[]).slice(bIdx,bIdx+row.nb);
+        lhSections.push({nom:basNom+(vB>1?` — V${v+1}`:''),items:vSlice,offset:row.offset||0});
+      }
+    }
+    if(aSlice.length){
+      const accNom=lhRows.length===1?t('accords'):t('accords')+' '+rowLabel;
+      const _akeys=['accords','accords2','accords3'];
+      for(let v=0;v<vA;v++){
+        const vSlice=(data[_akeys[v]]||data.accords||[]).slice(aIdx,aIdx+row.nb);
+        lhSections.push({nom:accNom+(vA>1?` — V${v+1}`:''),items:vSlice,offset:row.offset||0});
+      }
+    }
+    bIdx+=row.nb;aIdx+=row.nb;
+  });
+  if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
+  return lhSections;
+}
 function buildSommierSVG(data,dark){
   const rhTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
   const lhTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
-  const lhSections=[];
-  if(data.basses&&data.basses.length)lhSections.push({nom:t('basses'),items:data.basses});
-  if(data.accords&&data.accords.length)lhSections.push({nom:t('accords'),items:data.accords});
-  if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto});
-  const svgD=buildSommierSection(rhTitle,data.droite,dark);
+  const lhSections=buildLhSommierSections(data);
+  const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
-  const h3style=`color:var(--vert);font-size:.88rem;margin-bottom:10px;`;
+  const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
   const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
   return `<h3 style="${dark?h3dstyle:h3style}">${t('svgRH')}</h3>${svgD}
     <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}`;
 }
 
-/* ╔══════════════════════════════════════════════════════╗
-   ║  MANUFACTURER TABLE                                  ║
-   ╚══════════════════════════════════════════════════════╝ */
-function buildManufacturerTable(data,dark){
-  const date=fmtDate(data.date);
-  const showMidi=data.showMidi;
-  const gold=dark?'#c9a227':'#2d5a27';
-  const subStyle=dark?'color:#aaa;':'color:#666;';
-  const os=data.orderSpecs||{};
-
-  // ── Description générale (nb touches / nb accords)
-  const totalBtns=data.droite.reduce((s,r)=>s+r.boutons.length,0);
-  const nbBasses=data.basses.length;
-  const genDesc=`${totalBtns}/${nbBasses}`;
-  // ── Row spec string  e.g.  "1B / 2N"  or  "3N"
-  const rowSpecStr=data.droite.map(r=>r.register||'N').join(' / ');
-
-  const thStyle=dark?`style="background:#1a1500;color:#c9a227;border-color:#333;"`:'';
-  const tdStyle=dark?`style="background:#1a1a1a;border-color:#333;color:#ddd;"`:'';
-  const hdStyle=dark?`style="background:#111;color:#c9a227;border-color:#333;font-weight:700;"`:'class="row-hd"';
-  const clStyle=dark?`style="background:#0d0d00;border-color:#333;color:#ddd;"`:`style="background:#fafdf8;"`;
-  const clHdStyle=dark?`style="background:#0d0d00;color:#c9a227;border-color:#333;font-weight:700;"`:`style="background:#e8f5e3;color:#2d5a27;font-weight:700;"`;
-  const clValStyle=dark?`style="background:#1a1a1a;border-color:#333;color:#e8e8c8;font-weight:700;"`:`style="background:#fff;font-weight:700;"`;
-
-  let h='';
-
-  // ══ VOCI ARMONICHE CHECKLIST HEADER ══
-  h+=`<div style="border:2px solid ${dark?'#c9a227':'#2d5a27'};border-radius:8px;overflow:hidden;margin-bottom:18px;">
-    <div style="background:${dark?'#1a1500':'#2d5a27'};color:${dark?'#c9a227':'#fff'};padding:8px 14px;font-size:.86rem;font-weight:700;letter-spacing:.04em;">
-      📋 ${t('orderChecklistTitle')} &nbsp;—&nbsp; ${escHTML(data.nomInstrument)}
-    </div>
-    <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
-      <tbody>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;width:36%">${t('clQty')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.qty||'1')}</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;width:36%">${t('clReedType')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.reedType||'—')}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clDesc')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${genDesc} <span style="opacity:.6;font-weight:normal;font-size:.76rem;">(${t('clDescHint')})</span></td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTonality')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomInstrument)}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clRowSpec')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(rowSpecStr)}
-            <span style="opacity:.6;font-weight:normal;font-size:.72rem;">&nbsp;(B=16' · N=8' · N+=8'+ · N-=8'- · A=4')</span></td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTuning')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.tuning||'440')} Hz</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clTremolo')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.tremolo||'—')}</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clHarmony')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.harmony||'—')}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clBassType')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.bassType||'—')}</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clBassComp')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(os.bassComp||'—')}</td>
-        </tr>
-        <tr>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clVoices')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${data.nbVoix}</td>
-          <td ${clHdStyle} style="${dark?'background:#0d0d00;color:#c9a227;':'background:#e8f5e3;color:#2d5a27;'}font-weight:700;border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${t('clLuthier')}</td>
-          <td ${clValStyle} style="border:1px solid ${dark?'#333':'#c8e0c5'};padding:5px 10px;">${escHTML(data.nomLuthier)} — ${date}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>`;
-
-  // ══ NOTE TABLES ══
-  const tableStart=(midi)=>`<table class="mfr-table" style="${dark?'color:#ddd;':''}"><thead><tr>
-    <th ${thStyle}>${t('mfrRow')}</th>
-    <th ${thStyle}>${t('clRowSpec')}</th>
-    <th ${thStyle}>${t('mfrNo')}</th>
-    <th ${thStyle}>${t('mfrPushNote')}<br><small style="font-weight:400;opacity:.8">${t('mfrPushSub')}</small></th>
-    <th ${thStyle}>${t('mfrPullNote')}<br><small style="font-weight:400;opacity:.8">${t('mfrPullSub')}</small></th>
-    ${midi?`<th ${thStyle}>${t('mfrMidiPush')}</th><th ${thStyle}>${t('mfrMidiPull')}</th>`:''}
-  </tr></thead><tbody>`;
-
-  h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:0 0 10px;font-size:.88rem;">${t('mfrRH')}</h4>`;
-  h+=tableStart(showMidi);
-  data.droite.forEach(row=>{
-    const reg=row.register||'N';
-    row.boutons.forEach((btn,bi)=>{
-      h+=`<tr>`;
-      if(bi===0){
-        h+=`<td ${hdStyle} rowspan="${row.boutons.length}">${escHTML(row.nom)}</td>`;
-        h+=`<td ${hdStyle} rowspan="${row.boutons.length}" style="font-size:.8rem;text-align:center;">${reg}<br><span style="font-weight:normal;opacity:.7;font-size:.7rem;">${(lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS)[reg]||reg}</span></td>`;
-      }
-      h+=`<td ${tdStyle}>${bi+1}</td>`;
-      h+=`<td class="note-p" ${tdStyle}>${escHTML(displayNote(btn.p))||'—'}</td>`;
-      h+=`<td class="note-t" ${tdStyle}>${escHTML(displayNote(btn.t))||'—'}</td>`;
-      if(showMidi){const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);h+=`<td class="midi-c" ${tdStyle}>${mp!==null?mp:'—'}</td><td class="midi-c" ${tdStyle}>${mt!==null?mt:'—'}</td>`;}
-      h+=`</tr>`;
-    });
-  });
-  h+=`</tbody></table>`;
-
-  const lhExtra=data.terzetto.length?` &amp; ${t('terzetto')}`:'';
-  h+=`<h4 style="color:${gold};border-bottom:2px solid ${dark?'#333':'#c8e0c5'};padding-bottom:5px;margin:18px 0 10px;font-size:.88rem;">${t('mfrLH')}${lhExtra}</h4>`;
-  h+=`<table class="mfr-table" style="${dark?'color:#ddd;':''}"><thead><tr>
-    <th ${thStyle}>${t('mfrType')}</th><th ${thStyle}>${t('mfrNo')}</th>
-    <th ${thStyle}>${t('mfrNoteChordPush')}</th><th ${thStyle}>${t('mfrNoteChordPull')}</th>
-    ${showMidi?`<th ${thStyle}>${t('mfrMidiPush')}</th><th ${thStyle}>${t('mfrMidiPull')}</th>`:''}
-  </tr></thead><tbody>`;
-  const gs=[{nom:t('basses'),arr:data.basses},{nom:t('accords'),arr:data.accords}];
-  if(data.terzetto.length)gs.push({nom:t('terzetto'),arr:data.terzetto});
-  gs.forEach(({nom,arr})=>{
-    arr.forEach((btn,bi)=>{
-      h+=`<tr>`;
-      if(bi===0)h+=`<td ${hdStyle} rowspan="${arr.length}">${nom}</td>`;
-      h+=`<td ${tdStyle}>${bi+1}</td>`;
-      h+=`<td class="note-p" ${tdStyle}>${escHTML(displayNote(btn.p))||'—'}</td>`;
-      h+=`<td class="note-t" ${tdStyle}>${escHTML(displayNote(btn.t))||'—'}</td>`;
-      if(showMidi){const mp=noteToMidi(btn.p),mt=noteToMidi(btn.t);h+=`<td class="midi-c" ${tdStyle}>${mp!==null?mp:'—'}</td><td class="midi-c" ${tdStyle}>${mt!==null?mt:'—'}</td>`;}
-      h+=`</tr>`;
-    });
-  });
-  h+=`</tbody></table>`;
-
-  h+=`<div style="margin-top:18px;background:${dark?'#1a1500':'#f6f9f5'};border:1.5px solid ${dark?'#333':'#c8e0c5'};border-radius:6px;padding:11px 14px;font-size:.78rem;${dark?'color:#ccc;':''}">
-    <strong>${t('specTitle')}</strong><br>
-    &bull; ${t('spec1')}<br>&bull; ${t('spec2')} : <strong>${data.nbVoix}</strong><br>
-    &bull; ${t('spec3')}<br>&bull; ${t('spec4')}<br><br>
-    <em>${t('specGenBy')} ${date} — ${escHTML(data.nomLuthier)} — ewendaviau.com</em></div>`;
-  return h;
-}
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  LIVE PREVIEW                                        ║
    ╚══════════════════════════════════════════════════════╝ */
+/* Scale svgTgt to same natural width as svgRef (centers content via viewBox offset).
+   This ensures CSS max-width:100% scales both SVGs identically → same visual text size. */
+function matchSvgWidth(svgRef,svgTgt){
+  const wRef=+(svgRef.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,0])[1];
+  const wTgt=+(svgTgt.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,0])[1];
+  const hTgt=+(svgTgt.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,0])[1];
+  if(wRef<=wTgt||wTgt===0)return svgTgt;
+  const xOff=(wRef-wTgt)/2;
+  return svgTgt.replace(/<svg [^>]+>/,
+    `<svg width="${wRef}" height="${hTgt}" viewBox="${-xOff} 0 ${wRef} ${hTgt}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif">`);
+}
+
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
+let rotateMode=0; // 0=normal, 1=+90°, -1=-90°
+function toggleRotateView(){
+  // Cycle: 0 (normal) → 1 (+90°) → -1 (-90°) → 0
+  if(rotateMode===0) rotateMode=1;
+  else if(rotateMode===1) rotateMode=-1;
+  else rotateMode=0;
+  const btn=document.getElementById('rotate-btn');
+  if(btn){
+    btn.classList.toggle('active-rotate',rotateMode!==0);
+    if(rotateMode===0) btn.textContent=t('rotateView');
+    else if(rotateMode===1) btn.textContent='↩ +90°';
+    else btn.textContent='↺ −90°';
+  }
+  runLivePreview();
+}
 function runLivePreview(){
   try{
+    readNoteInputsIntoCFG();
     const data=readInputs();
     const svgD=buildSVG_Droite(data,false);
-    const svgG=buildSVG_Gauche(data,false);
-    document.getElementById('visual-output').innerHTML=
-      `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
-       <h3 style="color:var(--vert);font-size:.88rem;margin:16px 0 9px;">${t('svgLH')}</h3>${svgG}`;
-    document.getElementById('table-output').innerHTML=buildManufacturerTable(data,false);
+    const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
+    const outEl=document.getElementById('visual-output');
+    if(rotateMode!==0){
+      outEl.classList.add('rotated');
+      // Combined SVG dimensions
+      const mhD=svgD.match(/\bheight="(\d+(?:\.\d+)?)"/),mwD=svgD.match(/\bwidth="(\d+(?:\.\d+)?)"/);
+      const mhG=svgG.match(/\bheight="(\d+(?:\.\d+)?)"/),mwG=svgG.match(/\bwidth="(\d+(?:\.\d+)?)"/);
+      const wD=mwD?+mwD[1]:800,hD=mhD?+mhD[1]:600;
+      const wG=mwG?+mwG[1]:800,hG=mhG?+mhG[1]:600;
+      const gap=24,totalW=Math.max(wD,wG),totalH=hD+gap+hG;
+      // Scale to fill available viewport height (fallback 200 = estimated header height when element not yet laid out)
+      const topOffset=outEl.getBoundingClientRect().top||200;
+      const availH=Math.max(300,window.innerHeight-topOffset-20); // 300=min height; 20=bottom margin
+      const scale=availH/totalH;
+      const visW=Math.round(totalW*scale);
+      // CSS transform: +90° = rotate(90deg) translateY(-totalW)
+      //               -90° = translateY(totalH) rotate(-90deg)
+      const transform = rotateMode===1
+        ? `rotate(90deg) translateY(-${totalW}px)`
+        : `translateY(${totalH}px) rotate(-90deg)`;
+      const inner=`<div style="display:flex;flex-direction:column;gap:0;">
+          <h3 style="color:var(--vert);font-size:.88rem;margin-bottom:6px;">${t('svgRH')}</h3>${svgD}
+          <div style="margin:${gap/2}px 0;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
+          <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 6px;">${t('svgLH')}</h3>${svgG}
+        </div>`;
+      outEl.innerHTML=`<div style="width:${visW}px;height:${availH}px;overflow:hidden;"><div class="rotate-scale-wrap" style="transform:scale(${scale});"><div class="svg-rotate-wrap" style="width:${totalH}px;height:${totalW}px;transform:${transform};">${inner}</div></div></div>`;
+    } else {
+      outEl.classList.remove('rotated');
+      outEl.innerHTML=
+        `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
+         <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
+         <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 9px;">${t('svgLH')}</h3>${svgG}`;
+    }
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
-  }catch(e){}
+  }catch(e){console.error('runLivePreview:',e);}
 }
 
 /* ── Tabs ── */
@@ -1662,95 +2153,345 @@ function showTab(name,btn){
   document.getElementById('tab-visual').style.display   =name==='visual'   ?'':'none';
   document.getElementById('tab-fabricant').style.display=name==='fabricant'?'':'none';
 }
-function showFabricantView(mode,btn){
-  fabricantView=mode;
-  document.querySelectorAll('.fab-view-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('fab-view-liste').style.display  =mode==='liste'  ?'':'none';
-  document.getElementById('fab-view-sommier').style.display=mode==='sommier'?'':'none';
-}
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  PDF PRINT — DARK/GOLD MIDICORE DESIGN               ║
    ╚══════════════════════════════════════════════════════╝ */
-function printSection(which){
-  const data=readInputs();
-  const title=which==='visual'
-    ?`${t('pdfClientTitle')} — ${data.nomInstrument}`
-    :`${t('pdfMfrTitle')} — ${data.nomInstrument}`;
-  const dark=true; // always dark/gold for PDF
+/* ╔══════════════════════════════════════════════════════╗
+   ║  PDF DOWNLOAD — jsPDF (no print dialog)              ║
+   ╚══════════════════════════════════════════════════════╝ */
+function loadScript(url){
+  return new Promise((res,rej)=>{
+    if(document.querySelector(`script[src="${url}"]`)){res();return;}
+    const s=document.createElement('script');
+    s.src=url;s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+function svgToPngDataUrl(svgStr,rotAngle){
+  return new Promise((res,rej)=>{
+    const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
+    const sw=mw?+mw[1]:800,sh=mh?+mh[1]:600;
+    const SCALE=2;
+    const rot=rotAngle||0;
+    const cw=(rot===90||rot===-90)?sh:sw;
+    const ch=(rot===90||rot===-90)?sw:sh;
+    const c=document.createElement('canvas');c.width=cw*SCALE;c.height=ch*SCALE;
+    const ctx=c.getContext('2d');ctx.scale(SCALE,SCALE);
+    const img=new Image();
+    img.onload=()=>{
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch);
+      ctx.save();
+      ctx.beginPath();ctx.rect(0,0,cw,ch);ctx.clip();
+      if(rot===90){ctx.translate(ch,0);ctx.rotate(Math.PI/2);}
+      else if(rot===-90){ctx.translate(0,cw);ctx.rotate(-Math.PI/2);}
+      ctx.drawImage(img,0,0,sw,sh);
+      ctx.restore();
+      res({dataUrl:c.toDataURL('image/jpeg',0.90),w:cw,h:ch});
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror=e=>{URL.revokeObjectURL(img.src);rej(e);};
+    // Blob URL is more reliable than data: URL for SVG clip-path rendering in all browsers
+    const blob=new Blob([svgStr],{type:'image/svg+xml'});
+    img.src=URL.createObjectURL(blob);
+  });
+}
+async function downloadPDF(which){
+  const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  const AT_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
+  try{ await loadScript(JSPDF_URL); await loadScript(AT_URL); }
+  catch(e){ alert(t('popupAlert'));return; }
 
-  let body='';
-  if(which==='visual'){
-    const svgD=buildSVG_Droite(data,dark);
-    const svgG=buildSVG_Gauche(data,dark);
-    body=`
-      <div style="background:#111;min-height:100vh;padding:12mm 14mm;color:#eee;">
-        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #c9a227;padding-bottom:4mm;margin-bottom:6mm;">
-          <div>
-            <h2 style="color:#c9a227;font-size:15pt;font-family:'Georgia',serif;letter-spacing:.05em;margin:0;">${escHTML(data.nomInstrument)}</h2>
-            <p style="font-size:9pt;color:#888;margin:1mm 0 0;">${t('svgClient')} : <b style="color:#ddd;">${escHTML(data.nomJoueur)||'—'}</b> &nbsp;·&nbsp; ${t('svgLuthier')} : <b style="color:#ddd;">${escHTML(data.nomLuthier)}</b> &nbsp;·&nbsp; ${fmtDate(data.date)}</p>
-          </div>
-          <div style="font-size:8pt;color:#c9a227;text-align:right;">ewendaviau.com</div>
-        </div>
-        <div style="display:flex;gap:10mm;margin-bottom:5mm;">
-          <span style="font-size:8pt;color:#ccc;"><span style="display:inline-block;width:10mm;height:5mm;background:#0d1f0d;border:1px solid #c9a227;border-radius:2px;vertical-align:middle;margin-right:2mm;"></span>${t('svgPush')}</span>
-          <span style="font-size:8pt;color:#ccc;"><span style="display:inline-block;width:10mm;height:5mm;background:#1f1000;border:1px solid #c9a227;border-radius:2px;vertical-align:middle;margin-right:2mm;"></span>${t('svgPull')}</span>
-        </div>
-        <h3 style="color:#c9a227;font-size:10pt;margin:3mm 0 2mm;">${t('svgRH')}</h3>
-        ${svgD}
-        <h3 style="color:#c9a227;font-size:10pt;margin:6mm 0 2mm;">${t('svgLH')}</h3>
-        ${svgG}
-        <p style="font-size:7pt;color:#555;text-align:center;margin-top:8mm;border-top:1px solid #333;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
-      </div>`;
-  } else if(fabricantView==='sommier'){
-    body=`
-      <div style="background:#111;min-height:100vh;padding:12mm 14mm;color:#eee;">
-        <div style="border-bottom:2px solid #c9a227;padding-bottom:4mm;margin-bottom:6mm;">
-          <h2 style="color:#c9a227;font-size:14pt;font-family:'Georgia',serif;">${escHTML(data.nomInstrument)} — ${t('sommierView').replace('🪗 ','')}</h2>
-        </div>
-        ${buildSommierSVG(data,true)}
-        <p style="font-size:7pt;color:#555;text-align:center;margin-top:8mm;border-top:1px solid #333;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
-      </div>`;
-  } else {
-    const tableHtml=buildManufacturerTable(data,true);
-    body=`
-      <div style="background:#111;min-height:100vh;padding:12mm 14mm;color:#eee;">
-        <div style="border-bottom:2px solid #c9a227;padding-bottom:4mm;margin-bottom:6mm;">
-          <h2 style="color:#c9a227;font-size:14pt;font-family:'Georgia',serif;">${escHTML(data.nomInstrument)} — ${t('pdfMfrTitle')}</h2>
-        </div>
-        ${tableHtml}
-        <p style="font-size:7pt;color:#555;text-align:center;margin-top:8mm;border-top:1px solid #333;padding-top:3mm;">${t('svgGeneratedBy')} ${fmtDate(data.date)} — ${escHTML(data.nomLuthier)} — ewendaviau.com</p>
-      </div>`;
+  const data=readInputs();
+  const {jsPDF}=window.jspdf;
+  // 'visual' PDF: landscape A4 (combined SVG) when rotated, portrait A4 (stacked) otherwise
+  // 'fabricant' PDF: portrait A4 with separate SVGs + tables
+  const pdfOrientation=(which==='visual'&&rotateMode!==0)?'landscape':'portrait';
+  const pdf=new jsPDF({orientation:pdfOrientation,unit:'mm',format:'a4'});
+  const PW=pdf.internal.pageSize.getWidth(), PH=pdf.internal.pageSize.getHeight();
+
+  // ── Layout constants ──────────────────────────────
+  const ML=15, MR=15, MT=15;
+  const CW=PW-ML-MR;                 // 180 mm usable width
+  const FOOTER_H=12;                  // mm reserved at bottom for footer area
+  const FOOT_RULE=PH-10;             // Y of footer rule (2mm gap to content)
+  const CB=PH-FOOTER_H;             // content bottom limit
+  let yPos=MT;
+
+  // ── Professional palette ──────────────────────────
+  const GRN=[30,68,30];              // deep forest green — headings
+  const GRN2=[48,100,48];            // medium green — sub-headers
+  const GRAY=[110,110,110];          // muted gray — meta / captions
+  const LGRE=[240,248,240];          // pale green — key cells
+  const ALT=[248,252,247];           // alternate row tint
+  const RULE_C=[190,210,185];        // light sage — table borders / rules
+  const PUSH_C=[20,85,20];           // push note — dark green
+  const PULL_C=[140,100,10];         // pull note — warm amber
+
+  // ── Drawing helpers ───────────────────────────────
+  function hRule(y,color=RULE_C,lw=0.2){
+    pdf.setDrawColor(...color);pdf.setLineWidth(lw);
+    pdf.line(ML,y,PW-MR,y);
+  }
+  function secLabel(txt,y){
+    pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
+    pdf.text(txt.toUpperCase(),ML,y);
   }
 
-  const win=window.open('','_blank','width=960,height=740');
-  if(!win){alert(t('popupAlert'));return;}
-  win.document.write(`<!DOCTYPE html><html lang="${lang}"><head>
-    <meta charset="UTF-8"><title>${escHTML(title)}</title>
-    <style>
-      *{margin:0;padding:0;box-sizing:border-box}
-      body{font-family:Arial,Helvetica,sans-serif;background:#111}
-      .mfr-table{width:100%;border-collapse:collapse;font-size:8.5pt;margin-bottom:4mm}
-      .mfr-table th,.mfr-table td{border:1px solid #333;padding:4px 8px;text-align:center}
-      .mfr-table th{background:#1a1500;color:#c9a227;font-size:7.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      .mfr-table tr:nth-child(even) td{background:#1a1a1a}
-      .mfr-table td{background:#111;color:#ddd}
-      td.note-p{color:#6fcf5a;font-weight:700}
-      td.note-t{color:#e8b840;font-weight:700}
-      td.midi-c{color:#82b0ff;font-size:.72rem}
-      .mfr-sub{font-size:8pt;color:#aaa;margin-bottom:4mm}
-      svg{display:block;max-width:100%}
-      @media print{body{background:#111!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-    </style>
-  </head><body>${body}</body></html>`);
-  win.document.close();win.focus();
-  setTimeout(()=>win.print(),700);
+  // ── SVG → PDF with JPEG rendering ────────
+  // forceOnePage: if true, scale down so the image fits on one page
+  async function addSvgImg(svgStr,label,mmPerPx,forceOnePage){
+    const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,0);
+    let imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
+    let scale=imgW/w;            // mm per natural pixel
+    let imgH=h*scale;            // total height in mm
+    if(label){
+      if(yPos+8>CB){pdf.addPage();yPos=MT;}
+      secLabel(label,yPos+4);yPos+=7;
+    }
+    // When forceOnePage, scale down so image fits in remaining space on this page
+    if(forceOnePage&&imgH>CB-yPos){
+      scale=(CB-yPos)/h;
+      imgH=CB-yPos;
+      imgW=w*scale;
+    }
+    const xImg=ML+(CW-imgW)/2;  // center horizontally (computed after forceOnePage adjustment)
+    if(imgH<=CB-yPos){
+      pdf.addImage(dataUrl,'JPEG',xImg,yPos,imgW,imgH);
+      yPos+=imgH+5;return;
+    }
+    // Spans multiple pages — slice using actual canvas coords
+    const srcImg=await new Promise((res,rej)=>{
+      const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=dataUrl;
+    });
+    const pxW=srcImg.naturalWidth, canvasScale=srcImg.naturalHeight/h; // canvas pixels per SVG pixel (=SCALE=3)
+    const sc=document.createElement('canvas');sc.width=pxW;
+    let srcY=0,first=true;
+    while(srcY<h){
+      if(!first){pdf.addPage();yPos=MT;}
+      const maxH=Math.min(h-srcY,(CB-yPos)/scale);
+      sc.height=Math.ceil(maxH*canvasScale);
+      const ctx=sc.getContext('2d');
+      ctx.clearRect(0,0,pxW,sc.height);
+      ctx.drawImage(srcImg,0,srcY*canvasScale,pxW,maxH*canvasScale,0,0,pxW,sc.height);
+      pdf.addImage(sc.toDataURL('image/jpeg',0.90),'JPEG',xImg,yPos,imgW,maxH*scale);
+      yPos+=maxH*scale+1;srcY+=maxH;first=false;
+    }
+    yPos+=3;
+  }
+
+  // ── AutoTable defaults ─────────────────────────────
+  function tableDefaults(extra){
+    return Object.assign({
+      margin:{left:ML,right:MR},theme:'grid',
+      rowPageBreak:'avoid',
+      styles:{fontSize:7,cellPadding:[1.8,3],textColor:[30,30,30],
+              lineColor:RULE_C,lineWidth:0.22},
+      headStyles:{fillColor:GRN,textColor:[255,255,255],fontStyle:'bold',fontSize:7},
+      alternateRowStyles:{fillColor:ALT},
+    },extra);
+  }
+  // Returns MIDI note as string cell, or '—'
+  function midiCell(note){const m=noteToMidi(note);return m!==null?String(m):'—';}
+
+  // ── Sommier as vector table (sharp text, copy-pastable) ───
+  const PULL_BG=[255,252,235];
+  function addSommierTable(sections,title){
+    if(yPos+8>CB){pdf.addPage();yPos=MT;}
+    secLabel(title,yPos+4);yPos+=6;
+    sections.forEach(function(row){
+      const btns=row.items||row.boutons||[];
+      if(!btns.length)return;
+      if(yPos+16>CB){pdf.addPage();yPos=MT;}
+      const n=btns.length;
+      const labelW=18;
+      const numRow=[{content:'#',styles:{fillColor:LGRE,textColor:GRAY,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(btns.map(function(_,i){return{content:String(i+1),styles:{halign:'center',textColor:GRAY,fontSize:6}};}));
+      const pushLabel=t('svgPush').replace('\u2193','v').replace('\u2191','^');
+      const pullLabel=t('svgPull').replace('\u2191','^').replace('\u2193','v');
+      const pushRow=[{content:pushLabel,styles:{fillColor:LGRE,textColor:PUSH_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(btns.map(function(b){return{content:b&&b.p?displayNote(b.p):'-',styles:{halign:'center',fontStyle:'bold',textColor:PUSH_C}};}));
+      const pullRow=[{content:pullLabel,styles:{fillColor:PULL_BG,textColor:PULL_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
+        .concat(btns.map(function(b){return{content:b&&b.t?displayNote(b.t):'-',styles:{halign:'center',fontStyle:'bold',textColor:PULL_C}};}));
+      pdf.autoTable(tableDefaults({
+        startY:yPos,
+        head:[[{content:row.nom||'',colSpan:n+1,styles:{fillColor:GRN2,textColor:[255,255,255],fontSize:7.5,fontStyle:'bold',halign:'center'}}],numRow],
+        body:[pushRow,pullRow],
+        columnStyles:{0:{cellWidth:labelW,fillColor:LGRE}},
+      }));
+      yPos=pdf.lastAutoTable.finalY+3;
+    });
+    yPos+=2;
+  }
+
+  // ══════════════════════════════════════════════════
+  // PAGE 1 — Cover header
+  // ══════════════════════════════════════════════════
+  hRule(yPos,GRN,0.6);yPos+=5;
+
+  // Instrument name + document type
+  pdf.setFontSize(20);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+  pdf.text(data.nomInstrument||'Accordéon',ML,yPos+8);
+  pdf.setFontSize(7);pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+  const badge=which==='visual'?t('pdfClientTitle'):t('pdfMfrTitle');
+  pdf.text(badge.toUpperCase(),PW-MR,yPos+8,{align:'right'});
+  yPos+=12;
+
+  // Metadata row
+  const meta=[
+    `${t('svgLuthier').toUpperCase()}  ${data.nomLuthier||'—'}`,
+    `${t('svgClient').toUpperCase()}  ${data.nomJoueur||'—'}`,
+    fmtDate(data.date),
+  ].join('    ·    ');
+  pdf.setFontSize(7);pdf.setTextColor(...GRAY);
+  pdf.text(meta,ML,yPos);yPos+=5;
+  hRule(yPos,GRN,0.4);yPos+=8;
+
+  // ── Keyboard SVGs ──────────────────────────────────
+  if(which==='visual'&&rotateMode!==0){
+    // Landscape: single combined SVG with both hands side-by-side
+    const svgComb=buildSVG_Combined(data,false);
+    const wC=+(svgComb.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,1200])[1];
+    await addSvgImg(svgComb,null,CW/wC,true);
+  }else{
+    // Portrait: right hand then left hand stacked
+    const svgDstr=buildSVG_Droite(data,false);
+    const svgGstr=buildSVG_Gauche(data,false);
+    const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+    const wG=+(svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+    await addSvgImg(svgDstr,t('svgRH'),CW/wD,false);
+    if(yPos+7<CB){
+      hRule(yPos,RULE_C,0.15);
+      pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
+      pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
+      yPos+=7;
+    }
+    await addSvgImg(svgGstr,t('svgLH'),CW/wG,false);
+  }
+
+  // ══════════════════════════════════════════════════
+  // FABRICANT PAGES
+  // ══════════════════════════════════════════════════
+  if(which==='fabricant'){
+
+    // ── Page: Sommier ──────────────────────────────
+    pdf.addPage();yPos=MT;
+    const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
+    const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
+    addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
+    const lhSecs=buildLhSommierSections(data);
+    if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
+
+    // ── Page: Bon de commande ──────────────────────
+    pdf.addPage();yPos=MT;
+    const os=data.orderSpecs||{},date=fmtDate(data.date);
+    const totalBtns=data.droite.reduce((s,r)=>s+r.boutons.length,0);
+    const totalAnches=totalBtns*(data.nbVoix||2)
+      +(data.basses?data.basses.length*2:0)*(data.nbVoixBasses||2)
+      +(data.accords?data.accords.length*2:0)*(data.nbVoixAccords||2);
+    const midi=data.showMidi;
+
+    pdf.setFontSize(9);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+    pdf.text(t('pdfMfrTitle').toUpperCase(),ML,yPos+5);
+    pdf.setFontSize(7);pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+    pdf.text(data.nomInstrument,PW-MR,yPos+5,{align:'right'});
+    yPos+=8;hRule(yPos,RULE_C,0.2);yPos+=6;
+
+    // Order checklist (4-col key/value)
+    const kw=42,vw=CW/2-kw;
+    pdf.autoTable(tableDefaults({
+      startY:yPos,
+      columnStyles:{0:{cellWidth:kw,fillColor:LGRE,textColor:GRN,fontStyle:'bold'},
+                    1:{cellWidth:vw},
+                    2:{cellWidth:kw,fillColor:LGRE,textColor:GRN,fontStyle:'bold'},
+                    3:{cellWidth:vw}},
+      body:[
+        [t('clQty'),String(totalAnches),t('clReedType'),os.reedType||'—'],
+        [t('clDesc'),`${totalBtns}/${data.basses.length}`,t('clTonality'),data.nomInstrument],
+        [t('clRowSpec'),(data.voixPerRow||['N']).join('/'),t('clTuning'),(os.tuning||'440')+' Hz'],
+        [t('clTremolo'),os.tremolo||'—',t('clHarmony'),os.harmony||'—'],
+        [t('clBassType'),os.bassType||'—',t('clBassComp'),os.bassComp||'—'],
+        [t('clVoices'),`${data.nbVoix}v · ${t('accords')} ${data.nbVoixAccords||2}v / ${t('basses')} ${data.nbVoixBasses||2}v`,t('clLuthier'),`${data.nomLuthier} — ${date}`],
+      ],
+    }));
+    yPos=pdf.lastAutoTable.finalY+10;
+  }
+
+  // ══════════════════════════════════════════════════
+  // FOOTER — stamped on every page
+  // ══════════════════════════════════════════════════
+  const total=pdf.internal.getNumberOfPages();
+  for(let pg=1;pg<=total;pg++){
+    pdf.setPage(pg);
+    hRule(FOOT_RULE,RULE_C,0.2);
+    pdf.setFontSize(6);pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+    pdf.text(`${data.nomLuthier||''}  —  ewendaviau.com`,ML,PH-6.5);
+    pdf.text(`${pg} / ${total}`,PW/2,PH-6.5,{align:'center'});
+    pdf.text(fmtDate(data.date),PW-MR,PH-6.5,{align:'right'});
+  }
+
+  const fileName=`${(data.nomInstrument||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_')}_${which==='visual'?'plan':'fabricant'}.pdf`;
+  pdf.save(fileName);
 }
+function printSection(which){ downloadPDF(which); }
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  MISC ACTIONS                                        ║
    ╚══════════════════════════════════════════════════════╝ */
+function swapPushPull(rwId){
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  wrap.querySelectorAll('.btn-cell').forEach(function(cell){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    if(!p||!ti)return;
+    const tmp=p.value;p.value=ti.value;ti.value=tmp;
+  });
+  readNoteInputsIntoCFG();onAnyChange();
+}
+function mirrorRow(rwId){
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  const grid=wrap.querySelector('.btn-grid');if(!grid)return;
+  const cells=Array.from(grid.querySelectorAll('.btn-cell'));
+  // Collect values
+  const vals=cells.map(function(cell){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    return{p:p?p.value:'',t:ti?ti.value:''};
+  });
+  // Reverse and re-apply
+  vals.reverse();
+  cells.forEach(function(cell,i){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    if(p)p.value=vals[i].p;
+    if(ti)ti.value=vals[i].t;
+  });
+  readNoteInputsIntoCFG();onAnyChange();
+}
+function copyRow(rwId){
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  rowClipboard=[];
+  wrap.querySelectorAll('.btn-cell').forEach(function(cell){
+    const p=cell.querySelector('.note-input.pousse');
+    const ti=cell.querySelector('.note-input.tire');
+    rowClipboard.push({p:p?p.value:'',t:ti?ti.value:''});
+  });
+  document.querySelectorAll('.row-paste-btn').forEach(function(b){b.classList.add('has-clip');});
+}
+function pasteRow(rwId){
+  if(!rowClipboard)return;
+  const wrap=document.getElementById(rwId);if(!wrap)return;
+  const cells=wrap.querySelectorAll('.btn-cell');
+  const count=Math.min(cells.length,rowClipboard.length);
+  for(let i=0;i<count;i++){
+    const clip=rowClipboard[i];
+    const p=cells[i].querySelector('.note-input.pousse');
+    const ti=cells[i].querySelector('.note-input.tire');
+    if(p)p.value=clip.p||'';
+    if(ti)ti.value=clip.t||'';
+  }
+  readNoteInputsIntoCFG();onAnyChange();
+}
 function clearNotes(){
   if(!confirm(t('clearConfirm')))return;
   document.querySelectorAll('#note-grid input').forEach(el=>{el.value='';});
@@ -1776,7 +2517,7 @@ function doImport(){
     const data=JSON.parse(document.getElementById('modal-json').value);
     if(!Array.isArray(data))throw new Error(t('invalidFormat'));
     DB.save(data);renderLibrary();
-    if(data.length)loadFromDB(data[0]);
+    if(data.length){loadFromDB(data[0]);scheduleLivePreview();}
     closeModal();
     document.getElementById('modal-msg').textContent=t('importSuccess')(data.length);
   }catch(e){document.getElementById('modal-msg').textContent=t('importError')+e.message;}
@@ -1810,7 +2551,7 @@ function loadFromFile(evt){
       const fresh=data.filter(r=>!ids.has(r.id));
       DB.save([...fresh,...existing]);
       renderLibrary();
-      if(data.length)loadFromDB(data[0]);
+      if(data.length){loadFromDB(data[0]);scheduleLivePreview();}
       alert(t('loadedFrom')(data.length));
     }catch(err){alert(t('importError')+err.message);}
   };

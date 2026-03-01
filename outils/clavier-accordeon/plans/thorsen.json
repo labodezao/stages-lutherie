@@ -1,0 +1,61 @@
+{
+  "id": "plan_thorsen",
+  "nom": "Thorsen — Sol/Mi/Fa 33/12",
+  "joueur": "Thorsen",
+  "luthier": "Ewen d'Aviau",
+  "dateCreation": "",
+  "lastModified": "2026-02-26T00:00:00.000Z",
+  "nbRangees": 3,
+  "rangees": [
+    {"nom": "G row (inner)",  "nb": 12, "offset": 0, "register": "N"},
+    {"nom": "E row (middle)", "nb": 11, "offset": 0, "register": "N"},
+    {"nom": "F row (outer)",  "nb": 10, "offset": 2, "register": "N"}
+  ],
+  "nbVoix": 2,
+  "nbVoixAccords": 2,
+  "nbVoixBasses": 2,
+  "lhDisplayMode": "separated",
+  "lhRows": [{"nb": 6, "offset": 0}],
+  "notes": {
+    "droite": [
+      [
+        {"p":"Do3","t":"Mi3"},{"p":"Ré3","t":"Fa#3"},{"p":"Sol3","t":"La3"},
+        {"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},
+        {"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},
+        {"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La6"},{"p":"Sol6","t":"Do6"}
+      ],
+      [
+        {"p":"Mi3","t":"Sol3"},{"p":"La3","t":"Si3"},{"p":"Do4","t":"Ré4"},
+        {"p":"Mi4","t":"Fa4"},{"p":"La4","t":"Sol4"},{"p":"Do5","t":"Si4"},
+        {"p":"Mi5","t":"Ré5"},{"p":"La5","t":"Fa5"},{"p":"Do6","t":"Sol5"},
+        {"p":"Mi6","t":"Si5"},{"p":"La6","t":"Ré6"}
+      ],
+      [
+        {"p":"Fa3","t":"Sib3"},{"p":"Mib4","t":"Réb4"},{"p":"Fa4","t":"Mib4"},
+        {"p":"Lab4","t":"Sib4"},{"p":"Mib5","t":"Réb5"},{"p":"Fa5","t":"Mib5"},
+        {"p":"Lab5","t":"Lab5"},{"p":"Mib6","t":"Sib5"},{"p":"Fa6","t":"Réb6"},
+        {"p":"Lab6","t":"Mib6"}
+      ]
+    ],
+    "basses": [
+      {"p":"Do2","t":"Sol2"},{"p":"Do3","t":"Sol3"},
+      {"p":"Sol2","t":"Ré2"},{"p":"Sol3","t":"Ré3"},
+      {"p":"Si2","t":"Fa#2"},{"p":"Si3","t":"Fa#3"}
+    ],
+    "accords": [
+      {"p":"La Maj","t":"Fa Maj"},{"p":"La Min","t":"Fa Min"},
+      {"p":"Mi Maj","t":"La Maj"},{"p":"Mi Min","t":"La Min"},
+      {"p":"Mib Maj","t":"Sib Maj"},{"p":"Mib Min","t":"Sib Min"}
+    ],
+    "terzetto": []
+  },
+  "orderSpecs": {
+    "qty": "1",
+    "reedType": "Tipo a mano",
+    "tuning": "440",
+    "tremolo": "0",
+    "harmony": "Basson flute",
+    "bassType": "20.5 mm width",
+    "bassComp": ""
+  }
+}

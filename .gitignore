@@ -14,3 +14,4 @@ contacts_mass.csv
 *.tmp
 *.log
 acb44_page.html
+nohup.out
