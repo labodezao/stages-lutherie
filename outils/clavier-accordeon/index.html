@@ -2062,7 +2062,7 @@ function buildSVG_Plan(data,dark){
     // Section header "Main Gauche"
     s+=tx(lhX0+((nLH-1)*CGAP)/2,gridTop-16,t('svgLH'),9,gold,'bold','middle');
     lhSecRows.forEach((sec,si)=>{
-      const cx=lhX0+si*CGAP;
+      const cx=lhX0+(nLH-1-si)*CGAP;  // outermost section on far left, innermost closest to bellows
       const off=(sec.offset||0)*(BGAP/2);
       const has2=sec.items2&&sec.items2.length>0;
       // Column background band
@@ -2096,12 +2096,12 @@ function buildSVG_Plan(data,dark){
 
   /* ═══════════════════════════════════════════════════
      RH COLUMNS — anchored at right (east) per TikZ
-     Outermost row = leftmost column (matches TikZ convention)
+     Innermost row (closest to bellows) = leftmost column
      ═══════════════════════════════════════════════════ */
   // Section header "Main Droite"
   s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-16,t('svgRH'),9,gold,'bold','middle');
   rhRows.forEach((row,ri)=>{
-    const colIdx=nRH-1-ri;         // outermost row → leftmost column
+    const colIdx=ri;               // innermost row → leftmost column (closest to bellows)
     const cx=rhX0+colIdx*CGAP;
     const off=(row.offset||0)*(BGAP/2);
     // Column background band
