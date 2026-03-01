@@ -1883,6 +1883,34 @@ function buildSVG_Gauche(data,dark){
   s+=svg_close();return s;
 }
 
+/* ── Combined landscape SVG: Right Hand + Left Hand side-by-side ── */
+function buildSVG_Combined(data,dark){
+  const svgD=buildSVG_Droite(data,dark);
+  const svgG=buildSVG_Gauche(data,dark);
+  const wD=+(svgD.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+  const hD=+(svgD.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,600])[1];
+  const wG=+(svgG.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+  const hG=+(svgG.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,600])[1];
+  const GAP=28;
+  const W=wD+GAP+wG;
+  const H=Math.max(hD,hG);
+  const bg=dark?'#111111':'#ffffff';
+  const gold=dark?'#c9a227':'#2d5a27';
+  // Re-root each SVG into the outer canvas by adding x/y to the outer <svg> tag
+  // (nested SVG keeps its own viewBox and clipPath — fully supported per SVG spec)
+  const yD=Math.round((H-hD)/2);
+  const yG=Math.round((H-hG)/2);
+  const innerD=svgD.replace(/^<svg\b/,`<svg x="0" y="${yD}"`);
+  const innerG=svgG.replace(/^<svg\b/,`<svg x="${wD+GAP}" y="${yG}"`);
+  return [
+    `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif" overflow="hidden">`,
+    `<rect width="${W}" height="${H}" fill="${bg}"/>`,
+    innerD,
+    `<line x1="${wD+GAP/2}" y1="10" x2="${wD+GAP/2}" y2="${H-10}" stroke="${gold}" stroke-width="1.2" opacity=".25" stroke-dasharray="5,4"/>`,
+    innerG,
+    `</svg>`
+  ].join('');
+}
 
 /* ╔══════════════════════════════════════════════════════╗
    ║  SVG SOMMIER (reed plate view)                       ║
@@ -2144,9 +2172,8 @@ function svgToPngDataUrl(svgStr,rotAngle){
   return new Promise((res,rej)=>{
     const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
     const sw=mw?+mw[1]:800,sh=mh?+mh[1]:600;
-    const SCALE=3;
+    const SCALE=2;
     const rot=rotAngle||0;
-    // If rotated ±90, swap canvas dimensions
     const cw=(rot===90||rot===-90)?sh:sw;
     const ch=(rot===90||rot===-90)?sw:sh;
     const c=document.createElement('canvas');c.width=cw*SCALE;c.height=ch*SCALE;
@@ -2154,14 +2181,19 @@ function svgToPngDataUrl(svgStr,rotAngle){
     const img=new Image();
     img.onload=()=>{
       ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch);
+      ctx.save();
+      ctx.beginPath();ctx.rect(0,0,cw,ch);ctx.clip();
       if(rot===90){ctx.translate(ch,0);ctx.rotate(Math.PI/2);}
       else if(rot===-90){ctx.translate(0,cw);ctx.rotate(-Math.PI/2);}
       ctx.drawImage(img,0,0,sw,sh);
-      res({dataUrl:c.toDataURL('image/png'),w:cw,h:ch});
+      ctx.restore();
+      res({dataUrl:c.toDataURL('image/jpeg',0.90),w:cw,h:ch});
+      URL.revokeObjectURL(img.src);
     };
-    img.onerror=e=>rej(e);
-    // encodeURIComponent data URL: more reliable than Blob URL across browsers
-    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgStr);
+    img.onerror=e=>{URL.revokeObjectURL(img.src);rej(e);};
+    // Blob URL is more reliable than data: URL for SVG clip-path rendering in all browsers
+    const blob=new Blob([svgStr],{type:'image/svg+xml'});
+    img.src=URL.createObjectURL(blob);
   });
 }
 async function downloadPDF(which){
@@ -2172,9 +2204,9 @@ async function downloadPDF(which){
 
   const data=readInputs();
   const {jsPDF}=window.jspdf;
-  // Use landscape orientation when keyboard is rotated ±90°
-  const pdfRotAngle=rotateMode===1?90:(rotateMode===-1?-90:0);
-  const pdfOrientation=(pdfRotAngle!==0)?'landscape':'portrait';
+  // 'visual' PDF: always landscape A4 with combined left+right SVG
+  // 'fabricant' PDF: portrait A4 with separate SVGs + tables
+  const pdfOrientation=which==='visual'?'landscape':'portrait';
   const pdf=new jsPDF({orientation:pdfOrientation,unit:'mm',format:'a4'});
   const PW=pdf.internal.pageSize.getWidth(), PH=pdf.internal.pageSize.getHeight();
 
@@ -2206,10 +2238,10 @@ async function downloadPDF(which){
     pdf.text(txt.toUpperCase(),ML,y);
   }
 
-  // ── SVG → PDF with proper 2× scale slicing ────────
-  // forceOnePage: if true, scale down so the image fits on one page (used when rotated)
+  // ── SVG → PDF with JPEG rendering ────────
+  // forceOnePage: if true, scale down so the image fits on one page
   async function addSvgImg(svgStr,label,mmPerPx,forceOnePage){
-    const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,pdfRotAngle);
+    const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,0);
     let imgW=mmPerPx?Math.min(w*mmPerPx,CW):CW;
     let scale=imgW/w;            // mm per natural pixel
     let imgH=h*scale;            // total height in mm
@@ -2225,7 +2257,7 @@ async function downloadPDF(which){
     }
     const xImg=ML+(CW-imgW)/2;  // center horizontally (computed after forceOnePage adjustment)
     if(imgH<=CB-yPos){
-      pdf.addImage(dataUrl,'PNG',xImg,yPos,imgW,imgH);
+      pdf.addImage(dataUrl,'JPEG',xImg,yPos,imgW,imgH);
       yPos+=imgH+5;return;
     }
     // Spans multiple pages — slice using actual canvas coords
@@ -2242,7 +2274,7 @@ async function downloadPDF(which){
       const ctx=sc.getContext('2d');
       ctx.clearRect(0,0,pxW,sc.height);
       ctx.drawImage(srcImg,0,srcY*canvasScale,pxW,maxH*canvasScale,0,0,pxW,sc.height);
-      pdf.addImage(sc.toDataURL('image/png'),'PNG',xImg,yPos,imgW,maxH*scale);
+      pdf.addImage(sc.toDataURL('image/jpeg',0.90),'JPEG',xImg,yPos,imgW,maxH*scale);
       yPos+=maxH*scale+1;srcY+=maxH;first=false;
     }
     yPos+=3;
@@ -2316,23 +2348,26 @@ async function downloadPDF(which){
   hRule(yPos,GRN,0.4);yPos+=8;
 
   // ── Keyboard SVGs ──────────────────────────────────
-  const svgDstr=buildSVG_Droite(data,false);
-  const svgGstr=buildSVG_Gauche(data,false);
-  const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
-  const wG=+(svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
-  const mmPerPxPlan=CW/wD;
-  const mmPerPxPlanG=CW/wG;
-
-  await addSvgImg(svgDstr,t('svgRH'),mmPerPxPlan,pdfRotAngle!==0);
-
-  // Bellows separator
-  if(yPos+7<CB){
-    hRule(yPos,RULE_C,0.15);
-    pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
-    pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
-    yPos+=7;
+  if(which==='visual'){
+    // Landscape: single combined SVG with both hands side-by-side
+    const svgComb=buildSVG_Combined(data,false);
+    const wC=+(svgComb.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,1200])[1];
+    await addSvgImg(svgComb,null,CW/wC,true);
+  }else{
+    // Portrait fabricant: right hand then left hand stacked
+    const svgDstr=buildSVG_Droite(data,false);
+    const svgGstr=buildSVG_Gauche(data,false);
+    const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+    const wG=+(svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+    await addSvgImg(svgDstr,t('svgRH'),CW/wD,false);
+    if(yPos+7<CB){
+      hRule(yPos,RULE_C,0.15);
+      pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
+      pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
+      yPos+=7;
+    }
+    await addSvgImg(svgGstr,t('svgLH'),CW/wG,false);
   }
-  await addSvgImg(svgGstr,t('svgLH'),mmPerPxPlanG,pdfRotAngle!==0);
 
   // ══════════════════════════════════════════════════
   // FABRICANT PAGES
