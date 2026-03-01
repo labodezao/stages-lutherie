@@ -218,10 +218,9 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   .card-head{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .mfr-table th{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-/* ── Rotation 90° visual ── */
-#visual-output.rotated{overflow:auto;}
-#visual-output.rotated .rotate-scale-wrap{transform-origin:top left;display:inline-block;}
-#visual-output.rotated .svg-rotate-wrap{display:inline-block;transform-origin:top left;}
+/* ── Plan view (landscape mode) — single unified SVG ── */
+#visual-output.landscape{overflow-x:auto;}
+#visual-output.landscape svg{display:block;max-width:100%;height:auto;}
 .btn-or.active-rotate{background:var(--dark);color:var(--or-c);border-color:var(--dark);}
 @media(max-width:680px){
   header{flex-wrap:wrap}
@@ -437,7 +436,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <div class="btn-group no-print" style="margin-bottom:13px;">
         <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
         <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
-        <button class="btn btn-or" id="rotate-btn" onclick="toggleRotateView()" data-i-btn="rotateView" style="margin-left:auto;">↩ Rotation 90°</button>
+        <button class="btn btn-or" id="rotate-btn" onclick="toggleRotateView()" data-i-btn="rotateView" style="margin-left:auto;">⟺ Portrait/Paysage</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -516,7 +515,7 @@ fr:{
   rowOffset:'Décalage',
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
   swapRowTitle:'Inverser poussé/tiré (toute la rangée)',mirrorRowTitle:'Miroir — inverser ordre des colonnes (1er↔dernier)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
-  rotateView:'↩ Rotation 90°',rotateViewTitle:'Cliquer pour tourner : +90° → −90° → normal (soufflet vertical)',
+  rotateView:'⟺ Portrait/Paysage',rotateViewTitle:'Basculer entre Portrait (empilé MD+MG) et Plan complet (MD+MG ensemble, horizontal)',
   lhOrderBtn:'🔄 Accords → Basses',lhOrderBtnInv:'🔄 Basses → Accords',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
@@ -590,7 +589,7 @@ en:{
   rowOffset:'Offset',
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
   swapRowTitle:'Swap push/pull (entire row)',mirrorRowTitle:'Mirror — reverse column order (1st↔last)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
-  rotateView:'↩ Rotate 90°',rotateViewTitle:'Click to rotate: +90° → −90° → normal (vertical bellows)',
+  rotateView:'⟺ Portrait/Landscape',rotateViewTitle:'Toggle between Portrait (RH+LH stacked) and Full Plan (RH+LH together, horizontal layout)',
   lhOrderBtn:'🔄 Chords → Basses',lhOrderBtnInv:'🔄 Basses → Chords',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
@@ -725,12 +724,10 @@ function setLang(l){
     const v=t(k);
     if(typeof v==='string') el.textContent=v;
   });
-  // Update rotate button title and text (preserve active rotation label)
+  // Update rotate button title
   const rotBtn=document.getElementById('rotate-btn');
   if(rotBtn){
     rotBtn.title=t('rotateViewTitle');
-    if(rotateMode===1) rotBtn.textContent='↩ +90°';
-    else if(rotateMode===-1) rotBtn.textContent='↺ −90°';
   }
   updateLhOrderBtn();
   // Update save status text
@@ -1913,6 +1910,230 @@ function buildSVG_Combined(data,dark){
 }
 
 /* ╔══════════════════════════════════════════════════════╗
+   ║  SVG PLAN VIEW — faithfully reproduces the TikZ       ║
+   ║  "Plan de clavier" template layout:                   ║
+   ║  · Title table top-left with rotated "Plan de clavier"║
+   ║  · LH columns anchored left (west), RH anchored right║
+   ║  · Both sections vertically centred at 60% page depth ║
+   ║  · Button circle: TOP = poussé, BOTTOM = tiré         ║
+   ║  · "Haut (graves)" in italics near top-left           ║
+   ╚══════════════════════════════════════════════════════╝ */
+function buildSVG_Plan(data,dark){
+  /* ── Sizing constants ──────────────────────────────── */
+  const R=18,BGAP=48,CGAP=56;             // button radius, vertical gap, column gap
+  const MH=28,MT=28,MB=50;                // margins: horiz, top, bottom (≈ TikZ 1cm/1cm/2.5cm)
+  const TITLE_H=90;                       // reserved height for title table block
+  const BTWN=60;                           // gap between LH & RH sections
+
+  /* ── Colour palette ─────────────────────────────────── */
+  const gold=dark?'#c9a227':'#2d5a27';
+  const bg=dark?'#111111':'#ffffff';
+  const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
+  const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
+  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)';
+  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)';
+  const subtl=dark?'#888866':'#888888',stroke=dark?'#c9a227':'#2d5a27';
+  const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
+  const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
+  const circleBorder=dark?'#333':'#bbb';
+  const textColor=dark?'#ccc':'#333';
+  const ruleColor=dark?'#444':'#bbb';
+
+  /* ── Button circle: TOP = poussé, BOTTOM = tiré ───── */
+  function drawBtn(cx,cy,btn,btn2){
+    let o='';
+    o+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${circleBorder}" stroke-width="1"/>`;
+    o+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
+    o+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
+    o+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.2"/>`;
+    o+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
+    const b2ok=btn2&&(btn2.p||btn2.t);
+    if(b2ok){
+      if(btn.p) o+=svgBtnVal(btn.p,cx,cy-11,pushTx);
+      if(btn2.p)o+=svgBtnVal(btn2.p,cx,cy-4,pushTx2);
+      if(btn.t) o+=svgBtnVal(btn.t,cx,cy+8,pullTx);
+      if(btn2.t)o+=svgBtnVal(btn2.t,cx,cy+15,pullTx2);
+    }else{
+      if(btn.p)o+=svgBtnVal(btn.p,cx,cy-7,pushTx);
+      if(btn.t)o+=svgBtnVal(btn.t,cx,cy+15,pullTx);
+    }
+    return o;
+  }
+
+  /* ── RH data ────────────────────────────────────────── */
+  const rhRows=data.droite;
+  const nRH=rhRows.length;
+  const maxRHBtns=Math.max(...rhRows.map(r=>r.boutons.length),1);
+
+  /* ── LH data ────────────────────────────────────────── */
+  const lhRowCfg=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:data.basses.length||1,offset:0}];
+  const accSecs=[],basSecs=[];
+  let bIdx=0,aIdx=0;
+  const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
+  lhRowCfg.forEach((row,ri)=>{
+    accSecs.push({nom:lhRowCfg.length===1?t('accords'):(ri===0?t('accords'):`↳+${aIdx}`),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0});
+    aIdx+=row.nb;
+    basSecs.push({nom:lhRowCfg.length===1?t('basses'):(ri===0?t('basses'):`↳+${bIdx}`),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0});
+    bIdx+=row.nb;
+  });
+  const lhSecRows=data.lhBassFirst?[...basSecs,...accSecs]:[...accSecs,...basSecs];
+  if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
+  const nLH=lhSecRows.length;
+  const maxLHBtns=nLH>0?Math.max(...lhSecRows.map(sc=>sc.items.length),0):0;
+  const maxBtns=Math.max(maxRHBtns,maxLHBtns,1);
+
+  /* ── Layout geometry (TikZ-faithful) ───────────────── */
+  const lhW=nLH>0?nLH*CGAP:0;
+  const rhW=nRH*CGAP;
+  const contentW=lhW+(nLH>0?BTWN:0)+rhW;
+  const W=Math.max(contentW+2*MH, 500);               // min width
+  const bodyH=maxBtns*BGAP+30;                         // +30 for label at top of columns
+  const H=MT+TITLE_H+bodyH+MB;
+  // Left edge of LH section (anchored west per TikZ)
+  const lhX0=MH+CGAP/2;
+  // Left edge of RH section; gap BTWN after LH right edge
+  const rhX0=nLH>0?lhX0+lhW+BTWN : MH+CGAP/2;
+  // Separator X in the gap between LH and RH
+  const sepX=nLH>0?(lhX0+(nLH-1)*CGAP+R+ (rhX0-R))/2 : rhX0-BTWN/2;
+  // Vertical centre of button grids at ≈60% from top of content area (TikZ .6 ratio)
+  const contentTop=MT+TITLE_H;
+  const contentBot=H-MB;
+  const gridCenterY=contentTop+(contentBot-contentTop)*0.55;
+  const gridTop=Math.round(gridCenterY-bodyH/2);
+
+  let s=svg_open(W,H,bg);
+
+  /* ═══════════════════════════════════════════════════
+     TITLE TABLE — matches TikZ \drawtitle
+     Rotated "Plan de clavier" on the left with a vertical
+     rule, then three rows of info on the right.
+     ═══════════════════════════════════════════════════ */
+  const tblX=MH, tblY=MT;
+  const rotW=22;                    // width of the rotated title column
+  const tblInfoX=tblX+rotW+4;      // x of info column text
+  const rowH=20;                    // row height (~\arraystretch{2})
+  const tblRows=4;                  // 4 rows as in TikZ
+  const tblH=tblRows*rowH;
+
+  // Vertical rule between rotated title & info columns
+  s+=`<line x1="${tblX+rotW}" y1="${tblY}" x2="${tblX+rotW}" y2="${tblY+tblH}" stroke="${ruleColor}" stroke-width="1"/>`;
+  // Horizontal rules between info rows
+  for(let i=1;i<tblRows;i++){
+    s+=`<line x1="${tblX+rotW}" y1="${tblY+i*rowH}" x2="${tblX+rotW+220}" y2="${tblY+i*rowH}" stroke="${ruleColor}" stroke-width=".6"/>`;
+  }
+
+  // Rotated "Plan de clavier" in the left column (90° = reads bottom-to-top, matching \begin{turn}{90})
+  const rotCx=tblX+rotW/2, rotCy=tblY+tblH/2;
+  s+=`<text x="${rotCx}" y="${rotCy}" text-anchor="middle" font-size="14" fill="${gold}" font-weight="bold" font-family="Arial,Helvetica,sans-serif" transform="rotate(-90,${rotCx},${rotCy})">${escSVG(t('svgPlan'))}</text>`;
+
+  // Row 1: System / instrument name (Large, bold) — maps to TikZ "Système Le Tron / Laloy"
+  s+=`<text x="${tblInfoX}" y="${tblY+rowH/2+5}" font-size="13" fill="${gold}" font-weight="bold" font-family="Arial,Helvetica,sans-serif">${escSVG(data.nomInstrument||'Accordéon Diatonique')}</text>`;
+
+  // Row 2: Tonality / client info
+  const row2txt=data.nomJoueur?`${t('svgClient')} : ${data.nomJoueur}`:'';
+  s+=`<text x="${tblInfoX}" y="${tblY+rowH+rowH/2+4}" font-size="9" fill="${textColor}" font-family="Arial,Helvetica,sans-serif">${escSVG(row2txt)}</text>`;
+
+  // Row 3: Model description + luthier
+  const nBtnsRH=data.droite.reduce((s,r)=>s+r.boutons.length,0);
+  const nBasses=data.basses?data.basses.length:0;
+  const row3txt=`${nRH} ${nRH>1?'rangées':'rangée'} (${nBtnsRH} boutons) · ${nBasses} basses`;
+  s+=`<text x="${tblInfoX}" y="${tblY+2*rowH+rowH/2+4}" font-size="8.5" fill="${textColor}" font-family="Arial,Helvetica,sans-serif">${escSVG(row3txt)}</text>`;
+
+  // Row 4: Luthier + date
+  s+=`<text x="${tblInfoX}" y="${tblY+3*rowH+rowH/2+4}" font-size="8" fill="${subtl}" font-family="Arial,Helvetica,sans-serif">${escSVG(data.nomLuthier)}  ·  ${escSVG(fmtDate(data.date))}</text>`;
+
+  /* ── "Haut (graves)" — italics near top-left (TikZ: \itshape) ── */
+  s+=`<text x="${MH+8}" y="${contentTop-6}" font-size="9" fill="${textColor}" font-style="italic" font-family="Arial,Helvetica,sans-serif">${escSVG('Haut (graves)')}</text>`;
+
+  /* ── Push/Pull legend — small circle (top-right area) ── */
+  const legR=8,legX=W-MH-legR,legY=tblY+tblH/2;
+  s+=`<circle cx="${legX}" cy="${legY}" r="${legR}" fill="${bg}" stroke="${stroke}" stroke-width="1"/>`;
+  s+=`<path d="M${legX-legR},${legY} A${legR},${legR} 0 0,1 ${legX+legR},${legY}" fill="${pushBg}"/>`;
+  s+=`<path d="M${legX-legR},${legY} A${legR},${legR} 0 0,0 ${legX+legR},${legY}" fill="${pullBg}"/>`;
+  s+=`<circle cx="${legX}" cy="${legY}" r="${legR}" fill="none" stroke="${stroke}" stroke-width="1"/>`;
+  s+=`<line x1="${legX-legR}" y1="${legY}" x2="${legX+legR}" y2="${legY}" stroke="${stroke}" stroke-width=".4" opacity=".4"/>`;
+  s+=tx(legX-legR-4,legY-2,t('svgPush').replace(/[↓↑]/g,'').trim(),6.5,textColor,'normal','end');
+  s+=tx(legX-legR-4,legY+8,t('svgPull').replace(/[↓↑]/g,'').trim(),6.5,textColor,'normal','end');
+
+  /* ═══════════════════════════════════════════════════
+     LH COLUMNS — anchored at left (west) per TikZ
+     ═══════════════════════════════════════════════════ */
+  if(nLH>0&&maxLHBtns>0){
+    // Section header "Main Gauche"
+    s+=tx(lhX0+((nLH-1)*CGAP)/2,gridTop-16,t('svgLH'),9,gold,'bold','middle');
+    lhSecRows.forEach((sec,si)=>{
+      const cx=lhX0+(nLH-1-si)*CGAP;  // outermost section on far left, innermost closest to bellows
+      const off=(sec.offset||0)*(BGAP/2);
+      const has2=sec.items2&&sec.items2.length>0;
+      // Column background band
+      const cy0=gridTop+off+BGAP/2;
+      const bandY=cy0-R-3;
+      const bandH=(sec.items.length-1)*BGAP+2*(R+3);
+      s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
+      // Column label above the column
+      s+=tx(cx,gridTop-2,escSVG(sec.nom),7,gold,'bold','middle');
+      // Buttons
+      sec.items.forEach((btn,bi)=>{
+        const cy=gridTop+off+bi*BGAP+BGAP/2;
+        s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
+      });
+    });
+    // Button numbers on the left
+    for(let i=0;i<maxLHBtns;i++){
+      s+=tx(lhX0-R-6,gridTop+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','end');
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     BELLOWS SEPARATOR — vertical dashed line
+     ═══════════════════════════════════════════════════ */
+  if(nLH>0){
+    const sepY1=gridTop,sepY2=gridTop+maxBtns*BGAP;
+    s+=`<line x1="${sepX}" y1="${sepY1}" x2="${sepX}" y2="${sepY2}" stroke="${dark?'#444':'#ccc'}" stroke-width="1" stroke-dasharray="6,4"/>`;
+    const sepMidY=(sepY1+sepY2)/2;
+    s+=`<text x="${sepX}" y="${sepMidY}" text-anchor="middle" font-size="6.5" fill="${subtl}" font-weight="bold" font-family="Arial,Helvetica,sans-serif" transform="rotate(-90,${sepX},${sepMidY})">${escSVG(`— ${t('svgBellows')} —`)}</text>`;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     RH COLUMNS — anchored at right (east) per TikZ
+     Innermost row (closest to bellows) = leftmost column
+     ═══════════════════════════════════════════════════ */
+  // Section header "Main Droite"
+  s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-16,t('svgRH'),9,gold,'bold','middle');
+  rhRows.forEach((row,ri)=>{
+    const colIdx=ri;               // innermost row → leftmost column (closest to bellows)
+    const cx=rhX0+colIdx*CGAP;
+    const off=(row.offset||0)*(BGAP/2);
+    // Column background band
+    const cy0=gridTop+off+BGAP/2;
+    const bandY=cy0-R-3;
+    const bandH=(row.boutons.length-1)*BGAP+2*(R+3);
+    s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${ri%2===0?band1:band2}" opacity=".6"/>`;
+    // Column label above
+    s+=tx(cx,gridTop-2,escSVG(row.nom),7,gold,'bold','middle');
+    // Buttons
+    row.boutons.forEach((btn,bi)=>{
+      const cy=gridTop+off+bi*BGAP+BGAP/2;
+      s+=drawBtn(cx,cy,btn,null);
+    });
+  });
+  // Button numbers on the right
+  const rhLastCx=rhX0+(nRH-1)*CGAP;
+  for(let i=0;i<maxRHBtns;i++){
+    s+=tx(rhLastCx+R+6,gridTop+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','start');
+  }
+
+  /* ── "Bas (aigus)" at bottom ── */
+  s+=`<text x="${W/2}" y="${H-MB+16}" font-size="9" fill="${textColor}" font-style="italic" text-anchor="middle" font-family="Arial,Helvetica,sans-serif">${escSVG('↑ Aigus')}</text>`;
+
+  /* ── Footer ────────────────────────────────────────── */
+  s+=`<line x1="${MH}" y1="${H-MB+26}" x2="${W-MH}" y2="${H-MB+26}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
+  s+=tx(MH,H-MB+38,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7,dark?'#444':'#bbb','normal','start');
+
+  s+=svg_close();return s;
+}
+
+/* ╔══════════════════════════════════════════════════════╗
    ║  SVG SOMMIER (reed plate view)                       ║
    ╚══════════════════════════════════════════════════════╝ */
 /* ╔══════════════════════════════════════════════════════╗
@@ -2089,18 +2310,13 @@ function matchSvgWidth(svgRef,svgTgt){
 
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
-let rotateMode=0; // 0=normal, 1=+90°, -1=-90°
+let rotateMode=0; // 0=portrait, 1=landscape
 function toggleRotateView(){
-  // Cycle: 0 (normal) → 1 (+90°) → -1 (-90°) → 0
-  if(rotateMode===0) rotateMode=1;
-  else if(rotateMode===1) rotateMode=-1;
-  else rotateMode=0;
+  rotateMode=rotateMode===0?1:0;
   const btn=document.getElementById('rotate-btn');
   if(btn){
     btn.classList.toggle('active-rotate',rotateMode!==0);
-    if(rotateMode===0) btn.textContent=t('rotateView');
-    else if(rotateMode===1) btn.textContent='↩ +90°';
-    else btn.textContent='↺ −90°';
+    btn.textContent=t('rotateView');
   }
   runLivePreview();
 }
@@ -2112,35 +2328,11 @@ function runLivePreview(){
     const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
     const outEl=document.getElementById('visual-output');
     if(rotateMode!==0){
-      outEl.classList.add('rotated');
-      // Combined SVG dimensions
-      const mhD=svgD.match(/\bheight="(\d+(?:\.\d+)?)"/),mwD=svgD.match(/\bwidth="(\d+(?:\.\d+)?)"/);
-      const mhG=svgG.match(/\bheight="(\d+(?:\.\d+)?)"/),mwG=svgG.match(/\bwidth="(\d+(?:\.\d+)?)"/);
-      const wD=mwD?+mwD[1]:800,hD=mhD?+mhD[1]:600;
-      const wG=mwG?+mwG[1]:800,hG=mhG?+mhG[1]:600;
-      const gap=24,totalW=Math.max(wD,wG),totalH=hD+gap+hG;
-      // Scale to fill available viewport height (fallback 200 = estimated header height when element not yet laid out)
-      const topOffset=outEl.getBoundingClientRect().top||200;
-      const availH=Math.max(300,window.innerHeight-topOffset-20); // 300=min height; 20=bottom margin
-      const scale=availH/totalH;
-      const visW=Math.round(totalW*scale);
-      // CSS transform: +90° = rotate(90deg) translateY(-totalW)
-      //               -90° = translateY(totalH) rotate(-90deg)
-      const transform = rotateMode===1
-        ? `rotate(90deg) translateY(-${totalW}px)`
-        : `translateY(${totalH}px) rotate(-90deg)`;
-      const inner=`<div style="display:flex;flex-direction:column;gap:0;">
-          <h3 style="color:var(--vert);font-size:.88rem;margin-bottom:6px;">${t('svgRH')}</h3>${svgD}
-          <div style="margin:${gap/2}px 0;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
-          <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 6px;">${t('svgLH')}</h3>${svgG}
-        </div>`;
-      outEl.innerHTML=`<div style="width:${visW}px;height:${availH}px;overflow:hidden;"><div class="rotate-scale-wrap" style="transform:scale(${scale});"><div class="svg-rotate-wrap" style="width:${totalH}px;height:${totalW}px;transform:${transform};">${inner}</div></div></div>`;
+      outEl.classList.add('landscape');
+      outEl.innerHTML=buildSVG_Combined(data,false);
     } else {
-      outEl.classList.remove('rotated');
-      outEl.innerHTML=
-        `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
-         <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
-         <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 9px;">${t('svgLH')}</h3>${svgG}`;
+      outEl.classList.remove('landscape');
+      outEl.innerHTML=buildSVG_Plan(data,false);
     }
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
   }catch(e){console.error('runLivePreview:',e);}
@@ -2349,24 +2541,15 @@ async function downloadPDF(which){
 
   // ── Keyboard SVGs ──────────────────────────────────
   if(which==='visual'&&rotateMode!==0){
-    // Landscape: single combined SVG with both hands side-by-side
+    // Landscape A4: side-by-side combined SVG (RH | LH)
     const svgComb=buildSVG_Combined(data,false);
     const wC=+(svgComb.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,1200])[1];
     await addSvgImg(svgComb,null,CW/wC,true);
   }else{
-    // Portrait: right hand then left hand stacked
-    const svgDstr=buildSVG_Droite(data,false);
-    const svgGstr=buildSVG_Gauche(data,false);
-    const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
-    const wG=+(svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
-    await addSvgImg(svgDstr,t('svgRH'),CW/wD,false);
-    if(yPos+7<CB){
-      hRule(yPos,RULE_C,0.15);
-      pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
-      pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
-      yPos+=7;
-    }
-    await addSvgImg(svgGstr,t('svgLH'),CW/wG,false);
+    // Portrait A4: TikZ-style vertical-column plan (LH columns left, RH columns right)
+    const svgPlan=buildSVG_Plan(data,false);
+    const wP=+(svgPlan.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,600])[1];
+    await addSvgImg(svgPlan,null,CW/wP,true);
   }
 
   // ══════════════════════════════════════════════════
