@@ -2204,9 +2204,9 @@ async function downloadPDF(which){
 
   const data=readInputs();
   const {jsPDF}=window.jspdf;
-  // 'visual' PDF: always landscape A4 with combined left+right SVG
+  // 'visual' PDF: landscape A4 (combined SVG) when rotated, portrait A4 (stacked) otherwise
   // 'fabricant' PDF: portrait A4 with separate SVGs + tables
-  const pdfOrientation=which==='visual'?'landscape':'portrait';
+  const pdfOrientation=(which==='visual'&&rotateMode!==0)?'landscape':'portrait';
   const pdf=new jsPDF({orientation:pdfOrientation,unit:'mm',format:'a4'});
   const PW=pdf.internal.pageSize.getWidth(), PH=pdf.internal.pageSize.getHeight();
 
@@ -2348,13 +2348,13 @@ async function downloadPDF(which){
   hRule(yPos,GRN,0.4);yPos+=8;
 
   // ── Keyboard SVGs ──────────────────────────────────
-  if(which==='visual'){
+  if(which==='visual'&&rotateMode!==0){
     // Landscape: single combined SVG with both hands side-by-side
     const svgComb=buildSVG_Combined(data,false);
     const wC=+(svgComb.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,1200])[1];
     await addSvgImg(svgComb,null,CW/wC,true);
   }else{
-    // Portrait fabricant: right hand then left hand stacked
+    // Portrait: right hand then left hand stacked
     const svgDstr=buildSVG_Droite(data,false);
     const svgGstr=buildSVG_Gauche(data,false);
     const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
