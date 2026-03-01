@@ -2001,9 +2001,11 @@ function buildSVG_Plan(data,dark){
   // ── SVG dimensions ────────────────────────────────────────────
   const rhSectionH=HEAD+nRH*VGAP+R+22;           // +R+22 for numbers row below
   const lhSectionH=nLH>0?(22+nLH*VGAP+R+22):0;   // 22=LH section label gap
-  const maxBtnsAll=Math.max(maxRHBtns+maxRHOff,maxLHBtns);
-  const W=BASE+maxBtnsAll*HGAP+(nRH>1?HGAP/2:0)+RPAD;
+  // Width is driven by the RH keyboard; LH rows are centred under it
+  const W=BASE+maxRHBtns*HGAP+(nRH>1?HGAP/2:0)+RPAD;
   const H=MARG+rhSectionH+(lhSectionH>0?BETWEEN+lhSectionH:0)+FOOT;
+  // Centre x of the RH keyboard span — used to centre every LH row
+  const rhKbCx=BASE+maxRHBtns*HGAP/2;
 
   let s=svg_open(W,H,bg);
 
@@ -2060,10 +2062,9 @@ function buildSVG_Plan(data,dark){
   // ── LH section ────────────────────────────────────────────────
   if(nLH>0&&maxLHBtns>0){
     const lhTopY=MARG+rhSectionH+BETWEEN;
-    // Separator / bellows dashed line
+    // Separator / bellows dashed line — span the full RH keyboard width
     const sepY=MARG+rhSectionH+BETWEEN/2;
-    const sx1=BASE,sx2=BASE+Math.max(maxRHBtns,maxLHBtns)*HGAP;
-    s+=`<line x1="${sx1}" y1="${sepY}" x2="${sx2}" y2="${sepY}" stroke="${dark?'#444':'#ddd'}" stroke-width="1.2" stroke-dasharray="8,5"/>`;
+    s+=`<line x1="${BASE}" y1="${sepY}" x2="${BASE+maxRHBtns*HGAP}" y2="${sepY}" stroke="${dark?'#444':'#ddd'}" stroke-width="1.2" stroke-dasharray="8,5"/>`;
     s+=tx(W/2,sepY+10,`— ${t('svgBellows')} —`,8,subtl,'bold','middle');
 
     s+=tx(LPAD/2,lhTopY+(nLH*VGAP)/2,t('svgLH'),10,gold,'bold','middle');
@@ -2071,23 +2072,27 @@ function buildSVG_Plan(data,dark){
     lhSecRows.forEach((sec,si)=>{
       const rowY=lhTopY+si*VGAP;
       const off=(sec.offset||0)*(HGAP/2);
+      // Centre this LH row horizontally under the RH keyboard
+      const lhBaseX=Math.round(rhKbCx-sec.items.length*HGAP/2);
       const has2=sec.items2&&sec.items2.length>0;
-      s+=`<rect x="${BASE+off-4}" y="${rowY-R-4}" width="${sec.items.length*HGAP+8}" height="${(R+4)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
-      s+=tx(BASE-8,rowY+4,escSVG(sec.nom),9.5,gold,'bold','end');
-      if(sec.voix)s+=tx(BASE-8,rowY+15,`${sec.voix}v`,7,dark?'rgba(200,162,39,.55)':'rgba(45,90,39,.55)','normal','end');
+      s+=`<rect x="${lhBaseX+off-4}" y="${rowY-R-4}" width="${sec.items.length*HGAP+8}" height="${(R+4)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
+      s+=tx(lhBaseX+off-8,rowY+4,escSVG(sec.nom),9.5,gold,'bold','end');
+      if(sec.voix)s+=tx(lhBaseX+off-8,rowY+15,`${sec.voix}v`,7,dark?'rgba(200,162,39,.55)':'rgba(45,90,39,.55)','normal','end');
       sec.items.forEach((btn,bii)=>{
-        const cx=BASE+bii*HGAP+off;
+        const cx=lhBaseX+bii*HGAP+off;
         const btn2=has2?(sec.items2[bii]||null):null;
         s+=drawBtn(cx,rowY,btn,btn2,bii+1);
       });
     });
 
-    // Button numbers below the first LH row
+    // Button numbers below the first LH row — centred too
     if(lhSecRows.length>0&&lhSecRows[0].items.length>0){
       const lhNumY=lhTopY+nLH*VGAP+R+14;
-      const off0=(lhSecRows[0].offset||0)*(HGAP/2);
-      lhSecRows[0].items.forEach((_,bii)=>{
-        s+=tx(BASE+bii*HGAP+off0,lhNumY,bii+1,7.5,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');
+      const sec0=lhSecRows[0];
+      const off0=(sec0.offset||0)*(HGAP/2);
+      const lhBaseX0=Math.round(rhKbCx-sec0.items.length*HGAP/2);
+      sec0.items.forEach((_,bii)=>{
+        s+=tx(lhBaseX0+bii*HGAP+off0,lhNumY,bii+1,7.5,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');
       });
     }
   }
