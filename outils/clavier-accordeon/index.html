@@ -218,10 +218,9 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   .card-head{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .mfr-table th{background:var(--dark)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-/* ── Rotation 90° visual ── */
-#visual-output.rotated{overflow:auto;}
-#visual-output.rotated .rotate-scale-wrap{transform-origin:top left;display:inline-block;}
-#visual-output.rotated .svg-rotate-wrap{display:inline-block;transform-origin:top left;}
+/* ── Landscape preview (side-by-side) ── */
+#visual-output.landscape{display:flex;gap:12px;align-items:flex-start;}
+#visual-output.landscape>div{flex:1;min-width:0;}
 .btn-or.active-rotate{background:var(--dark);color:var(--or-c);border-color:var(--dark);}
 @media(max-width:680px){
   header{flex-wrap:wrap}
@@ -437,7 +436,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <div class="btn-group no-print" style="margin-bottom:13px;">
         <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
         <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
-        <button class="btn btn-or" id="rotate-btn" onclick="toggleRotateView()" data-i-btn="rotateView" style="margin-left:auto;">↩ Rotation 90°</button>
+        <button class="btn btn-or" id="rotate-btn" onclick="toggleRotateView()" data-i-btn="rotateView" style="margin-left:auto;">⟺ Portrait/Paysage</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -516,7 +515,7 @@ fr:{
   rowOffset:'Décalage',
   basses:'Basses',accords:'Accords',terzetto:'Terzetto',
   swapRowTitle:'Inverser poussé/tiré (toute la rangée)',mirrorRowTitle:'Miroir — inverser ordre des colonnes (1er↔dernier)',copyRowTitle:'Copier cette rangée',pasteRowTitle:'Coller ici depuis le presse-papiers',
-  rotateView:'↩ Rotation 90°',rotateViewTitle:'Cliquer pour tourner : +90° → −90° → normal (soufflet vertical)',
+  rotateView:'⟺ Portrait/Paysage',rotateViewTitle:'Basculer entre Portrait (empilé) et Paysage (côte à côte) — affecte l\'aperçu et le PDF',
   lhOrderBtn:'🔄 Accords → Basses',lhOrderBtnInv:'🔄 Basses → Accords',
   addTerzetto:'＋ Ajouter Terzetto',removeTerzetto:'🗑️ Supprimer Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Accord',close:'✕ Fermer',
@@ -590,7 +589,7 @@ en:{
   rowOffset:'Offset',
   basses:'Basses',accords:'Chords',terzetto:'Terzetto',
   swapRowTitle:'Swap push/pull (entire row)',mirrorRowTitle:'Mirror — reverse column order (1st↔last)',copyRowTitle:'Copy this row',pasteRowTitle:'Paste here from clipboard',
-  rotateView:'↩ Rotate 90°',rotateViewTitle:'Click to rotate: +90° → −90° → normal (vertical bellows)',
+  rotateView:'⟺ Portrait/Landscape',rotateViewTitle:'Toggle between Portrait (stacked) and Landscape (side by side) — affects preview and PDF',
   lhOrderBtn:'🔄 Chords → Basses',lhOrderBtnInv:'🔄 Basses → Chords',
   addTerzetto:'＋ Add Terzetto',removeTerzetto:'🗑️ Remove Terzetto',
   noteTab:'🎵 Note',chordTab:'🎼 Chord',close:'✕ Close',
@@ -725,12 +724,10 @@ function setLang(l){
     const v=t(k);
     if(typeof v==='string') el.textContent=v;
   });
-  // Update rotate button title and text (preserve active rotation label)
+  // Update rotate button title
   const rotBtn=document.getElementById('rotate-btn');
   if(rotBtn){
     rotBtn.title=t('rotateViewTitle');
-    if(rotateMode===1) rotBtn.textContent='↩ +90°';
-    else if(rotateMode===-1) rotBtn.textContent='↺ −90°';
   }
   updateLhOrderBtn();
   // Update save status text
@@ -2089,18 +2086,13 @@ function matchSvgWidth(svgRef,svgTgt){
 
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
-let rotateMode=0; // 0=normal, 1=+90°, -1=-90°
+let rotateMode=0; // 0=portrait, 1=landscape
 function toggleRotateView(){
-  // Cycle: 0 (normal) → 1 (+90°) → -1 (-90°) → 0
-  if(rotateMode===0) rotateMode=1;
-  else if(rotateMode===1) rotateMode=-1;
-  else rotateMode=0;
+  rotateMode=rotateMode===0?1:0;
   const btn=document.getElementById('rotate-btn');
   if(btn){
     btn.classList.toggle('active-rotate',rotateMode!==0);
-    if(rotateMode===0) btn.textContent=t('rotateView');
-    else if(rotateMode===1) btn.textContent='↩ +90°';
-    else btn.textContent='↺ −90°';
+    btn.textContent=t('rotateView');
   }
   runLivePreview();
 }
@@ -2112,31 +2104,12 @@ function runLivePreview(){
     const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
     const outEl=document.getElementById('visual-output');
     if(rotateMode!==0){
-      outEl.classList.add('rotated');
-      // Combined SVG dimensions
-      const mhD=svgD.match(/\bheight="(\d+(?:\.\d+)?)"/),mwD=svgD.match(/\bwidth="(\d+(?:\.\d+)?)"/);
-      const mhG=svgG.match(/\bheight="(\d+(?:\.\d+)?)"/),mwG=svgG.match(/\bwidth="(\d+(?:\.\d+)?)"/);
-      const wD=mwD?+mwD[1]:800,hD=mhD?+mhD[1]:600;
-      const wG=mwG?+mwG[1]:800,hG=mhG?+mhG[1]:600;
-      const gap=24,totalW=Math.max(wD,wG),totalH=hD+gap+hG;
-      // Scale to fill available viewport height (fallback 200 = estimated header height when element not yet laid out)
-      const topOffset=outEl.getBoundingClientRect().top||200;
-      const availH=Math.max(300,window.innerHeight-topOffset-20); // 300=min height; 20=bottom margin
-      const scale=availH/totalH;
-      const visW=Math.round(totalW*scale);
-      // CSS transform: +90° = rotate(90deg) translateY(-totalW)
-      //               -90° = translateY(totalH) rotate(-90deg)
-      const transform = rotateMode===1
-        ? `rotate(90deg) translateY(-${totalW}px)`
-        : `translateY(${totalH}px) rotate(-90deg)`;
-      const inner=`<div style="display:flex;flex-direction:column;gap:0;">
-          <h3 style="color:var(--vert);font-size:.88rem;margin-bottom:6px;">${t('svgRH')}</h3>${svgD}
-          <div style="margin:${gap/2}px 0;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
-          <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 6px;">${t('svgLH')}</h3>${svgG}
-        </div>`;
-      outEl.innerHTML=`<div style="width:${visW}px;height:${availH}px;overflow:hidden;"><div class="rotate-scale-wrap" style="transform:scale(${scale});"><div class="svg-rotate-wrap" style="width:${totalH}px;height:${totalW}px;transform:${transform};">${inner}</div></div></div>`;
+      outEl.classList.add('landscape');
+      outEl.innerHTML=
+        `<div><h3 style="color:var(--vert);font-size:.88rem;margin-bottom:6px;">${t('svgRH')}</h3>${svgD}</div>
+         <div><h3 style="color:var(--vert);font-size:.88rem;margin-bottom:6px;">${t('svgLH')}</h3>${svgG}</div>`;
     } else {
-      outEl.classList.remove('rotated');
+      outEl.classList.remove('landscape');
       outEl.innerHTML=
         `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
          <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
@@ -2349,10 +2322,23 @@ async function downloadPDF(which){
 
   // ── Keyboard SVGs ──────────────────────────────────
   if(which==='visual'&&rotateMode!==0){
-    // Landscape: single combined SVG with both hands side-by-side
-    const svgComb=buildSVG_Combined(data,false);
-    const wC=+(svgComb.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,1200])[1];
-    await addSvgImg(svgComb,null,CW/wC,true);
+    // Landscape A4: render each SVG individually and place side-by-side
+    // (avoids nested-SVG canvas rendering issues)
+    const svgDstr=buildSVG_Droite(data,false);
+    const svgGstr=buildSVG_Gauche(data,false);
+    const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+    const hD=+(svgDstr.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,600])[1];
+    const wG=+(svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
+    const hG=+(svgGstr.match(/\bheight="(\d+(?:\.\d+)?)"/)||[,600])[1];
+    const GAP_MM=6; // mm gap between columns
+    const colW=(CW-GAP_MM)/2;
+    const imgHD=hD*(colW/wD), imgHG=hG*(colW/wG);
+    const {dataUrl:urlD}=await svgToPngDataUrl(svgDstr,0);
+    const {dataUrl:urlG}=await svgToPngDataUrl(svgGstr,0);
+    secLabel(t('svgRH'),yPos+4);yPos+=7;
+    pdf.addImage(urlD,'JPEG',ML,yPos,colW,imgHD);
+    pdf.addImage(urlG,'JPEG',ML+colW+GAP_MM,yPos,colW,imgHG);
+    yPos+=Math.max(imgHD,imgHG)+5;
   }else{
     // Portrait: right hand then left hand stacked
     const svgDstr=buildSVG_Droite(data,false);
