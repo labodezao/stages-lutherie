@@ -2492,7 +2492,8 @@ function svgToPngDataUrl(svgStr,rotAngle){
 async function downloadPDF(which){
   const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
   const AT_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
-  try{ await loadScript(JSPDF_URL); await loadScript(AT_URL); }
+  const SVG2PDF_URL='https://cdnjs.cloudflare.com/ajax/libs/svg2pdf.js/2.2.3/svg2pdf.umd.min.js';
+  try{ await loadScript(JSPDF_URL); await loadScript(AT_URL); await loadScript(SVG2PDF_URL); }
   catch(e){ alert(t('popupAlert'));return; }
 
   const data=readInputs();
@@ -2574,6 +2575,32 @@ async function downloadPDF(which){
     yPos+=3;
   }
 
+  // ── SVG → native PDF vectors (text selectable) using svg2pdf.js ──
+  // Falls back to JPEG image if svg2pdf is unavailable.
+  async function addSvgNative(svgStr){
+    const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
+    const svgW=mw?+mw[1]:800,svgH=mh?+mh[1]:600;
+    const scale=CW/svgW;
+    const finalH=svgH*scale;
+    if(yPos+finalH>CB){pdf.addPage();yPos=MT;}
+    // svg2pdf needs the element in the DOM to resolve inherited styles
+    const wrap=document.createElement('div');
+    wrap.style.cssText='position:absolute;visibility:hidden;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none;';
+    wrap.innerHTML=svgStr;
+    document.body.appendChild(wrap);
+    const svgEl=wrap.querySelector('svg');
+    try{
+      await window.svg2pdf(svgEl,pdf,{x:ML,y:yPos,width:CW,height:finalH});
+    }catch(e){
+      // fallback: rasterise if svg2pdf fails
+      const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,0);
+      pdf.addImage(dataUrl,'JPEG',ML,yPos,CW,finalH);
+    }finally{
+      document.body.removeChild(wrap);
+    }
+    yPos+=finalH+5;
+  }
+
   // ── AutoTable defaults ─────────────────────────────
   function tableDefaults(extra){
     return Object.assign({
@@ -2641,11 +2668,10 @@ async function downloadPDF(which){
   pdf.text(meta,ML,yPos);yPos+=5;
   hRule(yPos,GRN,0.4);yPos+=8;
 
-  // ── Keyboard SVGs — always TikZ plan view ──────────
+  // ── Keyboard plan — native PDF vectors (text selectable/copyable) ──
   {
     const svgPlan=buildSVG_Plan(data,false);
-    const wP=+(svgPlan.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,600])[1];
-    await addSvgImg(svgPlan,null,CW/wP,true);
+    await addSvgNative(svgPlan);
   }
 
   // ══════════════════════════════════════════════════
