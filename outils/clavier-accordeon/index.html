@@ -2177,7 +2177,7 @@ function buildSVG_Plan(data,dark){
     row.boutons.forEach((btn,bi)=>{
       const cy=gridTop+off+bi*BGAP+BGAP/2;
       s+=drawBtn(cx,cy,btn,null);
-      s+=tx(cx-R+2,cy+R-3,(bi+1)+suffix,5.5,numTx,'bold','start');
+      s+=tx(cx-R-1,cy+R+2,(bi+1)+suffix,5.5,numTx,'bold','start');
     });
   });
 
