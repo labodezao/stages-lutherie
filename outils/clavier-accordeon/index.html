@@ -2746,7 +2746,6 @@ async function downloadPDF(which){
           pdf.rect(px(cx_s-R_S-3),py(bY),pr(2*(R_S+3)),pr(bH),'F');
         }
         pdf.setFontSize(Math.max(fs(6.5),3));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
-        pdf.text(sec.nom||'',px(cx_s),py(lhGT-8),{angle:90,align:'left'});
         const has2=sec.items2&&sec.items2.some(x=>x!=null);
         sec.items.forEach((btn,bi)=>{
           const cy_s=lhGT+off+bi*BGAP_S+BGAP_S/2;
