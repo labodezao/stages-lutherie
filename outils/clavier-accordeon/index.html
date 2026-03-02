@@ -2911,8 +2911,7 @@ async function downloadPDF(which){
     }));
     yPos=pdf.lastAutoTable.finalY+10;
 
-    // ── Page: Sommier ──────────────────────────────
-    pdf.addPage();yPos=MT;
+    // ── Sommier (suite directe, sans saut de page forcé) ──────────────
     const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
     const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
     addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
