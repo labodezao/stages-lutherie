@@ -85,6 +85,7 @@ select option{background:#fff;color:var(--txt)}
 .btn-rouge{background:#b8312a;color:#fff;border:1px solid #b8312a}
 .btn-gris{background:#f0f0ee;color:#555;border:1px solid var(--brd)}
 .btn-group{display:flex;gap:7px;flex-wrap:wrap}
+.btn-group .btn{flex:1 1 auto}
 
 /* ── Row config ── */
 .rangees-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
@@ -2009,7 +2010,7 @@ function buildSVG_Plan(data,dark){
            A4     A5     A6  */
       const nGroups=Math.ceil(nPairs/ppRow);
       for(let c=0;c<ppRow;c++){
-        const intItems=[],intItems2=[],intTypes=[];
+        const intItems=[],intItems2=[],intTypes=[],intIndices=[];
         for(let g=0;g<nGroups;g++){
           const i=g*ppRow+c;
           if(i>=nPairs)break;
@@ -2017,29 +2018,29 @@ function buildSVG_Plan(data,dark){
             ?[['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
             :[['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
           seq.forEach(([typ,src,src2,nv])=>{
-            if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);}
+            if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);intIndices.push(i+1);}
           });
         }
         if(intItems.length){
           const lbl=ppRow===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${c+1}`;
-          lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes});
+          lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
         }
       }
     }else{
       /* Vertical (default): each group → 1 interleaved column (B-A-B-A) */
       for(let g=0;g<nGroups;g++){
         const s0=g*ppRow,s1=Math.min(s0+ppRow,nPairs);
-        const intItems=[],intItems2=[],intTypes=[];
+        const intItems=[],intItems2=[],intTypes=[],intIndices=[];
         for(let i=s0;i<s1;i++){
           const seq=data.lhBassFirst
             ?[['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
             :[['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
           seq.forEach(([typ,src,src2,nv])=>{
-            if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);}
+            if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);intIndices.push(i+1);}
           });
         }
         const lbl=nGroups===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`;
-        lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes});
+        lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
       }
     }
     if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
@@ -2232,7 +2233,6 @@ function buildSVG_Plan(data,dark){
       sec.items.forEach((btn,bi)=>{
         const cy=lhGridTop+off+bi*BGAP+BGAP/2;
         s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
-        s+=tx(cx,cy+3.5,bi+1,6.5,numTx,'normal','middle');
         if(sec.interleavedTypes){
           const typ=sec.interleavedTypes[bi];
           s+=tx(cx-R+4,cy-R+7,typ,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
