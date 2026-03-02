@@ -2492,8 +2492,7 @@ function svgToPngDataUrl(svgStr,rotAngle){
 async function downloadPDF(which){
   const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
   const AT_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
-  const SVG2PDF_URL='https://cdnjs.cloudflare.com/ajax/libs/svg2pdf.js/2.2.3/svg2pdf.umd.min.js';
-  try{ await loadScript(JSPDF_URL); await loadScript(AT_URL); await loadScript(SVG2PDF_URL); }
+  try{ await loadScript(JSPDF_URL); await loadScript(AT_URL); }
   catch(e){ alert(t('popupAlert'));return; }
 
   const data=readInputs();
@@ -2575,30 +2574,204 @@ async function downloadPDF(which){
     yPos+=3;
   }
 
-  // ── SVG → native PDF vectors (text selectable) using svg2pdf.js ──
-  // Falls back to JPEG raster image if svg2pdf is unavailable.
-  async function addSvgNative(svgStr){
-    const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
-    const svgW=mw?+mw[1]:800,svgH=mh?+mh[1]:600;
-    const scale=CW/svgW;
-    const finalH=svgH*scale;
-    if(yPos+finalH>CB){pdf.addPage();yPos=MT;}
-    // svg2pdf needs the element in the DOM to resolve inherited styles
-    const wrap=document.createElement('div');
-    wrap.style.cssText='position:absolute;visibility:hidden;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none;';
-    wrap.innerHTML=svgStr;
-    document.body.appendChild(wrap);
-    const svgEl=wrap.querySelector('svg');
-    try{
-      await window.svg2pdf(svgEl,pdf,{x:ML,y:yPos,width:CW,height:finalH});
-    }catch(e){
-      // fallback: rasterise as JPEG (svgToPngDataUrl returns JPEG despite its name)
-      const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,0);
-      pdf.addImage(dataUrl,'JPEG',ML,yPos,CW,finalH);
-    }finally{
-      document.body.removeChild(wrap);
+  // ── Plan de clavier — dessiné nativement avec les primitives jsPDF ──
+  // Texte 100 % natif PDF (sélectionnable/copiable). Reproduit le layout de buildSVG_Plan.
+  function drawPlanNative(data){
+    /* ─ constantes de layout (mêmes que buildSVG_Plan en pixels SVG) ─ */
+    const R_S=18,BGAP_S=46,CGAP_S=52,MH_S=20,MT_S=14,MB_S=30;
+    const TITLE_H_S=76,BTWN_S=50,HEADER_GAP_S=120;
+
+    /* ─ reconstruction des colonnes MG (même logique que buildSVG_Plan) ─ */
+    const lhSecs=[];
+    if(data.lhDisplayMode==='paired'){
+      const nP=Math.max((data.basses||[]).length,(data.accords||[]).length);
+      const ppR=Math.max(1,data.lhPairsPerRow||nP);
+      const nG=Math.ceil(nP/ppR);
+      for(let g=0;g<nG;g++){
+        const s0=g*ppR,s1=Math.min(s0+ppR,nP),its=[],its2=[],tys=[],ixs=[];
+        for(let i=s0;i<s1;i++){
+          const seq=data.lhBassFirst
+            ?[['B',data.basses,data.basses2,data.nbVoixBasses||2],['A',data.accords,data.accords2,data.nbVoixAccords||2]]
+            :[['A',data.accords,data.accords2,data.nbVoixAccords||2],['B',data.basses,data.basses2,data.nbVoixBasses||2]];
+          seq.forEach(([ty,src,sr2,nv])=>{if(src&&src[i]){its.push(src[i]);its2.push(nv>1&&sr2?sr2[i]||null:null);tys.push(ty);ixs.push(i+1);}});
+        }
+        if(its.length)lhSecs.push({nom:nG===1?`${t('basses')}/${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`,items:its,items2:its2,offset:0,iTypes:tys,iIdxs:ixs});
+      }
+    }else{
+      const cfg=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:(data.basses||[]).length||1,offset:0}];
+      const aS=[],bS=[];let aI=0,bI=0;
+      const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
+      cfg.forEach((row,ri)=>{
+        aS.push({nom:cfg.length===1?t('accords'):(ri===0?t('accords'):`↳+${aI}`),items:(data.accords||[]).slice(aI,aI+row.nb),items2:vA>1?(data.accords2||[]).slice(aI,aI+row.nb):null,offset:row.offset||0});aI+=row.nb;
+        bS.push({nom:cfg.length===1?t('basses'):(ri===0?t('basses'):`↳+${bI}`),items:(data.basses||[]).slice(bI,bI+row.nb),items2:vB>1?(data.basses2||[]).slice(bI,bI+row.nb):null,offset:row.offset||0});bI+=row.nb;
+      });
+      if(data.lhBassFirst){bS.forEach(s=>lhSecs.push(s));aS.forEach(s=>lhSecs.push(s));}
+      else{aS.forEach(s=>lhSecs.push(s));bS.forEach(s=>lhSecs.push(s));}
     }
-    yPos+=finalH+5;
+    if(data.terzetto&&data.terzetto.length)lhSecs.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
+
+    /* ─ dimensions ─ */
+    const rhR=data.droite||[],nRH=rhR.length,nLH=lhSecs.length;
+    const maxRH=Math.max(...rhR.map(r=>(r.boutons||[]).length),1);
+    const maxLH=nLH>0?Math.max(...lhSecs.map(s=>s.items.length),0):0;
+    const maxB=Math.max(maxRH,maxLH,1);
+    const rhTS=Math.max(0,...rhR.map(r=>-(r.offset||0)))*(BGAP_S/2);
+    const rhBE=Math.max(0,...rhR.map(r=>(r.offset||0)))*(BGAP_S/2);
+    const lhTS=nLH?Math.max(0,...lhSecs.map(s=>-(s.offset||0)))*(BGAP_S/2):0;
+    const lhBE=nLH?Math.max(0,...lhSecs.map(s=>(s.offset||0)))*(BGAP_S/2):0;
+    const eOff=Math.max(rhTS+rhBE,lhTS+lhBE);
+    const W_S=Math.max(nRH*CGAP_S+(nLH>0?BTWN_S+nLH*CGAP_S:0)+2*MH_S,460);
+    const bodyH_S=maxB*BGAP_S+eOff+HEADER_GAP_S+20;
+    const H_S=MT_S+TITLE_H_S+bodyH_S+MB_S;
+
+    /* ─ mise à l'échelle pour tenir sur la page ─ */
+    const availH=Math.max(CB-yPos,80);
+    const S=Math.min(CW/W_S, availH/H_S);  // mm par pixel SVG
+    const planW=W_S*S, planH=H_S*S;
+    if(yPos+planH>CB+0.1){pdf.addPage();yPos=MT;}
+    const ox=ML+(CW-planW)/2, oy=yPos;
+
+    /* ─ convertisseurs de coordonnées ─ */
+    function px(x){return ox+x*S;}
+    function py(y){return oy+y*S;}
+    function pr(r){return Math.max(r*S,0.05);}
+    // taille de police : SVG font-size px → PDF pt (1px≈0.353mm, 1pt=0.353mm)
+    function fs(n){return Math.max(n*S/0.353,2.5);}
+
+    /* ─ positions géométriques (mêmes calculs que buildSVG_Plan) ─ */
+    const cTop=MT_S+TITLE_H_S,cBot=H_S-MB_S;
+    const gCY=cTop+(cBot-cTop)*0.55;
+    const gridTop=Math.round(gCY-bodyH_S/2)+HEADER_GAP_S;
+    const rhX0=MH_S+CGAP_S/2;
+    const lhX0=nLH>0?rhX0+nRH*CGAP_S+BTWN_S:rhX0+nRH*CGAP_S;
+    const sepX=nLH>0?(rhX0+(nRH-1)*CGAP_S+R_S+(lhX0-R_S))/2:rhX0+nRH*CGAP_S+BTWN_S/2;
+
+    /* ─ tableau de titre ─ */
+    const tX=MH_S,tY=MT_S,rotW=22,infoX=tX+rotW+6,rH=16,tH=64;
+    pdf.setDrawColor(...RULE_C);pdf.setLineWidth(0.3);
+    pdf.line(px(tX+rotW),py(tY),px(tX+rotW),py(tY+tH));
+    for(let i=1;i<4;i++){pdf.setLineWidth(0.15);pdf.line(px(infoX-2),py(tY+i*rH),px(infoX+240),py(tY+i*rH));}
+    // "Plan de clavier" pivoté à 90°
+    pdf.setFontSize(fs(12.5));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+    pdf.text(t('svgPlan'),px(tX+rotW/2),py(tY+tH/2),{angle:90,align:'center'});
+    // nom de l'instrument
+    pdf.setFontSize(fs(11));
+    pdf.text(data.nomInstrument||'Accordéon',px(infoX),py(tY+rH*0.7));
+    // client
+    pdf.setFontSize(fs(8));pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+    if(data.nomJoueur)pdf.text(`${t('svgClient')}: ${data.nomJoueur}`,px(infoX),py(tY+rH+rH*0.65));
+    // description
+    const nBR=rhR.reduce((a,r)=>a+(r.boutons||[]).length,0);
+    pdf.text(`${nRH} rang${nRH>1?'ées':'ée'} (${nBR} btn) · ${(data.basses||[]).length} basses · ${(data.accords||[]).length} accords`,px(infoX),py(tY+2*rH+rH*0.65));
+    // luthier + date
+    pdf.setFontSize(fs(7.5));
+    pdf.text(`${data.nomLuthier||''}  ·  ${fmtDate(data.date)}`,px(infoX),py(tY+3*rH+rH*0.65));
+
+    /* ─ "Haut (graves)" ─ */
+    pdf.setFontSize(fs(8));pdf.setFont('helvetica','italic');pdf.setTextColor(100,100,100);
+    pdf.text('Haut (graves)',px(rhX0-R_S-5),py(gridTop-HEADER_GAP_S+4));
+
+    /* ─ dessin d'un bouton (cercle avec séparateur et notes) ─ */
+    function drawBtn(cx_s,cy_s,btn,btn2){
+      const cx=px(cx_s),cy=py(cy_s),r=pr(R_S);
+      // fond blanc du cercle
+      pdf.setFillColor(255,255,255);pdf.setDrawColor(185,185,185);pdf.setLineWidth(pr(1));
+      pdf.circle(cx,cy,r,'FD');
+      // ligne séparatrice poussé/tiré
+      pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(0.5));
+      pdf.line(cx-r,cy,cx+r,cy);
+      // notes
+      const has2=btn2&&(btn2.p||btn2.t);
+      pdf.setFont('helvetica','bold');
+      if(has2){
+        const fB=Math.max(fs(6.5),2.5),fB2=Math.max(fs(5.5),2.5);
+        if(btn.p){pdf.setFontSize(fB);pdf.setTextColor(26,92,26);pdf.text(displayNote(btn.p),cx,cy-pr(11),{align:'center'});}
+        if(btn2&&btn2.p){pdf.setFontSize(fB2);pdf.setTextColor(100,150,100);pdf.text(displayNote(btn2.p),cx,cy-pr(4),{align:'center'});}
+        if(btn.t){pdf.setFontSize(fB);pdf.setTextColor(139,105,20);pdf.text(displayNote(btn.t),cx,cy+pr(8),{align:'center'});}
+        if(btn2&&btn2.t){pdf.setFontSize(fB2);pdf.setTextColor(170,145,80);pdf.text(displayNote(btn2.t),cx,cy+pr(15),{align:'center'});}
+      }else{
+        const fB=Math.max(fs(8.5),2.5);
+        if(btn.p){pdf.setFontSize(fB);pdf.setTextColor(26,92,26);pdf.text(displayNote(btn.p),cx,cy-pr(7),{align:'center'});}
+        if(btn.t){pdf.setFontSize(fB);pdf.setTextColor(139,105,20);pdf.text(displayNote(btn.t),cx,cy+pr(15),{align:'center'});}
+      }
+    }
+
+    /* ─ colonnes MD (main droite) ─ */
+    pdf.setFontSize(fs(8));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+    pdf.text(t('svgRH'),px(rhX0+((nRH-1)*CGAP_S)/2),py(gridTop-HEADER_GAP_S+6),{align:'center'});
+    rhR.forEach((row,ri)=>{
+      const cx_s=rhX0+ri*CGAP_S,off=rhTS+(row.offset||0)*(BGAP_S/2);
+      // bande de colonne alternée
+      if((row.boutons||[]).length){
+        const bY=gridTop+off+BGAP_S/2-R_S-3,bH=(row.boutons.length-1)*BGAP_S+2*(R_S+3);
+        pdf.setFillColor(ri%2===0?249:243,ri%2===0?249:247,ri%2===0?249:243);
+        pdf.rect(px(cx_s-R_S-3),py(bY),pr(2*(R_S+3)),pr(bH),'F');
+      }
+      // étiquette de colonne (pivotée 90°)
+      pdf.setFontSize(Math.max(fs(6.5),3));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+      pdf.text(row.nom||'',px(cx_s),py(gridTop-8),{angle:90,align:'left'});
+      // boutons
+      const sfx=ri===0?'':ri===1?"'":"''";
+      (row.boutons||[]).forEach((btn,bi)=>{
+        const cy_s=gridTop+off+bi*BGAP_S+BGAP_S/2;
+        drawBtn(cx_s,cy_s,btn,null);
+        // numéro de bouton (coin bas-gauche extérieur)
+        pdf.setFontSize(Math.max(fs(5),2));pdf.setFont('helvetica','normal');pdf.setTextColor(200,200,200);
+        pdf.text((bi+1)+sfx,px(cx_s-R_S-1),py(cy_s+R_S+2),{align:'left'});
+      });
+    });
+
+    /* ─ séparateur soufflet ─ */
+    if(nLH>0){
+      const sY1=gridTop-2,sY2=gridTop+maxB*BGAP_S+eOff+2;
+      pdf.setDrawColor(180,180,180);pdf.setLineWidth(pr(1));
+      pdf.setLineDashPattern([pr(6),pr(4)],0);
+      pdf.line(px(sepX),py(sY1),px(sepX),py(sY2));
+      pdf.setLineDashPattern([],0);
+      pdf.setFontSize(Math.max(fs(6),3));pdf.setFont('helvetica','bold');pdf.setTextColor(140,140,120);
+      pdf.text(`— ${t('svgBellows')} —`,px(sepX),py((sY1+sY2)/2),{angle:90,align:'center'});
+    }
+
+    /* ─ colonnes MG (main gauche) ─ */
+    if(nLH>0&&maxLH>0){
+      const rhBH=maxRH*BGAP_S+rhTS+rhBE,lhBH=maxLH*BGAP_S+lhTS+lhBE;
+      const lhGT=gridTop+Math.round((rhBH-lhBH)/2);
+      pdf.setFontSize(fs(8));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+      pdf.text(t('svgLH'),px(lhX0+((nLH-1)*CGAP_S)/2),py(lhGT-HEADER_GAP_S+6),{align:'center'});
+      lhSecs.forEach((sec,si)=>{
+        const cx_s=lhX0+si*CGAP_S,off=lhTS+(sec.offset||0)*(BGAP_S/2);
+        if(sec.items.length){
+          const bY=lhGT+off+BGAP_S/2-R_S-3,bH=(sec.items.length-1)*BGAP_S+2*(R_S+3);
+          pdf.setFillColor(si%2===0?249:243,si%2===0?249:247,si%2===0?249:243);
+          pdf.rect(px(cx_s-R_S-3),py(bY),pr(2*(R_S+3)),pr(bH),'F');
+        }
+        pdf.setFontSize(Math.max(fs(6.5),3));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
+        pdf.text(sec.nom||'',px(cx_s),py(lhGT-8),{angle:90,align:'left'});
+        const has2=sec.items2&&sec.items2.some(x=>x!=null);
+        sec.items.forEach((btn,bi)=>{
+          const cy_s=lhGT+off+bi*BGAP_S+BGAP_S/2;
+          drawBtn(cx_s,cy_s,btn,has2?(sec.items2[bi]||null):null);
+          if(sec.iTypes){
+            const typ=sec.iTypes[bi],idx=sec.iIdxs?sec.iIdxs[bi]:'';
+            pdf.setFontSize(Math.max(fs(5.5),2.5));pdf.setFont('helvetica','bold');
+            pdf.setTextColor(typ==='B'?26:139,typ==='B'?76:105,typ==='B'?156:20);
+            pdf.text(typ+String(idx),px(cx_s-R_S+4),py(cy_s-R_S-2));
+          }
+        });
+      });
+      // numéros à droite de la dernière colonne MG
+      const lhLC=lhX0+(nLH-1)*CGAP_S;
+      for(let i=0;i<maxLH;i++){
+        pdf.setFontSize(Math.max(fs(5.5),2));pdf.setFont('helvetica','normal');pdf.setTextColor(200,200,200);
+        pdf.text(String(i+1),px(lhLC+R_S+5),py(lhGT+i*BGAP_S+BGAP_S/2+3));
+      }
+    }
+
+    /* ─ "↑ Aigus" en bas ─ */
+    pdf.setFontSize(fs(8));pdf.setFont('helvetica','italic');pdf.setTextColor(100,100,100);
+    pdf.text('↑ Aigus',px(W_S/2),py(H_S-MB_S+12),{align:'center'});
+
+    yPos+=planH+5;
   }
 
   // ── AutoTable defaults ─────────────────────────────
@@ -2668,11 +2841,8 @@ async function downloadPDF(which){
   pdf.text(meta,ML,yPos);yPos+=5;
   hRule(yPos,GRN,0.4);yPos+=8;
 
-  // ── Keyboard plan — native PDF vectors (text selectable/copyable) ──
-  {
-    const svgPlan=buildSVG_Plan(data,false);
-    await addSvgNative(svgPlan);
-  }
+  // ── Plan de clavier — dessiné nativement avec les primitives jsPDF (texte sélectionnable) ──
+  drawPlanNative(data);
 
   // ══════════════════════════════════════════════════
   // FABRICANT PAGES
