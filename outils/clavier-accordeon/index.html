@@ -629,6 +629,7 @@ fr:{
   compareKbdSame:'Les 2 claviers sont identiques (notes identiques).',
   compareKbdPickBoth:'Sélectionnez 2 claviers dans les menus ci-dessus.',
   compareKbdRH:'MD R',compareKbdLH:'MG',compareKbdPush:'Poussé',compareKbdPull:'Tiré',
+  compareKbdEnh:'enharmoniques',
   flatToSharp:'b→# Bémols → Dièses',flatToSharpConfirm:'Convertir tous les bémols en dièses enharmoniques ?\n(Réb→Do#, Mib→Ré#, Solb→Fa#, Lab→Sol#, Sib→La#, Dob→Si)',
 },
 en:{
@@ -709,6 +710,7 @@ en:{
   compareKbdSame:'Both keyboards are identical (same notes).',
   compareKbdPickBoth:'Please select a keyboard in each dropdown above.',
   compareKbdRH:'RH R',compareKbdLH:'LH',compareKbdPush:'Push',compareKbdPull:'Pull',
+  compareKbdEnh:'enharmonic',
   flatToSharp:'b→# Flats → Sharps',flatToSharpConfirm:'Convert all flat notes to their enharmonic sharp equivalents?\n(Db→C#, Eb→D#, Gb→F#, Ab→G#, Bb→A#, Cb→B)',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
@@ -3156,45 +3158,81 @@ function renderKbdCompare(){
   catch(e){document.getElementById('kc-pane-a').innerHTML=`<p style="color:red;padding:8px">${escHTML(e.message)}</p>`;}
   try{document.getElementById('kc-pane-b').innerHTML=buildSVG_Plan(toData(recB),false);}
   catch(e){document.getElementById('kc-pane-b').innerHTML=`<p style="color:red;padding:8px">${escHTML(e.message)}</p>`;}
-  // Build diff summary
+  // ── Enharmonic note comparison ────────────────────────────────
+  const _CHROMA={
+    'Do':0,'Do#':1,'Réb':1,'Ré':2,'Ré#':3,'Mib':3,'Mi':4,
+    'Fa':5,'Fa#':6,'Solb':6,'Sol':7,'Sol#':8,'Lab':8,'La':9,'La#':10,'Sib':10,'Si':11,'Dob':11,
+    'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'Fb':4,
+    'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11,'Cb':11
+  };
+  function noteCmp(a,b){
+    a=(a||'').trim();b=(b||'').trim();
+    if(a===b)return 'same';
+    if(!a&&!b)return 'same';
+    if(!a||!b)return 'diff';
+    // Slash-separated notes (e.g. "Do#/Mi/Sol")
+    if(a.includes('/')||b.includes('/')){
+      const pa=a.split('/').map(x=>x.trim()),pb=b.split('/').map(x=>x.trim());
+      if(pa.length!==pb.length)return 'diff';
+      let hasEnh=false;
+      for(let i=0;i<pa.length;i++){const r=noteCmp(pa[i],pb[i]);if(r==='diff')return 'diff';if(r==='enh')hasEnh=true;}
+      return hasEnh?'enh':'same';
+    }
+    // Extract root (strip trailing octave digit) and chord quality
+    function parse(s){const sp=s.indexOf(' ');if(sp>0)return{root:s.slice(0,sp).replace(/\d+$/,''),qual:s.slice(sp+1)};return{root:s.replace(/\d+$/,''),qual:''};}
+    const pA=parse(a),pB=parse(b);
+    const cA=_CHROMA[pA.root],cB=_CHROMA[pB.root];
+    if(cA===undefined||cB===undefined)return 'diff';
+    if(pA.qual!==pB.qual)return 'diff';
+    if(cA!==cB)return 'diff';
+    return pA.root===pB.root?'same':'enh';
+  }
+  // Build diff summary as {cls, text} entries
   const diffs=[];
+  function addCmp(label,vA,vB){
+    const r=noteCmp(vA,vB);
+    if(r==='same')return;
+    const a=escHTML(vA||'—'),b=escHTML(vB||'—');
+    if(r==='enh')diffs.push({cls:'diff-enh',text:`${label}: ${a} ≈ ${b} (${t('compareKbdEnh')})`});
+    else diffs.push({cls:'diff-diff',text:`${label}: ${a} ≠ ${b}`});
+  }
   const nA=recA.notes||{},nB=recB.notes||{};
   // RH droite
   const droiteA=nA.droite||[],droiteB=nB.droite||[];
   const nRowA=droiteA.length,nRowB=droiteB.length;
-  if(nRowA!==nRowB)diffs.push(`${t('compareKbdRH')}: ${nRowA} rangées ≠ ${nRowB} rangées`);
+  if(nRowA!==nRowB)diffs.push({cls:'diff-diff',text:`${t('compareKbdRH')}: ${nRowA} rangées ≠ ${nRowB} rangées`});
   for(let ri=0;ri<Math.min(nRowA,nRowB);ri++){
     const rA=droiteA[ri]||[],rB=droiteB[ri]||[];
     const nBtnA=rA.length,nBtnB=rB.length;
-    if(nBtnA!==nBtnB)diffs.push(`${t('compareKbdRH')}${ri+1}: ${nBtnA} boutons ≠ ${nBtnB} boutons`);
+    if(nBtnA!==nBtnB)diffs.push({cls:'diff-diff',text:`${t('compareKbdRH')}${ri+1}: ${nBtnA} boutons ≠ ${nBtnB} boutons`});
     for(let bi=0;bi<Math.min(nBtnA,nBtnB);bi++){
       const bA=rA[bi]||{},bB=rB[bi]||{};
-      if((bA.p||'')!==(bB.p||''))diffs.push(`R${ri+1}·${bi+1} ${t('compareKbdPush')}: ${bA.p||'—'} ≠ ${bB.p||'—'}`);
-      if((bA.t||'')!==(bB.t||''))diffs.push(`R${ri+1}·${bi+1} ${t('compareKbdPull')}: ${bA.t||'—'} ≠ ${bB.t||'—'}`);
+      addCmp(`R${ri+1}·${bi+1} ${t('compareKbdPush')}`,bA.p,bB.p);
+      addCmp(`R${ri+1}·${bi+1} ${t('compareKbdPull')}`,bA.t,bB.t);
     }
   }
   // LH basses
   const bassA=nA.basses||[],bassB=nB.basses||[];
-  if(bassA.length!==bassB.length)diffs.push(`${t('compareKbdLH')} basses: ${bassA.length} ≠ ${bassB.length}`);
+  if(bassA.length!==bassB.length)diffs.push({cls:'diff-diff',text:`${t('compareKbdLH')} basses: ${bassA.length} ≠ ${bassB.length}`});
   for(let i=0;i<Math.min(bassA.length,bassB.length);i++){
     const bA=bassA[i]||{},bB=bassB[i]||{};
-    if((bA.p||'')!==(bB.p||''))diffs.push(`${t('compareKbdLH')} B${i+1} ${t('compareKbdPush')}: ${bA.p||'—'} ≠ ${bB.p||'—'}`);
-    if((bA.t||'')!==(bB.t||''))diffs.push(`${t('compareKbdLH')} B${i+1} ${t('compareKbdPull')}: ${bA.t||'—'} ≠ ${bB.t||'—'}`);
+    addCmp(`${t('compareKbdLH')} B${i+1} ${t('compareKbdPush')}`,bA.p,bB.p);
+    addCmp(`${t('compareKbdLH')} B${i+1} ${t('compareKbdPull')}`,bA.t,bB.t);
   }
   // LH accords
   const accA=nA.accords||[],accB=nB.accords||[];
-  if(accA.length!==accB.length)diffs.push(`${t('compareKbdLH')} accords: ${accA.length} ≠ ${accB.length}`);
+  if(accA.length!==accB.length)diffs.push({cls:'diff-diff',text:`${t('compareKbdLH')} accords: ${accA.length} ≠ ${accB.length}`});
   for(let i=0;i<Math.min(accA.length,accB.length);i++){
     const bA=accA[i]||{},bB=accB[i]||{};
-    if((bA.p||'')!==(bB.p||''))diffs.push(`${t('compareKbdLH')} A${i+1} ${t('compareKbdPush')}: ${bA.p||'—'} ≠ ${bB.p||'—'}`);
-    if((bA.t||'')!==(bB.t||''))diffs.push(`${t('compareKbdLH')} A${i+1} ${t('compareKbdPull')}: ${bA.t||'—'} ≠ ${bB.t||'—'}`);
+    addCmp(`${t('compareKbdLH')} A${i+1} ${t('compareKbdPush')}`,bA.p,bB.p);
+    addCmp(`${t('compareKbdLH')} A${i+1} ${t('compareKbdPull')}`,bA.t,bB.t);
   }
   const diffEl=document.getElementById('kc-diff');
   if(diffs.length===0){
     diffEl.innerHTML=`<span class="diff-same">✓ ${t('compareKbdSame')}</span>`;
   } else {
     diffEl.innerHTML=`<div class="diff-title">⚠ ${t('compareKbdDiff')}</div>`+
-      diffs.map(d=>`<div class="diff-diff">• ${escHTML(d)}</div>`).join('');
+      diffs.map(d=>`<div class="${d.cls}">• ${d.text}</div>`).join('');
   }
   diffEl.style.display='block';
 }
