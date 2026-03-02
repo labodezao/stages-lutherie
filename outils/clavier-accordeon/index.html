@@ -1997,19 +1997,21 @@ function buildSVG_Plan(data,dark){
   const bodyH=maxBtns*BGAP+20;
   const H=MT+TITLE_H+bodyH+MB;
 
-  /* positions: LH on left (anchor=west), RH on right (anchor=east)
-     centre both at 60 % vertical depth (matching TikZ .6 ratio) */
+  /* positions — matching TikZ template exactly:
+     · \input{left}  (anchor=west)  = RH (main droite) on LEFT side
+     · \input{right} (anchor=east)  = LH (main gauche) on RIGHT side
+     · both centred at 60 % vertical depth (TikZ .6 ratio)             */
   const contentTop=MT+TITLE_H;
   const contentBot=H-MB;
   const gridCenterY=contentTop+(contentBot-contentTop)*0.55;
   const gridTop=Math.round(gridCenterY-bodyH/2);
 
-  /* LH: inner sections (accords) closest to bellows → rightmost in LH block */
-  const lhX0=MH+CGAP/2;
-  /* RH: inner rows closest to bellows → leftmost in RH block */
-  const rhX0=nLH>0? lhX0+lhW+BTWN : MH+CGAP/2;
-  /* bellows separator halfway between LH right edge and RH left edge */
-  const sepX=nLH>0?(lhX0+(nLH-1)*CGAP+R+(rhX0-R))/2 : rhX0-BTWN/2;
+  /* RH on LEFT: outermost row (Ré/ext.) far left, innermost (Sol/int.) closest to bellows */
+  const rhX0=MH+CGAP/2;
+  /* LH on RIGHT: innermost (accords) closest to bellows, outermost (basses) far right */
+  const lhX0=nLH>0? rhX0+rhW+BTWN : rhX0+rhW;
+  /* bellows separator halfway between RH right edge and LH left edge */
+  const sepX=nLH>0?(rhX0+(nRH-1)*CGAP+R+(lhX0-R))/2 : rhX0+rhW+BTWN/2;
 
   let s=svg_open(W,H,bg);
 
@@ -2038,10 +2040,11 @@ function buildSVG_Plan(data,dark){
   // Row 2 — client
   const r2=data.nomJoueur?`${t('svgClient')} : ${data.nomJoueur}`:'';
   s+=`<text x="${tblInfoX}" y="${tblY+rowH+rowH/2+3}" font-size="8.5" fill="${textColor}">${escSVG(r2)}</text>`;
-  // Row 3 — model description
+  // Row 3 — model description (show actual basses + accords count)
   const nBtnsRH=data.droite.reduce((a,r)=>a+r.boutons.length,0);
   const nBasses=data.basses?data.basses.length:0;
-  const r3=`${nRH} ${nRH>1?'rangées':'rangée'} (${nBtnsRH} boutons) · ${nBasses} basses`;
+  const nAccords=data.accords?data.accords.length:0;
+  const r3=`${nRH} ${nRH>1?'rangées':'rangée'} (${nBtnsRH} boutons) · ${nBasses} basses · ${nAccords} accords`;
   s+=`<text x="${tblInfoX}" y="${tblY+2*rowH+rowH/2+3}" font-size="8" fill="${textColor}">${escSVG(r3)}</text>`;
   // Row 4 — luthier + date
   s+=`<text x="${tblInfoX}" y="${tblY+3*rowH+rowH/2+3}" font-size="7.5" fill="${subtl}">${escSVG(data.nomLuthier)}  ·  ${escSVG(fmtDate(data.date))}</text>`;
@@ -2060,57 +2063,14 @@ function buildSVG_Plan(data,dark){
   s+=tx(legX-legR-3,legY+7,t('svgPull').replace(/[↓↑]/g,'').trim(),6,textColor,'normal','end');
 
   /* ═══════════════════════════════════════════════════
-     LH COLUMNS  — anchored west (left side of page)
-     Inner sections (accords) closest to bellows = rightmost
-     Outer sections (basses) = leftmost
-     ═══════════════════════════════════════════════════ */
-  if(nLH>0&&maxLHBtns>0){
-    s+=tx(lhX0+((nLH-1)*CGAP)/2,gridTop-14,t('svgLH'),8.5,gold,'bold','middle');
-    lhSecRows.forEach((sec,si)=>{
-      // si=0 is first in array (accords or basses depending on lhBassFirst)
-      // outer sections on far left, inner sections (closest to bellows) on right
-      const cx=lhX0+(nLH-1-si)*CGAP;
-      const off=(sec.offset||0)*(BGAP/2);
-      const has2=sec.items2&&sec.items2.length>0;
-      // column label — rotated 90° matching TikZ column headers
-      const lblY=gridTop-2;
-      s+=`<text x="${cx}" y="${lblY}" text-anchor="middle" font-size="7" fill="${gold}" font-weight="bold">${escSVG(sec.nom)}</text>`;
-      // alternating column band
-      if(sec.items.length){
-        const cy0=gridTop+off+BGAP/2;
-        const bandY=cy0-R-3;
-        const bandH=(sec.items.length-1)*BGAP+2*(R+3);
-        s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
-      }
-      // buttons
-      sec.items.forEach((btn,bi)=>{
-        const cy=gridTop+off+bi*BGAP+BGAP/2;
-        s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
-      });
-    });
-    // button numbers on the far left
-    for(let i=0;i<maxLHBtns;i++)
-      s+=tx(lhX0-R-5,gridTop+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','end');
-  }
-
-  /* ═══════════════════════════════════════════════════
-     BELLOWS SEPARATOR — vertical dashed line
-     ═══════════════════════════════════════════════════ */
-  if(nLH>0){
-    const sepY1=gridTop,sepY2=gridTop+maxBtns*BGAP;
-    s+=`<line x1="${sepX}" y1="${sepY1}" x2="${sepX}" y2="${sepY2}" stroke="${dark?'#444':'#ccc'}" stroke-width="1" stroke-dasharray="6,4"/>`;
-    const sepMidY=(sepY1+sepY2)/2;
-    s+=`<text x="${sepX}" y="${sepMidY}" text-anchor="middle" font-size="6.5" fill="${subtl}" font-weight="bold" transform="rotate(-90,${sepX},${sepMidY})">${escSVG('— '+t('svgBellows')+' —')}</text>`;
-  }
-
-  /* ═══════════════════════════════════════════════════
-     RH COLUMNS  — anchored east (right side of page)
-     Inner rows (closest to bellows) = leftmost
-     Outer rows = rightmost
+     RH COLUMNS  — anchored west (LEFT side of page)
+     Matches TikZ: \node[anchor=west]{\input{left}}
+     Outermost row (Ré/ext.) on far left,
+     innermost row (Sol/int.) closest to bellows
      ═══════════════════════════════════════════════════ */
   s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-14,t('svgRH'),8.5,gold,'bold','middle');
   rhRows.forEach((row,ri)=>{
-    const cx=rhX0+ri*CGAP;          // ri=0 = innermost = leftmost
+    const cx=rhX0+(nRH-1-ri)*CGAP;  // ri=0=innermost → rightmost (closest to bellows)
     const off=(row.offset||0)*(BGAP/2);
     // column label
     s+=`<text x="${cx}" y="${gridTop-2}" text-anchor="middle" font-size="7" fill="${gold}" font-weight="bold">${escSVG(row.nom)}</text>`;
@@ -2127,10 +2087,61 @@ function buildSVG_Plan(data,dark){
       s+=drawBtn(cx,cy,btn,null);
     });
   });
-  // button numbers on the far right
-  const rhLastCx=rhX0+(nRH-1)*CGAP;
+  // button numbers on the far left
+  const rhFirstCx=rhX0+(nRH-1)*CGAP; // outermost column = far left
   for(let i=0;i<maxRHBtns;i++)
-    s+=tx(rhLastCx+R+5,gridTop+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','start');
+    s+=tx(rhX0-R-5,gridTop+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','end');
+
+  /* ═══════════════════════════════════════════════════
+     BELLOWS SEPARATOR — vertical dashed line
+     ═══════════════════════════════════════════════════ */
+  if(nLH>0){
+    const sepY1=gridTop,sepY2=gridTop+maxBtns*BGAP;
+    s+=`<line x1="${sepX}" y1="${sepY1}" x2="${sepX}" y2="${sepY2}" stroke="${dark?'#444':'#ccc'}" stroke-width="1" stroke-dasharray="6,4"/>`;
+    const sepMidY=(sepY1+sepY2)/2;
+    s+=`<text x="${sepX}" y="${sepMidY}" text-anchor="middle" font-size="6.5" fill="${subtl}" font-weight="bold" transform="rotate(-90,${sepX},${sepMidY})">${escSVG('— '+t('svgBellows')+' —')}</text>`;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LH COLUMNS  — anchored east (RIGHT side of page)
+     Matches TikZ: \node[anchor=east]{\input{right}}
+     Innermost sections (accords) closest to bellows = leftmost
+     Outermost sections (basses) = rightmost (far right)
+     LH vertically centred relative to RH block
+     ═══════════════════════════════════════════════════ */
+  if(nLH>0&&maxLHBtns>0){
+    // Vertical offset to centre LH relative to RH
+    const rhBlockH=maxRHBtns*BGAP;
+    const lhBlockH=maxLHBtns*BGAP;
+    const lhGridTop=gridTop+Math.round((rhBlockH-lhBlockH)/2);
+
+    s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-14,t('svgLH'),8.5,gold,'bold','middle');
+    lhSecRows.forEach((sec,si)=>{
+      // si=0 is first in array → leftmost → closest to bellows
+      const cx=lhX0+si*CGAP;
+      const off=(sec.offset||0)*(BGAP/2);
+      const has2=sec.items2&&sec.items2.length>0;
+      // column label
+      const lblY=lhGridTop-2;
+      s+=`<text x="${cx}" y="${lblY}" text-anchor="middle" font-size="7" fill="${gold}" font-weight="bold">${escSVG(sec.nom)}</text>`;
+      // alternating column band
+      if(sec.items.length){
+        const cy0=lhGridTop+off+BGAP/2;
+        const bandY=cy0-R-3;
+        const bandH=(sec.items.length-1)*BGAP+2*(R+3);
+        s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
+      }
+      // buttons
+      sec.items.forEach((btn,bi)=>{
+        const cy=lhGridTop+off+bi*BGAP+BGAP/2;
+        s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
+      });
+    });
+    // button numbers on the far right
+    const lhLastCx=lhX0+(nLH-1)*CGAP;
+    for(let i=0;i<maxLHBtns;i++)
+      s+=tx(lhLastCx+R+5,lhGridTop+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','start');
+  }
 
   /* ── "↑ Aigus" centred at bottom ───────────────── */
   s+=`<text x="${W/2}" y="${H-MB+12}" font-size="8.5" fill="${textColor}" font-style="italic" text-anchor="middle">↑ Aigus</text>`;
@@ -2320,7 +2331,7 @@ function matchSvgWidth(svgRef,svgTgt){
 
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
-let rotateMode=0; // 0=portrait (stacked), 1=plan (TikZ-style)
+let rotateMode=1; // 0=portrait (stacked), 1=plan (TikZ-style) — default to plan
 function toggleRotateView(){
   rotateMode=rotateMode===0?1:0;
   const btn=document.getElementById('rotate-btn');
@@ -2558,8 +2569,8 @@ async function downloadPDF(which){
   hRule(yPos,GRN,0.4);yPos+=8;
 
   // ── Keyboard SVGs ──────────────────────────────────
-  if(which==='visual'&&rotateMode!==0){
-    // Plan view: single TikZ-style SVG with both hands in vertical columns
+  if(which==='visual'){
+    // Plan view: always use TikZ-style plan for "PDF plan clavier"
     const svgPlan=buildSVG_Plan(data,false);
     const wP=+(svgPlan.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,600])[1];
     await addSvgImg(svgPlan,null,CW/wP,true);
