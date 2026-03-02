@@ -2008,12 +2008,26 @@ function buildSVG_Plan(data,dark){
   const maxLHBtns=nLH>0?Math.max(...lhSecRows.map(sc=>sc.items.length),0):0;
   const maxBtns=Math.max(maxRHBtns,maxLHBtns,1);
 
+  /* ── account for row offsets in height ──────────────── */
+  const rhOffsets=rhRows.map(r=>r.offset||0);
+  const rhMaxOff=Math.max(...rhOffsets,0);
+  const rhMinOff=Math.min(...rhOffsets,0);
+  const rhTopShift=-rhMinOff*(BGAP/2);   // extra space at top for negative offsets
+  const rhBottomExtra=rhMaxOff*(BGAP/2); // extra space at bottom for positive offsets
+  const lhOffsets=lhSecRows.map(s=>s.offset||0);
+  const lhMaxOff=lhOffsets.length?Math.max(...lhOffsets,0):0;
+  const lhMinOff=lhOffsets.length?Math.min(...lhOffsets,0):0;
+  const lhTopShift=-lhMinOff*(BGAP/2);
+  const lhBottomExtra=lhMaxOff*(BGAP/2);
+  const HEADER_GAP=34;  // space above grid for rotated column labels
+
   /* ── layout geometry ──────────────────────────────── */
   const lhW=nLH>0?nLH*CGAP:0;
   const rhW=nRH*CGAP;
   const contentW=lhW+(nLH>0?BTWN:0)+rhW;
   const W=Math.max(contentW+2*MH,460);
-  const bodyH=maxBtns*BGAP+20;
+  const extraOff=Math.max(rhTopShift+rhBottomExtra,lhTopShift+lhBottomExtra);
+  const bodyH=maxBtns*BGAP+extraOff+HEADER_GAP+20;
   const H=MT+TITLE_H+bodyH+MB;
 
   /* positions — matching TikZ template exactly:
@@ -2023,7 +2037,8 @@ function buildSVG_Plan(data,dark){
   const contentTop=MT+TITLE_H;
   const contentBot=H-MB;
   const gridCenterY=contentTop+(contentBot-contentTop)*0.55;
-  const gridTop=Math.round(gridCenterY-bodyH/2);
+  const gridTop=Math.round(gridCenterY-bodyH/2)+HEADER_GAP;
+  /* gridTop now leaves HEADER_GAP above for rotated labels */
 
   /* RH on LEFT: outermost row (Ré/ext.) far left, innermost (Sol/int.) closest to bellows */
   const rhX0=MH+CGAP/2;
@@ -2069,7 +2084,7 @@ function buildSVG_Plan(data,dark){
   s+=`<text x="${tblInfoX}" y="${tblY+3*rowH+rowH/2+3}" font-size="7.5" fill="${subtl}">${escSVG(data.nomLuthier)}  ·  ${escSVG(fmtDate(data.date))}</text>`;
 
   /* ── "Haut (graves)" in italics near top-left ─────── */
-  s+=`<text x="${MH+4}" y="${contentTop-4}" font-size="8.5" fill="${textColor}" font-style="italic">Haut (graves)</text>`;
+  s+=`<text x="${rhX0-R-6}" y="${gridTop-HEADER_GAP+4}" font-size="8.5" fill="${textColor}" font-style="italic">Haut (graves)</text>`;
 
   /* ── push/pull legend (small circle, top-right) ───── */
   const legR=7,legX=W-MH-legR-2,legY=tblY+tblH/2;
@@ -2087,12 +2102,13 @@ function buildSVG_Plan(data,dark){
      Outermost row (Ré/ext.) on far left,
      innermost row (Sol/int.) closest to bellows
      ═══════════════════════════════════════════════════ */
-  s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-14,t('svgRH'),8.5,gold,'bold','middle');
+  s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-HEADER_GAP+14,t('svgRH'),8.5,gold,'bold','middle');
   rhRows.forEach((row,ri)=>{
     const cx=rhX0+(nRH-1-ri)*CGAP;  // ri=0=innermost → rightmost (closest to bellows)
-    const off=(row.offset||0)*(BGAP/2);
-    // column label
-    s+=`<text x="${cx}" y="${gridTop-2}" text-anchor="middle" font-size="7" fill="${gold}" font-weight="bold">${escSVG(row.nom)}</text>`;
+    const off=rhTopShift+(row.offset||0)*(BGAP/2);  // normalised: topShift ensures negative offsets stay visible
+    // column label — rotated vertically to avoid overlap
+    const lblY=gridTop-4;
+    s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx},${lblY})">${escSVG(row.nom)}</text>`;
     // alternating column band
     if(row.boutons.length){
       const cy0=gridTop+off+BGAP/2;
@@ -2100,21 +2116,24 @@ function buildSVG_Plan(data,dark){
       const bandH=(row.boutons.length-1)*BGAP+2*(R+3);
       s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${ri%2===0?band1:band2}" opacity=".6"/>`;
     }
-    // buttons
+    // buttons + per-column button number
     row.boutons.forEach((btn,bi)=>{
       const cy=gridTop+off+bi*BGAP+BGAP/2;
       s+=drawBtn(cx,cy,btn,null);
+      s+=tx(cx,cy+3.5,bi+1,6.5,numTx,'normal','middle');
     });
   });
-  // button numbers on the far left
+  // global button numbers on the far left (based on innermost row zero-offset)
+  const rhRef=rhRows[0];
+  const rhRefOff=rhTopShift+((rhRef?rhRef.offset:0)||0)*(BGAP/2);
   for(let i=0;i<maxRHBtns;i++)
-    s+=tx(rhX0-R-5,gridTop+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','end');
+    s+=tx(rhX0-R-5,gridTop+rhRefOff+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','end');
 
   /* ═══════════════════════════════════════════════════
      BELLOWS SEPARATOR — vertical dashed line
      ═══════════════════════════════════════════════════ */
   if(nLH>0){
-    const sepY1=gridTop,sepY2=gridTop+maxBtns*BGAP;
+    const sepY1=gridTop-2,sepY2=gridTop+maxBtns*BGAP+extraOff+2;
     s+=`<line x1="${sepX}" y1="${sepY1}" x2="${sepX}" y2="${sepY2}" stroke="${dark?'#444':'#ccc'}" stroke-width="1" stroke-dasharray="6,4"/>`;
     const sepMidY=(sepY1+sepY2)/2;
     s+=`<text x="${sepX}" y="${sepMidY}" text-anchor="middle" font-size="6.5" fill="${subtl}" font-weight="bold" transform="rotate(-90,${sepX},${sepMidY})">${escSVG('— '+t('svgBellows')+' —')}</text>`;
@@ -2129,32 +2148,78 @@ function buildSVG_Plan(data,dark){
      ═══════════════════════════════════════════════════ */
   if(nLH>0&&maxLHBtns>0){
     // Vertical offset to centre LH relative to RH
-    const rhBlockH=maxRHBtns*BGAP;
-    const lhBlockH=maxLHBtns*BGAP;
+    const rhBlockH=maxRHBtns*BGAP+rhTopShift+rhBottomExtra;
+    const lhBlockH=maxLHBtns*BGAP+lhTopShift+lhBottomExtra;
     const lhGridTop=gridTop+Math.round((rhBlockH-lhBlockH)/2);
 
-    s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-14,t('svgLH'),8.5,gold,'bold','middle');
-    lhSecRows.forEach((sec,si)=>{
-      // si=0 is first in array → leftmost → closest to bellows
-      const cx=lhX0+si*CGAP;
-      const off=(sec.offset||0)*(BGAP/2);
-      const has2=sec.items2&&sec.items2.length>0;
-      // column label
-      const lblY=lhGridTop-2;
-      s+=`<text x="${cx}" y="${lblY}" text-anchor="middle" font-size="7" fill="${gold}" font-weight="bold">${escSVG(sec.nom)}</text>`;
-      // alternating column band
-      if(sec.items.length){
-        const cy0=lhGridTop+off+BGAP/2;
-        const bandY=cy0-R-3;
-        const bandH=(sec.items.length-1)*BGAP+2*(R+3);
-        s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
+    s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-HEADER_GAP+14,t('svgLH'),8.5,gold,'bold','middle');
+
+    if(isPaired){
+      /* Paired/alternated mode: B and A side by side for each button index.
+         In the plan view, each pair shares the same Y position.
+         Two adjacent columns: one for B, one for A. */
+      const nPairs=Math.max(data.basses.length,data.accords.length);
+      const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
+      const bassLbl=dark?'#5aa0d0':'#1a4c9c';
+      const accLbl=dark?'#d09040':'#8b6914';
+      const bCol=data.lhBassFirst?0:1, aCol=data.lhBassFirst?1:0;
+      const cx0=lhX0+aCol*CGAP, cx1=lhX0+bCol*CGAP;
+      // column labels — rotated
+      const lblY=lhGridTop-4;
+      s+=`<text x="${cx0}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx0},${lblY})">${escSVG(t('accords'))}</text>`;
+      s+=`<text x="${cx1}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx1},${lblY})">${escSVG(t('basses'))}</text>`;
+      // alternating bands
+      if(nPairs>0){
+        [[cx0,0],[cx1,1]].forEach(([cx,ci])=>{
+          const bandY=lhGridTop+BGAP/2-R-3;
+          const bandH=(nPairs-1)*BGAP+2*(R+3);
+          s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${ci%2===0?band1:band2}" opacity=".6"/>`;
+        });
       }
       // buttons
-      sec.items.forEach((btn,bi)=>{
-        const cy=lhGridTop+off+bi*BGAP+BGAP/2;
-        s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
+      for(let pi=0;pi<nPairs;pi++){
+        const cy=lhGridTop+pi*BGAP+BGAP/2;
+        // Accord button
+        const aBtn=data.accords[pi];
+        if(aBtn){
+          const aBtn2=(vA>1&&data.accords2&&data.accords2[pi])?data.accords2[pi]:null;
+          s+=drawBtn(cx0,cy,aBtn,aBtn2);
+          s+=tx(cx0,cy+3.5,pi+1,6.5,numTx,'normal','middle');
+          s+=tx(cx0-R+4,cy-R+7,'A',5.5,accLbl,'bold','start');
+        }
+        // Bass button
+        const bBtn=data.basses[pi];
+        if(bBtn){
+          const bBtn2=(vB>1&&data.basses2&&data.basses2[pi])?data.basses2[pi]:null;
+          s+=drawBtn(cx1,cy,bBtn,bBtn2);
+          s+=tx(cx1,cy+3.5,pi+1,6.5,numTx,'normal','middle');
+          s+=tx(cx1-R+4,cy-R+7,'B',5.5,bassLbl,'bold','start');
+        }
+      }
+    }else{
+      /* Separated mode: distinct column per section */
+      lhSecRows.forEach((sec,si)=>{
+        const cx=lhX0+si*CGAP;
+        const off=lhTopShift+(sec.offset||0)*(BGAP/2);
+        const has2=sec.items2&&sec.items2.length>0;
+        // column label — rotated to avoid overlap
+        const lblY=lhGridTop-4;
+        s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
+        // alternating column band
+        if(sec.items.length){
+          const cy0=lhGridTop+off+BGAP/2;
+          const bandY=cy0-R-3;
+          const bandH=(sec.items.length-1)*BGAP+2*(R+3);
+          s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
+        }
+        // buttons + per-column button number
+        sec.items.forEach((btn,bi)=>{
+          const cy=lhGridTop+off+bi*BGAP+BGAP/2;
+          s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
+          s+=tx(cx,cy+3.5,bi+1,6.5,numTx,'normal','middle');
+        });
       });
-    });
+    }
     // button numbers on the far right
     const lhLastCx=lhX0+(nLH-1)*CGAP;
     for(let i=0;i<maxLHBtns;i++)
