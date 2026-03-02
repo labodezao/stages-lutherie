@@ -193,6 +193,19 @@ select option{background:#fff;color:var(--txt)}
   background:#fafaf8;color:var(--txt)}
 
 .gauche-label{font-size:.74rem;font-weight:700;color:#555}
+/* ── Keyboard comparison modal ── */
+.modal-kbd-compare{max-width:98vw;width:98vw;max-height:94vh;display:flex;flex-direction:column;padding:16px}
+.kc-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.kc-selects{display:flex;gap:12px;flex-wrap:wrap}
+.kc-select-col{flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px}
+.kc-select-col label{font-size:.74rem;font-weight:700;color:var(--dark)}
+.kc-select-col select{border:1.5px solid var(--brd);border-radius:6px;padding:5px 8px;font-size:.82rem;background:#fff;color:var(--txt)}
+.kc-panes{display:flex;gap:12px;flex:1;min-height:0;overflow:hidden;margin-top:8px}
+.kc-pane{flex:1;overflow:auto;border:1.5px solid var(--brd);border-radius:6px;background:#fafaf8;min-height:200px;display:flex;align-items:flex-start;justify-content:center}
+.kc-pane svg{max-width:100%;height:auto}
+.kc-diff{margin-top:8px;font-size:.77rem;color:var(--txt);overflow:auto;max-height:130px;border:1px solid var(--brd);border-radius:6px;padding:8px;background:#fafaf8}
+.kc-diff .diff-same{color:#2d5a27}.kc-diff .diff-diff{color:#c0392b;font-weight:700}
+.kc-diff .diff-title{font-weight:700;color:var(--dark);margin-bottom:4px}
 .preset-btn{width:auto!important;padding:2px 7px!important;font-size:.7rem!important}
 hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 
@@ -254,6 +267,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
     <label class="btn btn-outline" style="font-size:.78rem;padding:5px 11px;cursor:pointer;" title="Charger un fichier .json" data-i-btn="openFile">📂 Ouvrir .json
       <input type="file" accept=".json,application/json" style="display:none;" onchange="loadFromFile(event)">
     </label>
+    <button class="btn btn-outline" onclick="openKbdCompare()" style="font-size:.78rem;padding:5px 11px;" data-i-btn="compareKbd">🔀 Comparer</button>
   </div>
   <div id="lib-cards"><div class="lib-empty" data-i="noSaved">Aucun instrument sauvegardé.</div></div>
 </div>
@@ -500,6 +514,34 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   </div>
 </div>
 
+<!-- KEYBOARD COMPARISON MODAL -->
+<div class="modal-overlay no-print" id="kbd-compare-modal">
+  <div class="modal-box modal-kbd-compare">
+    <div class="kc-header">
+      <span style="font-size:.95rem;font-weight:700;color:var(--dark)">🔀 <span data-i="compareKbdTitle">Comparaison de 2 claviers</span></span>
+      <button class="btn btn-outline" onclick="closeKbdCompare()" style="margin-left:auto" data-i-btn="closeBtn">✕</button>
+    </div>
+    <div class="kc-selects">
+      <div class="kc-select-col">
+        <label data-i="compareKbdA">Clavier A</label>
+        <select id="kc-sel-a"></select>
+      </div>
+      <div class="kc-select-col">
+        <label data-i="compareKbdB">Clavier B</label>
+        <select id="kc-sel-b"></select>
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn btn-primary" onclick="renderKbdCompare()" data-i-btn="compareKbdBtn">🔀 Comparer</button>
+      </div>
+    </div>
+    <div class="kc-panes">
+      <div class="kc-pane" id="kc-pane-a"></div>
+      <div class="kc-pane" id="kc-pane-b"></div>
+    </div>
+    <div class="kc-diff" id="kc-diff" style="display:none"></div>
+  </div>
+</div>
+
 <script>
 /* ╔══════════════════════════════════════════════════════╗
    ║  LANGUAGES                                           ║
@@ -580,6 +622,12 @@ fr:{
   lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
   lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',lhNbDuosTotal:'Nb duos total',
   lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
+  compareKbd:'🔀 Comparer',compareKbdTitle:'Comparaison de 2 claviers',
+  compareKbdA:'Clavier A',compareKbdB:'Clavier B',compareKbdBtn:'🔀 Comparer',
+  compareKbdNone:'— Choisissez un clavier —',compareKbdDiff:'Différences détectées :',
+  compareKbdSame:'Les 2 claviers sont identiques (notes identiques).',
+  compareKbdPickBoth:'Sélectionnez 2 claviers dans les menus ci-dessus.',
+  compareKbdRH:'MD R',compareKbdLH:'MG',compareKbdPush:'Poussé',compareKbdPull:'Tiré',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -653,6 +701,12 @@ en:{
   lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
   lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',lhNbDuosTotal:'Total duos',
   lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
+  compareKbd:'🔀 Compare',compareKbdTitle:'Compare 2 keyboards',
+  compareKbdA:'Keyboard A',compareKbdB:'Keyboard B',compareKbdBtn:'🔀 Compare',
+  compareKbdNone:'— Choose a keyboard —',compareKbdDiff:'Differences found:',
+  compareKbdSame:'Both keyboards are identical (same notes).',
+  compareKbdPickBoth:'Please select a keyboard in each dropdown above.',
+  compareKbdRH:'RH R',compareKbdLH:'LH',compareKbdPush:'Push',compareKbdPull:'Pull',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -3012,6 +3066,113 @@ function openImportExport(){
   document.getElementById('import-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('import-modal').classList.remove('open');}
+
+/* ── Keyboard comparison tool ────────────────────────── */
+function openKbdCompare(){
+  const list=DB.all();
+  if(!list||list.length<1){alert(t('noSaved'));return;}
+  const modal=document.getElementById('kbd-compare-modal');
+  ['kc-sel-a','kc-sel-b'].forEach((id,i)=>{
+    const sel=document.getElementById(id);
+    sel.innerHTML=`<option value="">${t('compareKbdNone')}</option>`+
+      list.map(r=>`<option value="${r.id}">${escHTML(r.nom)}</option>`).join('');
+    if(list[i])sel.value=list[i].id;
+  });
+  document.getElementById('kc-pane-a').innerHTML='';
+  document.getElementById('kc-pane-b').innerHTML='';
+  document.getElementById('kc-diff').style.display='none';
+  modal.classList.add('open');
+}
+function closeKbdCompare(){document.getElementById('kbd-compare-modal').classList.remove('open');}
+function renderKbdCompare(){
+  const idA=document.getElementById('kc-sel-a').value;
+  const idB=document.getElementById('kc-sel-b').value;
+  if(!idA||!idB){alert(t('compareKbdPickBoth'));return;}
+  const recA=DB.get(idA),recB=DB.get(idB);
+  if(!recA||!recB)return;
+  // Convert DB record to the format expected by buildSVG_Plan
+  function toData(rec){
+    const nRec=rec.notes||{};
+    const droiteNotes=nRec.droite||[];
+    const droite=(rec.rangees||[]).map((row,ri)=>({
+      nom:row.nom||`Rangée ${ri+1}`,
+      register:row.register||'N',
+      offset:row.offset||0,
+      boutons:droiteNotes[ri]||[]
+    }));
+    return{
+      nomInstrument:rec.nom||'',
+      nomJoueur:rec.joueur||'',
+      nomLuthier:rec.luthier||"Ewen d'Aviau",
+      date:rec.dateCreation||'',
+      nbVoix:rec.nbVoix||2,
+      voixPerRow:rec.voixPerRow||[],
+      nbVoixAccords:rec.nbVoixAccords||2,
+      nbVoixBasses:rec.nbVoixBasses||2,
+      lhDisplayMode:rec.lhDisplayMode||'separated',
+      lhPairedDir:rec.lhPairedDir||'vertical',
+      lhRows:rec.lhRows||[{nb:6,offset:0}],
+      lhPairsPerRow:rec.lhPairsPerRow||2,
+      lhBassFirst:rec.lhBassFirst||false,
+      showMidi:false,
+      droite,
+      basses:nRec.basses||[],
+      basses2:nRec.basses2||[],
+      basses3:nRec.basses3||[],
+      accords:nRec.accords||[],
+      accords2:nRec.accords2||[],
+      accords3:nRec.accords3||[],
+      terzetto:nRec.terzetto||[],
+      orderSpecs:rec.orderSpecs||{},
+    };
+  }
+  // Render both SVG plans
+  try{document.getElementById('kc-pane-a').innerHTML=buildSVG_Plan(toData(recA),false);}
+  catch(e){document.getElementById('kc-pane-a').innerHTML=`<p style="color:red;padding:8px">${escHTML(e.message)}</p>`;}
+  try{document.getElementById('kc-pane-b').innerHTML=buildSVG_Plan(toData(recB),false);}
+  catch(e){document.getElementById('kc-pane-b').innerHTML=`<p style="color:red;padding:8px">${escHTML(e.message)}</p>`;}
+  // Build diff summary
+  const diffs=[];
+  const nA=recA.notes||{},nB=recB.notes||{};
+  // RH droite
+  const droiteA=nA.droite||[],droiteB=nB.droite||[];
+  const nRowA=droiteA.length,nRowB=droiteB.length;
+  if(nRowA!==nRowB)diffs.push(`${t('compareKbdRH')}: ${nRowA} rangées ≠ ${nRowB} rangées`);
+  for(let ri=0;ri<Math.min(nRowA,nRowB);ri++){
+    const rA=droiteA[ri]||[],rB=droiteB[ri]||[];
+    const nBtnA=rA.length,nBtnB=rB.length;
+    if(nBtnA!==nBtnB)diffs.push(`${t('compareKbdRH')}${ri+1}: ${nBtnA} boutons ≠ ${nBtnB} boutons`);
+    for(let bi=0;bi<Math.min(nBtnA,nBtnB);bi++){
+      const bA=rA[bi]||{},bB=rB[bi]||{};
+      if((bA.p||'')!==(bB.p||''))diffs.push(`R${ri+1}·${bi+1} ${t('compareKbdPush')}: ${bA.p||'—'} ≠ ${bB.p||'—'}`);
+      if((bA.t||'')!==(bB.t||''))diffs.push(`R${ri+1}·${bi+1} ${t('compareKbdPull')}: ${bA.t||'—'} ≠ ${bB.t||'—'}`);
+    }
+  }
+  // LH basses
+  const bassA=nA.basses||[],bassB=nB.basses||[];
+  if(bassA.length!==bassB.length)diffs.push(`${t('compareKbdLH')} basses: ${bassA.length} ≠ ${bassB.length}`);
+  for(let i=0;i<Math.min(bassA.length,bassB.length);i++){
+    const bA=bassA[i]||{},bB=bassB[i]||{};
+    if((bA.p||'')!==(bB.p||''))diffs.push(`${t('compareKbdLH')} B${i+1} ${t('compareKbdPush')}: ${bA.p||'—'} ≠ ${bB.p||'—'}`);
+    if((bA.t||'')!==(bB.t||''))diffs.push(`${t('compareKbdLH')} B${i+1} ${t('compareKbdPull')}: ${bA.t||'—'} ≠ ${bB.t||'—'}`);
+  }
+  // LH accords
+  const accA=nA.accords||[],accB=nB.accords||[];
+  if(accA.length!==accB.length)diffs.push(`${t('compareKbdLH')} accords: ${accA.length} ≠ ${accB.length}`);
+  for(let i=0;i<Math.min(accA.length,accB.length);i++){
+    const bA=accA[i]||{},bB=accB[i]||{};
+    if((bA.p||'')!==(bB.p||''))diffs.push(`${t('compareKbdLH')} A${i+1} ${t('compareKbdPush')}: ${bA.p||'—'} ≠ ${bB.p||'—'}`);
+    if((bA.t||'')!==(bB.t||''))diffs.push(`${t('compareKbdLH')} A${i+1} ${t('compareKbdPull')}: ${bA.t||'—'} ≠ ${bB.t||'—'}`);
+  }
+  const diffEl=document.getElementById('kc-diff');
+  if(diffs.length===0){
+    diffEl.innerHTML=`<span class="diff-same">✓ ${t('compareKbdSame')}</span>`;
+  } else {
+    diffEl.innerHTML=`<div class="diff-title">⚠ ${t('compareKbdDiff')}</div>`+
+      diffs.map(d=>`<div class="diff-diff">• ${escHTML(d)}</div>`).join('');
+  }
+  diffEl.style.display='block';
+}
 function copyJSON(){
   const text=document.getElementById('modal-json').value;
   if(navigator.clipboard&&navigator.clipboard.writeText){
