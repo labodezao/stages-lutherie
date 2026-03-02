@@ -2635,7 +2635,7 @@ async function downloadPDF(which){
     function px(x){return ox+x*S;}
     function py(y){return oy+y*S;}
     function pr(r){return Math.max(r*S,0.05);}
-    // taille de police : SVG font-size px → PDF pt (1px≈0.353mm, 1pt=0.353mm)
+    // taille de police : n unités SVG × S (mm/unité) = n*S mm ; 1pt = 0.353mm → pt = n*S/0.353
     function fs(n){return Math.max(n*S/0.353,2.5);}
 
     /* ─ positions géométriques (mêmes calculs que buildSVG_Plan) ─ */
