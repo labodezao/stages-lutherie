@@ -734,12 +734,6 @@ function setLang(l){
     const v=t(k);
     if(typeof v==='string') el.textContent=v;
   });
-  // Update rotate button title and text
-  const rotBtn=document.getElementById('rotate-btn');
-  if(rotBtn){
-    rotBtn.title=t('rotateViewTitle');
-    rotBtn.textContent=t('rotateView');
-  }
   updateLhOrderBtn();
   // Update save status text
   const ss=document.getElementById('save-status');
@@ -1011,9 +1005,6 @@ function onAnyChange(){
    ╚══════════════════════════════════════════════════════╝ */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
-  // Set rotate button tooltip (title set here so it respects current lang at load time)
-  const rotBtn=document.getElementById('rotate-btn');
-  if(rotBtn)rotBtn.title=t('rotateViewTitle');
   loadPresetIndex();
   renderVoixPerRow();
   initPicker();renderLibrary();
@@ -2164,12 +2155,11 @@ function buildSVG_Plan(data,dark){
   /* ═══════════════════════════════════════════════════
      RH COLUMNS  — anchored west (LEFT side of page)
      Matches TikZ: \node[anchor=west]{\input{left}}
-     Outermost row (Ré/ext.) on far left,
-     innermost row (Sol/int.) closest to bellows
+     Row 0 (R1/Sol/int.) on far left, last row on right
      ═══════════════════════════════════════════════════ */
   s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-HEADER_GAP+6,t('svgRH'),8.5,gold,'bold','middle');
   rhRows.forEach((row,ri)=>{
-    const cx=rhX0+(nRH-1-ri)*CGAP;  // ri=0=innermost → rightmost (closest to bellows)
+    const cx=rhX0+ri*CGAP;  // ri=0=R1 → leftmost
     const off=rhTopShift+(row.offset||0)*(BGAP/2);  // normalized: topShift ensures negative offsets stay visible
     // column label — fully vertical (-90°) above the column, text goes upward from lblY
     const lblY=gridTop-8;
@@ -2443,37 +2433,14 @@ function matchSvgWidth(svgRef,svgTgt){
 
 function scheduleLivePreview(){clearTimeout(previewTimer);previewTimer=setTimeout(runLivePreview,600);}
 function forcePreview(){clearTimeout(previewTimer);runLivePreview();}
-let rotateMode=1; // 0=portrait (stacked), 1=plan (TikZ-style) — default to plan
-function toggleRotateView(){
-  rotateMode=rotateMode===0?1:0;
-  const btn=document.getElementById('rotate-btn');
-  if(btn){
-    btn.classList.toggle('active-rotate',rotateMode!==0);
-    btn.textContent=t('rotateView');
-  }
-  runLivePreview();
-}
 function runLivePreview(){
   try{
     readNoteInputsIntoCFG();
     const data=readInputs();
     const outEl=document.getElementById('visual-output');
-    if(rotateMode!==0){
-      // Plan view: single TikZ-style SVG with both hands
-      outEl.classList.add('plan-mode');
-      outEl.classList.remove('rotated');
-      const svgPlan=buildSVG_Plan(data,false);
-      outEl.innerHTML=svgPlan;
-    } else {
-      outEl.classList.remove('plan-mode');
-      outEl.classList.remove('rotated');
-      const svgD=buildSVG_Droite(data,false);
-      const svgG=matchSvgWidth(svgD,buildSVG_Gauche(data,false));
-      outEl.innerHTML=
-        `<h3 style="color:var(--vert);font-size:.88rem;margin-bottom:9px;">${t('svgRH')}</h3>${svgD}
-         <div style="margin:8px 0 6px;display:flex;align-items:center;gap:10px;opacity:.8;"><div style="flex:1;border-top:1.5px dashed var(--vert);"></div><span style="font-size:8pt;font-weight:bold;letter-spacing:.1em;color:var(--vert);">— ${t('svgBellows')} —</span><div style="flex:1;border-top:1.5px dashed var(--vert);"></div></div>
-         <h3 style="color:var(--vert);font-size:.88rem;margin:4px 0 9px;">${t('svgLH')}</h3>${svgG}`;
-    }
+    outEl.classList.add('plan-mode');
+    outEl.classList.remove('rotated');
+    outEl.innerHTML=buildSVG_Plan(data,false);
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
   }catch(e){console.error('runLivePreview:',e);}
 }
@@ -2680,26 +2647,11 @@ async function downloadPDF(which){
   pdf.text(meta,ML,yPos);yPos+=5;
   hRule(yPos,GRN,0.4);yPos+=8;
 
-  // ── Keyboard SVGs ──────────────────────────────────
-  if(which==='visual'){
-    // Plan view: always use TikZ-style plan for "PDF plan clavier"
+  // ── Keyboard SVGs — always TikZ plan view ──────────
+  {
     const svgPlan=buildSVG_Plan(data,false);
     const wP=+(svgPlan.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,600])[1];
     await addSvgImg(svgPlan,null,CW/wP,true);
-  }else{
-    // Portrait: right hand then left hand stacked
-    const svgDstr=buildSVG_Droite(data,false);
-    const svgGstr=buildSVG_Gauche(data,false);
-    const wD=+(svgDstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
-    const wG=+(svgGstr.match(/\bwidth="(\d+(?:\.\d+)?)"/)||[,800])[1];
-    await addSvgImg(svgDstr,t('svgRH'),CW/wD,false);
-    if(yPos+7<CB){
-      hRule(yPos,RULE_C,0.15);
-      pdf.setFontSize(6.5);pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
-      pdf.text(`— ${t('svgBellows')} —`,PW/2,yPos+4,{align:'center'});
-      yPos+=7;
-    }
-    await addSvgImg(svgGstr,t('svgLH'),CW/wG,false);
   }
 
   // ══════════════════════════════════════════════════
