@@ -353,6 +353,15 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
               <input type="radio" name="lh-mode" id="lh-paired" value="paired" onchange="onLhModeChange()">
               <span data-i="lhPaired">Alternés (B-A-B-A…)</span></label>
+            <!-- direction sub-option: only visible when paired is selected -->
+            <div id="lh-paired-dir-wrap" style="display:none;margin-top:3px;padding-left:12px;">
+              <label style="font-size:.78rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;">
+                <input type="radio" name="lh-paired-dir" id="lh-paired-dir-v" value="vertical" checked onchange="onAnyChange()">
+                <span data-i="lhPairedVertical">↕ Vertical</span></label>
+              <label style="font-size:.78rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
+                <input type="radio" name="lh-paired-dir" id="lh-paired-dir-h" value="horizontal" onchange="onAnyChange()">
+                <span data-i="lhPairedHorizontal">↔ Horizontal (B|A)</span></label>
+            </div>
             <div style="margin-top:5px;">
               <button type="button" id="lh-order-btn" class="rng-btn" style="font-size:.75rem;padding:3px 8px;" onclick="toggleLhBassFirst()" data-i-btn="lhOrderBtn">🔄 Accords → Basses</button>
             </div>
@@ -569,6 +578,7 @@ fr:{
   voicesLH:'Voix main gauche (anches)',
   lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
   lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',lhNbDuosTotal:'Nb duos total',
+  lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -641,6 +651,7 @@ en:{
   voicesLH:'Left hand voices (reeds)',
   lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
   lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',lhNbDuosTotal:'Total duos',
+  lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -860,6 +871,7 @@ function snapshotToDB(){
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
     lhBassFirst:CFG.lhBassFirst||false,
@@ -888,6 +900,12 @@ function loadFromDB(rec){
   const lhm=rec.lhDisplayMode||'separated';
   const lhmEl=document.getElementById('lh-'+lhm);
   if(lhmEl)lhmEl.checked=true;
+  // Restore paired direction + show/hide sub-option
+  const lhpd=rec.lhPairedDir||'vertical';
+  const lhpdEl=document.getElementById('lh-paired-dir-'+(lhpd==='horizontal'?'h':'v'));
+  if(lhpdEl)lhpdEl.checked=true;
+  const dw=document.getElementById('lh-paired-dir-wrap');
+  if(dw)dw.style.display=lhm==='paired'?'block':'none';
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
@@ -1103,7 +1121,12 @@ function onTerzettoChange(){
   generateInputGrid();onAnyChange();
 }
 
-function onLhModeChange(){renderLhRowsCfg();onAnyChange();}
+function onLhModeChange(){
+  const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
+  const dw=document.getElementById('lh-paired-dir-wrap');
+  if(dw)dw.style.display=isPaired?'block':'none';
+  renderLhRowsCfg();onAnyChange();
+}
 function toggleLhBassFirst(){
   CFG.lhBassFirst=!CFG.lhBassFirst;
   updateLhOrderBtn();
@@ -1577,6 +1600,7 @@ function readInputs(){
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
     lhBassFirst:CFG.lhBassFirst||false,
@@ -1976,20 +2000,41 @@ function buildSVG_Plan(data,dark){
   const lhSecRows=[];
 
   if(isPaired){
-    /* Alternated mode (ALTERNÉS B-A-B-A): single column, buttons interleaved vertically.
-       Order per pair: if lhBassFirst → B then A; else A then B. */
+    /* Alternated mode: split nPairs into groups of lhPairsPerRow per column.
+       Vertical  → each group = 1 interleaved column (B-A-B-A stacked).
+       Horizontal → each group = 2 adjacent columns (B column | A column). */
     const nPairs=Math.max(data.basses.length,data.accords.length);
+    const ppRow=Math.max(1,data.lhPairsPerRow||nPairs);
+    const nGroups=Math.ceil(nPairs/ppRow);
     const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
-    const intItems=[],intItems2=[],intTypes=[];
-    for(let i=0;i<nPairs;i++){
-      const seq=data.lhBassFirst
-        ?[['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
-        :[['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
-      seq.forEach(([typ,src,src2,nv])=>{
-        if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);}
-      });
+    if(data.lhPairedDir==='horizontal'){
+      /* Horizontal: each group → (B col | A col) or (A col | B col) */
+      for(let g=0;g<nGroups;g++){
+        const s0=g*ppRow,s1=Math.min(s0+ppRow,nPairs);
+        const bItems=data.basses.slice(s0,s1),   b2=vB>1?(data.basses2||[]).slice(s0,s1):null;
+        const aItems=data.accords.slice(s0,s1),  a2=vA>1?(data.accords2||[]).slice(s0,s1):null;
+        const lbl=nGroups===1?'':` ${g+1}`;
+        const basCol={nom:t('basses')+lbl,items:bItems,items2:b2,offset:0};
+        const acoCol={nom:t('accords')+lbl,items:aItems,items2:a2,offset:0};
+        if(data.lhBassFirst){lhSecRows.push(basCol,acoCol);}else{lhSecRows.push(acoCol,basCol);}
+      }
+    }else{
+      /* Vertical (default): each group → 1 interleaved column (B-A-B-A) */
+      for(let g=0;g<nGroups;g++){
+        const s0=g*ppRow,s1=Math.min(s0+ppRow,nPairs);
+        const intItems=[],intItems2=[],intTypes=[];
+        for(let i=s0;i<s1;i++){
+          const seq=data.lhBassFirst
+            ?[['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
+            :[['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
+          seq.forEach(([typ,src,src2,nv])=>{
+            if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);}
+          });
+        }
+        const lbl=nGroups===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`;
+        lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes});
+      }
     }
-    lhSecRows.push({nom:`${t('basses')} / ${t('accords')}`,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes});
     if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
   }else{
     /* Separated mode: distinct column per section, respects lhRows multi-row config */
