@@ -2105,7 +2105,7 @@ function buildSVG_Plan(data,dark){
   s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-HEADER_GAP+14,t('svgRH'),8.5,gold,'bold','middle');
   rhRows.forEach((row,ri)=>{
     const cx=rhX0+(nRH-1-ri)*CGAP;  // ri=0=innermost → rightmost (closest to bellows)
-    const off=rhTopShift+(row.offset||0)*(BGAP/2);  // normalised: topShift ensures negative offsets stay visible
+    const off=rhTopShift+(row.offset||0)*(BGAP/2);  // normalized: topShift ensures negative offsets stay visible
     // column label — rotated vertically to avoid overlap
     const lblY=gridTop-4;
     s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx},${lblY})">${escSVG(row.nom)}</text>`;
