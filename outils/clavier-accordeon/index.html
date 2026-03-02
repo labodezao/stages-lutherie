@@ -436,7 +436,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <div class="btn-group no-print" style="margin-bottom:13px;">
         <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
         <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
-        <button class="btn btn-or" id="rotate-btn" onclick="toggleRotateView()" data-i-btn="rotateView" style="margin-left:auto;">⟺ Portrait/Paysage</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -1977,15 +1976,20 @@ function buildSVG_Plan(data,dark){
   const lhSecRows=[];
 
   if(isPaired){
-    /* Paired/alternated mode: B-A columns side by side for each button index.
-       Each pair gets two adjacent columns (B then A, or A then B per lhBassFirst).
-       Vertically each column holds nPairs buttons. */
+    /* Alternated mode (ALTERNÉS B-A-B-A): single column, buttons interleaved vertically.
+       Order per pair: if lhBassFirst → B then A; else A then B. */
     const nPairs=Math.max(data.basses.length,data.accords.length);
     const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
-    const bassCol={nom:t('basses'),items:data.basses.slice(0,nPairs),items2:vB>1?(data.basses2||[]).slice(0,nPairs):null,offset:0};
-    const accCol={nom:t('accords'),items:data.accords.slice(0,nPairs),items2:vA>1?(data.accords2||[]).slice(0,nPairs):null,offset:0};
-    if(data.lhBassFirst){ lhSecRows.push(bassCol,accCol); }
-    else                { lhSecRows.push(accCol,bassCol); }
+    const intItems=[],intItems2=[],intTypes=[];
+    for(let i=0;i<nPairs;i++){
+      const seq=data.lhBassFirst
+        ?[['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
+        :[['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
+      seq.forEach(([typ,src,src2,nv])=>{
+        if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);}
+      });
+    }
+    lhSecRows.push({nom:`${t('basses')} / ${t('accords')}`,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes});
     if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
   }else{
     /* Separated mode: distinct column per section, respects lhRows multi-row config */
@@ -2019,7 +2023,7 @@ function buildSVG_Plan(data,dark){
   const lhMinOff=lhOffsets.length?Math.min(...lhOffsets,0):0;
   const lhTopShift=-lhMinOff*(BGAP/2);
   const lhBottomExtra=lhMaxOff*(BGAP/2);
-  const HEADER_GAP=34;  // space above grid for rotated column labels
+  const HEADER_GAP=72;  // space above grid for vertical column labels
 
   /* ── layout geometry ──────────────────────────────── */
   const lhW=nLH>0?nLH*CGAP:0;
@@ -2106,9 +2110,9 @@ function buildSVG_Plan(data,dark){
   rhRows.forEach((row,ri)=>{
     const cx=rhX0+(nRH-1-ri)*CGAP;  // ri=0=innermost → rightmost (closest to bellows)
     const off=rhTopShift+(row.offset||0)*(BGAP/2);  // normalized: topShift ensures negative offsets stay visible
-    // column label — rotated vertically to avoid overlap
-    const lblY=gridTop-4;
-    s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx},${lblY})">${escSVG(row.nom)}</text>`;
+    // column label — fully vertical (-90°) to avoid overlap with buttons
+    const lblY=gridTop-6;
+    s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(row.nom)}</text>`;
     // alternating column band
     if(row.boutons.length){
       const cy0=gridTop+off+BGAP/2;
@@ -2154,72 +2158,36 @@ function buildSVG_Plan(data,dark){
 
     s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-HEADER_GAP+14,t('svgLH'),8.5,gold,'bold','middle');
 
-    if(isPaired){
-      /* Paired/alternated mode: B and A side by side for each button index.
-         In the plan view, each pair shares the same Y position.
-         Two adjacent columns: one for B, one for A. */
-      const nPairs=Math.max(data.basses.length,data.accords.length);
-      const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
-      const bassLbl=dark?'#5aa0d0':'#1a4c9c';
-      const accLbl=dark?'#d09040':'#8b6914';
-      const bCol=data.lhBassFirst?0:1, aCol=data.lhBassFirst?1:0;
-      const cx0=lhX0+aCol*CGAP, cx1=lhX0+bCol*CGAP;
-      // column labels — rotated
-      const lblY=lhGridTop-4;
-      s+=`<text x="${cx0}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx0},${lblY})">${escSVG(t('accords'))}</text>`;
-      s+=`<text x="${cx1}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx1},${lblY})">${escSVG(t('basses'))}</text>`;
-      // alternating bands
-      if(nPairs>0){
-        [[cx0,0],[cx1,1]].forEach(([cx,ci])=>{
-          const bandY=lhGridTop+BGAP/2-R-3;
-          const bandH=(nPairs-1)*BGAP+2*(R+3);
-          s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${ci%2===0?band1:band2}" opacity=".6"/>`;
-        });
+    /* All LH sections: unified render loop.
+       isPaired mode pushes a single interleaved column into lhSecRows (B-A-B-A).
+       Separated mode pushes one column per section. */
+    const bassLbl=dark?'#5aa0d0':'#1a4c9c';
+    const accLbl=dark?'#d09040':'#8b6914';
+    lhSecRows.forEach((sec,si)=>{
+      const cx=lhX0+si*CGAP;
+      const off=lhTopShift+(sec.offset||0)*(BGAP/2);
+      const has2=sec.items2&&sec.items2.some(x=>x!=null);
+      // column label — fully vertical to avoid overlap with buttons
+      const lblY=lhGridTop-6;
+      s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
+      // alternating column band
+      if(sec.items.length){
+        const cy0=lhGridTop+off+BGAP/2;
+        const bandY=cy0-R-3;
+        const bandH=(sec.items.length-1)*BGAP+2*(R+3);
+        s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
       }
-      // buttons
-      for(let pi=0;pi<nPairs;pi++){
-        const cy=lhGridTop+pi*BGAP+BGAP/2;
-        // Accord button
-        const aBtn=data.accords[pi];
-        if(aBtn){
-          const aBtn2=(vA>1&&data.accords2&&data.accords2[pi])?data.accords2[pi]:null;
-          s+=drawBtn(cx0,cy,aBtn,aBtn2);
-          s+=tx(cx0,cy+3.5,pi+1,6.5,numTx,'normal','middle');
-          s+=tx(cx0-R+4,cy-R+7,'A',5.5,accLbl,'bold','start');
+      // buttons + B/A markers for interleaved mode
+      sec.items.forEach((btn,bi)=>{
+        const cy=lhGridTop+off+bi*BGAP+BGAP/2;
+        s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
+        s+=tx(cx,cy+3.5,bi+1,6.5,numTx,'normal','middle');
+        if(sec.interleavedTypes){
+          const typ=sec.interleavedTypes[bi];
+          s+=tx(cx-R+4,cy-R+7,typ,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
         }
-        // Bass button
-        const bBtn=data.basses[pi];
-        if(bBtn){
-          const bBtn2=(vB>1&&data.basses2&&data.basses2[pi])?data.basses2[pi]:null;
-          s+=drawBtn(cx1,cy,bBtn,bBtn2);
-          s+=tx(cx1,cy+3.5,pi+1,6.5,numTx,'normal','middle');
-          s+=tx(cx1-R+4,cy-R+7,'B',5.5,bassLbl,'bold','start');
-        }
-      }
-    }else{
-      /* Separated mode: distinct column per section */
-      lhSecRows.forEach((sec,si)=>{
-        const cx=lhX0+si*CGAP;
-        const off=lhTopShift+(sec.offset||0)*(BGAP/2);
-        const has2=sec.items2&&sec.items2.length>0;
-        // column label — rotated to avoid overlap
-        const lblY=lhGridTop-4;
-        s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-60,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
-        // alternating column band
-        if(sec.items.length){
-          const cy0=lhGridTop+off+BGAP/2;
-          const bandY=cy0-R-3;
-          const bandH=(sec.items.length-1)*BGAP+2*(R+3);
-          s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
-        }
-        // buttons + per-column button number
-        sec.items.forEach((btn,bi)=>{
-          const cy=lhGridTop+off+bi*BGAP+BGAP/2;
-          s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
-          s+=tx(cx,cy+3.5,bi+1,6.5,numTx,'normal','middle');
-        });
       });
-    }
+    });
     // button numbers on the far right
     const lhLastCx=lhX0+(nLH-1)*CGAP;
     for(let i=0;i<maxLHBtns;i++)
