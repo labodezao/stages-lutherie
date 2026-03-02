@@ -1973,18 +1973,37 @@ function buildSVG_Plan(data,dark){
   const maxRHBtns=Math.max(...rhRows.map(r=>r.boutons.length),1);
 
   /* ── LH data (sections: accords, basses, terzetto) ─ */
-  const lhRowCfg=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:data.basses.length||1,offset:0}];
-  const accSecs=[],basSecs=[];
-  let bIdx=0,aIdx=0;
-  const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
-  lhRowCfg.forEach((row,ri)=>{
-    accSecs.push({nom:lhRowCfg.length===1?t('accords'):(ri===0?t('accords'):`↳+${aIdx}`),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0});
-    aIdx+=row.nb;
-    basSecs.push({nom:lhRowCfg.length===1?t('basses'):(ri===0?t('basses'):`↳+${bIdx}`),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0});
-    bIdx+=row.nb;
-  });
-  const lhSecRows=data.lhBassFirst?[...basSecs,...accSecs]:[...accSecs,...basSecs];
-  if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
+  const isPaired=data.lhDisplayMode==='paired';
+  const lhSecRows=[];
+
+  if(isPaired){
+    /* Paired/alternated mode: B-A columns side by side for each button index.
+       Each pair gets two adjacent columns (B then A, or A then B per lhBassFirst).
+       Vertically each column holds nPairs buttons. */
+    const nPairs=Math.max(data.basses.length,data.accords.length);
+    const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
+    const bassCol={nom:t('basses'),items:data.basses.slice(0,nPairs),items2:vB>1?(data.basses2||[]).slice(0,nPairs):null,offset:0};
+    const accCol={nom:t('accords'),items:data.accords.slice(0,nPairs),items2:vA>1?(data.accords2||[]).slice(0,nPairs):null,offset:0};
+    if(data.lhBassFirst){ lhSecRows.push(bassCol,accCol); }
+    else                { lhSecRows.push(accCol,bassCol); }
+    if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
+  }else{
+    /* Separated mode: distinct column per section, respects lhRows multi-row config */
+    const lhRowCfg=(data.lhRows&&data.lhRows.length)?data.lhRows:[{nb:data.basses.length||1,offset:0}];
+    const accSecs=[],basSecs=[];
+    let bIdx=0,aIdx=0;
+    const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
+    lhRowCfg.forEach((row,ri)=>{
+      accSecs.push({nom:lhRowCfg.length===1?t('accords'):(ri===0?t('accords'):`↳+${aIdx}`),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0});
+      aIdx+=row.nb;
+      basSecs.push({nom:lhRowCfg.length===1?t('basses'):(ri===0?t('basses'):`↳+${bIdx}`),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0});
+      bIdx+=row.nb;
+    });
+    if(data.lhBassFirst){ basSecs.forEach(s=>lhSecRows.push(s)); accSecs.forEach(s=>lhSecRows.push(s)); }
+    else                { accSecs.forEach(s=>lhSecRows.push(s)); basSecs.forEach(s=>lhSecRows.push(s)); }
+    if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
+  }
+
   const nLH=lhSecRows.length;
   const maxLHBtns=nLH>0?Math.max(...lhSecRows.map(sc=>sc.items.length),0):0;
   const maxBtns=Math.max(maxRHBtns,maxLHBtns,1);
