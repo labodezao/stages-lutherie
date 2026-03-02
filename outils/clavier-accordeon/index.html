@@ -436,6 +436,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <strong data-i="pull">Tiré</strong>
         </div>
         <button class="btn btn-rouge" style="margin-left:auto;font-size:.76rem;padding:5px 10px;" onclick="clearNotes()" data-i-btn="clearNotes">🗑️ Effacer toutes les notes</button>
+        <button class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="convertFlatsToSharps()" data-i-btn="flatToSharp">b→# Bémols → Dièses</button>
       </div>
       <div id="note-grid"></div>
       <div class="btn-group" style="margin-top:13px;">
@@ -628,6 +629,7 @@ fr:{
   compareKbdSame:'Les 2 claviers sont identiques (notes identiques).',
   compareKbdPickBoth:'Sélectionnez 2 claviers dans les menus ci-dessus.',
   compareKbdRH:'MD R',compareKbdLH:'MG',compareKbdPush:'Poussé',compareKbdPull:'Tiré',
+  flatToSharp:'b→# Bémols → Dièses',flatToSharpConfirm:'Convertir tous les bémols en dièses enharmoniques ?\n(Réb→Do#, Mib→Ré#, Solb→Fa#, Lab→Sol#, Sib→La#, Dob→Si)',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -707,6 +709,7 @@ en:{
   compareKbdSame:'Both keyboards are identical (same notes).',
   compareKbdPickBoth:'Please select a keyboard in each dropdown above.',
   compareKbdRH:'RH R',compareKbdLH:'LH',compareKbdPush:'Push',compareKbdPull:'Pull',
+  flatToSharp:'b→# Flats → Sharps',flatToSharpConfirm:'Convert all flat notes to their enharmonic sharp equivalents?\n(Db→C#, Eb→D#, Gb→F#, Ab→G#, Bb→A#, Cb→B)',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -3059,6 +3062,28 @@ function clearNotes(){
   if(!confirm(t('clearConfirm')))return;
   document.querySelectorAll('#note-grid input').forEach(el=>{el.value='';});
   readNoteInputsIntoCFG();onAnyChange();
+}
+function convertFlatsToSharps(){
+  if(!confirm(t('flatToSharpConfirm')))return;
+  // Flat→Sharp maps (French and English roots)
+  const F2S={
+    'Réb':'Do#','Mib':'Ré#','Solb':'Fa#','Lab':'Sol#','Sib':'La#','Dob':'Si',
+    'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#','Cb':'B'
+  };
+  function convertNote(s){
+    if(!s)return s;
+    // Slash-separated notes: convert each individual root (no recursion on slash parts)
+    if(s.includes('/')){return s.split('/').map(p=>{const q=p.trim();return F2S[q]||q;}).join('/');}
+    // Chord name: "Réb Maj" → "Do# Maj"
+    const sp=s.indexOf(' ');
+    if(sp>0){const root=s.slice(0,sp),qual=s.slice(sp);return (F2S[root]||root)+qual;}
+    return F2S[s]||s;
+  }
+  function convertRow(arr){return (arr||[]).map(b=>({p:convertNote(b.p),t:convertNote(b.t)}));}
+  const n=CFG.notes;
+  n.droite=(n.droite||[]).map(convertRow);
+  ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=convertRow(n[k]);});
+  generateInputGrid();onAnyChange();
 }
 function openImportExport(){
   document.getElementById('modal-json').value=JSON.stringify(DB.all(),null,2);
