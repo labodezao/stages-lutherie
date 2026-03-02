@@ -2172,18 +2172,14 @@ function buildSVG_Plan(data,dark){
       const bandH=(row.boutons.length-1)*BGAP+2*(R+3);
       s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${ri%2===0?band1:band2}" opacity=".6"/>`;
     }
-    // buttons + per-column button number
+    // buttons + per-column button number (bottom-right corner, with row prime suffix)
+    const suffix=ri===0?'':ri===1?"'":"''";
     row.boutons.forEach((btn,bi)=>{
       const cy=gridTop+off+bi*BGAP+BGAP/2;
       s+=drawBtn(cx,cy,btn,null);
-      s+=tx(cx,cy+3.5,bi+1,6.5,numTx,'normal','middle');
+      s+=tx(cx+R-2,cy+R-3,(bi+1)+suffix,5.5,numTx,'bold','end');
     });
   });
-  // global button numbers on the far left (based on innermost row zero-offset)
-  const rhRef=rhRows[0];
-  const rhRefOff=rhTopShift+((rhRef?rhRef.offset:0)||0)*(BGAP/2);
-  for(let i=0;i<maxRHBtns;i++)
-    s+=tx(rhX0-R-5,gridTop+rhRefOff+i*BGAP+BGAP/2+3,i+1,6,numTx,'normal','end');
 
   /* ═══════════════════════════════════════════════════
      BELLOWS SEPARATOR — vertical dashed line
@@ -2233,7 +2229,7 @@ function buildSVG_Plan(data,dark){
         if(sec.interleavedTypes){
           const typ=sec.interleavedTypes[bi];
           const idx=sec.interleavedIndices?sec.interleavedIndices[bi]:'';
-          s+=tx(cx-R+4,cy-R-2,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
+          s+=tx(cx-R+4,cy-R-6,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
         }
       });
     });
@@ -2600,7 +2596,7 @@ async function downloadPDF(which){
     sections.forEach(function(row){
       const btns=row.items||row.boutons||[];
       if(!btns.length)return;
-      if(yPos+16>CB){pdf.addPage();yPos=MT;}
+      if(yPos+30>CB){pdf.addPage();yPos=MT;}
       const n=btns.length;
       const labelW=18;
       const numRow=[{content:'#',styles:{fillColor:LGRE,textColor:GRAY,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
@@ -2612,7 +2608,7 @@ async function downloadPDF(which){
       const pullRow=[{content:pullLabel,styles:{fillColor:PULL_BG,textColor:PULL_C,fontStyle:'bold',halign:'center',cellWidth:labelW}}]
         .concat(btns.map(function(b){return{content:b&&b.t?displayNote(b.t):'-',styles:{halign:'center',fontStyle:'bold',textColor:PULL_C}};}));
       pdf.autoTable(tableDefaults({
-        startY:yPos,
+        startY:yPos,pageBreak:'avoid',
         head:[[{content:row.nom||'',colSpan:n+1,styles:{fillColor:GRN2,textColor:[255,255,255],fontSize:7.5,fontStyle:'bold',halign:'center'}}],numRow],
         body:[pushRow,pullRow],
         columnStyles:{0:{cellWidth:labelW,fillColor:LGRE}},
@@ -2683,7 +2679,7 @@ async function downloadPDF(which){
     // Order checklist (4-col key/value)
     const kw=42,vw=CW/2-kw;
     pdf.autoTable(tableDefaults({
-      startY:yPos,
+      startY:yPos,pageBreak:'avoid',
       columnStyles:{0:{cellWidth:kw,fillColor:LGRE,textColor:GRN,fontStyle:'bold'},
                     1:{cellWidth:vw},
                     2:{cellWidth:kw,fillColor:LGRE,textColor:GRN,fontStyle:'bold'},
