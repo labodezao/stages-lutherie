@@ -2219,9 +2219,6 @@ function buildSVG_Plan(data,dark){
       const cx=lhX0+si*CGAP;
       const off=lhTopShift+(sec.offset||0)*(BGAP/2);
       const has2=sec.items2&&sec.items2.some(x=>x!=null);
-      // column label — fully vertical above the column, text goes upward from lblY
-      const lblY=lhGridTop-8;
-      s+=`<text x="${cx}" y="${lblY}" text-anchor="start" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
       // alternating column band
       if(sec.items.length){
         const cy0=lhGridTop+off+BGAP/2;
@@ -2236,7 +2233,7 @@ function buildSVG_Plan(data,dark){
         if(sec.interleavedTypes){
           const typ=sec.interleavedTypes[bi];
           const idx=sec.interleavedIndices?sec.interleavedIndices[bi]:'';
-          s+=tx(cx-R+4,cy-R+4,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
+          s+=tx(cx-R+4,cy-R-2,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
         }
       });
     });
