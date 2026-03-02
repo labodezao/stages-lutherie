@@ -193,16 +193,6 @@ select option{background:#fff;color:var(--txt)}
   background:#fafaf8;color:var(--txt)}
 
 .gauche-label{font-size:.74rem;font-weight:700;color:#555}
-/* ── Comparison modal ── */
-.modal-compare{max-width:96vw;width:96vw;max-height:92vh;display:flex;flex-direction:column;padding:16px}
-.compare-panes{display:flex;gap:12px;flex:1;min-height:0;overflow:hidden}
-.compare-pane{flex:1;display:flex;flex-direction:column;min-width:0}
-.compare-pane-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 6px;border-radius:4px 4px 0 0;text-align:center}
-.compare-pane-label.svg-lbl{background:#e8f5e3;color:#1a5c1a}
-.compare-pane-label.pdf-lbl{background:#fff4e0;color:#8a5500}
-.compare-pane-body{flex:1;overflow:auto;border:1.5px solid var(--brd);border-radius:0 0 6px 6px;background:#fafaf8;min-height:0;display:flex;align-items:flex-start;justify-content:center}
-.compare-pane-body svg{max-width:100%;height:auto}
-.compare-pane-body iframe{width:100%;height:100%;min-height:500px;border:none}
 .preset-btn{width:auto!important;padding:2px 7px!important;font-size:.7rem!important}
 hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 
@@ -456,7 +446,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <div class="btn-group no-print" style="margin-bottom:13px;">
         <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
         <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
-        <button class="btn btn-gris"    onclick="openCompareTool()"        data-i-btn="compareTool" style="margin-left:auto">🔍 Comparer SVG/PDF</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -511,28 +500,10 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   </div>
 </div>
 
-<div class="modal-overlay no-print" id="compare-modal">
-  <div class="modal-box modal-compare">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-      <span style="font-size:.95rem;font-weight:700;color:var(--dark)">🔍 <span data-i="compareTitle">Comparaison SVG / PDF</span></span>
-      <span style="font-size:.75rem;color:var(--gris);flex:1" data-i="compareHint">Le PDF est rendu en direct — rechargez si vous modifiez la configuration.</span>
-      <button class="btn btn-outline" onclick="closeCompareModal()" data-i-btn="closeBtn">✕</button>
-    </div>
-    <div class="compare-panes" id="compare-panes">
-      <div class="compare-pane">
-        <div class="compare-pane-label svg-lbl" data-i="compareSvgLabel">Aperçu SVG (navigateur)</div>
-        <div class="compare-pane-body" id="compare-svg-pane"></div>
-      </div>
-      <div class="compare-pane">
-        <div class="compare-pane-label pdf-lbl" data-i="comparePdfLabel">Rendu PDF (jsPDF)</div>
-        <div class="compare-pane-body" id="compare-pdf-pane"><p style="padding:12px;color:var(--gris);font-style:italic;font-size:.82rem" data-i="compareLoading">Génération en cours…</p></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 <script>
+/* ╔══════════════════════════════════════════════════════╗
+   ║  LANGUAGES                                           ║
+   ╚══════════════════════════════════════════════════════╝ */
 let lang = 'fr';
 const LANGS = {
 fr:{
@@ -609,10 +580,6 @@ fr:{
   lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
   lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',lhNbDuosTotal:'Nb duos total',
   lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
-  compareTool:'🔍 Comparer SVG/PDF',compareTitle:'Comparaison SVG / PDF',
-  compareHint:'Le PDF est rendu en direct — rechargez si vous modifiez la configuration.',
-  compareSvgLabel:'Aperçu SVG (navigateur)',comparePdfLabel:'Rendu PDF (jsPDF)',
-  compareLoading:'Génération en cours…',compareError:'Erreur lors de la génération du PDF.',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -686,10 +653,6 @@ en:{
   lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
   lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',lhNbDuosTotal:'Total duos',
   lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
-  compareTool:'🔍 Compare SVG/PDF',compareTitle:'SVG / PDF Comparison',
-  compareHint:'The PDF is rendered live — reload if you change the configuration.',
-  compareSvgLabel:'SVG preview (browser)',comparePdfLabel:'PDF render (jsPDF)',
-  compareLoading:'Generating…',compareError:'Error generating PDF.',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -3049,57 +3012,6 @@ function openImportExport(){
   document.getElementById('import-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('import-modal').classList.remove('open');}
-function closeCompareModal(){
-  const m=document.getElementById('compare-modal');
-  m.classList.remove('open');
-  // Free the blob URL to avoid memory leak
-  const iframe=document.getElementById('compare-pdf-pane').querySelector('iframe');
-  if(iframe&&iframe.src&&iframe.src.startsWith('blob:')){URL.revokeObjectURL(iframe.src);}
-}
-async function openCompareTool(){
-  // Show modal immediately with SVG clone
-  const modal=document.getElementById('compare-modal');
-  const svgPane=document.getElementById('compare-svg-pane');
-  const pdfPane=document.getElementById('compare-pdf-pane');
-  // Clone current SVG preview
-  const srcSvg=document.querySelector('#visual-output svg');
-  svgPane.innerHTML='';
-  if(srcSvg){
-    const clone=srcSvg.cloneNode(true);
-    clone.style.maxWidth='100%';clone.style.height='auto';
-    svgPane.appendChild(clone);
-  } else {
-    svgPane.innerHTML='<p style="padding:12px;color:var(--gris);font-style:italic;font-size:.82rem">'+t('previewPlaceholder')+'</p>';
-  }
-  pdfPane.innerHTML='<p style="padding:12px;color:var(--gris);font-style:italic;font-size:.82rem">'+t('compareLoading')+'</p>';
-  modal.classList.add('open');
-  // Generate PDF as blob URL
-  const JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-  const AT_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
-  try{
-    await loadScript(JSPDF_URL); await loadScript(AT_URL);
-    // Temporarily patch pdf.save so downloadPDF doesn't trigger a file download
-    const origSave=window.jspdf.jsPDF.prototype.save;
-    let capturedPdf=null;
-    window.jspdf.jsPDF.prototype.save=function(){capturedPdf=this;};
-    try{ await downloadPDF('visual'); } finally { window.jspdf.jsPDF.prototype.save=origSave; }
-    if(capturedPdf){
-      const blob=capturedPdf.output('blob');
-      const url=URL.createObjectURL(blob);
-      const iframe=document.createElement('iframe');
-      iframe.src=url;
-      pdfPane.innerHTML='';
-      pdfPane.appendChild(iframe);
-    } else {
-      const p=document.createElement('p');p.style.cssText='padding:12px;color:red;font-size:.82rem';
-      p.textContent=t('compareError');pdfPane.innerHTML='';pdfPane.appendChild(p);
-    }
-  }catch(e){
-    const p=document.createElement('p');p.style.cssText='padding:12px;color:red;font-size:.82rem';
-    p.textContent=t('compareError')+(e&&(e.message||e.toString())?(' '+(e.message||e.toString())):'');
-    pdfPane.innerHTML='';pdfPane.appendChild(p);
-  }
-}
 function copyJSON(){
   const text=document.getElementById('modal-json').value;
   if(navigator.clipboard&&navigator.clipboard.writeText){
