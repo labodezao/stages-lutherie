@@ -3087,7 +3087,7 @@ function convertFlatsToSharps(){
     const sp=s.indexOf(' ');
     if(sp>0){const root=s.slice(0,sp),qual=s.slice(sp);return convertNote(root)+qual;}
     // Simple note possibly with octave suffix: "Réb3" → "Do#3"
-    const m=s.match(/^(.+?)(\d+)$/);
+    const m=s.match(/^(.+?)(\d)$/);
     if(m){const conv=F2S[m[1]];if(conv!==undefined)return conv+m[2];}
     return F2S[s]||s;
   }
