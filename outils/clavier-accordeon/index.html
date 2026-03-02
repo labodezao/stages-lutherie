@@ -2008,15 +2008,31 @@ function buildSVG_Plan(data,dark){
     const nGroups=Math.ceil(nPairs/ppRow);
     const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
     if(data.lhPairedDir==='horizontal'){
-      /* Horizontal: each group → (B col | A col) or (A col | B col) */
-      for(let g=0;g<nGroups;g++){
-        const s0=g*ppRow,s1=Math.min(s0+ppRow,nPairs);
-        const bItems=data.basses.slice(s0,s1),   b2=vB>1?(data.basses2||[]).slice(s0,s1):null;
-        const aItems=data.accords.slice(s0,s1),  a2=vA>1?(data.accords2||[]).slice(s0,s1):null;
-        const lbl=nGroups===1?'':` ${g+1}`;
-        const basCol={nom:t('basses')+lbl,items:bItems,items2:b2,offset:0};
-        const acoCol={nom:t('accords')+lbl,items:aItems,items2:a2,offset:0};
-        if(data.lhBassFirst){lhSecRows.push(basCol,acoCol);}else{lhSecRows.push(acoCol,basCol);}
+      /* Horizontal: ppRow = number of columns side by side.
+         Column c holds: for each group g → B_{g*ppRow+c}, A_{g*ppRow+c} stacked vertically.
+         Visual result (ppRow=3, total=6):
+           Col0   Col1   Col2
+           B1     B2     B3
+           A1     A2     A3
+           B4     B5     B6
+           A4     A5     A6  */
+      const nGroups=Math.ceil(nPairs/ppRow);
+      for(let c=0;c<ppRow;c++){
+        const intItems=[],intItems2=[],intTypes=[];
+        for(let g=0;g<nGroups;g++){
+          const i=g*ppRow+c;
+          if(i>=nPairs)break;
+          const seq=data.lhBassFirst
+            ?[['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
+            :[['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
+          seq.forEach(([typ,src,src2,nv])=>{
+            if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);}
+          });
+        }
+        if(intItems.length){
+          const lbl=ppRow===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${c+1}`;
+          lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes});
+        }
       }
     }else{
       /* Vertical (default): each group → 1 interleaved column (B-A-B-A) */
@@ -2068,7 +2084,7 @@ function buildSVG_Plan(data,dark){
   const lhMinOff=lhOffsets.length?Math.min(...lhOffsets,0):0;
   const lhTopShift=-lhMinOff*(BGAP/2);
   const lhBottomExtra=lhMaxOff*(BGAP/2);
-  const HEADER_GAP=72;  // space above grid for vertical column labels
+  const HEADER_GAP=120;  // space above grid for vertical column labels
 
   /* ── layout geometry ──────────────────────────────── */
   const lhW=nLH>0?nLH*CGAP:0;
@@ -2151,13 +2167,13 @@ function buildSVG_Plan(data,dark){
      Outermost row (Ré/ext.) on far left,
      innermost row (Sol/int.) closest to bellows
      ═══════════════════════════════════════════════════ */
-  s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-HEADER_GAP+14,t('svgRH'),8.5,gold,'bold','middle');
+  s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-HEADER_GAP+6,t('svgRH'),8.5,gold,'bold','middle');
   rhRows.forEach((row,ri)=>{
     const cx=rhX0+(nRH-1-ri)*CGAP;  // ri=0=innermost → rightmost (closest to bellows)
     const off=rhTopShift+(row.offset||0)*(BGAP/2);  // normalized: topShift ensures negative offsets stay visible
-    // column label — fully vertical (-90°) to avoid overlap with buttons
-    const lblY=gridTop-6;
-    s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(row.nom)}</text>`;
+    // column label — fully vertical (-90°) above the column, text goes upward from lblY
+    const lblY=gridTop-8;
+    s+=`<text x="${cx}" y="${lblY}" text-anchor="start" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(row.nom)}</text>`;
     // alternating column band
     if(row.boutons.length){
       const cy0=gridTop+off+BGAP/2;
@@ -2201,7 +2217,7 @@ function buildSVG_Plan(data,dark){
     const lhBlockH=maxLHBtns*BGAP+lhTopShift+lhBottomExtra;
     const lhGridTop=gridTop+Math.round((rhBlockH-lhBlockH)/2);
 
-    s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-HEADER_GAP+14,t('svgLH'),8.5,gold,'bold','middle');
+    s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-HEADER_GAP+6,t('svgLH'),8.5,gold,'bold','middle');
 
     /* All LH sections: unified render loop.
        isPaired mode pushes a single interleaved column into lhSecRows (B-A-B-A).
@@ -2212,9 +2228,9 @@ function buildSVG_Plan(data,dark){
       const cx=lhX0+si*CGAP;
       const off=lhTopShift+(sec.offset||0)*(BGAP/2);
       const has2=sec.items2&&sec.items2.some(x=>x!=null);
-      // column label — fully vertical to avoid overlap with buttons
-      const lblY=lhGridTop-6;
-      s+=`<text x="${cx}" y="${lblY}" text-anchor="end" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
+      // column label — fully vertical above the column, text goes upward from lblY
+      const lblY=lhGridTop-8;
+      s+=`<text x="${cx}" y="${lblY}" text-anchor="start" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
       // alternating column band
       if(sec.items.length){
         const cy0=lhGridTop+off+BGAP/2;
