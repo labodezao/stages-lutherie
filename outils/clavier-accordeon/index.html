@@ -2651,15 +2651,14 @@ async function downloadPDF(which){
     pdf.setDrawColor(...RULE_C);pdf.setLineWidth(0.3);
     pdf.line(px(tX+rotW),py(tY),px(tX+rotW),py(tY+tH));
     for(let i=1;i<4;i++){pdf.setLineWidth(0.15);pdf.line(px(infoX-2),py(tY+i*rH),px(infoX+240),py(tY+i*rH));}
-    // "Plan de clavier" pivoté à 90° — ancré au bord supérieur du bloc titre
-    // align:'right' place la fin du texte (caractère du haut) au point d'ancrage py(tY)
-    // la taille est réduite si le texte dépasse la hauteur disponible (tH unités SVG)
+    // "Plan de clavier" pivoté à 90° — centré dans le bloc titre (mirror exact du SVG)
+    // police auto-réduite si le texte dépasse tH*S mm, pour qu'il ne sorte jamais du bloc
     {const label=t('svgPlan');
     pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
     let planFs=fs(12.5);pdf.setFontSize(planFs);
     const maxH=tH*S;const tw=pdf.getTextWidth(label);
     if(tw>maxH){planFs=Math.max(planFs*maxH/tw,3);pdf.setFontSize(planFs);}
-    pdf.text(label,px(tX+rotW/2),py(tY),{angle:90,align:'right'});}
+    pdf.text(label,px(tX+rotW/2),py(tY+tH/2),{angle:90,align:'center'});}
     // nom de l'instrument
     pdf.setFontSize(fs(11));
     pdf.text(data.nomInstrument||'Accordéon',px(infoX),py(tY+rH*0.7));
