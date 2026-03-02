@@ -2667,18 +2667,47 @@ async function downloadPDF(which){
     pdf.setFontSize(fs(7.5));
     pdf.text(`${data.nomLuthier||''}  ·  ${fmtDate(data.date)}`,px(infoX),py(tY+3*rH+rH*0.65));
 
+    /* ─ légende poussé/tiré (petit cercle, haut à droite du titre) ─ */
+    {
+      const k=0.5522847498,lR_S=7,lX_S=W_S-MH_S-lR_S-2,lY_S=tY+tH/2;
+      const lcx=px(lX_S),lcy=py(lY_S),lr=pr(lR_S);
+      // fond blanc + demi-cercles colorés
+      pdf.setFillColor(255,255,255);pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(1));
+      pdf.circle(lcx,lcy,lr,'FD');
+      pdf.setFillColor(232,245,227); // poussé vert clair
+      pdf.lines([[0,-k*lr,lr*(1-k),-lr,lr,-lr],[k*lr,0,lr,lr*(1-k),lr,lr]],lcx-lr,lcy,[1,1],'F',true);
+      pdf.setFillColor(255,248,230); // tiré ambre clair
+      pdf.lines([[0,k*lr,lr*(1-k),lr,lr,lr],[k*lr,0,lr,-(lr*(1-k)),lr,-lr]],lcx-lr,lcy,[1,1],'F',true);
+      pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(1.2));pdf.circle(lcx,lcy,lr,'S');
+      pdf.setLineWidth(pr(0.4));pdf.line(lcx-lr,lcy,lcx+lr,lcy);
+      // labels "Poussé / Tiré"
+      pdf.setFontSize(Math.max(fs(6),3));pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
+      pdf.text(t('svgPush').replace(/[↓↑]/g,'').trim(),px(lX_S-lR_S-2),py(lY_S-2),{align:'right'});
+      pdf.text(t('svgPull').replace(/[↓↑]/g,'').trim(),px(lX_S-lR_S-2),py(lY_S+7),{align:'right'});
+    }
+
     /* ─ "Haut (graves)" ─ */
     pdf.setFontSize(fs(8));pdf.setFont('helvetica','italic');pdf.setTextColor(100,100,100);
     pdf.text('Haut (graves)',px(rhX0-R_S-5),py(gridTop-HEADER_GAP_S+4));
 
-    /* ─ dessin d'un bouton (cercle avec séparateur et notes) ─ */
+    /* ─ dessin d'un bouton (cercle avec demi-cercles colorés poussé/tiré) ─ */
     function drawBtn(cx_s,cy_s,btn,btn2){
       const cx=px(cx_s),cy=py(cy_s),r=pr(R_S);
-      // fond blanc du cercle
+      const k=0.5522847498;
+      // fond blanc de base
       pdf.setFillColor(255,255,255);pdf.setDrawColor(185,185,185);pdf.setLineWidth(pr(1));
       pdf.circle(cx,cy,r,'FD');
+      // demi-cercle supérieur — poussé (vert clair)
+      pdf.setFillColor(232,245,227);
+      pdf.lines([[0,-k*r,r*(1-k),-r,r,-r],[k*r,0,r,r*(1-k),r,r]],cx-r,cy,[1,1],'F',true);
+      // demi-cercle inférieur — tiré (ambre clair)
+      pdf.setFillColor(255,248,230);
+      pdf.lines([[0,k*r,r*(1-k),r,r,r],[k*r,0,r,-(r*(1-k)),r,-r]],cx-r,cy,[1,1],'F',true);
+      // contour du cercle (par-dessus les demi-cercles)
+      pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(1.2));
+      pdf.circle(cx,cy,r,'S');
       // ligne séparatrice poussé/tiré
-      pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(0.5));
+      pdf.setLineWidth(pr(0.5));
       pdf.line(cx-r,cy,cx+r,cy);
       // notes
       const has2=btn2&&(btn2.p||btn2.t);
@@ -2848,14 +2877,6 @@ async function downloadPDF(which){
   // ══════════════════════════════════════════════════
   if(which==='fabricant'){
 
-    // ── Page: Sommier ──────────────────────────────
-    pdf.addPage();yPos=MT;
-    const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
-    const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
-    addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
-    const lhSecs=buildLhSommierSections(data);
-    if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
-
     // ── Page: Bon de commande ──────────────────────
     pdf.addPage();yPos=MT;
     const os=data.orderSpecs||{},date=fmtDate(data.date);
@@ -2889,6 +2910,14 @@ async function downloadPDF(which){
       ],
     }));
     yPos=pdf.lastAutoTable.finalY+10;
+
+    // ── Page: Sommier ──────────────────────────────
+    pdf.addPage();yPos=MT;
+    const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
+    const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
+    addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
+    const lhSecs=buildLhSommierSections(data);
+    if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
   }
 
   // ══════════════════════════════════════════════════
