@@ -2235,7 +2235,8 @@ function buildSVG_Plan(data,dark){
         s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
         if(sec.interleavedTypes){
           const typ=sec.interleavedTypes[bi];
-          s+=tx(cx-R+4,cy-R+7,typ,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
+          const idx=sec.interleavedIndices?sec.interleavedIndices[bi]:'';
+          s+=tx(cx-R+4,cy-R+4,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
         }
       });
     });
