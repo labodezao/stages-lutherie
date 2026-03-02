@@ -2576,7 +2576,7 @@ async function downloadPDF(which){
   }
 
   // ── SVG → native PDF vectors (text selectable) using svg2pdf.js ──
-  // Falls back to JPEG image if svg2pdf is unavailable.
+  // Falls back to JPEG raster image if svg2pdf is unavailable.
   async function addSvgNative(svgStr){
     const mw=svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/),mh=svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
     const svgW=mw?+mw[1]:800,svgH=mh?+mh[1]:600;
@@ -2592,7 +2592,7 @@ async function downloadPDF(which){
     try{
       await window.svg2pdf(svgEl,pdf,{x:ML,y:yPos,width:CW,height:finalH});
     }catch(e){
-      // fallback: rasterise if svg2pdf fails
+      // fallback: rasterise as JPEG (svgToPngDataUrl returns JPEG despite its name)
       const {dataUrl,w,h}=await svgToPngDataUrl(svgStr,0);
       pdf.addImage(dataUrl,'JPEG',ML,yPos,CW,finalH);
     }finally{
