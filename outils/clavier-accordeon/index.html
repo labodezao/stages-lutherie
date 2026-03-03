@@ -442,6 +442,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <button class="btn btn-outline" style="font-size:.76rem;padding:4px 9px;" onclick="transposeAllNotes(1)"  title="+1 demi-ton (toutes les notes)">+½</button>
         <button class="btn btn-outline" style="font-size:.76rem;padding:4px 9px;" onclick="transposeAllNotes(-12)" title="−1 octave">−8ve</button>
         <button class="btn btn-outline" style="font-size:.76rem;padding:4px 9px;" onclick="transposeAllNotes(12)"  title="+1 octave">+8ve</button>
+        <button class="btn btn-outline" style="font-size:.76rem;padding:4px 9px;" onclick="openTransposeModal()" title="Transposer par intervalle" data-i-btn="transposeCustom">⊞</button>
       </div>
       <div id="note-grid"></div>
       <div class="btn-group" style="margin-top:13px;">
@@ -548,6 +549,38 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   </div>
 </div>
 
+<!-- Transpose Modal -->
+<div class="modal-backdrop" id="transpose-modal">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-head"><h3 data-i="transposeModalTitle">🎵 Transposer par intervalle</h3><button class="modal-close" onclick="closeTransposeModal()">✕</button></div>
+    <div class="modal-body" style="padding:16px;">
+      <p style="margin:0 0 12px;font-size:.85rem;color:#555;" data-i="transposeModalDesc">Choisissez un intervalle (en demi-tons) pour transposer toutes les notes :</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-12'">−8ve</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-7'">−5te</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-5'">−4te</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-3'">−3ce</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-2'">−2de</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-1'">−½</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='1'">+½</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='2'">+2de</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='3'">+3ce</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='5'">+4te</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='7'">+5te</button>
+        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='12'">+8ve</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <label style="font-size:.82rem;font-weight:600;" data-i="transposeModalCustom">Demi-tons personnalisé :</label>
+        <input type="number" id="transpose-semitones" value="0" min="-24" max="24" step="1" style="width:70px;padding:4px 8px;font-size:.9rem;text-align:center;border:1.5px solid var(--brd);border-radius:5px;">
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-outline" onclick="closeTransposeModal()" data-i-btn="cancel">Annuler</button>
+        <button class="btn btn-primary" onclick="applyTransposeModal()" data-i-btn="transposeModalApply">Transposer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ╔══════════════════════════════════════════════════════╗
    ║  LANGUAGES                                           ║
@@ -637,6 +670,7 @@ fr:{
   compareKbdEnh:'enharmoniques',
   flatToSharp:'b→# Bémols → Dièses',flatToSharpConfirm:'Convertir tous les bémols en dièses enharmoniques ?\n(Réb→Do#, Mib→Ré#, Solb→Fa#, Lab→Sol#, Sib→La#, Dob→Si)',
   transposeLabel:'🎵 Transposer :',transposeConfirm:'Transposer toutes les notes de %s demi-ton(s) ?',
+  transposeCustom:'⊞',transposeModalTitle:'🎵 Transposer par intervalle',transposeModalDesc:'Choisissez un intervalle (en demi-tons) pour transposer toutes les notes :',transposeModalCustom:'Demi-tons personnalisé :',transposeModalApply:'Transposer',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -719,6 +753,7 @@ en:{
   compareKbdEnh:'enharmonic',
   flatToSharp:'b→# Flats → Sharps',flatToSharpConfirm:'Convert all flat notes to their enharmonic sharp equivalents?\n(Db→C#, Eb→D#, Gb→F#, Ab→G#, Bb→A#, Cb→B)',
   transposeLabel:'🎵 Transpose:',transposeConfirm:'Transpose all notes by %s semitone(s)?',
+  transposeCustom:'⊞',transposeModalTitle:'🎵 Transpose by interval',transposeModalDesc:'Choose an interval (in semitones) to transpose all notes:',transposeModalCustom:'Custom semitones:',transposeModalApply:'Transpose',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -867,6 +902,12 @@ async function loadPresetIndex(){
   const r=await fetch(url);
   _presetIndex=await r.json();
   renderPresetOptions();
+}
+
+async function reloadPresets(){
+  _presetIndex=[];
+  Object.keys(_presetCache).forEach(k=>delete _presetCache[k]);
+  await loadPresetIndex();
 }
 
 function renderPresetOptions(){
@@ -3095,7 +3136,7 @@ function convertFlatsToSharps(){
   const n=CFG.notes;
   n.droite=(n.droite||[]).map(convertRow);
   ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=convertRow(n[k]);});
-  generateInputGrid();onAnyChange();
+  generateInputGrid();onAnyChange();forcePreview();
 }
 function transposeAllNotes(semi){
   const label=semi>0?`+${semi}`:String(semi);
@@ -3114,7 +3155,32 @@ function transposeAllNotes(semi){
   const n=CFG.notes;
   n.droite=(n.droite||[]).map(shiftRow);
   ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=shiftRow(n[k]);});
-  generateInputGrid();onAnyChange();
+  generateInputGrid();onAnyChange();forcePreview();
+}
+/* ── Custom transposition modal ─────────────────────── */
+function openTransposeModal(){
+  document.getElementById('transpose-modal').classList.add('open');
+  document.getElementById('transpose-semitones').value='0';
+}
+function closeTransposeModal(){
+  document.getElementById('transpose-modal').classList.remove('open');
+}
+function applyTransposeModal(){
+  const s=parseInt(document.getElementById('transpose-semitones').value,10);
+  if(isNaN(s)){closeTransposeModal();return;}
+  closeTransposeModal();
+  function shiftNoteStr(note){
+    if(!note)return note;
+    if(note.includes('/')){return note.split('/').map(p=>shiftNoteStr(p.trim())).join('/');}
+    const sp=note.indexOf(' ');
+    if(sp>0){const root=note.slice(0,sp),qual=note.slice(sp);return shiftNoteStr(root)+qual;}
+    return shiftNote(note,s)||note;
+  }
+  function shiftRow(arr){return (arr||[]).map(b=>({p:shiftNoteStr(b.p),t:shiftNoteStr(b.t)}));}
+  const n=CFG.notes;
+  n.droite=(n.droite||[]).map(shiftRow);
+  ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=shiftRow(n[k]);});
+  generateInputGrid();onAnyChange();forcePreview();
 }
 function openImportExport(){
   document.getElementById('modal-json').value=JSON.stringify(DB.all(),null,2);
