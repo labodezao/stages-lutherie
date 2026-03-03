@@ -1729,7 +1729,7 @@ function readInputs(){
    ║  SVG HELPERS                                         ║
    ╚══════════════════════════════════════════════════════╝ */
 let _svgId=0;
-function svg_open(w,h,bg){const id='vp'+(++_svgId);return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="Arial,Helvetica,sans-serif" overflow="hidden"><defs><clipPath id="${id}"><rect width="${w}" height="${h}"/></clipPath></defs><rect width="${w}" height="${h}" fill="${bg||'white'}"/><g clip-path="url(#${id})">`;}
+function svg_open(w,h,bg){const id='vp'+(++_svgId);return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="'Nunito','Segoe UI','Helvetica Neue',Arial,sans-serif" overflow="hidden"><defs><clipPath id="${id}"><rect width="${w}" height="${h}"/></clipPath></defs><rect width="${w}" height="${h}" fill="${bg||'white'}"/><g clip-path="url(#${id})">`;}
 function svg_close(){return'</g></svg>';}
 function tx(x,y,text,size,fill,weight,anchor){return`<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-weight="${weight||'normal'}" text-anchor="${anchor||'start'}">${text}</text>`;}
 function esc(s){if(!s)return'';return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -1779,13 +1779,13 @@ function bellowsSVG(x,y,w,h,folds,dark){
    ╚══════════════════════════════════════════════════════╝ */
 function buildSVG_Droite(data,dark){
   const R=24,HGAP=60,VGAP=72,LPAD=186,MARG=14,HEAD=80,FOOT=34;
-  const gold=dark?'#c9a227':'#2d5a27';
+  const gold=dark?'#c9a227':'#4338CA';
   const bg=dark?'#111111':'#ffffff';
-  const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
-  const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
-  const subtl=dark?'#888866':'#888888',stroke=dark?'#c9a227':'#2d5a27';
-  const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
+  const pushBg=dark?'#0d1f0d':'#EEF2FF',pullBg=dark?'#1f1000':'#FFFBEB';
+  const pushTx=dark?'#6fcf5a':'#3730A3',pullTx=dark?'#e8b840':'#92400E';
+  const subtl=dark?'#888866':'#94A3B8',stroke=dark?'#c9a227':'#6366F1';
+  const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
+  const numTx=dark?'rgba(200,162,39,.3)':'rgba(99,102,241,.2)';
 
   const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
   const allOffs=data.droite.map(r=>r.offset||0);
@@ -1857,15 +1857,15 @@ function buildSVG_Droite(data,dark){
 
 function buildSVG_Gauche(data,dark){
   const R=24,HGAP=62,VGAP=70,LPAD=140,MARG=12,HEAD=32,FOOT=20;
-  const gold=dark?'#c9a227':'#2d5a27';
+  const gold=dark?'#c9a227':'#4338CA';
   const bg=dark?'#111':'#fff';
-  const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
-  const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
-  const stroke=dark?'#c9a227':'#2d5a27';
-  const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
-  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)';
-  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)';
+  const pushBg=dark?'#0d1f0d':'#EEF2FF',pullBg=dark?'#1f1000':'#FFFBEB';
+  const pushTx=dark?'#6fcf5a':'#3730A3',pullTx=dark?'#e8b840':'#92400E';
+  const stroke=dark?'#c9a227':'#6366F1';
+  const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
+  const numTx=dark?'rgba(200,162,39,.3)':'rgba(99,102,241,.2)';
+  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(55,48,163,.5)';
+  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(146,64,14,.5)';
 
   // Paired mode: B1 A1 B2 A2 / B3 A3 B4 A4 / … (PPROW pairs per display row)
   if(data.lhDisplayMode==='paired'){
@@ -1873,9 +1873,9 @@ function buildSVG_Gauche(data,dark){
     const nPairs=Math.max(data.basses.length,data.accords.length);
     const nDispRows=Math.ceil(nPairs/PPROW);
     const nCols=PPROW*2;
-    const bassLbl=dark?'#5aa0d0':'#1a4c9c';
-    const accLbl=dark?'#d09040':'#8b6914';
-    const gridCol=dark?'#3a3a3a':'#d0d0d0';
+    const bassLbl=dark?'#5aa0d0':'#1D4ED8';
+    const accLbl=dark?'#d09040':'#B45309';
+    const gridCol=dark?'#3a3a3a':'#DDD6FE';
     const W=LPAD+nCols*HGAP+MARG;
     const H=MARG+HEAD+nDispRows*VGAP+FOOT;
     let s=svg_open(W,H,bg);
@@ -1963,11 +1963,11 @@ function buildSVG_Gauche(data,dark){
   if(secRows.length>0&&maxItems>0){
     const gTop=MARG+HEAD,gBot=MARG+HEAD+secRows.length*VGAP;
     const gLeft=LPAD-HGAP/2,gRight=LPAD+maxItems*HGAP-HGAP/2;
-    const gridCol=dark?'#3a3a3a':'#d0d0d0';
-    s+=`<rect x="${gLeft}" y="${gTop}" width="${gRight-gLeft}" height="${gBot-gTop}" fill="none" stroke="${dark?'#555':'#aaa'}" stroke-width="1.2" rx="2"/>`;
+    const gridCol=dark?'#3a3a3a':'#DDD6FE';
+    s+=`<rect x="${gLeft}" y="${gTop}" width="${gRight-gLeft}" height="${gBot-gTop}" fill="none" stroke="${dark?'#555':'#C7D2FE'}" stroke-width="1.2" rx="2"/>`;
     for(let ci=1;ci<maxItems;ci++){const xv=LPAD+ci*HGAP-HGAP/2;s+=`<line x1="${xv}" y1="${gTop}" x2="${xv}" y2="${gBot}" stroke="${gridCol}" stroke-width="1"/>`;}
     for(let ri=1;ri<secRows.length;ri++){const yh=gTop+ri*VGAP;s+=`<line x1="${gLeft}" y1="${yh}" x2="${gRight}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
-    for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');}
+    for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(99,102,241,.4)','normal','middle');}
   }
   // Pass 3: buttons on top of grid
   secRows.forEach((sec,si)=>{
@@ -2055,19 +2055,19 @@ function buildSVG_Plan(data,dark){
   const BTWN=50;              // gap between LH section and RH section (bellows)
 
   /* ── colours ──────────────────────────────────────── */
-  const gold=dark?'#c9a227':'#2d5a27';
+  const gold=dark?'#c9a227':'#4338CA';
   const bg=dark?'#111':'#fff';
-  const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
-  const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
-  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)';
-  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)';
-  const subtl=dark?'#888866':'#888888';
-  const stroke=dark?'#c9a227':'#2d5a27';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
-  const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
-  const circleBorder=dark?'#333':'#bbb';
-  const textColor=dark?'#ccc':'#333';
-  const ruleColor=dark?'#444':'#bbb';
+  const pushBg=dark?'#0d1f0d':'#EEF2FF',pullBg=dark?'#1f1000':'#FFFBEB';
+  const pushTx=dark?'#6fcf5a':'#3730A3',pullTx=dark?'#e8b840':'#92400E';
+  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(55,48,163,.5)';
+  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(146,64,14,.5)';
+  const subtl=dark?'#888866':'#94A3B8';
+  const stroke=dark?'#c9a227':'#6366F1';
+  const numTx=dark?'rgba(200,162,39,.3)':'rgba(99,102,241,.2)';
+  const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
+  const circleBorder=dark?'#333':'#C7D2FE';
+  const textColor=dark?'#ccc':'#1E293B';
+  const ruleColor=dark?'#444':'#E2E8F0';
 
   /* ── draw one button circle ───────────────────────── */
   function drawBtn(cx,cy,btn,btn2){
@@ -2214,6 +2214,9 @@ function buildSVG_Plan(data,dark){
 
   let s=svg_open(W,H,bg);
 
+  /* ── Thin accent bar at top ──────────────────────── */
+  s+=`<rect x="0" y="0" width="${W}" height="3" fill="${gold}"/>`;
+
   /* ═══════════════════════════════════════════════════
      TITLE TABLE — reproduces TikZ \drawtitle
      ═══════════════════════════════════════════════════ */
@@ -2224,11 +2227,15 @@ function buildSVG_Plan(data,dark){
   const tblRows=4;
   const tblH=tblRows*rowH;
 
+  // accent background behind the "Plan de clavier" rotated title column
+  s+=`<rect x="${tblX}" y="${tblY}" width="${rotW}" height="${tblH}" fill="${gold}" opacity=".08" rx="3"/>`;
+  // outer border of the title table
+  s+=`<rect x="${tblX}" y="${tblY}" width="${rotW+244}" height="${tblH}" fill="none" stroke="${ruleColor}" stroke-width="1" rx="3"/>`;
   // vertical rule between rotated title and info columns
   s+=`<line x1="${tblX+rotW}" y1="${tblY}" x2="${tblX+rotW}" y2="${tblY+tblH}" stroke="${ruleColor}" stroke-width="1"/>`;
   // horizontal rules between info rows
   for(let i=1;i<tblRows;i++)
-    s+=`<line x1="${tblX+rotW}" y1="${tblY+i*rowH}" x2="${tblX+rotW+240}" y2="${tblY+i*rowH}" stroke="${ruleColor}" stroke-width=".5"/>`;
+    s+=`<line x1="${tblX+rotW}" y1="${tblY+i*rowH}" x2="${tblX+rotW+244}" y2="${tblY+i*rowH}" stroke="${ruleColor}" stroke-width=".5"/>`;
 
   // rotated "Plan de clavier" (reads bottom-to-top, matching \begin{turn}{90})
   const rotCx=tblX+rotW/2, rotCy=tblY+tblH/2;
@@ -2249,7 +2256,7 @@ function buildSVG_Plan(data,dark){
   s+=`<text x="${tblInfoX}" y="${tblY+3*rowH+rowH/2+3}" font-size="7.5" fill="${subtl}">${escSVG(data.nomLuthier)}  ·  ${escSVG(fmtDate(data.date))}</text>`;
 
   /* ── "Haut (graves)" in italics near top-left ─────── */
-  s+=`<text x="${rhX0-R-6}" y="${gridTop-HEADER_GAP+4}" font-size="8.5" fill="${textColor}" font-style="italic">Haut (graves)</text>`;
+  s+=`<text x="${rhX0-R-6}" y="${gridTop-HEADER_GAP+4}" font-size="8.5" fill="${subtl}" font-style="italic">Haut (graves)</text>`;
 
   /* ── push/pull legend (small circle, top-right) ───── */
   const legR=7,legX=W-MH-legR-2,legY=tblY+tblH/2;
@@ -2294,7 +2301,7 @@ function buildSVG_Plan(data,dark){
      ═══════════════════════════════════════════════════ */
   if(nLH>0){
     const sepY1=gridTop-2,sepY2=gridTop+maxBtns*BGAP+extraOff+2;
-    s+=`<line x1="${sepX}" y1="${sepY1}" x2="${sepX}" y2="${sepY2}" stroke="${dark?'#444':'#ccc'}" stroke-width="1" stroke-dasharray="6,4"/>`;
+    s+=`<line x1="${sepX}" y1="${sepY1}" x2="${sepX}" y2="${sepY2}" stroke="${dark?'#444':'#C7D2FE'}" stroke-width="1.5" stroke-dasharray="6,4"/>`;
     const sepMidY=(sepY1+sepY2)/2;
     s+=`<text x="${sepX}" y="${sepMidY}" text-anchor="middle" font-size="6.5" fill="${subtl}" font-weight="bold" transform="rotate(-90,${sepX},${sepMidY})">${escSVG('— '+t('svgBellows')+' —')}</text>`;
   }
@@ -2317,8 +2324,8 @@ function buildSVG_Plan(data,dark){
     /* All LH sections: unified render loop.
        isPaired mode pushes a single interleaved column into lhSecRows (B-A-B-A).
        Separated mode pushes one column per section. */
-    const bassLbl=dark?'#5aa0d0':'#1a4c9c';
-    const accLbl=dark?'#d09040':'#8b6914';
+    const bassLbl=dark?'#5aa0d0':'#1D4ED8';
+    const accLbl=dark?'#d09040':'#B45309';
     lhSecRows.forEach((sec,si)=>{
       const cx=lhX0+si*CGAP;
       const off=lhTopShift+(sec.offset||0)*(BGAP/2);
@@ -2351,8 +2358,8 @@ function buildSVG_Plan(data,dark){
   s+=`<text x="${W/2}" y="${H-MB+12}" font-size="8.5" fill="${textColor}" font-style="italic" text-anchor="middle">↑ Aigus</text>`;
 
   /* ── footer ────────────────────────────────────── */
-  s+=`<line x1="${MH}" y1="${H-MB+20}" x2="${W-MH}" y2="${H-MB+20}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
-  s+=tx(MH,H-MB+28,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7,dark?'#444':'#bbb','normal','start');
+  s+=`<line x1="${MH}" y1="${H-MB+20}" x2="${W-MH}" y2="${H-MB+20}" stroke="${ruleColor}" stroke-width="1"/>`;
+  s+=tx(MH,H-MB+28,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7,subtl,'normal','start');
 
   s+=svg_close();
   return s;
@@ -2637,14 +2644,16 @@ async function downloadPDF(which){
   let yPos=MT;
 
   // ── Professional palette ──────────────────────────
-  const GRN=[30,68,30];              // deep forest green — headings
-  const GRN2=[48,100,48];            // medium green — sub-headers
-  const GRAY=[110,110,110];          // muted gray — meta / captions
-  const LGRE=[240,248,240];          // pale green — key cells
-  const ALT=[248,252,247];           // alternate row tint
-  const RULE_C=[190,210,185];        // light sage — table borders / rules
-  const PUSH_C=[20,85,20];           // push note — dark green
-  const PULL_C=[140,100,10];         // pull note — warm amber
+  const GRN=[67,56,202];             // deep indigo — headings
+  const GRN2=[99,102,241];           // indigo-500 — sub-headers / circle stroke
+  const GRAY=[100,116,139];          // slate-500 — meta / captions
+  const LGRE=[238,242,255];          // indigo-50 — key cells / push background
+  const ALT=[245,243,255];           // violet-50 — alternate row tint
+  const RULE_C=[199,210,254];        // indigo-200 — table borders / rules
+  const CIRC_C=[165,180,252];        // indigo-300 — button circle border
+  const PUSH_C=[55,48,163];          // push note — indigo-800
+  const PULL_C=[146,64,14];          // pull note — amber-800
+  const PULL_C2=[217,119,6];         // pull note 2nd voice — amber-600
 
   // ── Drawing helpers ───────────────────────────────
   function hRule(y,color=RULE_C,lw=0.2){
@@ -2772,9 +2781,17 @@ async function downloadPDF(which){
 
     /* ─ tableau de titre ─ */
     const tX=MH_S,tY=MT_S,rotW=22,infoX=tX+rotW+6,rH=16,tH=64;
+    // thin accent bar at the very top of the page
+    pdf.setFillColor(...GRN);
+    pdf.rect(ox,oy,planW,pr(3),'F');
+    // accent background behind the rotated title column
+    pdf.setFillColor(...LGRE);
+    pdf.roundedRect(px(tX),py(tY),pr(rotW),pr(tH),pr(3),pr(3),'F');
+    // outer border of title table
     pdf.setDrawColor(...RULE_C);pdf.setLineWidth(0.3);
+    pdf.roundedRect(px(tX),py(tY),pr(rotW+244),pr(tH),pr(3),pr(3),'S');
     pdf.line(px(tX+rotW),py(tY),px(tX+rotW),py(tY+tH));
-    for(let i=1;i<4;i++){pdf.setLineWidth(0.15);pdf.line(px(infoX-2),py(tY+i*rH),px(infoX+240),py(tY+i*rH));}
+    for(let i=1;i<4;i++){pdf.setLineWidth(0.15);pdf.line(px(infoX-2),py(tY+i*rH),px(infoX+244),py(tY+i*rH));}
     // "Plan de clavier" pivoté à 90° — centré dans le bloc titre
     // jsPDF angle:90 → le texte monte depuis l'ancre; l'ancre est en bas de la colonne.
     // Pour centrer verticalement à py(tY+tH/2), on pose l'ancre à py(tY+tH/2)+tw/2.
@@ -2803,13 +2820,13 @@ async function downloadPDF(which){
       const k=0.5522847498,lR_S=7,lX_S=W_S-MH_S-lR_S-2,lY_S=tY+tH/2;
       const lcx=px(lX_S),lcy=py(lY_S),lr=pr(lR_S);
       // fond blanc + demi-cercles colorés
-      pdf.setFillColor(255,255,255);pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(1));
+      pdf.setFillColor(255,255,255);pdf.setDrawColor(...GRN2);pdf.setLineWidth(pr(1));
       pdf.circle(lcx,lcy,lr,'FD');
-      pdf.setFillColor(232,245,227); // poussé vert clair
+      pdf.setFillColor(...LGRE); // poussé lavande clair
       pdf.lines([[0,-k*lr,lr*(1-k),-lr,lr,-lr],[k*lr,0,lr,lr*(1-k),lr,lr]],lcx-lr,lcy,[1,1],'F',true);
-      pdf.setFillColor(255,248,230); // tiré ambre clair
+      pdf.setFillColor(255,251,235); // tiré ambre très clair
       pdf.lines([[0,k*lr,lr*(1-k),lr,lr,lr],[k*lr,0,lr,-(lr*(1-k)),lr,-lr]],lcx-lr,lcy,[1,1],'F',true);
-      pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(1.2));pdf.circle(lcx,lcy,lr,'S');
+      pdf.setDrawColor(...GRN2);pdf.setLineWidth(pr(1.2));pdf.circle(lcx,lcy,lr,'S');
       pdf.setLineWidth(pr(0.4));pdf.line(lcx-lr,lcy,lcx+lr,lcy);
       // labels "Poussé / Tiré"
       pdf.setFontSize(Math.max(fs(6),3));pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
@@ -2818,7 +2835,7 @@ async function downloadPDF(which){
     }
 
     /* ─ "Haut (graves)" ─ */
-    pdf.setFontSize(fs(8));pdf.setFont('helvetica','italic');pdf.setTextColor(100,100,100);
+    pdf.setFontSize(fs(8));pdf.setFont('helvetica','italic');pdf.setTextColor(...GRAY);
     pdf.text('Haut (graves)',px(rhX0-R_S-5),py(gridTop-HEADER_GAP_S+4));
 
     /* ─ dessin d'un bouton (cercle avec demi-cercles colorés poussé/tiré) ─ */
@@ -2826,33 +2843,33 @@ async function downloadPDF(which){
       const cx=px(cx_s),cy=py(cy_s),r=pr(R_S);
       const k=0.5522847498;
       // fond blanc de base
-      pdf.setFillColor(255,255,255);pdf.setDrawColor(185,185,185);pdf.setLineWidth(pr(1));
+      pdf.setFillColor(255,255,255);pdf.setDrawColor(...CIRC_C);pdf.setLineWidth(pr(1));
       pdf.circle(cx,cy,r,'FD');
-      // demi-cercle supérieur — poussé (vert clair)
-      pdf.setFillColor(232,245,227);
+      // demi-cercle supérieur — poussé (lavande très clair)
+      pdf.setFillColor(...LGRE);
       pdf.lines([[0,-k*r,r*(1-k),-r,r,-r],[k*r,0,r,r*(1-k),r,r]],cx-r,cy,[1,1],'F',true);
-      // demi-cercle inférieur — tiré (ambre clair)
-      pdf.setFillColor(255,248,230);
+      // demi-cercle inférieur — tiré (ambre très clair)
+      pdf.setFillColor(255,251,235);
       pdf.lines([[0,k*r,r*(1-k),r,r,r],[k*r,0,r,-(r*(1-k)),r,-r]],cx-r,cy,[1,1],'F',true);
       // contour du cercle (par-dessus les demi-cercles)
-      pdf.setDrawColor(45,90,39);pdf.setLineWidth(pr(1.2));
+      pdf.setDrawColor(...GRN2);pdf.setLineWidth(pr(1.2));
       pdf.circle(cx,cy,r,'S');
       // ligne séparatrice poussé/tiré
-      pdf.setLineWidth(pr(0.5));
+      pdf.setLineWidth(pr(0.5));pdf.setDrawColor(...GRN2);
       pdf.line(cx-r,cy,cx+r,cy);
       // notes
       const has2=btn2&&(btn2.p||btn2.t);
       pdf.setFont('helvetica','bold');
       if(has2){
         const fB=Math.max(fs(6.5),2.5),fB2=Math.max(fs(5.5),2.5);
-        if(btn.p){pdf.setFontSize(fB);pdf.setTextColor(26,92,26);pdf.text(displayNote(btn.p),cx,cy-pr(11),{align:'center'});}
-        if(btn2&&btn2.p){pdf.setFontSize(fB2);pdf.setTextColor(100,150,100);pdf.text(displayNote(btn2.p),cx,cy-pr(4),{align:'center'});}
-        if(btn.t){pdf.setFontSize(fB);pdf.setTextColor(139,105,20);pdf.text(displayNote(btn.t),cx,cy+pr(8),{align:'center'});}
-        if(btn2&&btn2.t){pdf.setFontSize(fB2);pdf.setTextColor(170,145,80);pdf.text(displayNote(btn2.t),cx,cy+pr(15),{align:'center'});}
+        if(btn.p){pdf.setFontSize(fB);pdf.setTextColor(...PUSH_C);pdf.text(displayNote(btn.p),cx,cy-pr(11),{align:'center'});}
+        if(btn2&&btn2.p){pdf.setFontSize(fB2);pdf.setTextColor(...GRN2);pdf.text(displayNote(btn2.p),cx,cy-pr(4),{align:'center'});}
+        if(btn.t){pdf.setFontSize(fB);pdf.setTextColor(...PULL_C);pdf.text(displayNote(btn.t),cx,cy+pr(8),{align:'center'});}
+        if(btn2&&btn2.t){pdf.setFontSize(fB2);pdf.setTextColor(...PULL_C2);pdf.text(displayNote(btn2.t),cx,cy+pr(15),{align:'center'});}
       }else{
         const fB=Math.max(fs(8.5),2.5);
-        if(btn.p){pdf.setFontSize(fB);pdf.setTextColor(26,92,26);pdf.text(displayNote(btn.p),cx,cy-pr(7),{align:'center'});}
-        if(btn.t){pdf.setFontSize(fB);pdf.setTextColor(139,105,20);pdf.text(displayNote(btn.t),cx,cy+pr(15),{align:'center'});}
+        if(btn.p){pdf.setFontSize(fB);pdf.setTextColor(...PUSH_C);pdf.text(displayNote(btn.p),cx,cy-pr(7),{align:'center'});}
+        if(btn.t){pdf.setFontSize(fB);pdf.setTextColor(...PULL_C);pdf.text(displayNote(btn.t),cx,cy+pr(15),{align:'center'});}
       }
     }
 
@@ -2864,7 +2881,7 @@ async function downloadPDF(which){
       // bande de colonne alternée
       if((row.boutons||[]).length){
         const bY=gridTop+off+BGAP_S/2-R_S-3,bH=(row.boutons.length-1)*BGAP_S+2*(R_S+3);
-        pdf.setFillColor(ri%2===0?249:243,ri%2===0?249:247,ri%2===0?249:243);
+        pdf.setFillColor(...(ri%2===0?[250,250,250]:[245,243,255]));
         pdf.rect(px(cx_s-R_S-3),py(bY),pr(2*(R_S+3)),pr(bH),'F');
       }
       // étiquette de colonne (pivotée 90°)
@@ -2876,7 +2893,7 @@ async function downloadPDF(which){
         const cy_s=gridTop+off+bi*BGAP_S+BGAP_S/2;
         drawBtn(cx_s,cy_s,btn,null);
         // numéro de bouton (coin bas-gauche extérieur)
-        pdf.setFontSize(Math.max(fs(5),2));pdf.setFont('helvetica','normal');pdf.setTextColor(200,200,200);
+        pdf.setFontSize(Math.max(fs(5),2));pdf.setFont('helvetica','normal');pdf.setTextColor(...RULE_C);
         pdf.text((bi+1)+sfx,px(cx_s-R_S-1),py(cy_s+R_S+2),{align:'left'});
       });
     });
@@ -2884,11 +2901,11 @@ async function downloadPDF(which){
     /* ─ séparateur soufflet ─ */
     if(nLH>0){
       const sY1=gridTop-2,sY2=gridTop+maxB*BGAP_S+eOff+2;
-      pdf.setDrawColor(180,180,180);pdf.setLineWidth(pr(1));
+      pdf.setDrawColor(...RULE_C);pdf.setLineWidth(pr(1.5));
       pdf.setLineDashPattern([pr(6),pr(4)],0);
       pdf.line(px(sepX),py(sY1),px(sepX),py(sY2));
       pdf.setLineDashPattern([],0);
-      pdf.setFontSize(Math.max(fs(6),3));pdf.setFont('helvetica','bold');pdf.setTextColor(140,140,120);
+      pdf.setFontSize(Math.max(fs(6),3));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRAY);
       pdf.text(`— ${t('svgBellows')} —`,px(sepX),py((sY1+sY2)/2),{angle:90,align:'center'});
     }
 
@@ -2902,7 +2919,7 @@ async function downloadPDF(which){
         const cx_s=lhX0+si*CGAP_S,off=lhTS+(sec.offset||0)*(BGAP_S/2);
         if(sec.items.length){
           const bY=lhGT+off+BGAP_S/2-R_S-3,bH=(sec.items.length-1)*BGAP_S+2*(R_S+3);
-          pdf.setFillColor(si%2===0?249:243,si%2===0?249:247,si%2===0?249:243);
+          pdf.setFillColor(...(si%2===0?[250,250,250]:[245,243,255]));
           pdf.rect(px(cx_s-R_S-3),py(bY),pr(2*(R_S+3)),pr(bH),'F');
         }
         pdf.setFontSize(Math.max(fs(6.5),3));pdf.setFont('helvetica','bold');pdf.setTextColor(...GRN);
@@ -2921,13 +2938,13 @@ async function downloadPDF(which){
       // numéros à droite de la dernière colonne MG
       const lhLC=lhX0+(nLH-1)*CGAP_S;
       for(let i=0;i<maxLH;i++){
-        pdf.setFontSize(Math.max(fs(5.5),2));pdf.setFont('helvetica','normal');pdf.setTextColor(200,200,200);
+        pdf.setFontSize(Math.max(fs(5.5),2));pdf.setFont('helvetica','normal');pdf.setTextColor(...RULE_C);
         pdf.text(String(i+1),px(lhLC+R_S+5),py(lhGT+i*BGAP_S+BGAP_S/2+3));
       }
     }
 
     /* ─ "↑ Aigus" en bas ─ */
-    pdf.setFontSize(fs(8));pdf.setFont('helvetica','italic');pdf.setTextColor(100,100,100);
+    pdf.setFontSize(fs(8));pdf.setFont('helvetica','italic');pdf.setTextColor(...GRAY);
     pdf.text('↑ Aigus',px(W_S/2),py(H_S-MB_S+12),{align:'center'});
 
     yPos+=planH+5;
