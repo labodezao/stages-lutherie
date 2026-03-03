@@ -6,8 +6,8 @@
 <title>🪗 Clavier Accordéon Diatonique</title>
 <style>
 :root{
-  --vert:#1d6b23;--vert-c:#eaf5ea;--or:#b8860b;--or-c:#fffbf0;
-  --gris:#888;--fond:#f5f5f3;--txt:#1a1a18;--rouge:#b8312a;--bleu:#1a6691;--brd:#e2e2da;
+  --vert:#5D4037;--vert-c:#EFEBE9;--or:#b8860b;--or-c:#fffbf0;
+  --gris:#888;--fond:#FAF6F3;--txt:#1a1a18;--rouge:#b8312a;--bleu:#1a6691;--brd:#e2e2da;
   --gold:#b8860b;--gold-d:#7a5c00;--dark:#1a1c1a;
   --card-bg:#ffffff;--card-head:#1a1c1a;--input-bg:#ffffff;--input-brd:#d4d4cc;
   --tooltip-bg:#1a1c1a;
@@ -115,10 +115,10 @@ select option{background:#fff;color:var(--txt)}
 .btn-num{font-size:.63rem;color:var(--gris);font-weight:700}
 .note-input{width:62px;padding:4px 3px;text-align:center;font-size:.76rem;border-radius:5px;
   border:1.5px solid var(--input-brd);cursor:pointer;background:var(--input-bg);color:var(--txt)}
-.note-input.pousse{border-color:#4a9a3a;background:#eef8eb}
+.note-input.pousse{border-color:#8D6E63;background:#EFEBE9}
 .note-input.tire{border-color:#c8a020;background:#fffbf0}
 .note-input:focus{outline:none}
-.note-input.pousse:focus{border-color:#2d8a20;box-shadow:0 0 0 2px rgba(45,138,32,.12)}
+.note-input.pousse:focus{border-color:#5D4037;box-shadow:0 0 0 2px rgba(93,64,55,.15)}
 .note-input.tire:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,134,11,.12)}
 .note-input.picker-open{box-shadow:0 0 0 3px rgba(184,134,11,.2)!important;border-color:var(--gold)!important}
 .row-paste-btn.has-clip{background:#fff3cd!important;border-color:#d4a017!important;color:#5c4000!important}
@@ -405,7 +405,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       </div>
       <div class="legend">
         <div class="legend-item">
-          <div class="legend-swatch" style="background:#eef8eb;border:1.5px solid #4a9a3a;color:#1d6b23;">↓</div>
+          <div class="legend-swatch" style="background:#EFEBE9;border:1.5px solid #8D6E63;color:#3E2723;">↓</div>
           <strong data-i="push">Poussé</strong>
         </div>
         <div class="legend-item">
@@ -507,7 +507,7 @@ fr:{
   preset:'Modèle prédéfini',rowsRH:'Rangées main droite',leftHandTpl:'Modèle main gauche',
   voices:'Nombre de voix (anches)',options:'Options',showMidi:'Numéros MIDI',
   rowConfig:'Configuration des rangées (nom & boutons)',
-  clickToOpen:'<strong>Cliquez</strong> sur un champ <span style="color:#1d6b23;font-weight:700;">vert</span> (poussé) ou <span style="color:#b8860b;font-weight:700;">ambré</span> (tiré) pour ouvrir le sélecteur de notes.',
+  clickToOpen:'<strong>Cliquez</strong> sur un champ <span style="color:#5D4037;font-weight:700;">bois</span> (poussé) ou <span style="color:#b8860b;font-weight:700;">ambré</span> (tiré) pour ouvrir le sélecteur de notes.',
   rightHand:'🎵 Main Droite',leftHand:'🎹 Main Gauche',push:'Poussé',pull:'Tiré',
   clearNotes:'🗑️ Effacer toutes les notes',saveInstrument:'💾 Sauvegarder cet accordéon',
   clientVisual:'🎹 Clavier client',manufacturerTable:'📋 Fabricant anches',
@@ -581,7 +581,7 @@ en:{
   preset:'Preset layout',rowsRH:'Right hand rows',leftHandTpl:'Left hand template',
   voices:'Number of voices (reeds)',options:'Options',showMidi:'MIDI note numbers',
   rowConfig:'Row configuration (name & button count)',
-  clickToOpen:'<strong>Click</strong> a <span style="color:#1d6b23;font-weight:700;">green</span> (push) or <span style="color:#b8860b;font-weight:700;">amber</span> (pull) field to open the note picker.',
+  clickToOpen:'<strong>Click</strong> a <span style="color:#5D4037;font-weight:700;">wood</span> (push) or <span style="color:#b8860b;font-weight:700;">amber</span> (pull) field to open the note picker.',
   rightHand:'🎵 Right Hand',leftHand:'🎹 Left Hand',push:'Push',pull:'Pull',
   clearNotes:'🗑️ Clear all notes',saveInstrument:'💾 Save this accordion',
   clientVisual:'🎹 Client keyboard',manufacturerTable:'📋 Reed manufacturer',
@@ -1354,7 +1354,7 @@ function generateInputGrid(){
       const label=t('basses')+(nbVB>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_bCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#EFEBE9;color:#3E2723;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
@@ -1378,7 +1378,7 @@ function generateInputGrid(){
       const label=t('accords')+(nbVA>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#EFEBE9;color:#3E2723;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
@@ -1635,7 +1635,7 @@ function svgBtnVal(v,cx,baseY,color){
 
 /* ─── Bellows SVG ─── */
 function bellowsSVG(x,y,w,h,folds,dark){
-  const gold=dark?'#c9a227':'#8b6914',bg=dark?'#0a0800':'#fff8e6';
+  const gold=dark?'#D4A017':'#8D6E63',bg=dark?'#1A0F0A':'#FFF8E1';
   let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${bg}" rx="2"/>`;
   const fh=h/folds;
   for(let i=0;i<folds;i++){
@@ -1658,13 +1658,13 @@ function bellowsSVG(x,y,w,h,folds,dark){
    ╚══════════════════════════════════════════════════════╝ */
 function buildSVG_Droite(data,dark){
   const R=24,HGAP=60,VGAP=72,LPAD=186,MARG=14,HEAD=80,FOOT=34;
-  const gold=dark?'#c9a227':'#2d5a27';
-  const bg=dark?'#111111':'#ffffff';
-  const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
-  const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
-  const subtl=dark?'#888866':'#888888',stroke=dark?'#c9a227':'#2d5a27';
-  const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
+  const gold=dark?'#D4A017':'#5D4037';
+  const bg=dark?'#1A0F0A':'#ffffff';
+  const pushBg=dark?'#2C1810':'#EFEBE9',pullBg=dark?'#1A0F0A':'#FFF8E1';
+  const pushTx=dark?'#F5D061':'#3E2723',pullTx=dark?'#FFF8E1':'#8b6914';
+  const subtl=dark?'#A1887F':'#888888',stroke=dark?'#D4A017':'#5D4037';
+  const band1=dark?'#241810':'#FBF5F0',band2=dark?'#1E140E':'#F5EDE6';
+  const numTx=dark?'rgba(212,160,23,.3)':'rgba(62,39,35,.2)';
 
   const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
   const allOffs=data.droite.map(r=>r.offset||0);
@@ -1700,8 +1700,8 @@ function buildSVG_Droite(data,dark){
   s+=`<path d="M${lcx-lr},${lcy} A${lr},${lr} 0 0,0 ${lcx+lr},${lcy}" fill="${pullBg}"/>`;
   s+=`<circle cx="${lcx}" cy="${lcy}" r="${lr}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
   s+=`<line x1="${lcx-lr}" y1="${lcy}" x2="${lcx+lr}" y2="${lcy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-  s+=tx(lcx+lr+5,lcy-1,t('svgPush'),8,dark?'#ccc':'#333','normal','start');
-  s+=tx(lcx+lr+5,lcy+9,t('svgPull'),8,dark?'#ccc':'#333','normal','start');
+  s+=tx(lcx+lr+5,lcy-1,t('svgPush'),8,dark?'#D7CCC8':'#5D4037','normal','start');
+  s+=tx(lcx+lr+5,lcy+9,t('svgPull'),8,dark?'#D7CCC8':'#5D4037','normal','start');
 
   // Rows
   data.droite.forEach((row,ri)=>{
@@ -1712,7 +1712,7 @@ function buildSVG_Droite(data,dark){
     s+=tx(BASE+alignOff-8,cy+4,escSVG(row.nom),9.5,gold,'bold','end');
     row.boutons.forEach((btn,bi)=>{
       const cx=BASE+alignOff+stagger+bi*HGAP;
-      s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#ffffff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+      s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#ffffff'?'#BCAAA4':'#3E2723'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
@@ -1729,22 +1729,22 @@ function buildSVG_Droite(data,dark){
   });
 
   const fy=MARG+HEAD+data.droite.length*VGAP+14;
-  s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#333':'#eee'}" stroke-width="1"/>`;
-  s+=tx(BASE,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#444':'#bbb','normal','start');
+  s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#3E2723':'#D7CCC8'}" stroke-width="1"/>`;
+  s+=tx(BASE,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#5D4037':'#BCAAA4','normal','start');
   s+=svg_close();return s;
 }
 
 function buildSVG_Gauche(data,dark){
   const R=24,HGAP=62,VGAP=70,LPAD=140,MARG=12,HEAD=32,FOOT=20;
-  const gold=dark?'#c9a227':'#2d5a27';
-  const bg=dark?'#111':'#fff';
-  const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
-  const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
-  const stroke=dark?'#c9a227':'#2d5a27';
-  const band1=dark?'#1a1a1a':'#fafafa',band2=dark?'#161616':'#f3f7f3';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(0,0,0,.2)';
-  const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(26,92,26,.5)';
-  const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(139,105,20,.5)';
+  const gold=dark?'#D4A017':'#5D4037';
+  const bg=dark?'#1A0F0A':'#fff';
+  const pushBg=dark?'#2C1810':'#EFEBE9',pullBg=dark?'#1A0F0A':'#FFF8E1';
+  const pushTx=dark?'#F5D061':'#3E2723',pullTx=dark?'#FFF8E1':'#8b6914';
+  const stroke=dark?'#D4A017':'#5D4037';
+  const band1=dark?'#241810':'#FBF5F0',band2=dark?'#1E140E':'#F5EDE6';
+  const numTx=dark?'rgba(212,160,23,.3)':'rgba(62,39,35,.2)';
+  const pushTx2=dark?'rgba(245,208,97,.55)':'rgba(62,39,35,.5)';
+  const pullTx2=dark?'rgba(255,248,225,.55)':'rgba(139,105,20,.5)';
 
   // Paired mode: B1 A1 B2 A2 / B3 A3 B4 A4 / … (PPROW pairs per display row)
   if(data.lhDisplayMode==='paired'){
@@ -1754,7 +1754,7 @@ function buildSVG_Gauche(data,dark){
     const nCols=PPROW*2;
     const bassLbl=dark?'#5aa0d0':'#1a4c9c';
     const accLbl=dark?'#d09040':'#8b6914';
-    const gridCol=dark?'#3a3a3a':'#d0d0d0';
+    const gridCol=dark?'#3E2723':'#D7CCC8';
     const W=LPAD+nCols*HGAP+MARG;
     const H=MARG+HEAD+nDispRows*VGAP+FOOT;
     let s=svg_open(W,H,bg);
@@ -1771,7 +1771,7 @@ function buildSVG_Gauche(data,dark){
           if(!btn)return;
           const cx=LPAD+col*HGAP;
           const btn2=(voix>1&&arr2&&arr2.length>pi)?arr2[pi]:null;
-          s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+          s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#BCAAA4':'#3E2723'}" stroke-width="1.2"/>`;
           s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
           s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
           s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
@@ -1836,17 +1836,17 @@ function buildSVG_Gauche(data,dark){
     if(sec.items.length)
       s+=`<rect x="${LPAD-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
     s+=tx(LPAD-R-10,cy,escSVG(sec.nom),10,gold,'bold','end');
-    if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-R-10,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
+    if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-R-10,cy+11,`${sec.voix}v`,7.5,dark?'rgba(212,160,23,.6)':'rgba(93,64,55,.55)','normal','end');
   });
   // Pass 2: table grid (column + row separator lines, outer border, column numbers)
   if(secRows.length>0&&maxItems>0){
     const gTop=MARG+HEAD,gBot=MARG+HEAD+secRows.length*VGAP;
     const gLeft=LPAD-HGAP/2,gRight=LPAD+maxItems*HGAP-HGAP/2;
-    const gridCol=dark?'#3a3a3a':'#d0d0d0';
-    s+=`<rect x="${gLeft}" y="${gTop}" width="${gRight-gLeft}" height="${gBot-gTop}" fill="none" stroke="${dark?'#555':'#aaa'}" stroke-width="1.2" rx="2"/>`;
+    const gridCol=dark?'#3E2723':'#D7CCC8';
+    s+=`<rect x="${gLeft}" y="${gTop}" width="${gRight-gLeft}" height="${gBot-gTop}" fill="none" stroke="${dark?'#5D4037':'#BCAAA4'}" stroke-width="1.2" rx="2"/>`;
     for(let ci=1;ci<maxItems;ci++){const xv=LPAD+ci*HGAP-HGAP/2;s+=`<line x1="${xv}" y1="${gTop}" x2="${xv}" y2="${gBot}" stroke="${gridCol}" stroke-width="1"/>`;}
     for(let ri=1;ri<secRows.length;ri++){const yh=gTop+ri*VGAP;s+=`<line x1="${gLeft}" y1="${yh}" x2="${gRight}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
-    for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(200,162,39,.5)':'rgba(0,0,0,.3)','normal','middle');}
+    for(let ci=0;ci<maxItems;ci++){s+=tx(LPAD+ci*HGAP,gTop-5,ci+1,7,dark?'rgba(212,160,23,.5)':'rgba(62,39,35,.3)','normal','middle');}
   }
   // Pass 3: buttons on top of grid
   secRows.forEach((sec,si)=>{
@@ -1856,7 +1856,7 @@ function buildSVG_Gauche(data,dark){
     sec.items.forEach((btn,bi)=>{
       const cx=LPAD+bi*HGAP+off;
       const btn2=has2?(sec.items2[bi]||null):null;
-      s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+      s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#BCAAA4':'#3E2723'}" stroke-width="1.2"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
@@ -1894,8 +1894,8 @@ function buildSVG_Combined(data,dark){
   const GAP=28;
   const W=wD+GAP+wG;
   const H=Math.max(hD,hG);
-  const bg=dark?'#111111':'#ffffff';
-  const gold=dark?'#c9a227':'#2d5a27';
+  const bg=dark?'#1A0F0A':'#ffffff';
+  const gold=dark?'#D4A017':'#5D4037';
   // Re-root each SVG into the outer canvas by adding x/y to the outer <svg> tag
   // (nested SVG keeps its own viewBox and clipPath — fully supported per SVG spec)
   const yD=Math.round((H-hD)/2);
@@ -1976,18 +1976,18 @@ function buildSommierSection(title,rows,dark){
   // Estimate: ~5.6px per char at font-size 9 bold + 14px padding
   const maxLabelLen=Math.max(...rows.map(r=>(r.nom||r.label||'').length),0);
   const LPAD=Math.max(120,Math.ceil(maxLabelLen*5.6)+14);
-  const gold=dark?'#c9a227':'#2d5a27';
-  const bg=dark?'#111':'#fff';
-  const pushBg=dark?'#0d1f0d':'#e8f5e3',pullBg=dark?'#1f1000':'#fff8e6';
-  const pushTx=dark?'#6fcf5a':'#1a5c1a',pullTx=dark?'#e8b840':'#8b6914';
-  const numTx=dark?'rgba(200,162,39,.4)':'rgba(0,0,0,.3)';
-  const sep=dark?'#3a3a1a':'#cccccc';
+  const gold=dark?'#D4A017':'#5D4037';
+  const bg=dark?'#1A0F0A':'#fff';
+  const pushBg=dark?'#2C1810':'#EFEBE9',pullBg=dark?'#1A0F0A':'#FFF8E1';
+  const pushTx=dark?'#F5D061':'#3E2723',pullTx=dark?'#FFF8E1':'#8b6914';
+  const numTx=dark?'rgba(212,160,23,.4)':'rgba(62,39,35,.3)';
+  const sep=dark?'#3E2723':'#D7CCC8';
   const showMidi=document.getElementById('show-midi')?.checked;
 
   function cell(cx,cy,num,pNote,tNote){
     let o='';
-    o+=`<rect x="${cx}" y="${cy}" width="${CW}" height="${CH/2}" fill="${pushBg}" stroke="${dark?'#2a4a2a':'#b0ccb0'}" stroke-width=".7"/>`;
-    o+=`<rect x="${cx}" y="${cy+CH/2}" width="${CW}" height="${CH/2}" fill="${pullBg}" stroke="${dark?'#4a2a00':'#ccb080'}" stroke-width=".7"/>`;
+    o+=`<rect x="${cx}" y="${cy}" width="${CW}" height="${CH/2}" fill="${pushBg}" stroke="${dark?'#3E2723':'#BCAAA4'}" stroke-width=".7"/>`;
+    o+=`<rect x="${cx}" y="${cy+CH/2}" width="${CW}" height="${CH/2}" fill="${pullBg}" stroke="${dark?'#5D4037':'#D7CCC8'}" stroke-width=".7"/>`;
     o+=`<line x1="${cx}" y1="${cy+CH/2}" x2="${cx+CW}" y2="${cy+CH/2}" stroke="${sep}" stroke-width=".8"/>`;
     o+=tx(cx+3,cy+9,num,6.5,numTx,'normal','start');
     if(pNote){const fs=pNote.length>6?7:8.5;o+=tx(cx+CW/2,cy+16,dn(pNote),fs,pushTx,'bold','middle');}
@@ -2012,10 +2012,10 @@ function buildSommierSection(title,rows,dark){
 
   // Header
   s+=tx(W/2,MARG+15,escSVG(title),12,gold,'bold','middle');
-  s+=`<rect x="${RBASE}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pushBg}" stroke="${dark?'#4a7a40':'#2d5a27'}" stroke-width=".8"/>`;
-  s+=tx(RBASE+17,MARG+33,t('svgPush'),7.5,dark?'#ccc':'#333','normal','start');
-  s+=`<rect x="${RBASE+68}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pullBg}" stroke="${dark?'#c9a227':'#c8a96e'}" stroke-width=".8"/>`;
-  s+=tx(RBASE+85,MARG+33,t('svgPull'),7.5,dark?'#ccc':'#333','normal','start');
+  s+=`<rect x="${RBASE}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pushBg}" stroke="${dark?'#5D4037':'#5D4037'}" stroke-width=".8"/>`;
+  s+=tx(RBASE+17,MARG+33,t('svgPush'),7.5,dark?'#D7CCC8':'#333','normal','start');
+  s+=`<rect x="${RBASE+68}" y="${MARG+25}" width="13" height="8" rx="1" fill="${pullBg}" stroke="${dark?'#D4A017':'#D4A017'}" stroke-width=".8"/>`;
+  s+=tx(RBASE+85,MARG+33,t('svgPull'),7.5,dark?'#D7CCC8':'#333','normal','start');
   if(showMidi)s+=tx(RBASE+135,MARG+33,'MIDI = coin ↗',7,dark?'rgba(100,140,220,.8)':'rgba(21,101,192,.6)','normal','start');
 
   rows.forEach((row,ri)=>{
@@ -2065,8 +2065,8 @@ function buildSommierSVG(data,dark){
   const lhSections=buildLhSommierSections(data);
   const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
-  const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
-  const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
+  const h3style=`color:#5D4037;font-size:.88rem;margin-bottom:10px;`;
+  const h3dstyle=`color:#D4A017;font-size:.88rem;margin-bottom:10px;`;
   return `<h3 style="${dark?h3dstyle:h3style}">${t('svgRH')}</h3>${svgD}
     <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}`;
 }
@@ -2218,15 +2218,15 @@ async function downloadPDF(which){
   const CB=PH-FOOTER_H;             // content bottom limit
   let yPos=MT;
 
-  // ── Professional palette ──────────────────────────
-  const GRN=[30,68,30];              // deep forest green — headings
-  const GRN2=[48,100,48];            // medium green — sub-headers
+  // ── Professional warm wood palette ──────────────────
+  const GRN=[62,39,35];               // wood-dark — headings
+  const GRN2=[93,64,55];              // wood-medium — sub-headers
   const GRAY=[110,110,110];          // muted gray — meta / captions
-  const LGRE=[240,248,240];          // pale green — key cells
-  const ALT=[248,252,247];           // alternate row tint
-  const RULE_C=[190,210,185];        // light sage — table borders / rules
-  const PUSH_C=[20,85,20];           // push note — dark green
-  const PULL_C=[140,100,10];         // pull note — warm amber
+  const LGRE=[239,235,233];          // warm pale — key cells
+  const ALT=[251,245,240];           // warm cream — alternate row tint
+  const RULE_C=[188,170,164];        // warm taupe — table borders / rules
+  const PUSH_C=[62,39,35];           // push note — wood-dark
+  const PULL_C=[141,110,99];         // pull note — wood-light
 
   // ── Drawing helpers ───────────────────────────────
   function hRule(y,color=RULE_C,lw=0.2){
@@ -2295,7 +2295,7 @@ async function downloadPDF(which){
   function midiCell(note){const m=noteToMidi(note);return m!==null?String(m):'—';}
 
   // ── Sommier as vector table (sharp text, copy-pastable) ───
-  const PULL_BG=[255,252,235];
+  const PULL_BG=[255,248,225];
   function addSommierTable(sections,title){
     if(yPos+8>CB){pdf.addPage();yPos=MT;}
     secLabel(title,yPos+4);yPos+=6;
