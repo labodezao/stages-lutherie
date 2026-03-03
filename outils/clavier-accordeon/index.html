@@ -550,33 +550,31 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 </div>
 
 <!-- Transpose Modal -->
-<div class="modal-backdrop" id="transpose-modal">
-  <div class="modal-box" style="max-width:420px;">
-    <div class="modal-head"><h3 data-i="transposeModalTitle">🎵 Transposer par intervalle</h3><button class="modal-close" onclick="closeTransposeModal()">✕</button></div>
-    <div class="modal-body" style="padding:16px;">
-      <p style="margin:0 0 12px;font-size:.85rem;color:#555;" data-i="transposeModalDesc">Choisissez un intervalle (en demi-tons) pour transposer toutes les notes :</p>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-12'">−8ve</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-7'">−5te</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-5'">−4te</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-3'">−3ce</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-2'">−2de</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='-1'">−½</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='1'">+½</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='2'">+2de</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='3'">+3ce</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='5'">+4te</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='7'">+5te</button>
-        <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="document.getElementById('transpose-semitones').value='12'">+8ve</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-        <label style="font-size:.82rem;font-weight:600;" data-i="transposeModalCustom">Demi-tons personnalisé :</label>
-        <input type="number" id="transpose-semitones" value="0" min="-24" max="24" step="1" style="width:70px;padding:4px 8px;font-size:.9rem;text-align:center;border:1.5px solid var(--brd);border-radius:5px;">
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;">
-        <button class="btn btn-outline" onclick="closeTransposeModal()" data-i-btn="cancel">Annuler</button>
-        <button class="btn btn-primary" onclick="applyTransposeModal()" data-i-btn="transposeModalApply">Transposer</button>
-      </div>
+<div class="modal-overlay no-print" id="transpose-modal">
+  <div class="modal-box">
+    <h3 data-i="transposeModalTitle">🎵 Transposer par intervalle</h3>
+    <p style="font-size:.8rem;color:var(--gris);margin-bottom:9px;" data-i="transposeModalDesc">Choisissez un intervalle (en demi-tons) pour transposer toutes les notes :</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(-12)">−8ve</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(-7)">−5te</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(-5)">−4te</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(-3)">−3ce</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(-2)">−2de</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(-1)">−½</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(1)">+½</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(2)">+2de</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(3)">+3ce</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(5)">+4te</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(7)">+5te</button>
+      <button class="btn btn-outline" style="font-size:.78rem;padding:4px 10px;" onclick="setTransposeSemitones(12)">+8ve</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px;">
+      <label style="font-size:.82rem;font-weight:600;" data-i="transposeModalCustom">Demi-tons personnalisé :</label>
+      <input type="number" id="transpose-semitones" value="0" min="-24" max="24" step="1" style="width:70px;padding:4px 8px;font-size:.9rem;text-align:center;border:1.5px solid var(--brd);border-radius:5px;">
+    </div>
+    <div class="btn-group" style="margin-top:11px;">
+      <button class="btn btn-primary" onclick="applyTransposeModal()" data-i-btn="transposeModalApply">Transposer</button>
+      <button class="btn btn-outline" onclick="closeTransposeModal()" data-i-btn="closeBtn">Fermer</button>
     </div>
   </div>
 </div>
@@ -3138,15 +3136,11 @@ function convertFlatsToSharps(){
   ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=convertRow(n[k]);});
   generateInputGrid();onAnyChange();forcePreview();
 }
-function transposeAllNotes(semi){
-  const label=semi>0?`+${semi}`:String(semi);
-  const msg=t('transposeConfirm').replace('%s',label);
-  if(!confirm(msg))return;
+/* ── Shared transposition helper ─────────────────────── */
+function _doTranspose(semi){
   function shiftNoteStr(s){
     if(!s)return s;
-    // Slash-separated: transpose each part
     if(s.includes('/')){return s.split('/').map(p=>shiftNoteStr(p.trim())).join('/');}
-    // Chord: "Do#3 Maj" — shift only the root note
     const sp=s.indexOf(' ');
     if(sp>0){const root=s.slice(0,sp),qual=s.slice(sp);return shiftNoteStr(root)+qual;}
     return shiftNote(s,semi)||s;
@@ -3157,7 +3151,13 @@ function transposeAllNotes(semi){
   ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=shiftRow(n[k]);});
   generateInputGrid();onAnyChange();forcePreview();
 }
+function transposeAllNotes(semi){
+  const label=semi>0?`+${semi}`:String(semi);
+  if(!confirm(t('transposeConfirm').replace('%s',label)))return;
+  _doTranspose(semi);
+}
 /* ── Custom transposition modal ─────────────────────── */
+function setTransposeSemitones(n){document.getElementById('transpose-semitones').value=n;}
 function openTransposeModal(){
   document.getElementById('transpose-modal').classList.add('open');
   document.getElementById('transpose-semitones').value='0';
@@ -3169,18 +3169,7 @@ function applyTransposeModal(){
   const s=parseInt(document.getElementById('transpose-semitones').value,10);
   if(isNaN(s)){closeTransposeModal();return;}
   closeTransposeModal();
-  function shiftNoteStr(note){
-    if(!note)return note;
-    if(note.includes('/')){return note.split('/').map(p=>shiftNoteStr(p.trim())).join('/');}
-    const sp=note.indexOf(' ');
-    if(sp>0){const root=note.slice(0,sp),qual=note.slice(sp);return shiftNoteStr(root)+qual;}
-    return shiftNote(note,s)||note;
-  }
-  function shiftRow(arr){return (arr||[]).map(b=>({p:shiftNoteStr(b.p),t:shiftNoteStr(b.t)}));}
-  const n=CFG.notes;
-  n.droite=(n.droite||[]).map(shiftRow);
-  ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=shiftRow(n[k]);});
-  generateInputGrid();onAnyChange();forcePreview();
+  _doTranspose(s);
 }
 function openImportExport(){
   document.getElementById('modal-json').value=JSON.stringify(DB.all(),null,2);
