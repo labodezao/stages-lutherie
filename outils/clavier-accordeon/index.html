@@ -467,6 +467,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <div class="btn-group no-print" style="margin-bottom:13px;">
         <button class="btn btn-bleu"    onclick="downloadPDF('visual')"    data-i-btn="pdfClientVisual">📥 PDF plan clavier</button>
         <button class="btn btn-primary" onclick="downloadPDF('fabricant')" data-i-btn="pdfManufacturer">📥 PDF fabricant</button>
+        <button class="btn btn-outline" onclick="downloadSVG()"            data-i-btn="downloadSvg">⬇️ SVG</button>
       </div>
       <div id="tab-visual">
         <div id="visual-output"><p style="color:var(--gris);font-style:italic;font-size:.83rem;" data-i="previewPlaceholder">L'aperçu apparaîtra ici après avoir saisi les notes…</p></div>
@@ -669,6 +670,7 @@ fr:{
   flatToSharp:'b→# Bémols → Dièses',flatToSharpConfirm:'Convertir tous les bémols en dièses enharmoniques ?\n(Réb→Do#, Mib→Ré#, Solb→Fa#, Lab→Sol#, Sib→La#, Dob→Si)',
   transposeLabel:'🎵 Transposer :',transposeConfirm:'Transposer toutes les notes de %s demi-ton(s) ?',
   transposeCustom:'⊞',transposeModalTitle:'🎵 Transposer par intervalle',transposeModalDesc:'Choisissez un intervalle (en demi-tons) pour transposer toutes les notes :',transposeModalCustom:'Demi-tons personnalisé :',transposeModalApply:'Transposer',
+  downloadSvg:'⬇️ SVG',downloadSvgAlert:'Aucun aperçu disponible. Cliquez sur Actualiser d\'abord.',
 },
 en:{
   title:'Diatonic Accordion Keyboard',subtitle:'Client keyboard plan & reed order form',
@@ -752,6 +754,7 @@ en:{
   flatToSharp:'b→# Flats → Sharps',flatToSharpConfirm:'Convert all flat notes to their enharmonic sharp equivalents?\n(Db→C#, Eb→D#, Gb→F#, Ab→G#, Bb→A#, Cb→B)',
   transposeLabel:'🎵 Transpose:',transposeConfirm:'Transpose all notes by %s semitone(s)?',
   transposeCustom:'⊞',transposeModalTitle:'🎵 Transpose by interval',transposeModalDesc:'Choose an interval (in semitones) to transpose all notes:',transposeModalCustom:'Custom semitones:',transposeModalApply:'Transpose',
+  downloadSvg:'⬇️ SVG',downloadSvgAlert:'No preview available. Click Refresh first.',
 }};
 function t(k){ const v=LANGS[lang][k]; return v!==undefined?v:LANGS.fr[k]||k; }
 
@@ -2542,6 +2545,22 @@ function runLivePreview(){
     outEl.innerHTML=buildSVG_Plan(data,false);
     document.getElementById('sommier-output').innerHTML=buildSommierSVG(data,false);
   }catch(e){console.error('runLivePreview:',e);}
+}
+
+function downloadSVG(){
+  const outEl=document.getElementById('visual-output');
+  const svgEl=outEl.querySelector('svg');
+  if(!svgEl){alert(t('downloadSvgAlert'));return;}
+  const serial='<?xml version="1.0" encoding="UTF-8"?>\n'+new XMLSerializer().serializeToString(svgEl);
+  const blob=new Blob([serial],{type:'image/svg+xml;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const data=readInputs();
+  const safeName=(data.nomInstrument||'clavier').replace(/[^a-zA-Z0-9\u00C0-\u017E _-]/g,'').trim().replace(/\s+/g,'_')||'clavier';
+  const a=document.createElement('a');
+  a.href=url;a.download=`${safeName}_plan.svg`;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 /* ── Tabs ── */
