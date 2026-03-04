@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Formulaire d'inscription – Stage de lutherie accordéon diatonique 2026</title>
+  <meta name="description" content="Formulaire d'inscription au stage de fabrication d'accordéon diatonique. Sessions 2026 : 8-17 avril et 14-23 octobre à Saint-Nazaire.">
+
+  <!-- jsPDF for future PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- WordPress Gutenberg Compatible CSS -->
+  <style type="text/css">
+    /* ── Base Reset for WordPress ── */
+    .inscription-page { margin:0; padding:0; box-sizing:border-box; }
+    .inscription-page *, .inscription-page *::before, .inscription-page *::after { box-sizing:inherit; }
+
+    /* ── Color Palette (same as commercial-page-wordpress.html) ── */
+    :root {
+      --wood-dark:   #3E2723;
+      --wood-medium: #5D4037;
+      --wood-light:  #8D6E63;
+      --cream:       #FFF8E1;
+      --gold:        #D4A017;
+      --gold-light:  #F5D061;
+      --white:       #FAFAFA;
+    }
+
+    /* ── Main Container ── */
+    .inscription-page {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #fff;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ── Hero ── */
+    .insc-hero {
+      background: linear-gradient(135deg, #2C1810 0%, #3E2723 30%, #5D4037 70%, #8D6E63 100%);
+      color: var(--white);
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .insc-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.02) 3px, rgba(255,255,255,0.02) 6px);
+      pointer-events: none;
+    }
+    .insc-hero-content { position:relative; z-index:2; max-width:900px; margin:0 auto; }
+    .insc-hero-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 24px;
+      border-radius: 25px;
+      margin-bottom: 20px;
+    }
+    .insc-hero h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 12px 0;
+      text-shadow: 0 3px 15px rgba(0,0,0,0.4);
+    }
+    .insc-hero h1 .accent { color: var(--gold-light); font-style: italic; }
+    .insc-hero p { font-size:1.15rem; opacity:0.95; margin:8px 0 0; }
+
+    /* ── Form Container ── */
+    .insc-form-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    /* ── Section Cards ── */
+    .insc-section {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .insc-section-header {
+      background: linear-gradient(135deg, var(--wood-dark), var(--wood-medium));
+      color: #fff;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .insc-section-header .icon { font-size:1.5rem; }
+    .insc-section-header h2 {
+      font-family: Georgia, serif;
+      font-size: 1.35rem;
+      margin: 0;
+      font-weight: 600;
+    }
+    .insc-section-body { padding: 28px; }
+
+    /* ── Form Fields ── */
+    .insc-field { margin-bottom: 18px; }
+    .insc-field label {
+      display: block;
+      font-weight: 600;
+      color: var(--wood-dark);
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+    }
+    .insc-field label .req { color: #c0392b; }
+    .insc-field input[type="text"],
+    .insc-field input[type="email"],
+    .insc-field input[type="tel"],
+    .insc-field input[type="date"],
+    .insc-field select,
+    .insc-field textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    .insc-field input:focus,
+    .insc-field select:focus,
+    .insc-field textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,160,23,0.18);
+    }
+    .insc-field textarea { resize: vertical; min-height: 70px; }
+    .insc-field .hint { font-size:0.82rem; color:#888; margin-top:4px; }
+
+    /* Row layout */
+    .insc-row { display:flex; gap:18px; flex-wrap:wrap; }
+    .insc-row .insc-field { flex:1; min-width:200px; }
+
+    /* ── Radio / Checkbox Cards ── */
+    .insc-options { display:flex; flex-wrap:wrap; gap:14px; margin-top:6px; }
+    .insc-option-card {
+      position: relative;
+      flex: 1;
+      min-width: 160px;
+      max-width: 300px;
+    }
+    .insc-option-card input { position:absolute; opacity:0; pointer-events:none; }
+    .insc-option-card .card-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 18px 14px;
+      border: 2px solid #e0d6cc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      background: var(--cream);
+    }
+    .insc-option-card input:checked + .card-label {
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(212,160,23,0.22);
+    }
+    .insc-option-card .card-label:hover {
+      border-color: var(--wood-light);
+    }
+    .insc-option-card .card-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--wood-dark);
+      margin-bottom: 4px;
+    }
+    .insc-option-card .card-sub {
+      font-size: 0.82rem;
+      color: #777;
+      line-height: 1.4;
+    }
+    .insc-option-card .card-price {
+      margin-top: 8px;
+      font-family: Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--wood-dark);
+    }
+    .insc-option-card .card-deposit {
+      font-size: 0.78rem;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* ── Inline select pairs ── */
+    .insc-inline-row { display:flex; gap:18px; flex-wrap:wrap; margin-bottom:18px; }
+    .insc-inline-row .insc-field { flex:1; min-width:180px; margin-bottom:0; }
+
+    /* ── Info Callout ── */
+    .insc-callout {
+      background: var(--cream);
+      border-left: 4px solid var(--gold);
+      padding: 14px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 18px 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* ── Summary Card ── */
+    .insc-summary {
+      background: linear-gradient(135deg, var(--cream) 0%, #fff 100%);
+      border: 2px solid var(--gold);
+    }
+    .insc-summary-header {
+      background: linear-gradient(135deg, var(--gold), #B8860B);
+      color: var(--wood-dark);
+    }
+    .insc-summary-table { width:100%; border-collapse:collapse; margin:12px 0; }
+    .insc-summary-table td { padding:8px 4px; font-size:0.92rem; border-bottom:1px solid #eee; }
+    .insc-summary-table td:first-child { color:#888; width:40%; }
+    .insc-summary-table td:last-child { font-weight:600; color:var(--wood-dark); }
+    .insc-summary-total {
+      text-align: center;
+      padding: 18px;
+      background: var(--cream);
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+    .insc-summary-total .label { font-size:0.9rem; color:#888; }
+    .insc-summary-total .price {
+      font-family: Georgia, serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--wood-dark);
+    }
+    .insc-summary-total .deposit {
+      font-size: 0.95rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ── Buttons ── */
+    .insc-actions { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-top:24px; }
+    .insc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 36px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: inherit;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+    }
+    .insc-btn-primary {
+      background: var(--gold);
+      color: var(--wood-dark);
+      box-shadow: 0 4px 15px rgba(212,160,23,0.4);
+    }
+    .insc-btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212,160,23,0.6);
+    }
+    .insc-btn-secondary {
+      background: transparent;
+      color: var(--wood-dark);
+      border: 2px solid var(--wood-light);
+    }
+    .insc-btn-secondary:hover {
+      background: var(--cream);
+      transform: translateY(-2px);
+    }
+
+    /* ── Terms ── */
+    .insc-terms {
+      background: #fef9e7;
+      border: 1px solid #f0e2a0;
+      border-radius: 10px;
+      padding: 18px 22px;
+      font-size: 0.88rem;
+      color: #666;
+      line-height: 1.7;
+    }
+    .insc-terms strong { color: var(--wood-dark); }
+
+    /* ── Conditional visibility ── */
+    .insc-conditional { display:none; }
+    .insc-conditional.visible { display:block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .insc-hero h1 { font-size:2rem; }
+      .insc-section-body { padding:18px; }
+      .insc-row { flex-direction:column; gap:0; }
+      .insc-inline-row { flex-direction:column; gap:0; }
+      .insc-option-card { max-width:100%; }
+      .insc-actions { flex-direction:column; align-items:center; }
+      .insc-btn { width:100%; max-width:320px; justify-content:center; }
+    }
+
+    /* ── WordPress Gutenberg Compatibility ── */
+    .wp-block-group .inscription-page { margin:0; }
+    .block-editor-block-list__block .inscription-page { padding:0; }
+    .wp-block-html .inscription-page { max-width:100%; }
+
+    /* Color swatches for bellows / strap colors */
+    .color-swatch {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    .insc-option-card input:checked + .card-label .color-swatch { border-color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="inscription-page">
+
+  <!-- ════════════════ HERO ════════════════ -->
+  <section class="insc-hero">
+    <div class="insc-hero-content">
+      <div class="insc-hero-badge">Inscription · Stage 2026</div>
+      <h1>Formulaire d'inscription<br><span class="accent">Stage de lutherie</span></h1>
+      <p>Accordéon diatonique · Saint-Nazaire · 10 jours</p>
+    </div>
+  </section>
+
+  <form id="inscriptionForm" class="insc-form-wrap" novalidate>
+
+    <!-- ════════════════ 1. COORDONNÉES ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">👤</span>
+        <h2>Coordonnées personnelles</h2>
+      </div>
+      <div class="insc-section-body">
+        <div class="insc-row">
+          <div class="insc-field">
+            <label for="nom">Nom et prénom <span class="req">*</span></label>
+            <input type="text" id="nom" name="nom" required placeholder="ex : Dupont Marie">
+          </div>
+          <div class="insc-field">
+            <label for="dateNaissance">Date de naissance <span class="req">*</span></label>
+            <input type="date" id="dateNaissance" name="dateNaissance" required>
+          </div>
+        </div>
+        <div class="insc-field">
+          <label for="adresse">Adresse <span class="req">*</span></label>
+          <input type="text" id="adresse" name="adresse" required placeholder="Numéro et rue">
+        </div>
+        <div class="insc-row">
+          <div class="insc-field">
+            <label for="cp">Code postal <span class="req">*</span></label>
+            <input type="text" id="cp" name="cp" required placeholder="44600">
+          </div>
+          <div class="insc-field">
+            <label for="ville">Ville <span class="req">*</span></label>
+            <input type="text" id="ville" name="ville" required placeholder="Saint-Nazaire">
+          </div>
+        </div>
+        <div class="insc-row">
+          <div class="insc-field">
+            <label for="telephone">Téléphone <span class="req">*</span></label>
+            <input type="tel" id="telephone" name="telephone" required placeholder="06 12 34 56 78">
+          </div>
+          <div class="insc-field">
+            <label for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" name="email" required placeholder="marie@exemple.fr">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 2. SESSION ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">📅</span>
+        <h2>Choix de la session</h2>
+      </div>
+      <div class="insc-section-body">
+        <div class="insc-options">
+          <label class="insc-option-card">
+            <input type="radio" name="session" value="avril2026" required>
+            <span class="card-label">
+              <span class="card-title">🌸 Printemps</span>
+              <span class="card-sub">Mercredi 8 – Vendredi 17 avril 2026</span>
+            </span>
+          </label>
+          <label class="insc-option-card">
+            <input type="radio" name="session" value="octobre2026">
+            <span class="card-label">
+              <span class="card-title">🍂 Automne</span>
+              <span class="card-sub">Mercredi 14 – Vendredi 23 octobre 2026</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 3. MODÈLE ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">🎵</span>
+        <h2>Choix du modèle</h2>
+      </div>
+      <div class="insc-section-body">
+        <p style="margin:0 0 14px; color:#666; font-size:0.9rem;">Gamme Classique – sélectionnez votre modèle :</p>
+        <div class="insc-options">
+          <label class="insc-option-card">
+            <input type="radio" name="modele" value="21/8b" data-price="2820" data-deposit="900" required>
+            <span class="card-label">
+              <span class="card-title">21 / 8 basses</span>
+              <span class="card-sub">MD : 2 voix · 21 boutons · 2 rangées<br>MG : 8 boutons · 4 voix · 2 rangées</span>
+              <span class="card-price">2 820 €</span>
+              <span class="card-deposit">Acompte : 900 €</span>
+            </span>
+          </label>
+          <label class="insc-option-card">
+            <input type="radio" name="modele" value="33/12b" data-price="4500" data-deposit="1500">
+            <span class="card-label">
+              <span class="card-title">33 / 12 basses</span>
+              <span class="card-sub">MD : 2 voix · 33 boutons · 3 rangées<br>MG : 12 boutons · 4 voix · 2 rangées</span>
+              <span class="card-price">4 500 €</span>
+              <span class="card-deposit">Acompte : 1 500 €</span>
+            </span>
+          </label>
+          <label class="insc-option-card">
+            <input type="radio" name="modele" value="33/18b" data-price="4880" data-deposit="1900">
+            <span class="card-label">
+              <span class="card-title">33 / 18 basses</span>
+              <span class="card-sub">MD : 2 voix · 33 boutons · 3 rangées<br>MG : 18 boutons · 4 voix · 3 rangées</span>
+              <span class="card-price">4 880 €</span>
+              <span class="card-deposit">Acompte : 1 900 €</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 4. CAISSE MAIN DROITE ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">🎹</span>
+        <h2>La caisse – Main Droite (MD)</h2>
+      </div>
+      <div class="insc-section-body">
+
+        <div class="insc-inline-row">
+          <div class="insc-field">
+            <label for="nbBoutonsMD">Nb boutons</label>
+            <select id="nbBoutonsMD" name="nbBoutonsMD">
+              <option value="">– Choisir –</option>
+              <option value="23">2 rangées (21 boutons)</option>
+              <option value="33">3 rangées (33 boutons)</option>
+            </select>
+          </div>
+          <div class="insc-field insc-conditional" id="dispositionWrap">
+            <label for="disposition">Disposition (si 3 rangées)</label>
+            <select id="disposition" name="disposition">
+              <option value="">– Choisir –</option>
+              <option value="Heim">Heim (standard)</option>
+              <option value="Mill/Pignol">Milleret / Pignol</option>
+              <option value="Irish">Irish</option>
+              <option value="chromatique">Chromatique</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="insc-inline-row">
+          <div class="insc-field">
+            <label for="tonalite">Tonalité</label>
+            <select id="tonalite" name="tonalite">
+              <option value="">– Choisir –</option>
+              <option value="G/C">Sol / Do (G/C)</option>
+              <option value="A/D">La / Ré (A/D)</option>
+              <option value="C#/D">Do# / Ré (C#/D)</option>
+            </select>
+          </div>
+          <div class="insc-field">
+            <label for="accordage">Accordage</label>
+            <select id="accordage" name="accordage">
+              <option value="">– Choisir –</option>
+              <option value="sec">Sec</option>
+              <option value="demi-swing">Demi-swing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="insc-inline-row">
+          <div class="insc-field">
+            <label for="voix1">Voix 1</label>
+            <select id="voix1" name="voix1">
+              <option value="">– Choisir –</option>
+              <option value="Basson">Basson</option>
+              <option value="Flute">Flûte</option>
+              <option value="Piccolo">Piccolo</option>
+            </select>
+          </div>
+          <div class="insc-field">
+            <label for="voix2">Voix 2</label>
+            <select id="voix2" name="voix2">
+              <option value="">– Choisir –</option>
+              <option value="Basson">Basson</option>
+              <option value="Flute">Flûte</option>
+              <option value="Piccolo">Piccolo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="insc-inline-row">
+          <div class="insc-field">
+            <label for="boutonsMD">Boutons (matériau)</label>
+            <select id="boutonsMD" name="boutonsMD">
+              <option value="">– Choisir –</option>
+              <option value="Nacrine noire">Nacrine noire</option>
+              <option value="Nacrine blanche">Nacrine blanche</option>
+              <option value="Noyer">Noyer</option>
+              <option value="Erable">Érable</option>
+            </select>
+          </div>
+          <div class="insc-field">
+            <label for="boisClavier">Bois clavier</label>
+            <select id="boisClavier" name="boisClavier">
+              <option value="">– Choisir –</option>
+              <option value="Noyer">Noyer</option>
+              <option value="Érable">Érable</option>
+              <option value="Cerisier">Cerisier</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="insc-inline-row">
+          <div class="insc-field">
+            <label for="boisGrille">Bois grille + caisse (si bicolore)</label>
+            <select id="boisGrille" name="boisGrille">
+              <option value="">– Choisir –</option>
+              <option value="Noyer">Noyer</option>
+              <option value="Érable">Érable</option>
+              <option value="Cerisier">Cerisier</option>
+            </select>
+          </div>
+          <div class="insc-field">
+            <label for="marquageMD">Marquage des boutons</label>
+            <input type="text" id="marquageMD" name="marquageMD" placeholder="ex : tactile, visuel, aucun…">
+          </div>
+        </div>
+
+        <div class="insc-field">
+          <label for="remarquesMD">Remarques (main droite)</label>
+          <textarea id="remarquesMD" name="remarquesMD" rows="3" placeholder="Précisions éventuelles sur le clavier main droite…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 5. CAISSE MAIN GAUCHE ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">🎶</span>
+        <h2>La caisse – Main Gauche (MG)</h2>
+      </div>
+      <div class="insc-section-body">
+
+        <div class="insc-inline-row">
+          <div class="insc-field">
+            <label for="nbBoutonsMG">Nb boutons basses</label>
+            <select id="nbBoutonsMG" name="nbBoutonsMG">
+              <option value="">– Choisir –</option>
+              <option value="8b">8 basses</option>
+              <option value="12b">12 basses</option>
+              <option value="18b">18 basses</option>
+            </select>
+          </div>
+          <div class="insc-field">
+            <label for="couleurSangles">Couleur sangles MG / Bretelles MD</label>
+            <select id="couleurSangles" name="couleurSangles">
+              <option value="">– Choisir –</option>
+              <option value="Bleu">Bleu</option>
+              <option value="Rouge">Rouge</option>
+              <option value="Cuir Nat.">Cuir naturel</option>
+              <option value="Noir">Noir</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="insc-field">
+          <label for="remarquesMG">Remarques (main gauche)</label>
+          <textarea id="remarquesMG" name="remarquesMG" rows="3" placeholder="Précisions éventuelles sur le clavier main gauche…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 6. SOUFFLET ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">🌈</span>
+        <h2>Le Soufflet</h2>
+      </div>
+      <div class="insc-section-body">
+        <div class="insc-field">
+          <label>Couleur du soufflet</label>
+          <div class="insc-options">
+            <label class="insc-option-card" style="min-width:110px">
+              <input type="radio" name="couleurSoufflet" value="Bleu">
+              <span class="card-label">
+                <span class="color-swatch" style="background:#2e6cb5"></span>
+                <span class="card-title" style="font-size:0.95rem">Bleu</span>
+              </span>
+            </label>
+            <label class="insc-option-card" style="min-width:110px">
+              <input type="radio" name="couleurSoufflet" value="Rouge">
+              <span class="card-label">
+                <span class="color-swatch" style="background:#c0392b"></span>
+                <span class="card-title" style="font-size:0.95rem">Rouge</span>
+              </span>
+            </label>
+            <label class="insc-option-card" style="min-width:110px">
+              <input type="radio" name="couleurSoufflet" value="Orange">
+              <span class="card-label">
+                <span class="color-swatch" style="background:#e67e22"></span>
+                <span class="card-title" style="font-size:0.95rem">Orange</span>
+              </span>
+            </label>
+            <label class="insc-option-card" style="min-width:110px">
+              <input type="radio" name="couleurSoufflet" value="Noir">
+              <span class="card-label">
+                <span class="color-swatch" style="background:#222"></span>
+                <span class="card-title" style="font-size:0.95rem">Noir</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 7. RÉCAPITULATIF ════════════════ -->
+    <div class="insc-section insc-summary">
+      <div class="insc-section-header insc-summary-header">
+        <span class="icon">📋</span>
+        <h2>Récapitulatif de votre inscription</h2>
+      </div>
+      <div class="insc-section-body">
+        <table class="insc-summary-table" id="summaryTable">
+          <tbody>
+            <tr><td>Nom</td><td id="sumNom">–</td></tr>
+            <tr><td>Session</td><td id="sumSession">–</td></tr>
+            <tr><td>Modèle</td><td id="sumModele">–</td></tr>
+            <tr><td>Tonalité</td><td id="sumTona">–</td></tr>
+            <tr><td>Disposition</td><td id="sumDispo">–</td></tr>
+            <tr><td>Voix</td><td id="sumVoix">–</td></tr>
+            <tr><td>Accordage</td><td id="sumAccordage">–</td></tr>
+            <tr><td>Boutons (matériau)</td><td id="sumBoutons">–</td></tr>
+            <tr><td>Bois clavier</td><td id="sumBoisClavier">–</td></tr>
+            <tr><td>Bois grille + caisse</td><td id="sumBoisGrille">–</td></tr>
+            <tr><td>Basses MG</td><td id="sumBassesMG">–</td></tr>
+            <tr><td>Couleur sangles</td><td id="sumSangles">–</td></tr>
+            <tr><td>Couleur soufflet</td><td id="sumSoufflet">–</td></tr>
+          </tbody>
+        </table>
+        <div class="insc-summary-total" id="summaryTotal">
+          <div class="label">Prix total</div>
+          <div class="price" id="sumPrice">– €</div>
+          <div class="deposit" id="sumDeposit">Acompte à l'inscription : – €</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 8. CONDITIONS ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">📜</span>
+        <h2>Conditions</h2>
+      </div>
+      <div class="insc-section-body">
+        <div class="insc-terms">
+          <p><strong>Ce bon de commande vous engage.</strong></p>
+          <p>Pour être valide, ce bon doit être accompagné d'un <strong>acompte de 40 %</strong> du prix total.</p>
+          <p>L'acompte ne pourra être restitué si le client annule son inscription après le début de la fabrication (2 mois avant le stage).</p>
+          <p>En cas d'annulation, il vous faudra déplacer votre venue à une autre session ou trouver une personne qui vous remplace.</p>
+          <p>Si vous n'arrivez pas à finir votre instrument dans le délai imparti, il vous est possible de revenir finir l'instrument à un prochain stage <strong>sans surcoût supplémentaire</strong>.</p>
+        </div>
+        <div class="insc-field" style="margin-top:18px;">
+          <label>
+            <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+            J'ai lu et j'accepte les conditions ci-dessus <span class="req">*</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ ACTIONS ════════════════ -->
+    <div class="insc-actions">
+      <button type="button" class="insc-btn insc-btn-primary" id="btnPDF">
+        📄 Télécharger le récapitulatif PDF
+      </button>
+      <button type="submit" class="insc-btn insc-btn-secondary" id="btnSubmit">
+        ✉️ Envoyer l'inscription
+      </button>
+    </div>
+
+    <div class="insc-callout" style="margin-top:24px; text-align:center;">
+      <strong>Contact :</strong> <a href="mailto:contact@ewendaviau.com" style="color:var(--gold)">contact@ewendaviau.com</a>
+      &nbsp;·&nbsp;
+      <a href="https://ewendaviau.com" target="_blank" rel="noopener" style="color:var(--gold)">ewendaviau.com</a>
+    </div>
+
+  </form>
+
+</div><!-- .inscription-page -->
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── References ── */
+  var form = document.getElementById('inscriptionForm');
+  var nbMD = document.getElementById('nbBoutonsMD');
+  var dispoWrap = document.getElementById('dispositionWrap');
+
+  /* ── Show/hide disposition field when 3 rows selected ── */
+  nbMD.addEventListener('change', function () {
+    if (this.value === '33') {
+      dispoWrap.classList.add('visible');
+    } else {
+      dispoWrap.classList.remove('visible');
+      document.getElementById('disposition').value = '';
+    }
+    updateSummary();
+  });
+
+  /* ── Auto-fill nb boutons from model selection ── */
+  var modelRadios = document.querySelectorAll('input[name="modele"]');
+  modelRadios.forEach(function (r) {
+    r.addEventListener('change', function () {
+      var val = this.value;
+      if (val === '21/8b') {
+        nbMD.value = '23';
+        document.getElementById('nbBoutonsMG').value = '8b';
+      } else if (val === '33/12b') {
+        nbMD.value = '33';
+        document.getElementById('nbBoutonsMG').value = '12b';
+      } else if (val === '33/18b') {
+        nbMD.value = '33';
+        document.getElementById('nbBoutonsMG').value = '18b';
+      }
+      nbMD.dispatchEvent(new Event('change'));
+    });
+  });
+
+  /* ── Live Summary Update ── */
+  var SESSION_LABELS = {
+    'avril2026': '🌸 8–17 avril 2026',
+    'octobre2026': '🍂 14–23 octobre 2026'
+  };
+
+  function getRadioVal(name) {
+    var el = form.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  function selVal(id) {
+    var el = document.getElementById(id);
+    if (!el) return '';
+    return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+  }
+
+  function updateSummary() {
+    document.getElementById('sumNom').textContent = document.getElementById('nom').value || '–';
+    var sess = getRadioVal('session');
+    document.getElementById('sumSession').textContent = SESSION_LABELS[sess] || '–';
+    document.getElementById('sumModele').textContent = getRadioVal('modele') || '–';
+
+    var tona = document.getElementById('tonalite');
+    document.getElementById('sumTona').textContent = tona.value ? tona.options[tona.selectedIndex].text : '–';
+
+    var dispo = document.getElementById('disposition');
+    document.getElementById('sumDispo').textContent = dispo.value || '–';
+
+    var v1 = document.getElementById('voix1').value;
+    var v2 = document.getElementById('voix2').value;
+    document.getElementById('sumVoix').textContent = (v1 || v2) ? (v1 || '–') + ' / ' + (v2 || '–') : '–';
+
+    document.getElementById('sumAccordage').textContent = document.getElementById('accordage').value || '–';
+    document.getElementById('sumBoutons').textContent = document.getElementById('boutonsMD').value || '–';
+
+    var bClav = document.getElementById('boisClavier');
+    document.getElementById('sumBoisClavier').textContent = bClav.value || '–';
+
+    var bGr = document.getElementById('boisGrille');
+    document.getElementById('sumBoisGrille').textContent = bGr.value || '–';
+
+    document.getElementById('sumBassesMG').textContent = document.getElementById('nbBoutonsMG').value || '–';
+    document.getElementById('sumSangles').textContent = document.getElementById('couleurSangles').value || '–';
+    document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '–';
+
+    /* Price */
+    var modEl = form.querySelector('input[name="modele"]:checked');
+    if (modEl) {
+      var price = parseInt(modEl.dataset.price, 10);
+      var deposit = parseInt(modEl.dataset.deposit, 10);
+      document.getElementById('sumPrice').textContent = price.toLocaleString('fr-FR') + ' €';
+      document.getElementById('sumDeposit').textContent = 'Acompte à l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' €';
+    } else {
+      document.getElementById('sumPrice').textContent = '– €';
+      document.getElementById('sumDeposit').textContent = 'Acompte à l\'inscription : – €';
+    }
+  }
+
+  /* Listen on all inputs */
+  form.addEventListener('input', updateSummary);
+  form.addEventListener('change', updateSummary);
+
+  /* ── PDF Generation ── */
+  document.getElementById('btnPDF').addEventListener('click', function () {
+    if (typeof window.jspdf === 'undefined') {
+      alert('La bibliothèque PDF n\'est pas encore chargée. Veuillez réessayer dans quelques secondes.');
+      return;
+    }
+
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    var W = 210;
+    var MARGIN = 18;
+    var CW = W - 2 * MARGIN;
+    var y = MARGIN;
+
+    /* Colors */
+    var woodDark = [62, 39, 35];
+    var gold = [212, 160, 23];
+    var grey = [120, 120, 120];
+
+    /* Header bar */
+    doc.setFillColor.apply(doc, woodDark);
+    doc.rect(0, 0, W, 36, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('Formulaire d\'inscription', W / 2, 16, { align: 'center' });
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Stage de lutherie – Accordéon diatonique 2026', W / 2, 26, { align: 'center' });
+    y = 44;
+
+    /* Helper: section title */
+    function sectionTitle(title) {
+      doc.setFillColor.apply(doc, gold);
+      doc.rect(MARGIN, y, CW, 8, 'F');
+      doc.setTextColor.apply(doc, woodDark);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.text(title, MARGIN + 4, y + 5.5);
+      y += 12;
+    }
+
+    /* Helper: line */
+    function addLine(label, value) {
+      if (y > 270) { doc.addPage(); y = MARGIN; }
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor.apply(doc, grey);
+      doc.text(label, MARGIN, y);
+      doc.setTextColor.apply(doc, woodDark);
+      doc.setFont('helvetica', 'bold');
+      doc.text(String(value || '–'), MARGIN + 60, y);
+      y += 6.5;
+    }
+
+    /* 1. Coordonnées */
+    sectionTitle('Coordonnées personnelles');
+    addLine('Nom prénom', document.getElementById('nom').value);
+    addLine('Date de naissance', document.getElementById('dateNaissance').value);
+    addLine('Adresse', document.getElementById('adresse').value);
+    addLine('CP + Ville', document.getElementById('cp').value + ' ' + document.getElementById('ville').value);
+    addLine('Téléphone', document.getElementById('telephone').value);
+    addLine('Email', document.getElementById('email').value);
+    y += 4;
+
+    /* 2. Session */
+    sectionTitle('Session choisie');
+    var sessVal = getRadioVal('session');
+    addLine('Session', SESSION_LABELS[sessVal] || '–');
+    y += 4;
+
+    /* 3. Modèle */
+    sectionTitle('Modèle');
+    addLine('Modèle', getRadioVal('modele'));
+    y += 4;
+
+    /* 4. Main Droite */
+    sectionTitle('Caisse Main Droite');
+    addLine('Nb boutons', selVal('nbBoutonsMD'));
+    addLine('Disposition', document.getElementById('disposition').value || '–');
+    addLine('Tonalité', document.getElementById('tonalite').value || '–');
+    addLine('Voix 1', document.getElementById('voix1').value || '–');
+    addLine('Voix 2', document.getElementById('voix2').value || '–');
+    addLine('Accordage', document.getElementById('accordage').value || '–');
+    addLine('Boutons', document.getElementById('boutonsMD').value || '–');
+    addLine('Bois clavier', document.getElementById('boisClavier').value || '–');
+    addLine('Bois grille/caisse', document.getElementById('boisGrille').value || '–');
+    addLine('Marquage boutons', document.getElementById('marquageMD').value || '–');
+    var remMD = document.getElementById('remarquesMD').value;
+    if (remMD) addLine('Remarques MD', remMD);
+    y += 4;
+
+    /* 5. Main Gauche */
+    sectionTitle('Caisse Main Gauche');
+    addLine('Nb boutons basses', document.getElementById('nbBoutonsMG').value || '–');
+    addLine('Couleur sangles', document.getElementById('couleurSangles').value || '–');
+    var remMG = document.getElementById('remarquesMG').value;
+    if (remMG) addLine('Remarques MG', remMG);
+    y += 4;
+
+    /* 6. Soufflet */
+    sectionTitle('Le Soufflet');
+    addLine('Couleur soufflet', getRadioVal('couleurSoufflet'));
+    y += 6;
+
+    /* Total */
+    var modEl = form.querySelector('input[name="modele"]:checked');
+    if (modEl) {
+      var price = parseInt(modEl.dataset.price, 10);
+      var deposit = parseInt(modEl.dataset.deposit, 10);
+      doc.setFillColor(255, 248, 225);
+      doc.roundedRect(MARGIN, y, CW, 22, 3, 3, 'F');
+      doc.setTextColor.apply(doc, woodDark);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text('Prix total : ' + price.toLocaleString('fr-FR') + ' €', W / 2, y + 9, { align: 'center' });
+      doc.setFontSize(10);
+      doc.setTextColor.apply(doc, gold);
+      doc.text('Acompte à l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' €', W / 2, y + 17, { align: 'center' });
+      y += 28;
+    }
+
+    /* Terms */
+    if (y > 250) { doc.addPage(); y = MARGIN; }
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(150, 150, 150);
+    var terms = 'Ce bon de commande vous engage. Pour être valide, ce bon doit être accompagné d\'un acompte de 40 %. '
+      + 'Il ne pourra être restitué si le client annule son inscription après le début de la fabrication (2 mois avant le stage).';
+    var splitTerms = doc.splitTextToSize(terms, CW);
+    doc.text(splitTerms, MARGIN, y);
+    y += splitTerms.length * 4 + 6;
+
+    /* Footer */
+    doc.setDrawColor.apply(doc, gold);
+    doc.setLineWidth(0.5);
+    doc.line(MARGIN, y, W - MARGIN, y);
+    y += 5;
+    doc.setFontSize(8);
+    doc.setTextColor.apply(doc, grey);
+    doc.text('Ewen Daviau – 9 rue Fernand de Magellan, 44600 Saint-Nazaire', W / 2, y, { align: 'center' });
+    y += 4;
+    doc.text('contact@ewendaviau.com · ewendaviau.com', W / 2, y, { align: 'center' });
+
+    /* Save */
+    var safeName = (document.getElementById('nom').value || 'inscription').replace(/[^a-zA-ZÀ-ÿ0-9]/g, '_');
+    doc.save('inscription_' + safeName + '.pdf');
+  });
+
+  /* ── Form Submission (mailto fallback) ── */
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!document.getElementById('acceptTerms').checked) {
+      alert('Veuillez accepter les conditions avant d\'envoyer votre inscription.');
+      return;
+    }
+
+    var data = new FormData(form);
+    var lines = [];
+    lines.push('INSCRIPTION STAGE DE LUTHERIE 2026');
+    lines.push('');
+    for (var pair of data.entries()) {
+      if (pair[0] === 'acceptTerms') continue;
+      lines.push(pair[0] + ' : ' + pair[1]);
+    }
+
+    var subject = encodeURIComponent('Inscription stage lutherie 2026 – ' + (document.getElementById('nom').value || ''));
+    var body = encodeURIComponent(lines.join('\n'));
+    window.location.href = 'mailto:contact@ewendaviau.com?subject=' + subject + '&body=' + body;
+  });
+
+})();
+</script>
+
+</body>
+</html>
