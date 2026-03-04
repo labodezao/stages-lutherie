@@ -47,11 +47,15 @@ Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<inp
 
 ---
 
-### Méthode 2 — Importer le JSON comme Synced Pattern
+### Méthode 2 — Coller le fichier texte dans l'éditeur de code
 
-1. WordPress Admin → **Apparence → Éditeur → Motifs → ⋮ → Importer depuis JSON**
-2. Sélectionnez `formulaire-inscription-gutenberg.json` (FR) ou `formulaire-inscription-en-gutenberg.json` (EN)
-3. Le motif apparaît dans la bibliothèque — insérez-le dans n'importe quelle page
+1. Ouvrez `formulaire-inscription-gutenberg.txt` (FR) ou `formulaire-inscription-en-gutenberg.txt` (EN)
+2. Sélectionnez tout (`Ctrl+A`) et copiez
+3. WordPress → **Pages → Ajouter une page**
+4. Cliquez **⋮ → Éditeur de code** (`Ctrl + Shift + Alt + M`)
+5. Collez le contenu
+6. **⋮ → Éditeur visuel** pour vérifier le résultat
+7. Publiez
 
 ---
 
@@ -61,5 +65,5 @@ Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<inp
 |---|---|
 | `formulaire-inscription.html` | ⭐ Formulaire complet (FR) — 45 blocs Gutenberg (29 natifs) |
 | `formulaire-inscription-en.html` | ⭐ Complete form (EN) — 45 Gutenberg blocks (29 native) |
-| `formulaire-inscription-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (FR) |
-| `formulaire-inscription-en-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (EN) |
+| `formulaire-inscription-gutenberg.txt` | Import texte Gutenberg (FR) — coller dans l'éditeur de code |
+| `formulaire-inscription-en-gutenberg.txt` | Gutenberg plain text import (EN) — paste into code editor |
