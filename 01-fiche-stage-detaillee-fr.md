@@ -41,6 +41,7 @@ date: "2026"
 - Grilles décoratives : >100 modèles numérotés (choisir à l’inscription)
 - Soufflets : couleurs noir/rouge/bleu/vert/orange/mixte ; coins standard/renforcés/métal brossé/perso
 - Anches : tipo a mano, a mano (+)
+- Option Anche a mano Blue Star : +20 % (21/8 +564 €, 33/12 +900 €, 33/18 +976 €, 33/24 +1250 €)
 - Accessoires : bretelles fournies, sac/housse fournie
 
 ## Déroulé type d’une journée

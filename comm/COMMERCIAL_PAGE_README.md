@@ -21,6 +21,7 @@ Page commerciale complète pour les stages de fabrication d'accordéons diatoniq
 
 ### Informations détaillées
 ✅ **Modèles**: 21/8 (2820€), 33/12 (4500€), 33/18 (4880€), 33/24 (6250€)
+✅ **Option Anche a mano Blue Star**: +20 % (21/8 +564€, 33/12 +900€, 33/18 +976€, 33/24 +1250€)
 ✅ **Acomptes**: 900€ / 1500€ / 1900€ / 2500€ (40%)
 ✅ **Dates 2026**: 8-17 avril & 14-23 octobre
 ✅ **Lieu**: 9 rue Fernand de Magellan, Saint-Nazaire (44)

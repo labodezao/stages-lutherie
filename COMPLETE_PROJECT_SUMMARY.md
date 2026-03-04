@@ -103,6 +103,8 @@ Created version 3 email templates in both languages with:
 | 33/18  | €4,880  | €1,900       | Professional |
 | 33/24  | €6,250  | €2,500       | Advanced |
 
+> **Option Anche a mano Blue Star** – Premium handmade reeds: +20% surcharge (21/8b +€564, 33/12b +€900, 33/18b +€976, 33/24b +€1,250).
+
 #### 10-Day Program
 1. **Days 1-2**: Structure & wood (case fabrication, mechanical base)
 2. **Days 3-4**: Keyboards & mechanics (axes, springs, assemblies)

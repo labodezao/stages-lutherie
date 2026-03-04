@@ -24,6 +24,7 @@ Version 3 email visuals with comprehensive workshop information in both French a
 - **33/12**: €4,500 (deposit: €1,500) ⭐ Popular
 - **33/18**: €4,880 (deposit: €1,900)
 - **33/24**: €6,250 (deposit: €2,500)
+- **Option Anche a mano Blue Star**: +20% surcharge (21/8b +€564, 33/12b +€900, 33/18b +€976, 33/24b +€1,250)
 
 All with deposit amounts (40%) clearly displayed.
 

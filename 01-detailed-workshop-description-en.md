@@ -42,6 +42,7 @@ date: "2026"
 - Decorative grills: >100 numbered models (choose at registration)
 - Bellows: colors black/red/blue/green/orange/mixed; standard/reinforced/brushed metal/custom corners
 - Reeds: tipo a mano, a mano (+)
+- Anche a mano Blue Star option: +20% (21/8 +€564, 33/12 +€900, 33/18 +€976, 33/24 +€1,250)
 - Accessories: straps provided, bag/case provided
 
 ## Typical Day Schedule

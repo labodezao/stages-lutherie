@@ -16,6 +16,8 @@ Stages de 10 jours pour **fabriquer votre propre accordéon diatonique** de A à
 - **33/18 basses** – 4880 € (acompte 1900 €)
 - **33/24 basses** – 6250 € (acompte 2500 €)
 
+> **Option Anche a mano Blue Star** : anches fabriquées à la main, +20 % sur le tarif du modèle (21/8b +564 €, 33/12b +900 €, 33/18b +976 €, 33/24b +1 250 €).
+
 ## 📚 Documentation
 
 ### Français 🇫🇷

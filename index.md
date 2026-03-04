@@ -24,6 +24,8 @@ Une expérience unique et accessible à tous, dès 13 ans, **sans aucune expéri
 - **33/18 basses** – 4 880 € (acompte 1 900 €)
 - **33/24 basses** – 6 250 € (acompte 2 500 €)
 
+> **Option Anche a mano Blue Star** : anches fabriquées à la main, +20 % sur le tarif du modèle (21/8b +564 €, 33/12b +900 €, 33/18b +976 €, 33/24b +1 250 €).
+
 ## 📖 Documentation Complète
 
 ### Français 🇫🇷

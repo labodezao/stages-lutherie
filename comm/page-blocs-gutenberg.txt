@@ -517,6 +517,10 @@
 <!-- /wp:columns --></div>
 <!-- /wp:group -->
 
+<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px"}}} -->
+<p class="has-text-align-center" style="font-size:16px">🎯 <strong>Option Anche a mano Blue Star</strong> : anches fabriquées à la main · +20 % du tarif du modèle<br>(21/8b +564 € · 33/12b +900 € · 33/18b +976 € · 33/24b +1 250 €)</p>
+<!-- /wp:paragraph -->
+
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
 <h2 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Programme détaillé — 10 jours</h2>
