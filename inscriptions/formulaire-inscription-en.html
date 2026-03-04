@@ -13,20 +13,6 @@
 <!-- /wp:cover -->
 
 <!-- wp:html -->
-<!--
-  ════════════════════════════════════════════════════════════════
-  Registration Form — Interactive part
-  ════════════════════════════════════════════════════════════════
-  This block contains the scoped CSS, the JavaScript (price
-  calculator, PDF generation, WordPress REST submission) and the
-  HTML form. The hero above is a native Gutenberg wp:cover block.
-  ════════════════════════════════════════════════════════════════
--->
-
-<!-- jsPDF for PDF generation -->
-<script defer src="https://cdn.jsdelivr.net/npm/jspdf@4.2.0/dist/jspdf.umd.min.js"></script>
-
-<!-- WordPress Gutenberg Compatible CSS -->
 <style type="text/css">
     /* ── Base Reset for WordPress ── */
     .inscription-page { margin:0; padding:0; box-sizing:border-box; }
@@ -60,29 +46,6 @@
       padding: 40px 20px 60px;
     }
 
-    /* ── Section Cards ── */
-    .insc-section {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-      margin-bottom: 32px;
-      overflow: hidden;
-    }
-    .insc-section-header {
-      background: linear-gradient(135deg, var(--wood-dark), var(--wood-medium));
-      color: #fff;
-      padding: 18px 28px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .insc-section-header .icon { font-size:1.5rem; }
-    .insc-section-header h2 {
-      font-family: Georgia, serif;
-      font-size: 1.35rem;
-      margin: 0;
-      font-weight: 600;
-    }
     .insc-section-body { padding: 28px; }
 
     /* ── Form Fields ── */
@@ -343,10 +306,6 @@
     }
 
     /* ── WordPress Gutenberg Compatibility ── */
-    .wp-block-group .inscription-page { margin:0; }
-    .block-editor-block-list__block .inscription-page { padding:0; }
-    .wp-block-html .inscription-page { max-width:100%; }
-
     /* Color swatches for bellows / strap colors */
     .color-swatch {
       display: inline-block;
@@ -358,20 +317,46 @@
       margin-right: 6px;
     }
     .insc-option-card input:checked + .card-label .color-swatch { border-color: var(--gold); }
+
+    /* ── Native Gutenberg Section Cards ── */
+    /* Used by wp:group blocks to style section cards consistently */
+    .insc-native-section {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    /* Section heading bar (background set per-section via block attribute) */
+    .insc-native-heading {
+      color: #FAFAFA !important;
+      padding: 16px 24px !important;
+      font-size: 1.15rem !important;
+      font-weight: 700 !important;
+      margin: 0 !important;
+    }
   </style>
+<!-- /wp:html -->
 
-<div class="inscription-page">
+<!-- wp:html -->
+<!-- jsPDF for PDF generation -->
+<script defer src="https://cdn.jsdelivr.net/npm/jspdf@4.2.0/dist/jspdf.umd.min.js"></script>
+<!-- /wp:html -->
 
-  <form id="inscriptionForm" class="insc-form-wrap" novalidate>
+<!-- wp:html -->
+<!-- inscription-page class provides CSS scoping for all form field classes -->
+<form id="inscriptionForm" class="insc-form-wrap inscription-page" novalidate>
+<!-- /wp:html -->
 
-    <!-- ════════════════ 1. PERSONAL DETAILS ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">👤</span>
-        <h2>Personal Details</h2>
-      </div>
-      <div class="insc-section-body">
-        <div class="insc-row">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">👤 Personal Details</h2>
+<!-- /wp:heading -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+<div class="insc-row">
           <div class="insc-field">
             <label for="nom">Full name <span class="req">*</span></label>
             <input type="text" id="nom" name="nom" required placeholder="e.g. John Smith">
@@ -405,30 +390,36 @@
             <input type="email" id="email" name="email" required placeholder="john@example.com">
           </div>
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 2. SESSION ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">📅</span>
-        <h2>Session Selection</h2>
-      </div>
-      <div class="insc-section-body">
-        <div class="insc-options" id="sessionOptions">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">📅 Session Selection</h2>
+<!-- /wp:heading -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+<div class="insc-options" id="sessionOptions">
           <!-- Sessions are populated dynamically from STAGE_CONFIG -->
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 3. MODEL ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">🎵</span>
-        <h2>Model Selection</h2>
-      </div>
-      <div class="insc-section-body">
-        <p style="margin:0 0 14px; color:#666; font-size:0.9rem;">Classic Range – select your model:</p>
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎵 Model Selection</h2>
+<!-- /wp:heading -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+<p style="margin:0 0 14px; color:#666; font-size:0.9rem;">Classic Range – select your model:</p>
         <div class="insc-options">
           <label class="insc-option-card">
             <input type="radio" name="modele" value="21/8b" data-price="2820" data-deposit="900" required>
@@ -478,17 +469,20 @@
             Surcharge per model: 21/8b +423 € · 33/12b +675 € · 33/18b +732 € · 33/24b +938 €
           </div>
         </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-      </div>
-    </div>
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">🎹</span>
-        <h2>Right Hand Side (RH)</h2>
-      </div>
-      <div class="insc-section-body">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎹 Right Hand Side (RH)</h2>
+<!-- /wp:heading -->
 
-        <div class="insc-inline-row">
+<!-- wp:html -->
+<div class="insc-section-body">
+<div class="insc-inline-row">
           <div class="insc-field">
             <label for="nbBoutonsMD">Number of buttons</label>
             <select id="nbBoutonsMD" name="nbBoutonsMD">
@@ -630,18 +624,20 @@
           <label for="remarquesMD">Notes (right hand)</label>
           <textarea id="remarquesMD" name="remarquesMD" rows="3" placeholder="Any additional details about the right hand keyboard…"></textarea>
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 5. LEFT HAND SIDE ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">🎶</span>
-        <h2>Left Hand Side (LH)</h2>
-      </div>
-      <div class="insc-section-body">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎶 Left Hand Side (LH)</h2>
+<!-- /wp:heading -->
 
-        <div class="insc-inline-row">
+<!-- wp:html -->
+<div class="insc-section-body">
+<div class="insc-inline-row">
           <div class="insc-field">
             <label for="nbBoutonsMG">Number of bass buttons</label>
             <select id="nbBoutonsMG" name="nbBoutonsMG">
@@ -668,17 +664,20 @@
           <label for="remarquesMG">Notes (left hand)</label>
           <textarea id="remarquesMG" name="remarquesMG" rows="3" placeholder="Any additional details about the left hand keyboard…"></textarea>
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 6. BELLOWS ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">🌈</span>
-        <h2>Bellows</h2>
-      </div>
-      <div class="insc-section-body">
-        <div class="insc-field">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🌈 Bellows</h2>
+<!-- /wp:heading -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+<div class="insc-field">
           <label>Bellows color</label>
           <div class="insc-options">
             <label class="insc-option-card" style="min-width:110px">
@@ -711,17 +710,20 @@
             </label>
           </div>
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 7. ACCORDION PREVIEW ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">🪗</span>
-        <h2>Preview of your accordion</h2>
-      </div>
-      <div class="insc-section-body">
-        <div class="accordion-preview-wrap" id="accordionPreview">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🪗 Preview of your accordion</h2>
+<!-- /wp:heading -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+<div class="accordion-preview-wrap" id="accordionPreview">
           <!--
             Image Layer System — each layer is a positioned image that
             changes based on selected options. Replace placeholder
@@ -783,17 +785,20 @@
           The preview updates automatically based on your choices above.<br>
           <em>Final images coming soon — color zones are indicative.</em>
         </p>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 8. CUSTOM KEYBOARD PLAN ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">🎼</span>
-        <h2>Custom keyboard plan (optional)</h2>
-      </div>
-      <div class="insc-section-body">
-        <div class="insc-callout">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Custom keyboard plan (optional)</h2>
+<!-- /wp:heading -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+<div class="insc-callout">
           <strong>Do you have a custom keyboard plan?</strong><br>
           Use our <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener" style="color:var(--gold); font-weight:600;">keyboard plan generator tool</a> to create your layout, then export the JSON and paste it below.
         </div>
@@ -809,17 +814,21 @@
           </div>
           <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 9. SUMMARY ════════════════ -->
-    <div class="insc-section insc-summary">
-      <div class="insc-section-header insc-summary-header">
-        <span class="icon">📋</span>
-        <h2>Registration Summary</h2>
-      </div>
-      <div class="insc-section-body">
-        <table class="insc-summary-table" id="summaryTable">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- Récapitulatif — fond plus sombre intentionnel -->
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#2C1810", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#2C1810">📋 Registration Summary</h2>
+<!-- /wp:heading -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+<table class="insc-summary-table" id="summaryTable">
           <tbody>
             <tr><td>Name</td><td id="sumNom">–</td></tr>
             <tr><td>Session</td><td id="sumSession">–</td></tr>
@@ -845,34 +854,52 @@
           <div class="price" id="sumPrice">– €</div>
           <div class="deposit" id="sumDeposit">Deposit at registration: – €</div>
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ 10. TERMS & CONDITIONS ════════════════ -->
-    <div class="insc-section">
-      <div class="insc-section-header">
-        <span class="icon">📜</span>
-        <h2>Terms & Conditions</h2>
-      </div>
-      <div class="insc-section-body">
-        <div class="insc-terms">
-          <p><strong>This order form is binding.</strong></p>
-          <p>To be valid, this form must be accompanied by a <strong>40% deposit</strong> of the total price.</p>
-          <p>The deposit cannot be refunded if the participant cancels after the start of fabrication (2 months before the workshop).</p>
-          <p>In case of cancellation, you will need to reschedule to another session or find someone to replace you.</p>
-          <p>If you are unable to finish your instrument within the allotted time, you may come back to complete it at a future workshop for a <strong>flat rate of 80 € per day</strong>.</p>
-        </div>
-        <div class="insc-field" style="margin-top:18px;">
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">📜 Terms & Conditions</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "28px", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
+<p style="padding:28px 28px 8px"><strong>This order form is binding.</strong></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
+<p style="padding:0 28px 8px">To be valid, this form must be accompanied by a <strong>40% deposit</strong> of the total price.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
+<p style="padding:0 28px 8px">The deposit cannot be refunded if the participant cancels after the start of fabrication (2 months before the workshop).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
+<p style="padding:0 28px 8px">In case of cancellation, you will need to reschedule to another session or find someone to replace you.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
+<p style="padding:0 28px 8px">If you are unable to finish your instrument within the allotted time, you may come back to complete it at a future workshop for a <strong>flat rate of 80 € per day</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:html -->
+<div style="padding:0 28px 24px">
+<div class="insc-field" style="margin-top:18px;">
           <label>
             <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
             I have read and accept the above terms <span class="req">*</span>
           </label>
         </div>
-      </div>
-    </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
 
-    <!-- ════════════════ ACTIONS ════════════════ -->
-    <div class="insc-actions">
+<!-- wp:html -->
+<div class="insc-actions">
       <button type="button" class="insc-btn insc-btn-primary" id="btnPDF">
         📄 Download PDF Summary
       </button>
@@ -887,25 +914,13 @@
       &nbsp;·&nbsp;
       <a href="https://ewendaviau.com" target="_blank" rel="noopener" style="color:var(--gold)">ewendaviau.com</a>
     </div>
+<!-- /wp:html -->
 
-  </form>
+<!-- wp:html -->
+</form>
+<!-- /wp:html -->
 
-</div><!-- .inscription-page -->
-
-<!--
-  ════════════════════════════════════════════════════════════════
-  WordPress Configuration:
-  To enable server-side email sending with PDF attachment,
-  add the PHP snippet below to your theme's functions.php
-  or use the Code Snippets plugin.
-
-  The form will POST to: /wp-json/stages-lutherie/v1/inscription
-  
-  If the endpoint is not available (standalone mode), the form
-  falls back to generating the PDF for manual download + mailto.
-  ════════════════════════════════════════════════════════════════
--->
-
+<!-- wp:html -->
 <!--
   ┌──────────────────────────────────────────────────────────────┐
   │  WordPress functions.php snippet — COPY THIS BLOCK          │

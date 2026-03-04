@@ -4,14 +4,25 @@
 
 ## ✅ Structure des fichiers Gutenberg
 
-Chaque fichier HTML du formulaire est désormais **structuré en blocs Gutenberg natifs** :
+Chaque fichier HTML du formulaire est désormais **entièrement décomposé en blocs Gutenberg natifs** — chaque section est un bloc indépendant éditable d'un clic :
 
 | Bloc | Type | Contenu |
 |---|---|---|
-| `<!-- wp:cover -->` | **Bloc natif** ✅ | Héro avec photo de fond, titre H1, sous-titre |
-| `<!-- wp:html -->` | Bloc HTML | CSS scopé + JavaScript (calcul de prix, PDF, REST) + formulaire HTML |
+| `<!-- wp:cover -->` | **Natif** ✅ | Héro photo de fond · titre H1 · sous-titre |
+| `<!-- wp:html -->` | HTML | CSS scopé (classes `.insc-*`) |
+| `<!-- wp:html -->` | HTML | Script jsPDF |
+| `<!-- wp:html -->` | HTML | Ouverture `<form>` |
+| `<!-- wp:group -->` × 10 | **Natif** ✅ | Carte section (bordure + ombre natifs) |
+| `↳ <!-- wp:heading level:2 -->` | **Natif** ✅ | Titre de section — **éditable d'un clic** 🖊️ |
+| `↳ <!-- wp:html -->` | HTML | Champs de formulaire de la section |
+| `<!-- wp:paragraph -->` × 5 | **Natif** ✅ | Texte des Conditions — **éditable d'un clic** 🖊️ |
+| `<!-- wp:html -->` | HTML | Boutons d'actions + contact |
+| `<!-- wp:html -->` | HTML | Fermeture `</form>` |
+| `<!-- wp:html -->` | HTML | JavaScript (calcul prix, PDF, REST) |
 
-Le formulaire interactif (calcul de prix automatique, génération PDF, envoi email via API WordPress) nécessite du JavaScript — il reste dans un bloc `wp:html` ciblé. Tout le reste est natif.
+**Total : 45 blocs — 29 natifs Gutenberg, 16 wp:html**
+
+Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<input>`, `<select>`, `<textarea>`, JS) et ne peuvent pas être simplifié davantage sans perdre les fonctionnalités.
 
 ---
 
@@ -48,7 +59,7 @@ Le formulaire interactif (calcul de prix automatique, génération PDF, envoi em
 
 | Fichier | Usage |
 |---|---|
-| `formulaire-inscription.html` | ⭐ Formulaire complet (FR) — `wp:cover` natif + `wp:html` formulaire |
-| `formulaire-inscription-en.html` | ⭐ Complete form (EN) — native `wp:cover` + `wp:html` form |
+| `formulaire-inscription.html` | ⭐ Formulaire complet (FR) — 45 blocs Gutenberg (29 natifs) |
+| `formulaire-inscription-en.html` | ⭐ Complete form (EN) — 45 Gutenberg blocks (29 native) |
 | `formulaire-inscription-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (FR) |
 | `formulaire-inscription-en-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (EN) |
