@@ -6,17 +6,18 @@
 |---|---|
 | `index.html` | **Outil complet** — à ouvrir en local dans le navigateur |
 | `gutenberg-widget.html` | **Widget WordPress** — à coller dans un bloc HTML personnalisé |
-| `clavier-accordeon-gutenberg.json` | **Import Gutenberg** — importer via WordPress Outils → Importer |
+| `clavier-accordeon-gutenberg.txt` | **Import Gutenberg** — coller dans l'éditeur de code WordPress |
 
 ---
 
 ## Utilisation sur WordPress
 
-### Import du widget
+### Coller le widget dans une page
 
-1. Dans WordPress, aller dans **Outils → Importer → WordPress** (ou utiliser le bouton d'import de blocs dans l'éditeur)
-2. Importer `clavier-accordeon-gutenberg.json`
-3. Le bloc apparaît dans la bibliothèque de blocs réutilisables
+1. Dans WordPress, aller dans **Pages → Ajouter une page**
+2. Cliquer **⋮ → Éditeur de code** (`Ctrl + Shift + Alt + M`)
+3. Ouvrir `clavier-accordeon-gutenberg.txt`, sélectionner tout (`Ctrl+A`), copier, coller
+4. Revenir en éditeur visuel et publier
 
 ### Aucun fichier à uploader
 
@@ -86,7 +87,7 @@ Pour **ajouter un preset** à l'outil offline :
 1. Créer `presets/MONPRESET.json` au format ci-dessus
 2. Ajouter une entrée dans `PRESET_CATALOG` dans `index.html`
 
-Pour le **widget WordPress**, les presets sont inline dans `PRESETS_DATA` dans `gutenberg-widget.html`. Pour en ajouter un, modifier ce bloc JS et réimporter `clavier-accordeon-gutenberg.json`.
+Pour le **widget WordPress**, les presets sont inline dans `PRESETS_DATA` dans `gutenberg-widget.html`. Pour en ajouter un, modifier ce bloc JS et re-générer `clavier-accordeon-gutenberg.txt`.
 
 ---
 
