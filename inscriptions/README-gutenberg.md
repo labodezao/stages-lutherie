@@ -52,5 +52,3 @@ Le formulaire interactif (calcul de prix automatique, génération PDF, envoi em
 | `formulaire-inscription-en.html` | ⭐ Complete form (EN) — native `wp:cover` + `wp:html` form |
 | `formulaire-inscription-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (FR) |
 | `formulaire-inscription-en-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (EN) |
-| `page-inscription-blocs-gutenberg.txt` | Page d'accueil inscription 100 % blocs natifs (FR) |
-| `page-inscription-en-blocs-gutenberg.txt` | Registration landing page, 100% native blocks (EN) |
