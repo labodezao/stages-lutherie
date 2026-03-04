@@ -67,7 +67,7 @@
     <div class="cw-section-body" id="sec-export">
       <div class="cw-row">
         <button id="cw-save-btn" class="cw-btn">💾 Sauvegarder localement</button>
-        <button id="cw-export-btn" class="cw-btn cw-btn-gold">📋 Copier JSON</button>
+        <button id="cw-export-btn" class="cw-btn cw-btn-gold">📄 Copier (texte)</button>
       </div>
       <div class="cw-row" style="margin-top:8px">
         <label class="cw-label">Plans sauvegardés</label>
@@ -89,15 +89,37 @@
     <div class="cw-ep-title" id="cw-ep-title">Bouton</div>
     <div class="cw-ep-row">
       <label class="cw-ep-label">↓ Poussé</label>
-      <input type="text" id="cw-ep-push" class="cw-ep-input" placeholder="ex : Sol4">
+      <input type="text" id="cw-ep-push" class="cw-ep-input" placeholder="ex : Sol4" onfocus="cwShowPicker(this)" autocomplete="off">
     </div>
     <div class="cw-ep-row">
       <label class="cw-ep-label">↑ Tiré</label>
-      <input type="text" id="cw-ep-pull" class="cw-ep-input" placeholder="ex : La4">
+      <input type="text" id="cw-ep-pull" class="cw-ep-input" placeholder="ex : La4" onfocus="cwShowPicker(this)" autocomplete="off">
     </div>
     <div class="cw-ep-actions">
       <button id="cw-ep-save" class="cw-btn cw-btn-gold cw-btn-sm">✓ Appliquer</button>
       <button id="cw-ep-cancel" class="cw-btn cw-btn-sm">Annuler</button>
+    </div>
+  </div>
+
+  <!-- Sélecteur de notes (popup partagé) -->
+  <div id="cw-note-picker" class="cw-note-picker cw-hidden">
+    <div class="cw-np-tabs">
+      <button class="cw-np-tab-btn cw-active">🎵 Note</button>
+      <button style="margin-left:auto;padding:3px 8px;border:none;background:none;font-size:.73rem;color:var(--text2);cursor:pointer;" onclick="cwHidePicker()">✕</button>
+    </div>
+    <div class="cw-np-title">Touches naturelles</div>
+    <div class="cw-np-row" id="cw-np-naturals"></div>
+    <div class="cw-np-title" style="margin-top:6px;">Dièses</div>
+    <div class="cw-np-row" id="cw-np-sharps"></div>
+    <div class="cw-np-title" style="margin-top:6px;">Bémols</div>
+    <div class="cw-np-row" id="cw-np-flats"></div>
+    <div class="cw-np-octave-row">
+      <span class="cw-np-oct-lbl">Octave :</span>
+      <div id="cw-np-octaves" style="display:flex;gap:3px;"></div>
+    </div>
+    <div class="cw-np-preview">
+      <span id="cw-np-preview-text">— sélectionnez note + octave —</span>
+      <button class="cw-np-clear" onclick="cwPickerClear()">Effacer</button>
     </div>
   </div>
 
@@ -431,6 +453,33 @@
   margin-top: 8px;
 }
 .clavier-widget .cw-edit-btn { cursor: pointer; }
+
+/* ── Note picker ── */
+.clavier-widget .cw-note-picker{position:fixed;z-index:10000;background:var(--card-bg);border:2px solid var(--dark);border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.2);padding:10px 12px;min-width:300px;font-size:.85rem}
+.clavier-widget .cw-np-tabs{display:flex;gap:0;margin-bottom:8px;border-bottom:1.5px solid var(--border)}
+.clavier-widget .cw-np-tab-btn{padding:3px 11px;border:none;background:none;font-family:inherit;font-size:.78rem;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.clavier-widget .cw-np-tab-btn.cw-active{color:var(--dark);border-bottom-color:var(--gold)}
+.clavier-widget .cw-np-title{font-size:.68rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.clavier-widget .cw-np-row{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:2px}
+.clavier-widget .cw-np-btn{min-width:33px;padding:4px 4px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.77rem;font-weight:700;cursor:pointer;text-align:center;color:var(--text);transition:background .1s,border-color .1s}
+.clavier-widget .cw-np-btn:hover,.clavier-widget .cw-np-btn.cw-sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.clavier-widget .cw-np-btn.cw-sha{background:#f3f0fa;border-color:#c0b0e0;color:#5a3d8a}
+.clavier-widget .cw-np-btn.cw-sha:hover,.clavier-widget .cw-np-btn.cw-sha.cw-sel{background:#5a3d8a;color:#fff;border-color:#5a3d8a}
+.clavier-widget .cw-np-btn.cw-fla{background:#fdf0ee;border-color:#e0a898;color:#8a3020}
+.clavier-widget .cw-np-btn.cw-fla:hover,.clavier-widget .cw-np-btn.cw-fla.cw-sel{background:#b8312a;color:#fff;border-color:#b8312a}
+.clavier-widget .cw-np-octave-row{display:flex;gap:3px;margin-top:6px;align-items:center}
+.clavier-widget .cw-np-oct-lbl{font-size:.68rem;font-weight:700;color:var(--text2);margin-right:3px}
+.clavier-widget .cw-np-oct-btn{width:28px;height:24px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--text)}
+.clavier-widget .cw-np-oct-btn:hover,.clavier-widget .cw-np-oct-btn.cw-sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.clavier-widget .cw-np-preview{margin-top:8px;padding:5px 8px;background:var(--fond);border:1px solid var(--border);border-radius:5px;font-size:.83rem;font-weight:700;color:var(--dark);min-height:30px;display:flex;align-items:center;gap:6px}
+.clavier-widget .cw-np-preview span{flex:1}
+.clavier-widget .cw-np-clear{font-size:.7rem;color:#c0392b;cursor:pointer;border:none;background:none;font-family:inherit;padding:0}
+.clavier-widget input.cw-picker-open{border-color:var(--gold)!important;box-shadow:0 0 0 2px rgba(184,134,11,.25)!important}
+/* ── Row offset ── */
+.clavier-widget .cw-off-wrap{display:inline-flex;align-items:center;gap:2px}
+.clavier-widget .cw-off-btn{width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:var(--card-bg);font-size:.85rem;font-weight:700;cursor:pointer;color:var(--text);padding:0;display:flex;align-items:center;justify-content:center}
+.clavier-widget .cw-off-btn:hover{border-color:var(--gold);background:rgba(184,134,11,.1)}
+.clavier-widget .cw-off-input{width:44px!important;text-align:center;font-size:.8rem!important;padding:3px 4px!important}
 </style>
 
 <script>
@@ -478,6 +527,63 @@
     {"id":"SolDoAlts_LTL","label":"Sol/Do/Alts LTL — 33/18","category":"33/18"},
     {"id":"SolDoAlts_Gaillard","label":"Sol/Do/Alts Gaillard — 33/18","category":"33/18"}
   ];
+
+  /* ════ NOTE PICKER ════ */
+  const CW_NOTES_FR={nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
+  const CW_OCTAVES=['2','3','4','5','6'];
+  var cwPickerInput=null,cwPickerNote='',cwPickerOctave='';
+
+  function initCwPicker(){
+    var N=CW_NOTES_FR;
+    $('cw-np-naturals').innerHTML=N.nat.map(function(n){return '<button class="cw-np-btn" onclick="cwPickerSetNote(''+n+'')">'+n+'</button>';}).join('');
+    $('cw-np-sharps').innerHTML=N.sha.map(function(n){return n?'<button class="cw-np-btn cw-sha" onclick="cwPickerSetNote(''+n+'')">'+n+'</button>':'<span style="min-width:33px;display:inline-block"></span>';}).join('');
+    $('cw-np-flats').innerHTML=N.fla.map(function(n){return n?'<button class="cw-np-btn cw-fla" onclick="cwPickerSetNote(''+n+'')">'+n+'</button>':'<span style="min-width:33px;display:inline-block"></span>';}).join('');
+    $('cw-np-octaves').innerHTML=CW_OCTAVES.map(function(o){return '<button class="cw-np-oct-btn" onclick="cwPickerSetOctave(''+o+'')">'+o+'</button>';}).join('');
+  }
+  function cwShowPicker(input){
+    cwPickerInput=input;cwPickerNote='';cwPickerOctave='';
+    var v=input.value.trim();
+    if(v){var m=v.match(/^(.+?)([2-6])$/);if(m){cwPickerNote=m[1];cwPickerOctave=m[2];}else cwPickerNote=v;}
+    cwUpdatePickerHL();cwUpdatePickerPreview();
+    var pk=$('cw-note-picker');pk.classList.remove('cw-hidden');
+    var rect=input.getBoundingClientRect();
+    var pw=pk.offsetWidth||305,ph=pk.offsetHeight||280;
+    var top=rect.bottom+window.scrollY+6,left=rect.left+window.scrollX;
+    if(left+pw>window.innerWidth-10)left=window.innerWidth-pw-10;
+    if(left<8)left=8;
+    if(top+ph>window.scrollY+window.innerHeight-10)top=rect.top+window.scrollY-ph-6;
+    pk.style.top=Math.max(8,top)+'px';pk.style.left=Math.max(8,left)+'px';
+    input.classList.add('cw-picker-open');
+  }
+  function cwHidePicker(){
+    $('cw-note-picker').classList.add('cw-hidden');
+    if(cwPickerInput){cwPickerInput.classList.remove('cw-picker-open');cwPickerInput=null;}
+    cwPickerNote='';cwPickerOctave='';
+  }
+  function cwPickerSetNote(n){cwPickerNote=n;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote&&cwPickerOctave)cwPickerInsert();}
+  function cwPickerSetOctave(o){cwPickerOctave=o;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote&&cwPickerOctave)cwPickerInsert();}
+  function cwPickerInsert(){
+    if(!cwPickerInput)return;
+    var v=cwPickerNote+cwPickerOctave;if(!v)return;
+    cwPickerInput.value=v;
+    cwPickerInput.dispatchEvent(new Event('input',{bubbles:true}));
+    cwPickerInput.dispatchEvent(new Event('change',{bubbles:true}));
+    cwHidePicker();
+  }
+  function cwPickerClear(){
+    if(!cwPickerInput)return;
+    cwPickerInput.value='';
+    cwPickerInput.dispatchEvent(new Event('input',{bubbles:true}));
+    cwPickerInput.dispatchEvent(new Event('change',{bubbles:true}));
+    cwPickerNote='';cwPickerOctave='';cwUpdatePickerHL();cwUpdatePickerPreview();cwHidePicker();
+  }
+  function cwUpdatePickerHL(){
+    widget.querySelectorAll('#cw-np-naturals .cw-np-btn,#cw-np-sharps .cw-np-btn,#cw-np-flats .cw-np-btn').forEach(function(b){b.classList.toggle('cw-sel',b.textContent===cwPickerNote);});
+    widget.querySelectorAll('#cw-np-octaves .cw-np-oct-btn').forEach(function(b){b.classList.toggle('cw-sel',b.textContent===cwPickerOctave);});
+  }
+  function cwUpdatePickerPreview(){
+    $('cw-np-preview-text').textContent=(cwPickerNote+cwPickerOctave)||'— sélectionnez note + octave —';
+  }
 
   /* ═══════════════════════════════════════════════════
      PRESET DATA (inline — no fetch required)
@@ -930,15 +1036,29 @@
   /* ═══════════════════════════════════════════════════
      ROW CONFIGURATION TABLE
      ═══════════════════════════════════════════════════ */
+  function refreshSVG(){
+    if(!currentPreset)return;
+    currentData=toData(currentPreset);
+    currentData.nomJoueur=$('cw-nom-joueur').value.trim();
+    var nomI=$('cw-nom-instrument').value.trim();if(nomI)currentData.nomInstrument=nomI;
+    try{$('cw-svg-wrap').innerHTML=buildSVG_Plan(currentData,darkMode);bindSVGEditing();}catch(e){}
+  }
+
   function renderRowsCfg(){
     if(!currentPreset) return;
     var rows = currentPreset.rangees || [];
-    var html = '<table class="cw-cfg-table"><thead><tr><th>#</th><th>Nom</th><th>Boutons</th></tr></thead><tbody>';
+    var html = '<table class="cw-cfg-table"><thead><tr><th>#</th><th>Nom</th><th>Boutons</th><th>Décalage</th></tr></thead><tbody>';
     rows.forEach(function(row, ri){
       html += '<tr>';
       html += '<td>'+(ri+1)+'</td>';
       html += '<td><input type="text" value="'+escAttr(row.nom||'')+'" data-row="'+ri+'" data-field="nom" class="cw-row-cfg-input"></td>';
       html += '<td><input type="number" min="1" max="30" value="'+(row.nb||0)+'" data-row="'+ri+'" data-field="nb" class="cw-row-cfg-input" style="width:60px"></td>';
+      var off=row.offset||0;
+      html += '<td><div class="cw-off-wrap">'
+        +'<button type="button" class="cw-off-btn" data-row="'+ri+'" data-od="-1">−</button>'
+        +'<input type="number" class="cw-input cw-off-input cw-row-cfg-input" min="-30" max="30" value="'+off+'" data-row="'+ri+'" data-field="offset">'
+        +'<button type="button" class="cw-off-btn" data-row="'+ri+'" data-od="1">＋</button>'
+        +'</div></td>';
       html += '</tr>';
     });
     html += '</tbody></table>';
@@ -947,6 +1067,14 @@
     // Bind change events
     $('cw-rows-cfg').querySelectorAll('.cw-row-cfg-input').forEach(function(inp){
       inp.addEventListener('change', onRowCfgChange);
+    });
+    $('cw-rows-cfg').querySelectorAll('.cw-off-btn[data-od]').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var ri=parseInt(btn.getAttribute('data-row')),d=parseInt(btn.getAttribute('data-od'));
+        if(!currentPreset||!currentPreset.rangees[ri])return;
+        currentPreset.rangees[ri].offset=Math.max(-30,Math.min(30,(currentPreset.rangees[ri].offset||0)+d));
+        renderRowsCfg();refreshSVG();
+      });
     });
   }
 
@@ -968,7 +1096,9 @@
       } else {
         notes.length = newNb;
       }
-      currentPreset.notes.droite[ri] = notes;
+      currentPreset.notes.droite[ri]=notes;
+    } else if(field==='offset'){
+      currentPreset.rangees[ri].offset=Math.max(-30,Math.min(30,parseInt(inp.value)||0));
     }
     renderAll();
   }
@@ -989,8 +1119,8 @@
         var btn = btns[bi] || {p:'',t:''};
         html += '<tr>';
         html += '<td class="cw-num">'+(bi+1)+'</td>';
-        html += '<td><input type="text" value="'+escAttr(btn.p||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="p"></td>';
-        html += '<td><input type="text" value="'+escAttr(btn.t||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="t"></td>';
+        html += '<td><input type="text" value="'+escAttr(btn.p||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="p" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
+        html += '<td><input type="text" value="'+escAttr(btn.t||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="t" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
         html += '</tr>';
       }
       html += '</tbody></table>';
@@ -1017,8 +1147,8 @@
       var b = basses[i] || {p:'',t:''};
       html += '<tr>';
       html += '<td class="cw-num">'+(i+1)+'</td>';
-      html += '<td><input type="text" value="'+escAttr(b.p||'')+'" data-section="basses" data-btn="'+i+'" data-dir="p"></td>';
-      html += '<td><input type="text" value="'+escAttr(b.t||'')+'" data-section="basses" data-btn="'+i+'" data-dir="t"></td>';
+      html += '<td><input type="text" value="'+escAttr(b.p||'')+'" data-section="basses" data-btn="'+i+'" data-dir="p" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(b.t||'')+'" data-section="basses" data-btn="'+i+'" data-dir="t" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
       html += '</tr>';
     }
     html += '</tbody></table>';
@@ -1031,8 +1161,8 @@
       var a = accords[j] || {p:'',t:''};
       html += '<tr>';
       html += '<td class="cw-num">'+(j+1)+'</td>';
-      html += '<td><input type="text" value="'+escAttr(a.p||'')+'" data-section="accords" data-btn="'+j+'" data-dir="p"></td>';
-      html += '<td><input type="text" value="'+escAttr(a.t||'')+'" data-section="accords" data-btn="'+j+'" data-dir="t"></td>';
+      html += '<td><input type="text" value="'+escAttr(a.p||'')+'" data-section="accords" data-btn="'+j+'" data-dir="p" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(a.t||'')+'" data-section="accords" data-btn="'+j+'" data-dir="t" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
       html += '</tr>';
     }
     html += '</tbody></table>';
@@ -1040,6 +1170,36 @@
     $('cw-lh-tables').innerHTML = html;
     $('cw-lh-tables').querySelectorAll('input[data-section]').forEach(function(inp){
       inp.addEventListener('change', onNoteChange);
+    });
+    if(!currentPreset.lhRows) currentPreset.lhRows=[{nb:(currentPreset.notes.basses||[]).length||6,offset:0}];
+    var _lhR=currentPreset.lhRows;
+    var lhCfg='<table class="cw-cfg-table" style="margin-top:10px"><caption style="font-size:.78rem;font-weight:700;color:var(--text2);text-align:left;padding-bottom:4px">Rangées main gauche</caption><thead><tr><th>#</th><th>Boutons</th><th>Décalage</th></tr></thead><tbody>';
+    _lhR.forEach(function(row,ri){
+      var off=row.offset||0;
+      lhCfg+='<tr><td>'+(ri+1)+'</td>'
+        +'<td><input type="number" min="1" max="30" value="'+(row.nb||6)+'" data-lhrow="'+ri+'" data-lhf="nb" class="cw-input cw-lhri" style="width:60px"></td>'
+        +'<td><div class="cw-off-wrap">'
+        +'<button type="button" class="cw-off-btn" data-lhrow="'+ri+'" data-lhd="-1">−</button>'
+        +'<input type="number" class="cw-input cw-off-input cw-lhri" min="-30" max="30" value="'+off+'" data-lhrow="'+ri+'" data-lhf="offset">'
+        +'<button type="button" class="cw-off-btn" data-lhrow="'+ri+'" data-lhd="1">＋</button>'
+        +'</div></td></tr>';
+    });
+    lhCfg+='</tbody></table>';
+    $('cw-lh-tables').insertAdjacentHTML('beforeend',lhCfg);
+    $('cw-lh-tables').querySelectorAll('.cw-lhri').forEach(function(inp){
+      inp.addEventListener('change',function(){
+        var ri=parseInt(inp.getAttribute('data-lhrow')),f=inp.getAttribute('data-lhf');
+        if(f==='nb') currentPreset.lhRows[ri].nb=Math.max(1,parseInt(inp.value)||1);
+        if(f==='offset') currentPreset.lhRows[ri].offset=Math.max(-30,Math.min(30,parseInt(inp.value)||0));
+        refreshSVG();
+      });
+    });
+    $('cw-lh-tables').querySelectorAll('.cw-off-btn[data-lhd]').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var ri=parseInt(btn.getAttribute('data-lhrow')),d=parseInt(btn.getAttribute('data-lhd'));
+        currentPreset.lhRows[ri].offset=Math.max(-30,Math.min(30,(currentPreset.lhRows[ri].offset||0)+d));
+        renderLHTables();refreshSVG();
+      });
     });
   }
 
@@ -1101,24 +1261,82 @@
   /* ═══════════════════════════════════════════════════
      EXPORT JSON (clipboard)
      ═══════════════════════════════════════════════════ */
-  function exportJSON(){
-    if(!currentPreset){
-      showToast('Aucun plan à exporter.');
-      return;
-    }
+
+  /* ═══════════════════════════════════════════════════
+     SNAPSHOT — format compatible outil offline
+     ═══════════════════════════════════════════════════ */
+  function cwSnapshotPreset(){
+    if(!currentPreset) return null;
     applyUIToPreset();
-    var out = JSON.parse(JSON.stringify(currentPreset));
-    out.exportDate = new Date().toISOString();
-    var json = JSON.stringify(out, null, 2);
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(json).then(function(){
-        showToast('JSON copié dans le presse-papiers \u2714');
-      }).catch(function(){
-        fallbackCopy(json);
-      });
-    } else {
-      fallbackCopy(json);
+    var nom = $('cw-nom-instrument').value.trim() || 'Sans titre';
+    var joueur = $('cw-nom-joueur').value.trim();
+    return {
+      id: currentPreset.id || Date.now().toString(),
+      nom: nom,
+      joueur: joueur,
+      luthier: currentPreset.luthier || "Ewen d'Aviau",
+      dateCreation: currentPreset.dateCreation || new Date().toISOString().substring(0,10),
+      lastModified: new Date().toISOString(),
+      nbRangees: (currentPreset.rangees||[]).length,
+      rangees: JSON.parse(JSON.stringify(currentPreset.rangees||[])),
+      nbVoix: currentPreset.nbVoix || 2,
+      voixPerRow: currentPreset.voixPerRow || [],
+      nbVoixAccords: currentPreset.nbVoixAccords || 2,
+      nbVoixBasses: currentPreset.nbVoixBasses || 2,
+      lhDisplayMode: currentPreset.lhDisplayMode || 'separated',
+      lhPairedDir: currentPreset.lhPairedDir || 'vertical',
+      lhRows: JSON.parse(JSON.stringify(currentPreset.lhRows || [{nb:(currentPreset.notes&&currentPreset.notes.basses?currentPreset.notes.basses.length:6),offset:0}])),
+      lhPairsPerRow: currentPreset.lhPairsPerRow || 2,
+      lhBassFirst: currentPreset.lhBassFirst || false,
+      notes: JSON.parse(JSON.stringify(currentPreset.notes||{}))
+    };
+  }
+
+  function buildExportText(){
+    if(!currentPreset) return '';
+    applyUIToPreset();
+    var pr=currentPreset;
+    var nom=($('cw-nom-instrument').value.trim()||pr.nom||pr.label||'Sans titre');
+    var joueur=$('cw-nom-joueur').value.trim();
+    var date=new Date().toLocaleDateString('fr-FR');
+    var pad=function(s,n){s=String(s);while(s.length<n)s=' '+s;return s;};
+    var lines=['══════════════════════════════════','  '+nom];
+    if(joueur)lines.push('  Joueur : '+joueur);
+    lines.push('  '+date,'══════════════════════════════════','','MAIN DROITE','──────────────────────────────────');
+    (pr.rangees||[]).forEach(function(row,ri){
+      var label=row.nom||('Rangée '+(ri+1));
+      if(row.offset) label+=' (décalage '+(row.offset>0?'+':'')+row.offset+')';
+      lines.push('  '+label);
+      var btns=((pr.notes||{}).droite||[])[ri]||[];
+      for(var bi=0;bi<(row.nb||btns.length);bi++){
+        var b=btns[bi]||{p:'',t:''};
+        lines.push('    '+pad(bi+1,2)+'.  ↓ '+pad(b.p||'–',8)+'  ↑ '+(b.t||'–'));
+      }
+    });
+    var basses=(pr.notes||{}).basses||[];
+    var accords=(pr.notes||{}).accords||[];
+    if(basses.length||accords.length){
+      lines.push('','MAIN GAUCHE','──────────────────────────────────');
+      if(basses.length){
+        var lhOff=(pr.lhRows&&pr.lhRows[0]&&pr.lhRows[0].offset)?(' (décalage '+(pr.lhRows[0].offset>0?'+':'')+pr.lhRows[0].offset+')'):'';
+        lines.push('  Basses'+lhOff);
+        basses.forEach(function(b,i){lines.push('    '+pad(i+1,2)+'.  ↓ '+pad(b.p||'–',8)+'  ↑ '+(b.t||'–'));});
+      }
+      if(accords.length){
+        lines.push('  Accords');
+        accords.forEach(function(a,i){lines.push('    '+pad(i+1,2)+'.  ↓ '+pad(a.p||'–',8)+'  ↑ '+(a.t||'–'));});
+      }
     }
+    lines.push('','══════════════════════════════════');
+    return lines.join('\n');
+  }
+
+  function exportText(){
+    var txt=buildExportText();
+    if(!txt){showToast('Aucun plan à exporter.');return;}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){showToast('✔ Texte copié dans le presse-papiers');}).catch(function(){fallbackCopy(txt);});
+    } else {fallbackCopy(txt);}
   }
 
   function fallbackCopy(text){
@@ -1159,16 +1377,14 @@
     }
   }
   function savePlan(){
-    if(!currentPreset){
-      showToast('Aucun plan à sauvegarder.');
-      return;
-    }
-    applyUIToPreset();
-    var name = (currentPreset.nom || currentPreset.label || 'Mon plan').trim();
-    var suggested = prompt('Nom du plan :', name);
+    var snap = cwSnapshotPreset();
+    if(!snap){ showToast('Aucun plan à sauvegarder.'); return; }
+    var suggested = prompt('Nom du plan :', snap.nom);
     if(!suggested) return;
+    snap.nom = suggested;
+    currentPreset.id = snap.id;
     var plans = getSavedPlans();
-    plans[suggested] = JSON.parse(JSON.stringify(currentPreset));
+    plans[suggested] = snap;
     setSavedPlans(plans);
     refreshSavedList();
     showToast('Plan « '+suggested+' » sauvegardé \u2714');
@@ -1195,6 +1411,30 @@
     setSavedPlans(plans);
     refreshSavedList();
     showToast('Plan supprimé.');
+  }
+
+  function cwNormalisePreset(json){
+    if(Array.isArray(json)) json = json[0];
+    return json || null;
+  }
+
+  function loadFromFile(event){
+    var file = event.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        var json = JSON.parse(e.target.result);
+        json = cwNormalisePreset(json);
+        if(!json){ showToast('Format non reconnu'); return; }
+        currentPreset = json;
+        $('cw-nom-instrument').value = json.nom || '';
+        $('cw-nom-joueur').value = json.joueur || '';
+        renderAll();
+        showToast('\u2714 Fichier chargé (format compatible outil offline)');
+      } catch(ex){ showToast('Erreur: JSON invalide'); }
+    };
+    reader.readAsText(file);
   }
 
   /* ═══════════════════════════════════════════════════
@@ -1327,7 +1567,7 @@
       if(currentPreset) renderAll();
     });
     $('cw-theme-toggle').addEventListener('click', toggleTheme);
-    $('cw-export-btn').addEventListener('click', exportJSON);
+    $('cw-export-btn').addEventListener('click', exportText);
     $('cw-save-btn').addEventListener('click', savePlan);
     $('cw-load-btn').addEventListener('click', loadPlan);
     $('cw-delete-btn').addEventListener('click', deletePlan);
@@ -1346,7 +1586,13 @@
       if(popup && !popup.classList.contains('cw-hidden') && !popup.contains(ev.target)){
         closeEditPopup();
       }
+      var picker = $('cw-note-picker');
+      if(picker && !picker.classList.contains('cw-hidden') && !picker.contains(ev.target)
+         && ev.target.getAttribute && !ev.target.getAttribute('onfocus')){
+        cwHidePicker();
+      }
     });
+    initCwPicker();
   }
 
   // Run init when DOM is ready
