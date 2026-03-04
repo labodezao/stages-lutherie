@@ -1,0 +1,1186 @@
+<!-- WordPress Gutenberg Keyboard Plan Widget -->
+<!-- Paste this into a Custom HTML block on your WordPress page -->
+<div class="clavier-widget">
+
+  <!-- Header -->
+  <div class="cw-header">
+    <h2>🪗 Plan de clavier — Outil stagiaire</h2>
+    <button id="cw-theme-toggle" class="cw-btn cw-btn-sm" title="Mode sombre / clair">🌙</button>
+  </div>
+
+  <!-- Preset selector -->
+  <div class="cw-section cw-section-open">
+    <div class="cw-section-head" data-toggle="sec-preset">▼ Sélection du modèle</div>
+    <div class="cw-section-body" id="sec-preset">
+      <label class="cw-label">Modèle de clavier</label>
+      <select id="cw-preset-sel" class="cw-select">
+        <option value="">— Choisir un modèle —</option>
+      </select>
+      <div class="cw-row" style="margin-top:8px">
+        <label class="cw-label">Nom de l'instrument</label>
+        <input type="text" id="cw-nom-instrument" class="cw-input" placeholder="Accordéon Diatonique">
+      </div>
+      <div class="cw-row">
+        <label class="cw-label">Nom du joueur</label>
+        <input type="text" id="cw-nom-joueur" class="cw-input" placeholder="Votre nom">
+      </div>
+    </div>
+  </div>
+
+  <!-- SVG Preview -->
+  <div class="cw-section cw-section-open">
+    <div class="cw-section-head" data-toggle="sec-preview">▼ Aperçu du plan</div>
+    <div class="cw-section-body" id="sec-preview">
+      <div id="cw-svg-wrap" class="cw-svg-wrap">
+        <p class="cw-placeholder">Sélectionnez un modèle pour afficher le plan.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row configuration -->
+  <div class="cw-section">
+    <div class="cw-section-head" data-toggle="sec-rows">▶ Configuration des rangées</div>
+    <div class="cw-section-body cw-hidden" id="sec-rows">
+      <div id="cw-rows-cfg"></div>
+    </div>
+  </div>
+
+  <!-- RH Note editing -->
+  <div class="cw-section">
+    <div class="cw-section-head" data-toggle="sec-rh">▶ Main droite — Notes</div>
+    <div class="cw-section-body cw-hidden" id="sec-rh">
+      <div id="cw-rh-tables"></div>
+    </div>
+  </div>
+
+  <!-- LH Note editing -->
+  <div class="cw-section">
+    <div class="cw-section-head" data-toggle="sec-lh">▶ Main gauche — Basses &amp; Accords</div>
+    <div class="cw-section-body cw-hidden" id="sec-lh">
+      <div id="cw-lh-tables"></div>
+    </div>
+  </div>
+
+  <!-- Template management & Export -->
+  <div class="cw-section cw-section-open">
+    <div class="cw-section-head" data-toggle="sec-export">▼ Sauvegarde &amp; Export</div>
+    <div class="cw-section-body" id="sec-export">
+      <div class="cw-row">
+        <button id="cw-save-btn" class="cw-btn">💾 Sauvegarder localement</button>
+        <button id="cw-export-btn" class="cw-btn cw-btn-gold">📋 Copier JSON</button>
+      </div>
+      <div class="cw-row" style="margin-top:8px">
+        <label class="cw-label">Plans sauvegardés</label>
+        <select id="cw-saved-sel" class="cw-select">
+          <option value="">— Aucun plan sauvegardé —</option>
+        </select>
+        <div class="cw-row" style="margin-top:4px">
+          <button id="cw-load-btn" class="cw-btn cw-btn-sm">📂 Charger</button>
+          <button id="cw-delete-btn" class="cw-btn cw-btn-sm cw-btn-danger">🗑 Supprimer</button>
+        </div>
+      </div>
+      <div id="cw-toast" class="cw-toast"></div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   Scoped CSS for WordPress Gutenberg widget
+   ═══════════════════════════════════════════════════ */
+.clavier-widget {
+  --gold: #b8860b;
+  --gold-light: #d4a82633;
+  --dark: #1a1c1a;
+  --fond: #f5f5f3;
+  --card-bg: #ffffff;
+  --text: #333;
+  --text2: #666;
+  --border: #ddd;
+  --shadow: 0 2px 8px rgba(0,0,0,.08);
+  --radius: 8px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+  background: var(--fond);
+  color: var(--text);
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.clavier-widget *, .clavier-widget *::before, .clavier-widget *::after {
+  box-sizing: border-box;
+}
+
+/* Dark mode */
+.clavier-widget.cw-dark {
+  --fond: #1a1c1a;
+  --card-bg: #232523;
+  --text: #e0ddd5;
+  --text2: #999;
+  --border: #444;
+  --shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+/* Header */
+.clavier-widget .cw-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--gold);
+}
+.clavier-widget .cw-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* Sections (collapsible) */
+.clavier-widget .cw-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.clavier-widget .cw-section-head {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: .92rem;
+  cursor: pointer;
+  user-select: none;
+  color: var(--gold);
+  background: var(--gold-light);
+  border-bottom: 1px solid var(--border);
+}
+.clavier-widget .cw-section-head:hover {
+  opacity: .85;
+}
+.clavier-widget .cw-section-body {
+  padding: 12px 14px;
+}
+.clavier-widget .cw-hidden {
+  display: none;
+}
+
+/* Form elements */
+.clavier-widget .cw-label {
+  display: block;
+  font-size: .82rem;
+  color: var(--text2);
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+.clavier-widget .cw-select,
+.clavier-widget .cw-input {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: .88rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: inherit;
+}
+.clavier-widget .cw-select:focus,
+.clavier-widget .cw-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-light);
+}
+.clavier-widget .cw-row {
+  margin-bottom: 6px;
+}
+.clavier-widget .cw-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Buttons */
+.clavier-widget .cw-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: .85rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s, border-color .15s;
+}
+.clavier-widget .cw-btn:hover {
+  border-color: var(--gold);
+  background: var(--gold-light);
+}
+.clavier-widget .cw-btn-gold {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+.clavier-widget .cw-btn-gold:hover {
+  opacity: .88;
+  background: var(--gold);
+}
+.clavier-widget .cw-btn-sm {
+  padding: 5px 10px;
+  font-size: .8rem;
+}
+.clavier-widget .cw-btn-danger {
+  color: #c0392b;
+  border-color: #c0392b;
+}
+.clavier-widget .cw-btn-danger:hover {
+  background: #fdecea;
+}
+
+/* SVG preview */
+.clavier-widget .cw-svg-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  overflow-x: auto;
+  text-align: center;
+  min-height: 100px;
+}
+.clavier-widget .cw-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+.clavier-widget .cw-placeholder {
+  color: var(--text2);
+  font-style: italic;
+  padding: 30px 0;
+  margin: 0;
+}
+
+/* Note editing tables */
+.clavier-widget .cw-note-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+  margin-bottom: 12px;
+}
+.clavier-widget .cw-note-table caption {
+  text-align: left;
+  font-weight: 600;
+  font-size: .88rem;
+  color: var(--gold);
+  padding: 4px 0;
+}
+.clavier-widget .cw-note-table th {
+  background: var(--gold-light);
+  color: var(--gold);
+  padding: 5px 8px;
+  font-weight: 600;
+  font-size: .78rem;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.clavier-widget .cw-note-table td {
+  padding: 3px 4px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.clavier-widget .cw-note-table td.cw-num {
+  width: 32px;
+  font-weight: 600;
+  color: var(--text2);
+  font-size: .78rem;
+}
+.clavier-widget .cw-note-table input {
+  width: 100%;
+  min-width: 60px;
+  padding: 4px 6px;
+  font-size: .82rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--card-bg);
+  color: var(--text);
+  text-align: center;
+  font-family: inherit;
+}
+.clavier-widget .cw-note-table input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-light);
+}
+
+/* Row config table */
+.clavier-widget .cw-cfg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+  margin-bottom: 8px;
+}
+.clavier-widget .cw-cfg-table th {
+  background: var(--gold-light);
+  color: var(--gold);
+  padding: 5px 8px;
+  font-weight: 600;
+  font-size: .78rem;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.clavier-widget .cw-cfg-table td {
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.clavier-widget .cw-cfg-table input {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: .82rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--card-bg);
+  color: var(--text);
+  text-align: center;
+  font-family: inherit;
+}
+
+/* Toast notification */
+.clavier-widget .cw-toast {
+  display: none;
+  padding: 8px 14px;
+  margin-top: 8px;
+  border-radius: 5px;
+  font-size: .82rem;
+  font-weight: 500;
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.clavier-widget.cw-dark .cw-toast {
+  background: #1e3a1e;
+  color: #8fd89f;
+  border-color: #2e5a2e;
+}
+.clavier-widget.cw-dark .cw-btn-danger:hover {
+  background: #3a1515;
+}
+</style>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════
+     PRESET CATALOG (from presets/index.json)
+     ═══════════════════════════════════════════════════ */
+  const PRESET_CATALOG = [
+    {"id":"GC21","label":"Sol/Do — 21 boutons","category":"2 rangs"},
+    {"id":"DG21","label":"Ré/Sol — 21 boutons","category":"2 rangs"},
+    {"id":"CF21","label":"Do/Fa — 21 boutons","category":"2 rangs"},
+    {"id":"AD21","label":"La/Ré — 21 boutons","category":"2 rangs"},
+    {"id":"BE21","label":"Si/Mi — 21 boutons","category":"2 rangs"},
+    {"id":"EA21","label":"Mi/La — 21 boutons","category":"2 rangs"},
+    {"id":"FBb21","label":"Fa/Sib — 21 boutons","category":"2 rangs"},
+    {"id":"EbBb21","label":"Mib/Sib — 21 boutons","category":"2 rangs"},
+    {"id":"ABb21","label":"La/Sib — 21 boutons","category":"2 rangs"},
+    {"id":"GDA21","label":"Sol/Ré/La (2 rangs en La ext.) — 21 boutons","category":"2 rangs"},
+    {"id":"FD21","label":"Fa/Ré — 21 boutons","category":"2 rangs"},
+    {"id":"CA21","label":"Do/La — 21 boutons","category":"2 rangs"},
+    {"id":"BC21","label":"Si/Do (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"CSharpD21","label":"Do#/Ré (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"DbEb21","label":"Réb/Mib (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"EbF21","label":"Mib/Fa (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"FGb21","label":"Fa/Solb (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"GAb21","label":"Sol/Lab (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"ADb21","label":"La/Réb (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"GCD33","label":"Sol/Do/Ré — 33 boutons","category":"3 rangs"},
+    {"id":"BbFC33","label":"Sib/Fa/Do — 33 boutons","category":"3 rangs"},
+    {"id":"ADG33","label":"La/Ré/Sol — 33 boutons","category":"3 rangs"},
+    {"id":"DGC33","label":"Ré/Sol/Do — 33 boutons","category":"3 rangs"},
+    {"id":"CFBb33","label":"Do/Fa/Sib — 33 boutons","category":"3 rangs"},
+    {"id":"EAD33","label":"Mi/La/Ré — 33 boutons","category":"3 rangs"},
+    {"id":"BbEbAb33","label":"Sib/Mib/Lab — 33 boutons","category":"3 rangs"},
+    {"id":"FCG33","label":"Fa/Do/Sol — 33 boutons","category":"3 rangs"},
+    {"id":"SolDoFa33_12","label":"Sol/Do/Fa — 33/12 (Continental)","category":"Spéciaux"},
+    {"id":"LaReSol33_12","label":"La/Ré/Sol — 33/12","category":"Spéciaux"},
+    {"id":"SibMibLab33_12","label":"Sib/Mib/Lab — 33/12","category":"Spéciaux"},
+    {"id":"SolDo_Corgeron","label":"Sol/Do Corgeron — 33/8","category":"Spéciaux"},
+    {"id":"SolDo_Heim","label":"Sol/Do Heim — 33/8","category":"Spéciaux"},
+    {"id":"SolDoAlts_Bottasso","label":"Sol/Do/Alts Bottasso — 33/18","category":"33/18"},
+    {"id":"SolDoAlts_JPL","label":"Sol/Do/Alts JPL — 33/18","category":"33/18"},
+    {"id":"SolDoAlts_LTL","label":"Sol/Do/Alts LTL — 33/18","category":"33/18"},
+    {"id":"SolDoAlts_Gaillard","label":"Sol/Do/Alts Gaillard — 33/18","category":"33/18"}
+  ];
+
+  /* ═══════════════════════════════════════════════════
+     STATE
+     ═══════════════════════════════════════════════════ */
+  let currentPreset = null;   // raw preset JSON
+  let currentData = null;     // data object for SVG rendering
+  let darkMode = false;
+  const LS_KEY = 'clavier-widget-plans';
+
+  /* ═══════════════════════════════════════════════════
+     DOM HELPERS
+     ═══════════════════════════════════════════════════ */
+  const $ = function(id){ return document.getElementById(id); };
+  const widget = document.querySelector('.clavier-widget');
+
+  /* ═══════════════════════════════════════════════════
+     SVG HELPERS (from the main tool)
+     ═══════════════════════════════════════════════════ */
+  let _svgId = 0;
+  function svg_open(w, h, bg){
+    var id = 'cwvp' + (++_svgId);
+    return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,\'Segoe UI\',Helvetica,Arial,sans-serif" overflow="hidden"><defs><clipPath id="'+id+'"><rect width="'+w+'" height="'+h+'"/></clipPath></defs><rect width="'+w+'" height="'+h+'" fill="'+(bg||'white')+'"/><g clip-path="url(#'+id+')">';
+  }
+  function svg_close(){ return '</g></svg>'; }
+  function tx(x, y, text, size, fill, weight, anchor){
+    return '<text x="'+x+'" y="'+y+'" font-size="'+size+'" fill="'+fill+'" font-weight="'+(weight||'normal')+'" text-anchor="'+(anchor||'start')+'">'+text+'</text>';
+  }
+  function escSVG(s){
+    if(!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function fmtDate(d){
+    if(!d) return new Date().toLocaleDateString('fr-FR');
+    try{ return new Date(d).toLocaleDateString('fr-FR'); }catch(e){ return d; }
+  }
+  function displayNote(n){ return n || ''; }
+  function dn(note){ return escSVG(displayNote(note)); }
+
+  function svgBtnVal(v, cx, baseY, color){
+    if(!v) return '';
+    var disp = displayNote(v);
+    if(!disp.includes('/')){
+      var fs = disp.length > 8 ? 5.5 : disp.length > 5 ? 6.8 : 8;
+      return tx(cx, baseY, escSVG(disp), fs, color, 'bold', 'middle');
+    }
+    var parts = disp.split('/').map(function(p){ return p.trim(); }).filter(Boolean);
+    var lineH = 6.5, fs2 = 5.5;
+    var startY = baseY - ((parts.length - 1) * lineH) / 2;
+    var out = '<text font-size="'+fs2+'" fill="'+color+'" font-weight="bold" text-anchor="middle">';
+    parts.forEach(function(p, i){ out += '<tspan x="'+cx+'" y="'+(startY + i * lineH)+'">'+escSVG(p)+'</tspan>'; });
+    return out + '</text>';
+  }
+
+  /* ═══════════════════════════════════════════════════
+     buildSVG_Plan (from lines 2048-2366, t() replaced)
+     ═══════════════════════════════════════════════════ */
+  function buildSVG_Plan(data, dark){
+    var R = 18;
+    var BGAP = 46;
+    var CGAP = 52;
+    var MH = 20, MT = 14, MB = 30;
+    var TITLE_H = 76;
+    var BTWN = 50;
+
+    var gold2  = dark ? '#c9a227' : '#4338CA';
+    var bg     = dark ? '#111' : '#fff';
+    var pushBg = dark ? '#0d1f0d' : '#EEF2FF';
+    var pullBg = dark ? '#1f1000' : '#FFFBEB';
+    var pushTx = dark ? '#6fcf5a' : '#3730A3';
+    var pullTx = dark ? '#e8b840' : '#92400E';
+    var pushTx2= dark ? 'rgba(111,207,90,.55)' : 'rgba(55,48,163,.5)';
+    var pullTx2= dark ? 'rgba(232,184,64,.55)' : 'rgba(146,64,14,.5)';
+    var subtl  = dark ? '#888866' : '#94A3B8';
+    var stroke = dark ? '#c9a227' : '#6366F1';
+    var numTx  = dark ? 'rgba(200,162,39,.3)' : 'rgba(99,102,241,.2)';
+    var band1  = dark ? '#1a1a1a' : '#FAFAFA';
+    var band2  = dark ? '#161616' : '#F5F3FF';
+    var circleBorder = dark ? '#333' : '#C7D2FE';
+    var textColor    = dark ? '#ccc' : '#1E293B';
+    var ruleColor    = dark ? '#444' : '#E2E8F0';
+
+    function drawBtn(cx, cy, btn, btn2){
+      var o = '';
+      o += '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+bg+'" stroke="'+circleBorder+'" stroke-width="1"/>';
+      o += '<path d="M'+(cx-R)+','+cy+' A'+R+','+R+' 0 0,1 '+(cx+R)+','+cy+'" fill="'+pushBg+'"/>';
+      o += '<path d="M'+(cx-R)+','+cy+' A'+R+','+R+' 0 0,0 '+(cx+R)+','+cy+'" fill="'+pullBg+'"/>';
+      o += '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="'+stroke+'" stroke-width="1.2"/>';
+      o += '<line x1="'+(cx-R)+'" y1="'+cy+'" x2="'+(cx+R)+'" y2="'+cy+'" stroke="'+stroke+'" stroke-width=".5" opacity=".4"/>';
+      var b2ok = btn2 && (btn2.p || btn2.t);
+      if(b2ok){
+        if(btn.p)  o += svgBtnVal(btn.p, cx, cy-11, pushTx);
+        if(btn2.p) o += svgBtnVal(btn2.p, cx, cy-4, pushTx2);
+        if(btn.t)  o += svgBtnVal(btn.t, cx, cy+8, pullTx);
+        if(btn2.t) o += svgBtnVal(btn2.t, cx, cy+15, pullTx2);
+      } else {
+        if(btn.p) o += svgBtnVal(btn.p, cx, cy-7, pushTx);
+        if(btn.t) o += svgBtnVal(btn.t, cx, cy+15, pullTx);
+      }
+      return o;
+    }
+
+    var rhRows = data.droite;
+    var nRH = rhRows.length;
+    var maxRHBtns = Math.max.apply(null, rhRows.map(function(r){ return r.boutons.length; }).concat([1]));
+
+    var isPaired = data.lhDisplayMode === 'paired';
+    var lhSecRows = [];
+
+    if(isPaired){
+      var nPairs = Math.max(data.basses.length, data.accords.length);
+      var ppRow  = Math.max(1, data.lhPairsPerRow || nPairs);
+      var vA = data.nbVoixAccords || 2, vB = data.nbVoixBasses || 2;
+      if(data.lhPairedDir === 'horizontal'){
+        var nGroups = Math.ceil(nPairs / ppRow);
+        for(var c = 0; c < ppRow; c++){
+          var intItems=[], intItems2=[], intTypes=[], intIndices=[];
+          for(var g = 0; g < nGroups; g++){
+            var ii = g * ppRow + c;
+            if(ii >= nPairs) break;
+            var seq = data.lhBassFirst
+              ? [['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
+              : [['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
+            seq.forEach(function(x){
+              var typ=x[0],src=x[1],src2=x[2],nv=x[3];
+              if(src[ii]){ intItems.push(src[ii]); intItems2.push(nv>1&&src2?src2[ii]||null:null); intTypes.push(typ); intIndices.push(ii+1); }
+            });
+          }
+          if(intItems.length){
+            var lbl = ppRow===1 ? 'Basses / Accords' : 'Basses/Accords '+(c+1);
+            lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
+          }
+        }
+      } else {
+        var nGroups2 = Math.ceil(nPairs / ppRow);
+        for(var g2 = 0; g2 < nGroups2; g2++){
+          var s0 = g2*ppRow, s1 = Math.min(s0+ppRow, nPairs);
+          var intItems3=[], intItems4=[], intTypes2=[], intIndices2=[];
+          for(var i2 = s0; i2 < s1; i2++){
+            var seq2 = data.lhBassFirst
+              ? [['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
+              : [['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
+            seq2.forEach(function(x){
+              var typ=x[0],src=x[1],src2=x[2],nv=x[3];
+              if(src[i2]){ intItems3.push(src[i2]); intItems4.push(nv>1&&src2?src2[i2]||null:null); intTypes2.push(typ); intIndices2.push(i2+1); }
+            });
+          }
+          var lbl2 = nGroups2===1 ? 'Basses / Accords' : 'Basses/Accords '+(g2+1);
+          lhSecRows.push({nom:lbl2,items:intItems3,items2:intItems4,offset:0,interleavedTypes:intTypes2,interleavedIndices:intIndices2});
+        }
+      }
+      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0});
+    } else {
+      var lhRowCfg = (data.lhRows && data.lhRows.length) ? data.lhRows : [{nb:data.basses.length||1,offset:0}];
+      var accSecs=[], basSecs=[];
+      var bIdx=0, aIdx=0;
+      var vA2 = data.nbVoixAccords||2, vB2 = data.nbVoixBasses||2;
+      lhRowCfg.forEach(function(row, ri){
+        accSecs.push({nom:lhRowCfg.length===1?'Accords':(ri===0?'Accords':'\u21b3+'+aIdx),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA2>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0});
+        aIdx += row.nb;
+        basSecs.push({nom:lhRowCfg.length===1?'Basses':(ri===0?'Basses':'\u21b3+'+bIdx),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB2>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0});
+        bIdx += row.nb;
+      });
+      if(data.lhBassFirst){ basSecs.forEach(function(s2){lhSecRows.push(s2);}); accSecs.forEach(function(s2){lhSecRows.push(s2);}); }
+      else                { accSecs.forEach(function(s2){lhSecRows.push(s2);}); basSecs.forEach(function(s2){lhSecRows.push(s2);}); }
+      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0});
+    }
+
+    var nLH = lhSecRows.length;
+    var maxLHBtns = nLH > 0 ? Math.max.apply(null, lhSecRows.map(function(sc){ return sc.items.length; }).concat([0])) : 0;
+    var maxBtns = Math.max(maxRHBtns, maxLHBtns, 1);
+
+    var rhOffsets = rhRows.map(function(r){ return r.offset||0; });
+    var rhMaxOff = Math.max.apply(null, rhOffsets.concat([0]));
+    var rhMinOff = Math.min.apply(null, rhOffsets.concat([0]));
+    var rhTopShift = -rhMinOff * (BGAP/2);
+    var rhBottomExtra = rhMaxOff * (BGAP/2);
+    var lhOffsets = lhSecRows.map(function(s2){ return s2.offset||0; });
+    var lhMaxOff = lhOffsets.length ? Math.max.apply(null, lhOffsets.concat([0])) : 0;
+    var lhMinOff = lhOffsets.length ? Math.min.apply(null, lhOffsets.concat([0])) : 0;
+    var lhTopShift = -lhMinOff * (BGAP/2);
+    var lhBottomExtra = lhMaxOff * (BGAP/2);
+    var HEADER_GAP = 120;
+
+    var lhW = nLH > 0 ? nLH * CGAP : 0;
+    var rhW = nRH * CGAP;
+    var contentW = lhW + (nLH > 0 ? BTWN : 0) + rhW;
+    var W = Math.max(contentW + 2*MH, 460);
+    var extraOff = Math.max(rhTopShift + rhBottomExtra, lhTopShift + lhBottomExtra);
+    var bodyH = maxBtns * BGAP + extraOff + HEADER_GAP + 20;
+    var H = MT + TITLE_H + bodyH + MB;
+
+    var contentTop = MT + TITLE_H;
+    var contentBot = H - MB;
+    var gridCenterY = contentTop + (contentBot - contentTop) * 0.55;
+    var gridTop = Math.round(gridCenterY - bodyH/2) + HEADER_GAP;
+
+    var rhX0 = MH + CGAP/2;
+    var lhX0 = nLH > 0 ? rhX0 + rhW + BTWN : rhX0 + rhW;
+    var sepX = nLH > 0 ? (rhX0 + (nRH-1)*CGAP + R + (lhX0 - R)) / 2 : rhX0 + rhW + BTWN/2;
+
+    var s = svg_open(W, H, bg);
+
+    // Accent bar at top
+    s += '<rect x="0" y="0" width="'+W+'" height="3" fill="'+gold2+'"/>';
+
+    // Title table
+    var tblX = MH, tblY = MT;
+    var rotW = 22;
+    var tblInfoX = tblX + rotW + 6;
+    var rowH = 16;
+    var tblRows = 4;
+    var tblH = tblRows * rowH;
+
+    s += '<rect x="'+tblX+'" y="'+tblY+'" width="'+rotW+'" height="'+tblH+'" fill="'+gold2+'" opacity=".08" rx="3"/>';
+    s += '<rect x="'+tblX+'" y="'+tblY+'" width="'+(rotW+244)+'" height="'+tblH+'" fill="none" stroke="'+ruleColor+'" stroke-width="1" rx="3"/>';
+    s += '<line x1="'+(tblX+rotW)+'" y1="'+tblY+'" x2="'+(tblX+rotW)+'" y2="'+(tblY+tblH)+'" stroke="'+ruleColor+'" stroke-width="1"/>';
+    for(var i3 = 1; i3 < tblRows; i3++)
+      s += '<line x1="'+(tblX+rotW)+'" y1="'+(tblY+i3*rowH)+'" x2="'+(tblX+rotW+244)+'" y2="'+(tblY+i3*rowH)+'" stroke="'+ruleColor+'" stroke-width=".5"/>';
+
+    var rotCx = tblX + rotW/2, rotCy = tblY + tblH/2;
+    s += '<text x="'+rotCx+'" y="'+rotCy+'" text-anchor="middle" font-size="13" fill="'+gold2+'" font-weight="bold" transform="rotate(-90,'+rotCx+','+rotCy+')">'+escSVG('Plan de clavier')+'</text>';
+
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+rowH/2+4)+'" font-size="12" fill="'+gold2+'" font-weight="bold">'+escSVG(data.nomInstrument||'Accordéon Diatonique')+'</text>';
+    var r2 = data.nomJoueur ? 'Client : '+data.nomJoueur : '';
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+rowH+rowH/2+3)+'" font-size="8.5" fill="'+textColor+'">'+escSVG(r2)+'</text>';
+    var nBtnsRH = data.droite.reduce(function(a,r){ return a + r.boutons.length; }, 0);
+    var nBasses = data.basses ? data.basses.length : 0;
+    var nAccords = data.accords ? data.accords.length : 0;
+    var r3 = nRH+' '+(nRH>1?'rangées':'rangée')+' ('+nBtnsRH+' boutons) \u00b7 '+nBasses+' basses \u00b7 '+nAccords+' accords';
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+2*rowH+rowH/2+3)+'" font-size="8" fill="'+textColor+'">'+escSVG(r3)+'</text>';
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+3*rowH+rowH/2+3)+'" font-size="7.5" fill="'+subtl+'">'+escSVG(data.nomLuthier)+'  \u00b7  '+escSVG(fmtDate(data.date))+'</text>';
+
+    s += '<text x="'+(rhX0-R-6)+'" y="'+(gridTop-HEADER_GAP+4)+'" font-size="8.5" fill="'+subtl+'" font-style="italic">Haut (graves)</text>';
+
+    // Push/pull legend
+    var legR = 7, legX = W - MH - legR - 2, legY = tblY + tblH/2;
+    s += '<circle cx="'+legX+'" cy="'+legY+'" r="'+legR+'" fill="'+bg+'" stroke="'+stroke+'" stroke-width="1"/>';
+    s += '<path d="M'+(legX-legR)+','+legY+' A'+legR+','+legR+' 0 0,1 '+(legX+legR)+','+legY+'" fill="'+pushBg+'"/>';
+    s += '<path d="M'+(legX-legR)+','+legY+' A'+legR+','+legR+' 0 0,0 '+(legX+legR)+','+legY+'" fill="'+pullBg+'"/>';
+    s += '<circle cx="'+legX+'" cy="'+legY+'" r="'+legR+'" fill="none" stroke="'+stroke+'" stroke-width="1"/>';
+    s += '<line x1="'+(legX-legR)+'" y1="'+legY+'" x2="'+(legX+legR)+'" y2="'+legY+'" stroke="'+stroke+'" stroke-width=".4" opacity=".4"/>';
+    s += tx(legX-legR-3, legY-1, 'Poussé', 6, textColor, 'normal', 'end');
+    s += tx(legX-legR-3, legY+7, 'Tiré', 6, textColor, 'normal', 'end');
+
+    // RH columns
+    s += tx(rhX0 + ((nRH-1)*CGAP)/2, gridTop-HEADER_GAP+6, 'Main Droite', 8.5, gold2, 'bold', 'middle');
+    rhRows.forEach(function(row, ri){
+      var cx = rhX0 + ri * CGAP;
+      var off = rhTopShift + (row.offset||0) * (BGAP/2);
+      var lblY = gridTop - 8;
+      s += '<text x="'+cx+'" y="'+lblY+'" text-anchor="start" font-size="6.5" fill="'+gold2+'" font-weight="bold" transform="rotate(-90,'+cx+','+lblY+')">'+escSVG(row.nom)+'</text>';
+      if(row.boutons.length){
+        var cy0 = gridTop + off + BGAP/2;
+        var bandY = cy0 - R - 3;
+        var bandH = (row.boutons.length-1)*BGAP + 2*(R+3);
+        s += '<rect x="'+(cx-R-3)+'" y="'+bandY+'" width="'+((R+3)*2)+'" height="'+bandH+'" rx="3" fill="'+(ri%2===0?band1:band2)+'" opacity=".6"/>';
+      }
+      var suffix = ri===0 ? '' : ri===1 ? "'" : "''";
+      row.boutons.forEach(function(btn, bi){
+        var cy = gridTop + off + bi*BGAP + BGAP/2;
+        s += drawBtn(cx, cy, btn, null);
+        s += tx(cx-R-1, cy+R+2, (bi+1)+suffix, 5.5, numTx, 'bold', 'start');
+      });
+    });
+
+    // Bellows separator
+    if(nLH > 0){
+      var sepY1 = gridTop-2, sepY2 = gridTop + maxBtns*BGAP + extraOff + 2;
+      s += '<line x1="'+sepX+'" y1="'+sepY1+'" x2="'+sepX+'" y2="'+sepY2+'" stroke="'+(dark?'#444':'#C7D2FE')+'" stroke-width="1.5" stroke-dasharray="6,4"/>';
+      var sepMidY = (sepY1 + sepY2) / 2;
+      s += '<text x="'+sepX+'" y="'+sepMidY+'" text-anchor="middle" font-size="6.5" fill="'+subtl+'" font-weight="bold" transform="rotate(-90,'+sepX+','+sepMidY+')">'+escSVG('— SOUFFLET —')+'</text>';
+    }
+
+    // LH columns
+    if(nLH > 0 && maxLHBtns > 0){
+      var rhBlockH = maxRHBtns * BGAP + rhTopShift + rhBottomExtra;
+      var lhBlockH = maxLHBtns * BGAP + lhTopShift + lhBottomExtra;
+      var lhGridTop = gridTop + Math.round((rhBlockH - lhBlockH)/2);
+
+      s += tx(lhX0 + ((nLH-1)*CGAP)/2, lhGridTop - HEADER_GAP + 6, 'Main Gauche', 8.5, gold2, 'bold', 'middle');
+
+      var bassLbl = dark ? '#5aa0d0' : '#1D4ED8';
+      var accLbl  = dark ? '#d09040' : '#B45309';
+      lhSecRows.forEach(function(sec, si){
+        var cx = lhX0 + si * CGAP;
+        var off = lhTopShift + (sec.offset||0) * (BGAP/2);
+        var has2 = sec.items2 && sec.items2.some(function(x){ return x != null; });
+        if(sec.items.length){
+          var cy0 = lhGridTop + off + BGAP/2;
+          var bandY = cy0 - R - 3;
+          var bandH = (sec.items.length-1)*BGAP + 2*(R+3);
+          s += '<rect x="'+(cx-R-3)+'" y="'+bandY+'" width="'+((R+3)*2)+'" height="'+bandH+'" rx="3" fill="'+(si%2===0?band1:band2)+'" opacity=".6"/>';
+        }
+        sec.items.forEach(function(btn, bi){
+          var cy = lhGridTop + off + bi*BGAP + BGAP/2;
+          s += drawBtn(cx, cy, btn, has2 ? (sec.items2[bi]||null) : null);
+          if(sec.interleavedTypes){
+            var typ = sec.interleavedTypes[bi];
+            var idx = sec.interleavedIndices ? sec.interleavedIndices[bi] : '';
+            s += tx(cx-R+4, cy-R-2, typ+idx, 5.5, typ==='B'?bassLbl:accLbl, 'bold', 'start');
+          }
+        });
+      });
+      var lhLastCx = lhX0 + (nLH-1)*CGAP;
+      for(var i4 = 0; i4 < maxLHBtns; i4++)
+        s += tx(lhLastCx+R+5, lhGridTop+i4*BGAP+BGAP/2+3, i4+1, 6, numTx, 'normal', 'start');
+    }
+
+    s += '<text x="'+(W/2)+'" y="'+(H-MB+12)+'" font-size="8.5" fill="'+textColor+'" font-style="italic" text-anchor="middle">\u2191 Aigus</text>';
+    s += '<line x1="'+MH+'" y1="'+(H-MB+20)+'" x2="'+(W-MH)+'" y2="'+(H-MB+20)+'" stroke="'+ruleColor+'" stroke-width="1"/>';
+    s += tx(MH, H-MB+28, escSVG(data.nomLuthier)+' \u2014 ewendaviau.com', 7, subtl, 'normal', 'start');
+
+    s += svg_close();
+    return s;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     toData — convert preset JSON to rendering format
+     ═══════════════════════════════════════════════════ */
+  function toData(rec){
+    var nRec = rec.notes || {};
+    var droiteNotes = nRec.droite || [];
+    var droite = (rec.rangees || []).map(function(row, ri){
+      return {
+        nom: row.nom || ('Rangée '+(ri+1)),
+        register: row.register || 'N',
+        offset: row.offset || 0,
+        boutons: droiteNotes[ri] || []
+      };
+    });
+    return {
+      nomInstrument: rec.nom || rec.label || '',
+      nomJoueur: rec.joueur || '',
+      nomLuthier: rec.luthier || "Ewen d'Aviau",
+      date: rec.dateCreation || '',
+      nbVoix: rec.nbVoix || 2,
+      voixPerRow: rec.voixPerRow || [],
+      nbVoixAccords: rec.nbVoixAccords || 2,
+      nbVoixBasses: rec.nbVoixBasses || 2,
+      lhDisplayMode: rec.lhDisplayMode || 'separated',
+      lhPairedDir: rec.lhPairedDir || 'vertical',
+      lhRows: rec.lhRows || [{nb: (nRec.basses||[]).length || 1, offset: 0}],
+      lhPairsPerRow: rec.lhPairsPerRow || 2,
+      lhBassFirst: rec.lhBassFirst || false,
+      showMidi: false,
+      droite: droite,
+      basses: nRec.basses || [],
+      basses2: nRec.basses2 || [],
+      basses3: nRec.basses3 || [],
+      accords: nRec.accords || [],
+      accords2: nRec.accords2 || [],
+      accords3: nRec.accords3 || [],
+      terzetto: nRec.terzetto || [],
+      orderSpecs: rec.orderSpecs || {}
+    };
+  }
+
+  /* ═══════════════════════════════════════════════════
+     POPULATE PRESET SELECTOR (grouped by category)
+     ═══════════════════════════════════════════════════ */
+  function populatePresetSelector(){
+    var sel = $('cw-preset-sel');
+    var cats = {};
+    PRESET_CATALOG.forEach(function(p){
+      if(!cats[p.category]) cats[p.category] = [];
+      cats[p.category].push(p);
+    });
+    Object.keys(cats).forEach(function(cat){
+      var og = document.createElement('optgroup');
+      og.label = cat;
+      cats[cat].forEach(function(p){
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.label;
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     FETCH PRESET & RENDER
+     ═══════════════════════════════════════════════════ */
+  function resolvePresetUrl(id){
+    return 'presets/' + id + '.json';
+  }
+
+  function loadPreset(id){
+    if(!id){ currentPreset = null; currentData = null; renderAll(); return; }
+    var url = resolvePresetUrl(id);
+    fetch(url).then(function(r){
+      if(!r.ok) throw new Error('Preset introuvable: ' + id);
+      return r.json();
+    }).then(function(json){
+      // Inject label from catalog
+      var cat = PRESET_CATALOG.find(function(p){ return p.id === id; });
+      if(cat) json.label = cat.label;
+      currentPreset = json;
+      applyUIToPreset();
+      renderAll();
+    }).catch(function(err){
+      $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur : '+err.message+'</p>';
+    });
+  }
+
+  /* Apply UI field overrides to preset */
+  function applyUIToPreset(){
+    if(!currentPreset) return;
+    var nom = $('cw-nom-instrument').value.trim();
+    if(nom) currentPreset.nom = nom;
+    var joueur = $('cw-nom-joueur').value.trim();
+    currentPreset.joueur = joueur;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     RENDER ALL UI
+     ═══════════════════════════════════════════════════ */
+  function renderAll(){
+    applyUIToPreset();
+    if(!currentPreset){
+      $('cw-svg-wrap').innerHTML = '<p class="cw-placeholder">Sélectionnez un modèle pour afficher le plan.</p>';
+      $('cw-rh-tables').innerHTML = '';
+      $('cw-lh-tables').innerHTML = '';
+      $('cw-rows-cfg').innerHTML = '';
+      return;
+    }
+    currentData = toData(currentPreset);
+    currentData.nomJoueur = $('cw-nom-joueur').value.trim();
+    var nomI = $('cw-nom-instrument').value.trim();
+    if(nomI) currentData.nomInstrument = nomI;
+
+    // SVG preview
+    try {
+      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+    } catch(e){
+      $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+e.message+'</p>';
+    }
+
+    renderRowsCfg();
+    renderRHTables();
+    renderLHTables();
+  }
+
+  /* ═══════════════════════════════════════════════════
+     ROW CONFIGURATION TABLE
+     ═══════════════════════════════════════════════════ */
+  function renderRowsCfg(){
+    if(!currentPreset) return;
+    var rows = currentPreset.rangees || [];
+    var html = '<table class="cw-cfg-table"><thead><tr><th>#</th><th>Nom</th><th>Boutons</th></tr></thead><tbody>';
+    rows.forEach(function(row, ri){
+      html += '<tr>';
+      html += '<td>'+(ri+1)+'</td>';
+      html += '<td><input type="text" value="'+escAttr(row.nom||'')+'" data-row="'+ri+'" data-field="nom" class="cw-row-cfg-input"></td>';
+      html += '<td><input type="number" min="1" max="30" value="'+(row.nb||0)+'" data-row="'+ri+'" data-field="nb" class="cw-row-cfg-input" style="width:60px"></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $('cw-rows-cfg').innerHTML = html;
+
+    // Bind change events
+    $('cw-rows-cfg').querySelectorAll('.cw-row-cfg-input').forEach(function(inp){
+      inp.addEventListener('change', onRowCfgChange);
+    });
+  }
+
+  function onRowCfgChange(e){
+    var inp = e.target;
+    var ri = parseInt(inp.getAttribute('data-row'));
+    var field = inp.getAttribute('data-field');
+    if(!currentPreset || !currentPreset.rangees[ri]) return;
+    if(field === 'nom'){
+      currentPreset.rangees[ri].nom = inp.value;
+    } else if(field === 'nb'){
+      var newNb = Math.max(1, parseInt(inp.value)||1);
+      var oldNb = currentPreset.rangees[ri].nb;
+      currentPreset.rangees[ri].nb = newNb;
+      // Adjust notes array
+      var notes = currentPreset.notes.droite[ri] || [];
+      if(newNb > oldNb){
+        for(var k = oldNb; k < newNb; k++) notes.push({p:'',t:''});
+      } else {
+        notes.length = newNb;
+      }
+      currentPreset.notes.droite[ri] = notes;
+    }
+    renderAll();
+  }
+
+  /* ═══════════════════════════════════════════════════
+     RH NOTE EDITING TABLES
+     ═══════════════════════════════════════════════════ */
+  function renderRHTables(){
+    if(!currentPreset) return;
+    var notes = currentPreset.notes || {};
+    var droite = notes.droite || [];
+    var html = '';
+    (currentPreset.rangees || []).forEach(function(row, ri){
+      var btns = droite[ri] || [];
+      html += '<table class="cw-note-table"><caption>'+escHTML(row.nom || ('Rangée '+(ri+1)))+'</caption>';
+      html += '<thead><tr><th>#</th><th>\u2193 Poussé</th><th>\u2191 Tiré</th></tr></thead><tbody>';
+      for(var bi = 0; bi < (row.nb||btns.length); bi++){
+        var btn = btns[bi] || {p:'',t:''};
+        html += '<tr>';
+        html += '<td class="cw-num">'+(bi+1)+'</td>';
+        html += '<td><input type="text" value="'+escAttr(btn.p||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="p"></td>';
+        html += '<td><input type="text" value="'+escAttr(btn.t||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="t"></td>';
+        html += '</tr>';
+      }
+      html += '</tbody></table>';
+    });
+    $('cw-rh-tables').innerHTML = html;
+    $('cw-rh-tables').querySelectorAll('input[data-section="rh"]').forEach(function(inp){
+      inp.addEventListener('change', onNoteChange);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LH NOTE EDITING TABLES
+     ═══════════════════════════════════════════════════ */
+  function renderLHTables(){
+    if(!currentPreset) return;
+    var notes = currentPreset.notes || {};
+    var html = '';
+
+    // Basses
+    var basses = notes.basses || [];
+    html += '<table class="cw-note-table"><caption>Basses</caption>';
+    html += '<thead><tr><th>#</th><th>\u2193 Poussé</th><th>\u2191 Tiré</th></tr></thead><tbody>';
+    for(var i = 0; i < basses.length; i++){
+      var b = basses[i] || {p:'',t:''};
+      html += '<tr>';
+      html += '<td class="cw-num">'+(i+1)+'</td>';
+      html += '<td><input type="text" value="'+escAttr(b.p||'')+'" data-section="basses" data-btn="'+i+'" data-dir="p"></td>';
+      html += '<td><input type="text" value="'+escAttr(b.t||'')+'" data-section="basses" data-btn="'+i+'" data-dir="t"></td>';
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+
+    // Accords
+    var accords = notes.accords || [];
+    html += '<table class="cw-note-table"><caption>Accords</caption>';
+    html += '<thead><tr><th>#</th><th>\u2193 Poussé</th><th>\u2191 Tiré</th></tr></thead><tbody>';
+    for(var j = 0; j < accords.length; j++){
+      var a = accords[j] || {p:'',t:''};
+      html += '<tr>';
+      html += '<td class="cw-num">'+(j+1)+'</td>';
+      html += '<td><input type="text" value="'+escAttr(a.p||'')+'" data-section="accords" data-btn="'+j+'" data-dir="p"></td>';
+      html += '<td><input type="text" value="'+escAttr(a.t||'')+'" data-section="accords" data-btn="'+j+'" data-dir="t"></td>';
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+
+    $('cw-lh-tables').innerHTML = html;
+    $('cw-lh-tables').querySelectorAll('input[data-section]').forEach(function(inp){
+      inp.addEventListener('change', onNoteChange);
+    });
+  }
+
+  function onNoteChange(e){
+    var inp = e.target;
+    var section = inp.getAttribute('data-section');
+    var bi = parseInt(inp.getAttribute('data-btn'));
+    var dir = inp.getAttribute('data-dir');
+    var val = inp.value.trim();
+    if(!currentPreset) return;
+    var notes = currentPreset.notes;
+    if(section === 'rh'){
+      var ri = parseInt(inp.getAttribute('data-row'));
+      if(!notes.droite[ri]) notes.droite[ri] = [];
+      if(!notes.droite[ri][bi]) notes.droite[ri][bi] = {p:'',t:''};
+      notes.droite[ri][bi][dir] = val;
+    } else if(section === 'basses'){
+      if(!notes.basses[bi]) notes.basses[bi] = {p:'',t:''};
+      notes.basses[bi][dir] = val;
+    } else if(section === 'accords'){
+      if(!notes.accords[bi]) notes.accords[bi] = {p:'',t:''};
+      notes.accords[bi][dir] = val;
+    }
+    // Re-render SVG only (not the tables, to keep focus)
+    applyUIToPreset();
+    currentData = toData(currentPreset);
+    currentData.nomJoueur = $('cw-nom-joueur').value.trim();
+    var nomI = $('cw-nom-instrument').value.trim();
+    if(nomI) currentData.nomInstrument = nomI;
+    try {
+      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+    } catch(err){
+      $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+err.message+'</p>';
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     HELPERS
+     ═══════════════════════════════════════════════════ */
+  function escAttr(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escHTML(s){
+    if(!s) return '';
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(s)));
+    return d.innerHTML;
+  }
+
+  function showToast(msg, duration){
+    var el = $('cw-toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(el._timer);
+    el._timer = setTimeout(function(){ el.style.display = 'none'; }, duration || 2500);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     EXPORT JSON (clipboard)
+     ═══════════════════════════════════════════════════ */
+  function exportJSON(){
+    if(!currentPreset){
+      showToast('Aucun plan à exporter.');
+      return;
+    }
+    applyUIToPreset();
+    var out = JSON.parse(JSON.stringify(currentPreset));
+    out.exportDate = new Date().toISOString();
+    var json = JSON.stringify(out, null, 2);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(json).then(function(){
+        showToast('JSON copié dans le presse-papiers \u2714');
+      }).catch(function(){
+        fallbackCopy(json);
+      });
+    } else {
+      fallbackCopy(json);
+    }
+  }
+
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast('JSON copié \u2714'); }
+    catch(e){ showToast('Impossible de copier. Copiez manuellement.'); }
+    document.body.removeChild(ta);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     TEMPLATE MANAGEMENT (localStorage)
+     ═══════════════════════════════════════════════════ */
+  function getSavedPlans(){
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function setSavedPlans(plans){
+    localStorage.setItem(LS_KEY, JSON.stringify(plans));
+  }
+  function refreshSavedList(){
+    var sel = $('cw-saved-sel');
+    sel.innerHTML = '<option value="">— Aucun plan sauvegardé —</option>';
+    var plans = getSavedPlans();
+    var keys = Object.keys(plans).sort();
+    if(keys.length){
+      sel.innerHTML = '<option value="">— Choisir un plan —</option>';
+      keys.forEach(function(k){
+        var opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = k;
+        sel.appendChild(opt);
+      });
+    }
+  }
+  function savePlan(){
+    if(!currentPreset){
+      showToast('Aucun plan à sauvegarder.');
+      return;
+    }
+    applyUIToPreset();
+    var name = (currentPreset.nom || currentPreset.label || 'Mon plan').trim();
+    var suggested = prompt('Nom du plan :', name);
+    if(!suggested) return;
+    var plans = getSavedPlans();
+    plans[suggested] = JSON.parse(JSON.stringify(currentPreset));
+    setSavedPlans(plans);
+    refreshSavedList();
+    showToast('Plan « '+suggested+' » sauvegardé \u2714');
+  }
+  function loadPlan(){
+    var key = $('cw-saved-sel').value;
+    if(!key){ showToast('Sélectionnez un plan.'); return; }
+    var plans = getSavedPlans();
+    if(!plans[key]){ showToast('Plan introuvable.'); return; }
+    currentPreset = JSON.parse(JSON.stringify(plans[key]));
+    // Update UI fields
+    $('cw-nom-instrument').value = currentPreset.nom || currentPreset.label || '';
+    $('cw-nom-joueur').value = currentPreset.joueur || '';
+    $('cw-preset-sel').value = '';
+    renderAll();
+    showToast('Plan « '+key+' » chargé \u2714');
+  }
+  function deletePlan(){
+    var key = $('cw-saved-sel').value;
+    if(!key){ showToast('Sélectionnez un plan.'); return; }
+    if(!confirm('Supprimer « '+key+' » ?')) return;
+    var plans = getSavedPlans();
+    delete plans[key];
+    setSavedPlans(plans);
+    refreshSavedList();
+    showToast('Plan supprimé.');
+  }
+
+  /* ═══════════════════════════════════════════════════
+     DARK/LIGHT TOGGLE
+     ═══════════════════════════════════════════════════ */
+  function toggleTheme(){
+    darkMode = !darkMode;
+    widget.classList.toggle('cw-dark', darkMode);
+    $('cw-theme-toggle').textContent = darkMode ? '☀️' : '🌙';
+    if(currentPreset) renderAll();
+  }
+
+  /* ═══════════════════════════════════════════════════
+     COLLAPSIBLE SECTIONS
+     ═══════════════════════════════════════════════════ */
+  function initCollapsible(){
+    widget.querySelectorAll('.cw-section-head[data-toggle]').forEach(function(head){
+      head.addEventListener('click', function(){
+        var targetId = head.getAttribute('data-toggle');
+        var body = $(targetId);
+        if(!body) return;
+        var hidden = body.classList.contains('cw-hidden');
+        body.classList.toggle('cw-hidden', !hidden);
+        head.textContent = head.textContent.replace(/^[▶▼]/, hidden ? '▼' : '▶');
+      });
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     INIT
+     ═══════════════════════════════════════════════════ */
+  function init(){
+    populatePresetSelector();
+    initCollapsible();
+    refreshSavedList();
+
+    // Event listeners
+    $('cw-preset-sel').addEventListener('change', function(){
+      loadPreset(this.value);
+    });
+    $('cw-nom-instrument').addEventListener('input', function(){
+      if(currentPreset) renderAll();
+    });
+    $('cw-nom-joueur').addEventListener('input', function(){
+      if(currentPreset) renderAll();
+    });
+    $('cw-theme-toggle').addEventListener('click', toggleTheme);
+    $('cw-export-btn').addEventListener('click', exportJSON);
+    $('cw-save-btn').addEventListener('click', savePlan);
+    $('cw-load-btn').addEventListener('click', loadPlan);
+    $('cw-delete-btn').addEventListener('click', deletePlan);
+  }
+
+  // Run init when DOM is ready
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
