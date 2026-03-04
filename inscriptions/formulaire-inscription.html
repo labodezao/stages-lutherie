@@ -305,6 +305,57 @@
     /* ── Hints ── */
     .hint { font-size:0.8rem; color:#999; margin-top:4px; }
 
+    /* ── Accordion Preview Compositor ── */
+    .accordion-preview-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      aspect-ratio: 4 / 3;
+      background: #F9F6F2;
+      border-radius: 12px;
+      border: 1px solid #E2D9CF;
+      overflow: hidden;
+    }
+    .accordion-preview-wrap .acc-layer {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      transition: opacity 0.3s ease;
+    }
+    /* SVG placeholder fallback layers */
+    .accordion-preview-wrap .acc-placeholder {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.85);
+      text-shadow: 0 1px 2px rgba(0,0,0,.3);
+      transition: background-color 0.3s ease;
+    }
+    .acc-layer-label {
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.55rem;
+      color: rgba(255,255,255,.5);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .accordion-preview-hint {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #999;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .insc-hero h1 { font-size:2rem; }
@@ -452,10 +503,20 @@
             </span>
           </label>
         </div>
+
+        <div class="insc-field" style="margin-top:20px;">
+          <label style="font-weight:600; font-size:0.95rem;">
+            <input type="checkbox" id="ancheAMano" name="ancheAMano" value="oui">
+            🎯 Option <strong>Anche a mano Blue Star</strong> (anches fabriquées à la main)
+            <span style="color:var(--gold); font-weight:700;">+ 20 %</span>
+          </label>
+          <div class="hint" style="margin-left:24px;">
+            Surcoût par modèle : 21/8b +564 € · 33/12b +900 € · 33/18b +976 € · 33/24b +1 250 €
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <!-- ════════════════ 4. CAISSE MAIN DROITE ════════════════ -->
     <div class="insc-section">
       <div class="insc-section-header">
         <span class="icon">🎹</span>
@@ -651,7 +712,79 @@
       </div>
     </div>
 
-    <!-- ════════════════ 7. PLAN DE CLAVIER PERSONNALISÉ ════════════════ -->
+    <!-- ════════════════ 7. APERÇU ACCORDÉON ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">🪗</span>
+        <h2>Aperçu de votre accordéon</h2>
+      </div>
+      <div class="insc-section-body">
+        <div class="accordion-preview-wrap" id="accordionPreview">
+          <!--
+            Image Layer System — each layer is a positioned image that
+            changes based on selected options. Replace placeholder
+            backgrounds with actual image URLs when available.
+
+            To add real images:
+            1. Upload images to WordPress Media Library (or /inscriptions/img/)
+            2. Replace the style="background:..." with
+               style="background-image:url('img/caisse-md-noyer.png');"
+            3. Each option value maps to an image variant.
+
+            Naming convention for image files:
+              caisse-md-{noyer|erable|cerisier}.png
+              grille-{noyer|erable|cerisier}.png
+              boutons-{nacrine-noire|nacrine-blanche|noyer|erable}.png
+              soufflet-{bleu|rouge|orange|noir}.png
+              caisse-mg-{8b|12b|18b|24b}.png
+              sangles-{bleu|rouge|cuir-nat|noir}.png
+          -->
+
+          <!-- Layer 0: Caisse MD (wood body right side) -->
+          <div class="acc-placeholder" id="accCaisseMD"
+               style="top:8%;left:55%;width:40%;height:84%;border-radius:8px;background:#8B6F47;">
+            <span>Caisse MD</span>
+            <span class="acc-layer-label">boisClavier</span>
+          </div>
+          <!-- Layer 1: Grille + caisse secondary wood -->
+          <div class="acc-placeholder" id="accGrille"
+               style="top:12%;left:58%;width:34%;height:30%;border-radius:6px;background:#A0845C;">
+            <span>Grille</span>
+            <span class="acc-layer-label">boisGrille</span>
+          </div>
+          <!-- Layer 2: Boutons MD -->
+          <div class="acc-placeholder" id="accBoutons"
+               style="top:16%;left:62%;width:26%;height:22%;border-radius:4px;background:#333;">
+            <span>Boutons</span>
+            <span class="acc-layer-label">boutonsMD</span>
+          </div>
+          <!-- Layer 3: Soufflet (center) -->
+          <div class="acc-placeholder" id="accSoufflet"
+               style="top:8%;left:30%;width:25%;height:84%;border-radius:4px;background:#2e6cb5;">
+            <span>Soufflet</span>
+            <span class="acc-layer-label">couleurSoufflet</span>
+          </div>
+          <!-- Layer 4: Caisse MG (left side) -->
+          <div class="acc-placeholder" id="accCaisseMG"
+               style="top:8%;left:5%;width:25%;height:84%;border-radius:8px;background:#8B6F47;">
+            <span>Caisse MG</span>
+            <span class="acc-layer-label">basses</span>
+          </div>
+          <!-- Layer 5: Sangles -->
+          <div class="acc-placeholder" id="accSangles"
+               style="top:3%;left:60%;width:8%;height:94%;border-radius:3px;background:#2e6cb5;opacity:.7;">
+            <span style="font-size:.5rem;">Sangles</span>
+            <span class="acc-layer-label">sangles</span>
+          </div>
+        </div>
+        <p class="accordion-preview-hint">
+          L'aperçu se met à jour automatiquement selon vos choix ci-dessus.<br>
+          <em>Images définitives à venir — zones de couleur indicatives.</em>
+        </p>
+      </div>
+    </div>
+
+    <!-- ════════════════ 8. PLAN DE CLAVIER PERSONNALISÉ ════════════════ -->
     <div class="insc-section">
       <div class="insc-section-header">
         <span class="icon">🎼</span>
@@ -672,11 +805,12 @@
             <strong>Aperçu du plan importé :</strong>
             <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
           </div>
+          <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
         </div>
       </div>
     </div>
 
-    <!-- ════════════════ 8. RÉCAPITULATIF ════════════════ -->
+    <!-- ════════════════ 9. RÉCAPITULATIF ════════════════ -->
     <div class="insc-section insc-summary">
       <div class="insc-section-header insc-summary-header">
         <span class="icon">📋</span>
@@ -688,6 +822,7 @@
             <tr><td>Nom</td><td id="sumNom">–</td></tr>
             <tr><td>Session</td><td id="sumSession">–</td></tr>
             <tr><td>Modèle</td><td id="sumModele">–</td></tr>
+            <tr><td>Option Anche a mano Blue Star</td><td id="sumAnche">–</td></tr>
             <tr><td>Tonalité</td><td id="sumTona">–</td></tr>
             <tr><td>Disposition</td><td id="sumDispo">–</td></tr>
             <tr><td>Voix</td><td id="sumVoix">–</td></tr>
@@ -709,7 +844,7 @@
       </div>
     </div>
 
-    <!-- ════════════════ 9. CONDITIONS ════════════════ -->
+    <!-- ════════════════ 10. CONDITIONS ════════════════ -->
     <div class="insc-section">
       <div class="insc-section-header">
         <span class="icon">📜</span>
@@ -934,6 +1069,270 @@ var STAGE_CONFIG = {
   ]
 };
 
+/* ╔══════════════════════════════════════════════════════════════════╗
+ * ║  buildSVG_PlanLite — Self-contained TikZ-style keyboard plan   ║
+ * ║  renderer, extracted from outils/clavier-accordeon.             ║
+ * ║  Accepts raw preset JSON format (rangees + notes) and renders   ║
+ * ║  the visual SVG plan matching the full tool's output.           ║
+ * ╚══════════════════════════════════════════════════════════════════╝ */
+var buildSVG_PlanLite = (function () {
+  var _sid = 0;
+  function svgOpen(w, h, bg) {
+    var id = 'fp' + (++_sid);
+    return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h
+      + '" xmlns="http://www.w3.org/2000/svg" font-family="\'Nunito\',\'Segoe UI\',Arial,sans-serif" overflow="hidden">'
+      + '<defs><clipPath id="' + id + '"><rect width="' + w + '" height="' + h + '"/></clipPath></defs>'
+      + '<rect width="' + w + '" height="' + h + '" fill="' + (bg || '#fff') + '"/><g clip-path="url(#' + id + ')">';
+  }
+  function svgClose() { return '</g></svg>'; }
+  function esc(s) { return s ? String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : ''; }
+  function tx(x, y, text, size, fill, weight, anchor) {
+    return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" fill="' + fill
+      + '" font-weight="' + (weight || 'normal') + '" text-anchor="' + (anchor || 'start') + '">' + text + '</text>';
+  }
+  function fmtDate() { return new Date().toLocaleDateString('fr-FR'); }
+
+  function noteLabel(v, cx, baseY, color) {
+    if (!v) return '';
+    var d = typeof v === 'object' ? (v.p || v.t || '') : String(v);
+    if (!d) return '';
+    var fs = d.length > 8 ? 5.5 : d.length > 5 ? 6.8 : 8;
+    return tx(cx, baseY, esc(d), fs, color, 'bold', 'middle');
+  }
+
+  /**
+   * Convert preset JSON → data format for rendering.
+   * @param {Object} rec - Raw preset/plan JSON (with rangees + notes)
+   * @returns {Object} data suitable for rendering
+   */
+  function presetToData(rec) {
+    var n = rec.notes || {};
+    var droiteNotes = n.droite || [];
+    var droite = (rec.rangees || []).map(function (row, ri) {
+      return {
+        nom: row.nom || ('Rang\u00e9e ' + (ri + 1)),
+        offset: row.offset || 0,
+        boutons: droiteNotes[ri] || []
+      };
+    });
+    return {
+      nomInstrument: rec.nom || 'Accord\u00e9on Diatonique',
+      nomJoueur: rec.joueur || '',
+      nomLuthier: rec.luthier || "Ewen d'Aviau",
+      date: rec.dateCreation || '',
+      lhDisplayMode: rec.lhDisplayMode || 'separated',
+      lhRows: rec.lhRows || [{ nb: 6, offset: 0 }],
+      lhBassFirst: rec.lhBassFirst || false,
+      droite: droite,
+      basses: n.basses || [],
+      accords: n.accords || [],
+      terzetto: n.terzetto || []
+    };
+  }
+
+  /**
+   * Render a TikZ-style keyboard plan as SVG string.
+   * @param {Object} data - From presetToData() or compatible
+   * @returns {string} SVG markup
+   */
+  function render(data) {
+    /* Constants */
+    var R = 18, BGAP = 46, CGAP = 52, MH = 20, MT = 14, MB = 30;
+    var TITLE_H = 76, BTWN = 50, HEADER_GAP = 120;
+
+    /* Colours — light mode (indigo/amber like the tool) */
+    var gold = '#4338CA', bg = '#fff';
+    var pushBg = '#EEF2FF', pullBg = '#FFFBEB';
+    var pushTx = '#3730A3', pullTx = '#92400E';
+    var subtl = '#94A3B8', stroke = '#6366F1';
+    var numTx = 'rgba(99,102,241,.2)';
+    var band1 = '#FAFAFA', band2 = '#F5F3FF';
+    var circleBorder = '#C7D2FE';
+    var textColor = '#1E293B', ruleColor = '#E2E8F0';
+
+    function drawBtn(cx, cy, btn) {
+      var o = '';
+      o += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="' + bg + '" stroke="' + circleBorder + '" stroke-width="1"/>';
+      o += '<path d="M' + (cx - R) + ',' + cy + ' A' + R + ',' + R + ' 0 0,1 ' + (cx + R) + ',' + cy + '" fill="' + pushBg + '"/>';
+      o += '<path d="M' + (cx - R) + ',' + cy + ' A' + R + ',' + R + ' 0 0,0 ' + (cx + R) + ',' + cy + '" fill="' + pullBg + '"/>';
+      o += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="none" stroke="' + stroke + '" stroke-width="1.2"/>';
+      o += '<line x1="' + (cx - R) + '" y1="' + cy + '" x2="' + (cx + R) + '" y2="' + cy + '" stroke="' + stroke + '" stroke-width=".5" opacity=".4"/>';
+      if (btn && btn.p) o += noteLabel(btn.p, cx, cy - 7, pushTx);
+      if (btn && btn.t) o += noteLabel(btn.t, cx, cy + 15, pullTx);
+      return o;
+    }
+
+    /* RH data */
+    var rhRows = data.droite || [];
+    var nRH = rhRows.length;
+    var maxRHBtns = 1;
+    rhRows.forEach(function (r) { maxRHBtns = Math.max(maxRHBtns, r.boutons.length); });
+
+    /* LH data (separated mode) */
+    var lhSecRows = [];
+    var lhRowCfg = (data.lhRows && data.lhRows.length) ? data.lhRows : [{ nb: Math.max((data.basses || []).length, 1), offset: 0 }];
+    var bIdx = 0, aIdx = 0;
+    lhRowCfg.forEach(function (row, ri) {
+      lhSecRows.push({ nom: lhRowCfg.length === 1 ? 'Accords' : 'Acc ' + (ri + 1), items: (data.accords || []).slice(aIdx, aIdx + row.nb), offset: row.offset || 0 });
+      aIdx += row.nb;
+      lhSecRows.push({ nom: lhRowCfg.length === 1 ? 'Basses' : 'Bas ' + (ri + 1), items: (data.basses || []).slice(bIdx, bIdx + row.nb), offset: row.offset || 0 });
+      bIdx += row.nb;
+    });
+    if (data.lhBassFirst) {
+      /* Reorder: basses first */
+      var reordered = [];
+      for (var i = 0; i < lhSecRows.length; i += 2) { reordered.push(lhSecRows[i + 1]); reordered.push(lhSecRows[i]); }
+      lhSecRows = reordered;
+    }
+    if (data.terzetto && data.terzetto.length) lhSecRows.push({ nom: 'Terzetto', items: data.terzetto, offset: 0 });
+
+    var nLH = lhSecRows.length;
+    var maxLHBtns = 0;
+    lhSecRows.forEach(function (s) { maxLHBtns = Math.max(maxLHBtns, s.items.length); });
+    var maxBtns = Math.max(maxRHBtns, maxLHBtns, 1);
+
+    /* Offsets */
+    var rhOffsets = rhRows.map(function (r) { return r.offset || 0; });
+    var rhMaxOff = Math.max.apply(null, rhOffsets.concat([0]));
+    var rhMinOff = Math.min.apply(null, rhOffsets.concat([0]));
+    var rhTopShift = -rhMinOff * (BGAP / 2);
+    var rhBottomExtra = rhMaxOff * (BGAP / 2);
+    var lhOffsets = lhSecRows.map(function (s) { return s.offset || 0; });
+    var lhMaxOff = lhOffsets.length ? Math.max.apply(null, lhOffsets.concat([0])) : 0;
+    var lhMinOff = lhOffsets.length ? Math.min.apply(null, lhOffsets.concat([0])) : 0;
+    var lhTopShift = -lhMinOff * (BGAP / 2);
+    var lhBottomExtra = lhMaxOff * (BGAP / 2);
+
+    /* Layout */
+    var lhW = nLH > 0 ? nLH * CGAP : 0;
+    var rhW = nRH * CGAP;
+    var contentW = lhW + (nLH > 0 ? BTWN : 0) + rhW;
+    var W = Math.max(contentW + 2 * MH, 460);
+    var extraOff = Math.max(rhTopShift + rhBottomExtra, lhTopShift + lhBottomExtra);
+    var bodyH = maxBtns * BGAP + extraOff + HEADER_GAP + 20;
+    var H = MT + TITLE_H + bodyH + MB;
+
+    var contentTop = MT + TITLE_H;
+    var contentBot = H - MB;
+    var gridCenterY = contentTop + (contentBot - contentTop) * 0.55;
+    var gridTop = Math.round(gridCenterY - bodyH / 2) + HEADER_GAP;
+
+    var rhX0 = MH + CGAP / 2;
+    var lhX0 = nLH > 0 ? rhX0 + rhW + BTWN : rhX0 + rhW;
+    var sepX = nLH > 0 ? (rhX0 + (nRH - 1) * CGAP + R + (lhX0 - R)) / 2 : rhX0 + rhW + BTWN / 2;
+
+    var s = svgOpen(W, H, bg);
+
+    /* Accent bar */
+    s += '<rect x="0" y="0" width="' + W + '" height="3" fill="' + gold + '"/>';
+
+    /* Title table */
+    var tblX = MH, tblY = MT, rotW = 22, tblInfoX = tblX + rotW + 6, rowH = 16, tblRows = 4, tblH = tblRows * rowH;
+    s += '<rect x="' + tblX + '" y="' + tblY + '" width="' + rotW + '" height="' + tblH + '" fill="' + gold + '" opacity=".08" rx="3"/>';
+    s += '<rect x="' + tblX + '" y="' + tblY + '" width="' + (rotW + 244) + '" height="' + tblH + '" fill="none" stroke="' + ruleColor + '" stroke-width="1" rx="3"/>';
+    s += '<line x1="' + (tblX + rotW) + '" y1="' + tblY + '" x2="' + (tblX + rotW) + '" y2="' + (tblY + tblH) + '" stroke="' + ruleColor + '" stroke-width="1"/>';
+    for (var ri = 1; ri < tblRows; ri++)
+      s += '<line x1="' + (tblX + rotW) + '" y1="' + (tblY + ri * rowH) + '" x2="' + (tblX + rotW + 244) + '" y2="' + (tblY + ri * rowH) + '" stroke="' + ruleColor + '" stroke-width=".5"/>';
+    var rotCx = tblX + rotW / 2, rotCy = tblY + tblH / 2;
+    s += '<text x="' + rotCx + '" y="' + rotCy + '" text-anchor="middle" font-size="13" fill="' + gold + '" font-weight="bold" transform="rotate(-90,' + rotCx + ',' + rotCy + ')">Plan de clavier</text>';
+
+    /* Title rows */
+    s += tx(tblInfoX, tblY + rowH / 2 + 4, esc(data.nomInstrument || 'Accord\u00e9on Diatonique'), 12, gold, 'bold', 'start');
+    var r2 = data.nomJoueur ? 'Client : ' + esc(data.nomJoueur) : '';
+    s += tx(tblInfoX, tblY + rowH + rowH / 2 + 3, r2, 8.5, textColor, 'normal', 'start');
+    var nBtnsRH = 0;
+    rhRows.forEach(function (r) { nBtnsRH += r.boutons.length; });
+    var nBasses = data.basses ? data.basses.length : 0;
+    var nAccords = data.accords ? data.accords.length : 0;
+    var r3 = nRH + ' ' + (nRH > 1 ? 'rang\u00e9es' : 'rang\u00e9e') + ' (' + nBtnsRH + ' boutons) \u00b7 ' + nBasses + ' basses \u00b7 ' + nAccords + ' accords';
+    s += tx(tblInfoX, tblY + 2 * rowH + rowH / 2 + 3, esc(r3), 8, textColor, 'normal', 'start');
+    s += tx(tblInfoX, tblY + 3 * rowH + rowH / 2 + 3, esc(data.nomLuthier) + '  \u00b7  ' + esc(fmtDate()), 7.5, subtl, 'normal', 'start');
+
+    /* Push/pull legend */
+    var legR = 7, legX = W - MH - legR - 2, legY = tblY + tblH / 2;
+    s += '<circle cx="' + legX + '" cy="' + legY + '" r="' + legR + '" fill="' + bg + '" stroke="' + stroke + '" stroke-width="1"/>';
+    s += '<path d="M' + (legX - legR) + ',' + legY + ' A' + legR + ',' + legR + ' 0 0,1 ' + (legX + legR) + ',' + legY + '" fill="' + pushBg + '"/>';
+    s += '<path d="M' + (legX - legR) + ',' + legY + ' A' + legR + ',' + legR + ' 0 0,0 ' + (legX + legR) + ',' + legY + '" fill="' + pullBg + '"/>';
+    s += '<circle cx="' + legX + '" cy="' + legY + '" r="' + legR + '" fill="none" stroke="' + stroke + '" stroke-width="1"/>';
+    s += '<line x1="' + (legX - legR) + '" y1="' + legY + '" x2="' + (legX + legR) + '" y2="' + legY + '" stroke="' + stroke + '" stroke-width=".4" opacity=".4"/>';
+    s += tx(legX - legR - 3, legY - 1, 'Pouss\u00e9', 6, textColor, 'normal', 'end');
+    s += tx(legX - legR - 3, legY + 7, 'Tir\u00e9', 6, textColor, 'normal', 'end');
+
+    /* "Haut (graves)" */
+    s += '<text x="' + (rhX0 - R - 6) + '" y="' + (gridTop - HEADER_GAP + 4) + '" font-size="8.5" fill="' + subtl + '" font-style="italic">Haut (graves)</text>';
+
+    /* RH columns */
+    s += tx(rhX0 + ((nRH - 1) * CGAP) / 2, gridTop - HEADER_GAP + 6, 'Main Droite', 8.5, gold, 'bold', 'middle');
+    rhRows.forEach(function (row, ri) {
+      var cx = rhX0 + ri * CGAP;
+      var off = rhTopShift + (row.offset || 0) * (BGAP / 2);
+      var lblY = gridTop - 8;
+      s += '<text x="' + cx + '" y="' + lblY + '" text-anchor="start" font-size="6.5" fill="' + gold + '" font-weight="bold" transform="rotate(-90,' + cx + ',' + lblY + ')">' + esc(row.nom) + '</text>';
+      if (row.boutons.length) {
+        var cy0 = gridTop + off + BGAP / 2;
+        var bandY = cy0 - R - 3;
+        var bandH = (row.boutons.length - 1) * BGAP + 2 * (R + 3);
+        s += '<rect x="' + (cx - R - 3) + '" y="' + bandY + '" width="' + ((R + 3) * 2) + '" height="' + bandH + '" rx="3" fill="' + (ri % 2 === 0 ? band1 : band2) + '" opacity=".6"/>';
+      }
+      var suffix = ri === 0 ? '' : ri === 1 ? "'" : "''";
+      row.boutons.forEach(function (btn, bi) {
+        var cy = gridTop + off + bi * BGAP + BGAP / 2;
+        s += drawBtn(cx, cy, btn);
+        s += tx(cx - R - 1, cy + R + 2, (bi + 1) + suffix, 5.5, numTx, 'bold', 'start');
+      });
+    });
+
+    /* Bellows separator */
+    if (nLH > 0) {
+      var sepY1 = gridTop - 2, sepY2 = gridTop + maxBtns * BGAP + extraOff + 2;
+      s += '<line x1="' + sepX + '" y1="' + sepY1 + '" x2="' + sepX + '" y2="' + sepY2 + '" stroke="#C7D2FE" stroke-width="1.5" stroke-dasharray="6,4"/>';
+      var sepMidY = (sepY1 + sepY2) / 2;
+      s += '<text x="' + sepX + '" y="' + sepMidY + '" text-anchor="middle" font-size="6.5" fill="' + subtl + '" font-weight="bold" transform="rotate(-90,' + sepX + ',' + sepMidY + ')">— SOUFFLET —</text>';
+    }
+
+    /* LH columns */
+    if (nLH > 0 && maxLHBtns > 0) {
+      var rhBlockH = maxRHBtns * BGAP + rhTopShift + rhBottomExtra;
+      var lhBlockH = maxLHBtns * BGAP + lhTopShift + lhBottomExtra;
+      var lhGridTop = gridTop + Math.round((rhBlockH - lhBlockH) / 2);
+      s += tx(lhX0 + ((nLH - 1) * CGAP) / 2, lhGridTop - HEADER_GAP + 6, 'Main Gauche', 8.5, gold, 'bold', 'middle');
+
+      lhSecRows.forEach(function (sec, si) {
+        var cx = lhX0 + si * CGAP;
+        var off = lhTopShift + (sec.offset || 0) * (BGAP / 2);
+        if (sec.items.length) {
+          var cy0 = lhGridTop + off + BGAP / 2;
+          var bandY = cy0 - R - 3;
+          var bandH = (sec.items.length - 1) * BGAP + 2 * (R + 3);
+          s += '<rect x="' + (cx - R - 3) + '" y="' + bandY + '" width="' + ((R + 3) * 2) + '" height="' + bandH + '" rx="3" fill="' + (si % 2 === 0 ? band1 : band2) + '" opacity=".6"/>';
+        }
+        sec.items.forEach(function (btn, bi) {
+          var cy = lhGridTop + off + bi * BGAP + BGAP / 2;
+          s += drawBtn(cx, cy, btn);
+        });
+      });
+      var lhLastCx = lhX0 + (nLH - 1) * CGAP;
+      for (var ii = 0; ii < maxLHBtns; ii++)
+        s += tx(lhLastCx + R + 5, lhGridTop + ii * BGAP + BGAP / 2 + 3, ii + 1, 6, numTx, 'normal', 'start');
+    }
+
+    /* Aigus */
+    s += '<text x="' + (W / 2) + '" y="' + (H - MB + 12) + '" font-size="8.5" fill="' + textColor + '" font-style="italic" text-anchor="middle">\u2191 Aigus</text>';
+
+    /* Footer */
+    s += '<line x1="' + MH + '" y1="' + (H - MB + 20) + '" x2="' + (W - MH) + '" y2="' + (H - MB + 20) + '" stroke="' + ruleColor + '" stroke-width="1"/>';
+    s += tx(MH, H - MB + 28, esc(data.nomLuthier) + ' \u2014 ewendaviau.com', 7, subtl, 'normal', 'start');
+
+    s += svgClose();
+    return s;
+  }
+
+  return {
+    presetToData: presetToData,
+    render: render
+  };
+})();
+
 (function () {
   'use strict';
 
@@ -1015,14 +1414,18 @@ var STAGE_CONFIG = {
 
   /* ── Keyboard Plan Parser ── */
   var planData = null;
+  var planSvgData = null; /* data object for SVG rendering */
   document.getElementById('planClavier').addEventListener('input', function () {
     var raw = this.value.trim();
     var preview = document.getElementById('planPreview');
     var info = document.getElementById('planPreviewInfo');
+    var svgContainer = document.getElementById('planSVG');
     planData = null;
+    planSvgData = null;
 
     if (!raw) {
       preview.classList.remove('visible');
+      svgContainer.innerHTML = '';
       updateSummary();
       return;
     }
@@ -1046,12 +1449,28 @@ var STAGE_CONFIG = {
       var name = inst.nom || '(sans nom)';
 
       info.innerHTML = '<strong>' + name + '</strong><br>'
-        + 'MD : ' + nbRows + ' rangées · ' + totalBtns + ' boutons<br>'
+        + 'MD : ' + nbRows + ' rang\u00e9es \u00b7 ' + totalBtns + ' boutons<br>'
         + 'MG : ' + lhBtns + ' boutons';
       preview.classList.add('visible');
+
+      /* Render visual SVG plan */
+      try {
+        planSvgData = buildSVG_PlanLite.presetToData(inst);
+        svgContainer.innerHTML = buildSVG_PlanLite.render(planSvgData);
+        /* Scale SVG to fit container */
+        var svgEl = svgContainer.querySelector('svg');
+        if (svgEl) {
+          svgEl.setAttribute('width', '100%');
+          svgEl.setAttribute('height', 'auto');
+          svgEl.style.maxWidth = '100%';
+        }
+      } catch (svgErr) {
+        svgContainer.innerHTML = '<p style="color:#999; font-size:0.85rem;">Aper\u00e7u visuel non disponible pour ce format.</p>';
+      }
     } catch (e) {
-      info.innerHTML = '<span style="color:#c0392b;">⚠ JSON invalide — ' + e.message + '</span>';
+      info.innerHTML = '<span style="color:#c0392b;">\u26a0 JSON invalide \u2014 ' + e.message + '</span>';
       preview.classList.add('visible');
+      svgContainer.innerHTML = '';
     }
     updateSummary();
   });
@@ -1077,19 +1496,74 @@ var STAGE_CONFIG = {
     document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '–';
     document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '–';
     document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '–';
-    document.getElementById('sumPlan').textContent = planData ? (planData.nom || 'Plan personnalisé') : '–';
+    document.getElementById('sumPlan').textContent = planData ? (planData.nom || 'Plan personnalis\u00e9') : '–';
 
-    /* Price */
+    /* Anche a mano */
+    var ancheChecked = document.getElementById('ancheAMano').checked;
+    document.getElementById('sumAnche').textContent = ancheChecked ? 'Oui (+20 %)' : 'Non';
+
+    /* Price with anche a mano surcharge */
     var modEl = form.querySelector('input[name="modele"]:checked');
     if (modEl) {
-      var price = parseInt(modEl.dataset.price, 10);
-      var deposit = parseInt(modEl.dataset.deposit, 10);
-      document.getElementById('sumPrice').textContent = price.toLocaleString('fr-FR') + ' €';
-      document.getElementById('sumDeposit').textContent = 'Acompte à l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' €';
+      var basePrice = parseInt(modEl.dataset.price, 10);
+      var price = ancheChecked ? Math.round(basePrice * 1.2) : basePrice;
+      var deposit = Math.round(price * 0.4);
+      document.getElementById('sumPrice').textContent = price.toLocaleString('fr-FR') + ' \u20ac';
+      document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac';
     } else {
-      document.getElementById('sumPrice').textContent = '– €';
-      document.getElementById('sumDeposit').textContent = 'Acompte à l\'inscription : – €';
+      document.getElementById('sumPrice').textContent = '– \u20ac';
+      document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : – \u20ac';
     }
+
+    /* Accordion visual preview update */
+    updateAccordionPreview();
+  }
+
+  /* ── Accordion Visual Preview ── */
+  /*
+   * Image Layer System for accordion preview compositor.
+   *
+   * Currently uses colored placeholder rectangles. To use real images:
+   * 1. Upload layered PNG images to inscriptions/img/ (or WordPress media)
+   * 2. Define the mapping below per option value
+   * 3. Each layer swaps background-image instead of background-color
+   *
+   * Expected image structure (transparent PNGs, same aspect ratio):
+   *   img/caisse-md-noyer.png, img/caisse-md-erable.png, img/caisse-md-cerisier.png
+   *   img/grille-noyer.png, img/grille-erable.png, img/grille-cerisier.png
+   *   img/boutons-nacrine-noire.png, img/boutons-nacrine-blanche.png, ...
+   *   img/soufflet-bleu.png, img/soufflet-rouge.png, img/soufflet-orange.png, img/soufflet-noir.png
+   *   img/caisse-mg-8b.png, img/caisse-mg-12b.png, img/caisse-mg-18b.png, img/caisse-mg-24b.png
+   *   img/sangles-bleu.png, img/sangles-rouge.png, img/sangles-cuir-nat.png, img/sangles-noir.png
+   */
+  var WOOD_COLORS = { 'Noyer': '#5C3D2E', '\u00c9rable': '#C8A96E', 'Cerisier': '#8B4513' };
+  var BUTTON_COLORS = { 'Nacrine noire': '#1a1a1a', 'Nacrine blanche': '#F5F0E8', 'Noyer': '#6B4226', 'Erable': '#C8A96E' };
+  var BELLOWS_COLORS = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Orange': '#e67e22', 'Noir': '#222' };
+  var STRAP_COLORS = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Cuir Nat.': '#B5885A', 'Noir': '#222' };
+
+  /* To switch to real images, replace this function body:
+   *   el.style.backgroundImage = 'url(img/' + prefix + '-' + safeVal + '.png)';
+   *   el.style.backgroundColor = 'transparent';
+   */
+  function setLayerColor(el, colorMap, value) {
+    if (value && colorMap[value]) {
+      el.style.backgroundColor = colorMap[value];
+    }
+  }
+
+  function updateAccordionPreview() {
+    var boisClavier = document.getElementById('boisClavier').value;
+    var boisGrille = document.getElementById('boisGrille').value || boisClavier;
+    var boutons = document.getElementById('boutonsMD').value;
+    var soufflet = getRadioVal('couleurSoufflet');
+    var sangles = document.getElementById('couleurSangles').value;
+
+    setLayerColor(document.getElementById('accCaisseMD'), WOOD_COLORS, boisClavier);
+    setLayerColor(document.getElementById('accGrille'), WOOD_COLORS, boisGrille);
+    setLayerColor(document.getElementById('accBoutons'), BUTTON_COLORS, boutons);
+    setLayerColor(document.getElementById('accSoufflet'), BELLOWS_COLORS, soufflet);
+    setLayerColor(document.getElementById('accCaisseMG'), WOOD_COLORS, boisClavier);
+    setLayerColor(document.getElementById('accSangles'), STRAP_COLORS, sangles);
   }
 
   /* Listen on all inputs */
@@ -1168,6 +1642,8 @@ var STAGE_CONFIG = {
     /* 3. Modèle */
     sectionTitle('Mod\u00e8le');
     addLine('Mod\u00e8le', getRadioVal('modele'));
+    var pdfAncheChecked = document.getElementById('ancheAMano').checked;
+    addLine('Anche a mano Blue Star', pdfAncheChecked ? 'Oui (+20 %)' : 'Non');
     y += 4;
 
     /* 4. Main Droite */
@@ -1216,19 +1692,25 @@ var STAGE_CONFIG = {
     /* Total */
     var modEl = form.querySelector('input[name="modele"]:checked');
     if (modEl) {
-      var price = parseInt(modEl.dataset.price, 10);
-      var deposit = parseInt(modEl.dataset.deposit, 10);
+      var basePrice = parseInt(modEl.dataset.price, 10);
+      var price = pdfAncheChecked ? Math.round(basePrice * 1.2) : basePrice;
+      var deposit = Math.round(price * 0.4);
       if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
       doc.setFillColor(255, 248, 225);
-      doc.roundedRect(MARGIN, y, CW, 22, 3, 3, 'F');
+      doc.roundedRect(MARGIN, y, CW, 28, 3, 3, 'F');
       doc.setTextColor.apply(doc, woodDark);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(14);
       doc.text('Prix total : ' + price.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + 9, { align: 'center' });
+      if (pdfAncheChecked) {
+        doc.setFontSize(9);
+        doc.setTextColor(150, 120, 50);
+        doc.text('(dont Anche a mano Blue Star +' + Math.round(basePrice * 0.2).toLocaleString('fr-FR') + ' \u20ac)', W / 2, y + 17, { align: 'center' });
+      }
       doc.setFontSize(10);
       doc.setTextColor.apply(doc, gold);
-      doc.text('Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + 17, { align: 'center' });
-      y += 28;
+      doc.text('Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + (pdfAncheChecked ? 24 : 17), { align: 'center' });
+      y += 32;
     }
 
     /* Terms */
@@ -1290,7 +1772,10 @@ var STAGE_CONFIG = {
 
     /* Collect form fields */
     var modEl = form.querySelector('input[name="modele"]:checked');
-    var deposit = modEl ? parseInt(modEl.dataset.deposit, 10) : 0;
+    var ancheOui = document.getElementById('ancheAMano').checked;
+    var basePrice = modEl ? parseInt(modEl.dataset.price, 10) : 0;
+    var totalPrice = ancheOui ? Math.round(basePrice * 1.2) : basePrice;
+    var deposit = Math.round(totalPrice * 0.4);
     var sessVal = getRadioVal('session');
 
     var fields = {
@@ -1303,6 +1788,7 @@ var STAGE_CONFIG = {
       email: document.getElementById('email').value,
       session: SESSION_LABELS[sessVal] || sessVal,
       modele: getRadioVal('modele'),
+      ancheAMano: ancheOui ? 'Oui — Anche a mano Blue Star (+20 %)' : 'Non',
       acompte: deposit.toLocaleString('fr-FR'),
       tonalite: selVal('tonalite'),
       disposition: selVal('disposition'),
