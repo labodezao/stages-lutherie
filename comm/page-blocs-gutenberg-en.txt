@@ -324,7 +324,7 @@
 
 <!-- wp:list -->
 <ul class="wp-block-list"><!-- wp:list-item -->
-<li>21 right-hand buttons</li>
+<li>21 right-hand buttons, 1 voice (1V)</li>
 <!-- /wp:list-item -->
 <!-- wp:list-item -->
 <li>8 left-hand basses</li>
@@ -376,7 +376,7 @@
 
 <!-- wp:list -->
 <ul class="wp-block-list"><!-- wp:list-item -->
-<li>33 right-hand buttons</li>
+<li>33 right-hand buttons, 1 voice (1V)</li>
 <!-- /wp:list-item -->
 <!-- wp:list-item -->
 <li>12 left-hand basses</li>
@@ -428,7 +428,7 @@
 
 <!-- wp:list -->
 <ul class="wp-block-list"><!-- wp:list-item -->
-<li>33 right-hand buttons</li>
+<li>33 right-hand buttons, 1 voice (1V)</li>
 <!-- /wp:list-item -->
 <!-- wp:list-item -->
 <li>18 left-hand basses</li>
@@ -480,7 +480,7 @@
 
 <!-- wp:list -->
 <ul class="wp-block-list"><!-- wp:list-item -->
-<li>33 right-hand buttons</li>
+<li>33 right-hand buttons, 1 voice (1V)</li>
 <!-- /wp:list-item -->
 <!-- wp:list-item -->
 <li>24 left-hand basses</li>
@@ -503,6 +503,10 @@
 
 <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px"}}} -->
 <p class="has-text-align-center" style="font-size:16px">🎯 <strong>Anche a mano Blue Star option</strong>: handcrafted reeds · +20% of the model price<br>(21/8b +€564 · 33/12b +€900 · 33/18b +€976 · 33/24b +€1,250)</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"14px"}}} -->
+<p class="has-text-align-center" style="font-size:14px"><strong>2-voice RH upgrade with registers</strong>: option to upgrade to 2 voices on the right hand with registers (requires 2 workshop sessions).</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->

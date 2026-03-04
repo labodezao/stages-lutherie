@@ -51,28 +51,28 @@ You can choose from four models of diatonic accordions, each suited to different
 
 ### Model 21/8 basses – €2,820
 
-- **Right hand**: 21 buttons on 2 rows
+- **Right hand**: 21 buttons on 2 rows, 1 voice (1V)
 - **Left hand**: 8 basses
 - **Ideal for**: Beginners, musicians wanting a compact and manageable instrument
 - **Deposit at registration (40%)**: €900
 
 ### Model 33/12 basses – €4,500
 
-- **Right hand**: 33 buttons on 3 rows
+- **Right hand**: 33 buttons on 3 rows, 1 voice (1V)
 - **Left hand**: 12 basses
 - **Ideal for**: Intermediate to advanced musicians, varied repertoire
 - **Deposit at registration (40%)**: €1,500
 
 ### Model 33/18 basses – €4,880
 
-- **Right hand**: 33 buttons on 3 rows
+- **Right hand**: 33 buttons on 3 rows, 1 voice (1V)
 - **Left hand**: 18 basses (more harmonic possibilities)
 - **Ideal for**: Advanced musicians, complex repertoire
 - **Deposit at registration (40%)**: €1,900
 
 ### Model 33/24 basses – €6,250
 
-- **Right hand**: 33 buttons on 3 rows
+- **Right hand**: 33 buttons on 3 rows, 1 voice (1V)
 - **Left hand**: 24 basses (maximum harmonic possibilities)
 - **Ideal for**: Demanding musicians, advanced configurations
 - **Deposit at registration (40%)**: €2,500
@@ -86,6 +86,10 @@ For the most demanding musicians, we offer the **Anche a mano Blue Star** option
 - 33/12b: +€900 (total €5,400, deposit €2,160)
 - 33/18b: +€976 (total €5,856, deposit €2,342)
 - 33/24b: +€1,250 (total €7,500, deposit €3,000)
+
+### 2-Voice RH Upgrade with Registers
+
+> **2-voice RH upgrade with registers**: option to upgrade to 2 voices on the right hand with registers (requires 2 workshop sessions).
 
 ### Payment Terms
 
@@ -189,6 +193,10 @@ The grills protect the reeds while letting sound pass through. They're also a ma
 - **Over 100 models** available (geometric, floral, traditional, modern patterns)
 - **Numbered**: You'll choose your grills during registration or at the start of the workshop
 - **Customization possible**: We can discuss custom patterns
+
+### Grill Pattern Choice
+
+You can choose from 6 numbered grill patterns (No. 1 to No. 6) from our catalogue of over 100 designs, or propose a custom grill design.
 
 ### 6. Bellows
 

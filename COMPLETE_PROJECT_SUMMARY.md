@@ -105,6 +105,10 @@ Created version 3 email templates in both languages with:
 
 > **Option Anche a mano Blue Star** – Premium handmade reeds: +20% surcharge (21/8b +€564, 33/12b +€900, 33/18b +€976, 33/24b +€1,250).
 
+> **2-voice RH upgrade with registers**: option to upgrade to 2 voices on the right hand with registers (requires 2 workshop sessions).
+
+> All models are delivered with **1 voice (1V) right hand** by default.
+
 #### 10-Day Program
 1. **Days 1-2**: Structure & wood (case fabrication, mechanical base)
 2. **Days 3-4**: Keyboards & mechanics (axes, springs, assemblies)

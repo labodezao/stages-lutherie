@@ -35,13 +35,14 @@ date: "2026"
 - Modèles : 21/8 (2820 €), 33/12 (4500 €), 33/18 (4880 €), 33/24 (6250 €)
 - Acompte (40 %) : 900 € / 1500 € / 1900 € / 2500 € à l’inscription
 - Essences : merisier, noyer, érable sycomore
-- Main droite : 21 ou 33 boutons ; layouts Heim / Milleret-Pignol ; tonalités G/C, D/G, A/D ; accordage sec/demi-sec ; marquage tactile/visuel/sans
+- Main droite : 1 voix (1V) ; 21 ou 33 boutons ; layouts Heim / Milleret-Pignol ; tonalités G/C, D/G, A/D ; accordage sec/demi-sec ; marquage tactile/visuel/sans
 - Main gauche : 8 / 12 / 18 / 24 basses ; répartition Milleret-Pignol, Heim ou personnalisée (surcoût)
 - Mécaniques : boutons champignon bois naturel, nacre noire ou blanche
 - Grilles décoratives : >100 modèles numérotés (choisir à l’inscription)
 - Soufflets : couleurs noir/rouge/bleu/vert/orange/mixte ; coins standard/renforcés/métal brossé/perso
 - Anches : tipo a mano, a mano (+)
 - Option Anche a mano Blue Star : +20 % (21/8 +564 €, 33/12 +900 €, 33/18 +976 €, 33/24 +1250 €)
+- Upgrade 2 voix MD avec registres : possibilité de passer en 2 voix main droite avec registres (nécessite 2 stages)
 - Accessoires : bretelles fournies, sac/housse fournie
 
 ## Déroulé type d’une journée

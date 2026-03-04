@@ -26,6 +26,10 @@ Une expérience unique et accessible à tous, dès 13 ans, **sans aucune expéri
 
 > **Option Anche a mano Blue Star** : anches fabriquées à la main, +20 % sur le tarif du modèle (21/8b +564 €, 33/12b +900 €, 33/18b +976 €, 33/24b +1 250 €).
 
+> **Upgrade 2 voix MD avec registres** : possibilité de passer en 2 voix main droite avec registres (nécessite 2 stages de fabrication).
+
+> Tous les modèles sont livrés en **1 voix (1V) main droite** par défaut.
+
 ## 📖 Documentation Complète
 
 ### Français 🇫🇷

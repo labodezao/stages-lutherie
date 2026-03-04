@@ -51,28 +51,28 @@ Vous avez le choix entre quatre modèles d'accordéons diatoniques, chacun adapt
 
 ### Modèle 21/8 basses – 2 820 €
 
-- **Main droite** : 21 boutons sur 2 rangées
+- **Main droite** : 21 boutons sur 2 rangées, 1 voix (1V)
 - **Main gauche** : 8 basses
 - **Idéal pour** : Débutants, musiciens souhaitant un instrument compact et maniable
 - **Acompte à l'inscription (40%)** : 900 €
 
 ### Modèle 33/12 basses – 4 500 €
 
-- **Main droite** : 33 boutons sur 3 rangées
+- **Main droite** : 33 boutons sur 3 rangées, 1 voix (1V)
 - **Main gauche** : 12 basses
 - **Idéal pour** : Musiciens intermédiaires à confirmés, répertoire varié
 - **Acompte à l'inscription (40%)** : 1 500 €
 
 ### Modèle 33/18 basses – 4 880 €
 
-- **Main droite** : 33 boutons sur 3 rangées
+- **Main droite** : 33 boutons sur 3 rangées, 1 voix (1V)
 - **Main gauche** : 18 basses (plus de possibilités harmoniques)
 - **Idéal pour** : Musiciens confirmés, répertoire complexe
 - **Acompte à l'inscription (40%)** : 1 900 €
 
 ### Modèle 33/24 basses – 6 250 €
 
-- **Main droite** : 33 boutons sur 3 rangées
+- **Main droite** : 33 boutons sur 3 rangées, 1 voix (1V)
 - **Main gauche** : 24 basses (maximum de possibilités harmoniques)
 - **Idéal pour** : Musiciens exigeants, configurations avancées
 - **Acompte à l'inscription (40%)** : 2 500 €
@@ -86,6 +86,10 @@ Pour les musiciens les plus exigeants, nous proposons l'option **Anche a mano Bl
 - 33/12b : +900 € (total 5 400 €, acompte 2 160 €)
 - 33/18b : +976 € (total 5 856 €, acompte 2 342 €)
 - 33/24b : +1 250 € (total 7 500 €, acompte 3 000 €)
+
+### Upgrade 2 voix MD avec registres
+
+> **Upgrade 2 voix MD avec registres** : possibilité de passer en 2 voix main droite avec registres (nécessite 2 stages de fabrication).
 
 ### Modalités de paiement
 
@@ -189,6 +193,10 @@ Les grilles protègent les anches tout en laissant passer le son. Elles sont aus
 - **Plus de 100 modèles** disponibles (motifs géométriques, floraux, traditionnels, modernes)
 - **Numérotés** : Vous choisirez vos grilles lors de l'inscription ou au début du stage
 - **Personnalisation possible** : Nous pouvons discuter de motifs sur mesure
+
+### Choix de la grille
+
+Vous pouvez choisir parmi 6 modèles de grilles numérotés (n°1 à n°6) parmi notre catalogue de plus de 100 motifs, ou proposer un motif de grille personnalisé.
 
 ### 6. Soufflets
 
