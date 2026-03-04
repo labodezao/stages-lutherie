@@ -1,48 +1,56 @@
-# Intégration Gutenberg — Page d'inscription
+# Intégration Gutenberg — Formulaire d'inscription
 
 ---
 
-## ✅ Méthode recommandée — Blocs natifs Gutenberg
+## ✅ Structure des fichiers Gutenberg
 
-Utilisez les fichiers **`page-inscription-*-blocs-gutenberg.txt`** : ce sont de vraies pages Gutenberg composées de blocs natifs (`wp:cover`, `wp:heading`, `wp:columns`, `wp:list`, `wp:buttons`…).  
-Zéro CSS personnalisé — tout est éditable visuellement dans WordPress.
+Chaque fichier HTML du formulaire est désormais **structuré en blocs Gutenberg natifs** :
 
-### 🇫🇷 Page d'inscription (français)
+| Bloc | Type | Contenu |
+|---|---|---|
+| `<!-- wp:cover -->` | **Bloc natif** ✅ | Héro avec photo de fond, titre H1, sous-titre |
+| `<!-- wp:html -->` | Bloc HTML | CSS scopé + JavaScript (calcul de prix, PDF, REST) + formulaire HTML |
 
-> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/page-inscription-blocs-gutenberg.txt**
-
-### 🇬🇧 Registration page (English)
-
-> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/page-inscription-en-blocs-gutenberg.txt**
-
-### Étapes dans WordPress
-
-1. WordPress → **Pages → Ajouter une page**, donnez-lui un titre (ex. : _Inscription_).
-2. En haut à droite, cliquez sur **⋮ → Éditeur de code** (raccourci `Ctrl + Shift + Alt + M`).
-3. Ouvrez le lien _raw_ ci-dessus, sélectionnez tout (`Ctrl+A`), copiez, collez.
-4. Cliquez **⋮ → Éditeur visuel** pour vérifier le rendu.
-5. Mettez à jour les liens `VOTRE-SITE.COM` dans les boutons CTA, puis **Publier**.
-
-> Les blocs sont entièrement éditables : couleurs, textes, liens, images — tout se modifie directement dans l'éditeur visuel.
+Le formulaire interactif (calcul de prix automatique, génération PDF, envoi email via API WordPress) nécessite du JavaScript — il reste dans un bloc `wp:html` ciblé. Tout le reste est natif.
 
 ---
 
-## Formulaire interactif (avec calcul de prix et PDF)
+## 🎯 Utilisation dans WordPress
 
-Le formulaire d'inscription avec calcul automatique du prix, génération de PDF et envoi par email REST WordPress se trouve dans :
+### Méthode 1 — Coller le fichier HTML (recommandé)
+
+1. WordPress → **Pages → Ajouter une page**
+2. Donnez un titre (ex. : _Inscription_)
+3. Cliquez **⋮ → Éditeur de code** (`Ctrl + Shift + Alt + M`)
+4. Ouvrez le lien _raw_ ci-dessous, sélectionnez tout (`Ctrl+A`), copiez, collez
+5. **⋮ → Éditeur visuel** : le bloc héro est éditable visuellement !
+6. Publiez
+
+### 🇫🇷 Formulaire français
+
+> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/formulaire-inscription.html**
+
+### 🇬🇧 English registration form
+
+> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/formulaire-inscription-en.html**
+
+---
+
+### Méthode 2 — Importer le JSON comme Synced Pattern
+
+1. WordPress Admin → **Apparence → Éditeur → Motifs → ⋮ → Importer depuis JSON**
+2. Sélectionnez `formulaire-inscription-gutenberg.json` (FR) ou `formulaire-inscription-en-gutenberg.json` (EN)
+3. Le motif apparaît dans la bibliothèque — insérez-le dans n'importe quelle page
+
+---
+
+## Fichiers
 
 | Fichier | Usage |
 |---|---|
-| `formulaire-inscription.html` | Formulaire interactif complet (FR) — à coller dans un bloc HTML personnalisé |
-| `formulaire-inscription-en.html` | Interactive form (EN) — paste into a Custom HTML block |
+| `formulaire-inscription.html` | ⭐ Formulaire complet (FR) — `wp:cover` natif + `wp:html` formulaire |
+| `formulaire-inscription-en.html` | ⭐ Complete form (EN) — native `wp:cover` + `wp:html` form |
 | `formulaire-inscription-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (FR) |
 | `formulaire-inscription-en-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (EN) |
-
----
-
-## Fichiers de blocs natifs
-
-| Fichier | Usage |
-|---|---|
-| `page-inscription-blocs-gutenberg.txt` | ⭐ **Page d'inscription en blocs natifs** (FR) |
-| `page-inscription-en-blocs-gutenberg.txt` | ⭐ **Registration page in native blocks** (EN) |
+| `page-inscription-blocs-gutenberg.txt` | Page d'accueil inscription 100 % blocs natifs (FR) |
+| `page-inscription-en-blocs-gutenberg.txt` | Registration landing page, 100% native blocks (EN) |

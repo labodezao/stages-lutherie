@@ -1,13 +1,25 @@
+<!-- wp:cover {"url":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","alt":"Formulaire d'inscription au stage de lutherie accordéon","dimRatio":60,"customOverlayColor":"#2C1810","minHeight":420,"minHeightUnit":"px"} -->
+<div class="wp-block-cover" style="min-height:420px"><img class="wp-block-cover__image-background" alt="Formulaire d'inscription au stage de lutherie accordéon" src="https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-60 has-background-dim" style="background-color:#2C1810"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"25px"},"spacing":{"padding":{"top":"6px","bottom":"6px","left":"20px","right":"20px"}},"typography":{"fontSize":"0.75rem","fontWeight":"800","letterSpacing":"3px","textTransform":"uppercase"}}} -->
+<p class="has-text-align-center has-text-color has-background" style="border-radius:25px;color:#3E2723;background-color:#D4A017;padding-top:6px;padding-right:20px;padding-bottom:6px;padding-left:20px;font-size:0.75rem;font-weight:800;letter-spacing:3px;text-transform:uppercase">✦ Stage de lutherie · 2026 ✦</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textAlign":"center","level":1,"style":{"color":{"text":"#FAFAFA"},"typography":{"fontSize":"2.8rem","fontWeight":"700"}}} -->
+<h1 class="nm-block-heading wp-block-heading has-text-align-center has-text-color" style="color:#FAFAFA;font-size:2.8rem;font-weight:700">Formulaire d'inscription<br><em style="color:#F5D061">Stage de lutherie</em></h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.1rem"}}} -->
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.1rem">🎵 Accordéon diatonique · Saint-Nazaire · 10 jours</p>
+<!-- /wp:paragraph --></div></div>
+<!-- /wp:cover -->
+
 <!-- wp:html -->
 <!--
   ════════════════════════════════════════════════════════════════
-  Formulaire d'inscription — Stage de lutherie accordéon diatonique
+  Formulaire d'inscription — Partie interactive
   ════════════════════════════════════════════════════════════════
-  Compatible WordPress Gutenberg : collez ce fichier entier dans
-  un bloc « HTML personnalisé » (Custom HTML).
-
-  Le CSS est scopé sous .inscription-page pour éviter tout conflit
-  avec le thème WordPress.
+  Ce bloc contient le CSS scopé, le JavaScript (calcul de prix,
+  génération PDF, envoi REST WordPress) et le formulaire HTML.
+  Le héro ci-dessus est un bloc Gutenberg natif wp:cover.
   ════════════════════════════════════════════════════════════════
 -->
 
@@ -40,46 +52,6 @@
       max-width: 100%;
       margin: 0 auto;
     }
-
-    /* ── Hero ── */
-    .insc-hero {
-      background: linear-gradient(135deg, #2C1810 0%, #3E2723 30%, #5D4037 70%, #8D6E63 100%);
-      color: var(--white);
-      padding: 60px 20px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .insc-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.02) 3px, rgba(255,255,255,0.02) 6px);
-      pointer-events: none;
-    }
-    .insc-hero-content { position:relative; z-index:2; max-width:900px; margin:0 auto; }
-    .insc-hero-badge {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--wood-dark);
-      font-weight: 800;
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      padding: 8px 24px;
-      border-radius: 25px;
-      margin-bottom: 20px;
-    }
-    .insc-hero h1 {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 2.8rem;
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 12px 0;
-      text-shadow: 0 3px 15px rgba(0,0,0,0.4);
-    }
-    .insc-hero h1 .accent { color: var(--gold-light); font-style: italic; }
-    .insc-hero p { font-size:1.15rem; opacity:0.95; margin:8px 0 0; }
 
     /* ── Form Container ── */
     .insc-form-wrap {
@@ -362,7 +334,6 @@
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
-      .insc-hero h1 { font-size:2rem; }
       .insc-section-body { padding:18px; }
       .insc-row { flex-direction:column; gap:0; }
       .insc-inline-row { flex-direction:column; gap:0; }
@@ -390,15 +361,6 @@
   </style>
 
 <div class="inscription-page">
-
-  <!-- ════════════════ HERO ════════════════ -->
-  <section class="insc-hero">
-    <div class="insc-hero-content">
-      <div class="insc-hero-badge" id="heroBadge">Inscription · Stage</div>
-      <h1>Formulaire d'inscription<br><span class="accent">Stage de lutherie</span></h1>
-      <p>Accordéon diatonique · Saint-Nazaire · 10 jours</p>
-    </div>
-  </section>
 
   <form id="inscriptionForm" class="insc-form-wrap" novalidate>
 
