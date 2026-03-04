@@ -81,11 +81,11 @@ You can choose from four models of diatonic accordions, each suited to different
 
 For the most demanding musicians, we offer the **Anche a mano Blue Star** option: reeds entirely handcrafted by a master reedmaker.
 
-- **Surcharge**: +20% of the chosen model price
-- 21/8b: +€564 (total €3,384, deposit €1,354)
-- 33/12b: +€900 (total €5,400, deposit €2,160)
-- 33/18b: +€976 (total €5,856, deposit €2,342)
-- 33/24b: +€1,250 (total €7,500, deposit €3,000)
+- **Surcharge**: +15% of the chosen model price
+- 21/8b: +€423 (total €3,243, deposit €1,297)
+- 33/12b: +€675 (total €5,175, deposit €2,070)
+- 33/18b: +€732 (total €5,612, deposit €2,245)
+- 33/24b: +€938 (total €7,188, deposit €2,875)
 
 ### 2-Voice RH Upgrade with Registers
 

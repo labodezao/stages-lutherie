@@ -22,7 +22,7 @@ date: "2026"
 - Location: Workshop (9 rue Fernand de Magellan, Saint-Nazaire 44, France)
 - Meals & lodging: not included
 - Models: 21/8 (€2820), 33/12 (€4500), 33/18 (€4880), 33/24 (€6250)
-- Anche a mano Blue Star option: +20% surcharge
+- Anche a mano Blue Star option: +15% surcharge
 - 2-voice RH upgrade with registers (requires 2 sessions)
 - All models: 1 voice (1V) right hand by default
 - Deposit (40%) at registration: €900 / €1500 / €1900 / €2500 by model

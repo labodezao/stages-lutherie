@@ -41,7 +41,7 @@ date: "2026"
 - Grilles décoratives : >100 modèles numérotés (choisir à l’inscription)
 - Soufflets : couleurs noir/rouge/bleu/vert/orange/mixte ; coins standard/renforcés/métal brossé/perso
 - Anches : tipo a mano, a mano (+)
-- Option Anche a mano Blue Star : +20 % (21/8 +564 €, 33/12 +900 €, 33/18 +976 €, 33/24 +1250 €)
+- Option Anche a mano Blue Star : +15 % (21/8 +423 €, 33/12 +675 €, 33/18 +732 €, 33/24 +938 €)
 - Upgrade 2 voix MD avec registres : possibilité de passer en 2 voix main droite avec registres (nécessite 2 stages)
 - Accessoires : bretelles fournies, sac/housse fournie
 

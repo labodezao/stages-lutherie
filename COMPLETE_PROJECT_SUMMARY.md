@@ -103,7 +103,7 @@ Created version 3 email templates in both languages with:
 | 33/18  | €4,880  | €1,900       | Professional |
 | 33/24  | €6,250  | €2,500       | Advanced |
 
-> **Option Anche a mano Blue Star** – Premium handmade reeds: +20% surcharge (21/8b +€564, 33/12b +€900, 33/18b +€976, 33/24b +€1,250).
+> **Option Anche a mano Blue Star** – Premium handmade reeds: +15% surcharge (21/8b +€423, 33/12b +€675, 33/18b +€732, 33/24b +€938).
 
 > **2-voice RH upgrade with registers**: option to upgrade to 2 voices on the right hand with registers (requires 2 workshop sessions).
 

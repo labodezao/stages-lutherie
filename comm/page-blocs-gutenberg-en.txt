@@ -502,7 +502,7 @@
 <!-- /wp:group -->
 
 <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px"}}} -->
-<p class="has-text-align-center" style="font-size:16px">🎯 <strong>Anche a mano Blue Star option</strong>: handcrafted reeds · +20% of the model price<br>(21/8b +€564 · 33/12b +€900 · 33/18b +€976 · 33/24b +€1,250)</p>
+<p class="has-text-align-center" style="font-size:16px">🎯 <strong>Anche a mano Blue Star option</strong>: handcrafted reeds · +15% of the model price<br>(21/8b +€423 · 33/12b +€675 · 33/18b +€732 · 33/24b +€938)</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"14px"}}} -->

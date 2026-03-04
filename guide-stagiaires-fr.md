@@ -81,11 +81,11 @@ Vous avez le choix entre quatre modèles d'accordéons diatoniques, chacun adapt
 
 Pour les musiciens les plus exigeants, nous proposons l'option **Anche a mano Blue Star** : des anches entièrement fabriquées à la main par un maître-anche.
 
-- **Surcoût** : +20 % du tarif du modèle choisi
-- 21/8b : +564 € (total 3 384 €, acompte 1 354 €)
-- 33/12b : +900 € (total 5 400 €, acompte 2 160 €)
-- 33/18b : +976 € (total 5 856 €, acompte 2 342 €)
-- 33/24b : +1 250 € (total 7 500 €, acompte 3 000 €)
+- **Surcoût** : +15 % du tarif du modèle choisi
+- 21/8b : +423 € (total 3 243 €, acompte 1 297 €)
+- 33/12b : +675 € (total 5 175 €, acompte 2 070 €)
+- 33/18b : +732 € (total 5 612 €, acompte 2 245 €)
+- 33/24b : +938 € (total 7 188 €, acompte 2 875 €)
 
 ### Upgrade 2 voix MD avec registres
 

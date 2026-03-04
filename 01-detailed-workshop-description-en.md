@@ -42,7 +42,7 @@ date: "2026"
 - Decorative grills: >100 numbered models (choose at registration)
 - Bellows: colors black/red/blue/green/orange/mixed; standard/reinforced/brushed metal/custom corners
 - Reeds: tipo a mano, a mano (+)
-- Anche a mano Blue Star option: +20% (21/8 +€564, 33/12 +€900, 33/18 +€976, 33/24 +€1,250)
+- Anche a mano Blue Star option: +15% (21/8 +€423, 33/12 +€675, 33/18 +€732, 33/24 +€938)
 - 2-voice RH upgrade with registers: option to upgrade to 2 voices on the right hand with registers (requires 2 workshop sessions)
 - Accessories: straps provided, bag/case provided
 

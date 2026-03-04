@@ -22,7 +22,7 @@ date: "2026"
 - Lieu : Atelier (9 rue Fernand de Magellan, Saint-Nazaire 44)
 - Repas & hébergement : non inclus
 - Modèles : 21/8 (2820 €), 33/12 (4500 €), 33/18 (4880 €), 33/24 (6250 €)
-- Option Anche a mano Blue Star : +20 % du tarif
+- Option Anche a mano Blue Star : +15 % du tarif
 - Upgrade 2 voix MD avec registres (nécessite 2 stages)
 - Tous les modèles : 1 voix (1V) main droite par défaut
 - Acompte (40 %) à l’inscription : 900 € / 1500 € / 1900 € / 2500 € selon modèle
