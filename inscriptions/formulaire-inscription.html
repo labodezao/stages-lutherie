@@ -13,6 +13,21 @@
 <!-- /wp:cover -->
 
 <!-- wp:html -->
+<!-- ════ 🗓 SESSIONS — MODIFIER ICI CHAQUE ANNÉE ════
+     Changez l'année et les dates de sessions dans ce bloc.
+     Ce script doit rester AVANT le grand bloc JavaScript. -->
+<script>
+var STAGE_CONFIG = {
+  annee: 2026,
+  sessions: [
+    { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Mercredi 8 – Vendredi 17 avril 2026' },
+    { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Mercredi 14 – Vendredi 23 octobre 2026' }
+  ]
+};
+</script>
+<!-- /wp:html -->
+
+<!-- wp:html -->
 <style type="text/css">
     /* ── Base Reset for WordPress ── */
     .inscription-page { margin:0; padding:0; box-sizing:border-box; }
@@ -417,9 +432,12 @@
 <h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎵 Choix du modèle</h2>
 <!-- /wp:heading -->
 
+<!-- wp:paragraph {"style":{"color":{"text":"#666"},"spacing":{"padding":{"top":"20px","bottom":"4px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#666;font-size:0.9rem;padding:20px 28px 4px">Gamme Classique – sélectionnez votre modèle :</p>
+<!-- /wp:paragraph -->
+
 <!-- wp:html -->
 <div class="insc-section-body">
-<p style="margin:0 0 14px; color:#666; font-size:0.9rem;">Gamme Classique – sélectionnez votre modèle :</p>
         <div class="insc-options">
           <label class="insc-option-card">
             <input type="radio" name="modele" value="21/8b" data-price="2820" data-deposit="900" required>
@@ -781,12 +799,12 @@
             <span class="acc-layer-label">sangles</span>
           </div>
         </div>
-        <p class="accordion-preview-hint">
-          L'aperçu se met à jour automatiquement selon vos choix ci-dessus.<br>
-          <em>Images définitives à venir — zones de couleur indicatives.</em>
-        </p>
 </div>
 <!-- /wp:html -->
+
+<!-- wp:paragraph {"align":"center","style":{"color":{"text":"#888"},"spacing":{"padding":{"top":"0","bottom":"16px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.88rem"}}} -->
+<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">L'aperçu se met à jour automatiquement selon vos choix ci-dessus.<br><em>Images définitives à venir — zones de couleur indicatives.</em></p>
+<!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -796,12 +814,12 @@
 <h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Plan de clavier personnalisé (optionnel)</h2>
 <!-- /wp:heading -->
 
+<!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"20px","bottom":"8px","left":"28px","right":"28px"}}}} -->
+<p style="padding:20px 28px 8px"><strong>Vous avez un plan de clavier personnalisé ?</strong><br>Utilisez notre <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener">outil de génération de plans de clavier</a> pour créer votre disposition, puis exportez le JSON et collez-le ci-dessous.</p>
+<!-- /wp:paragraph -->
+
 <!-- wp:html -->
 <div class="insc-section-body">
-<div class="insc-callout">
-          <strong>Vous avez un plan de clavier personnalisé ?</strong><br>
-          Utilisez notre <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener" style="color:var(--gold); font-weight:600;">outil de génération de plans de clavier</a> pour créer votre disposition, puis exportez le JSON et collez-le ci-dessous.
-        </div>
         <div class="insc-field" style="margin-top:14px;">
           <label for="planClavier">Plan de clavier (JSON)</label>
           <textarea id="planClavier" name="planClavier" rows="4" placeholder='Collez ici le JSON exporté depuis l&#39;outil de plan de clavier…' style="font-family:monospace; font-size:0.82rem;"></textarea>
@@ -908,17 +926,15 @@
       </button>
     </div>
     <div id="sendStatus" class="insc-conditional" style="margin-top:18px; text-align:center;"></div>
-
-    <div class="insc-callout" style="margin-top:24px; text-align:center;">
-      <strong>Contact :</strong> <a href="mailto:contact@ewendaviau.com" style="color:var(--gold)">contact@ewendaviau.com</a>
-      &nbsp;·&nbsp;
-      <a href="https://ewendaviau.com" target="_blank" rel="noopener" style="color:var(--gold)">ewendaviau.com</a>
-    </div>
 <!-- /wp:html -->
 
 <!-- wp:html -->
 </form>
 <!-- /wp:html -->
+
+<!-- wp:paragraph {"align":"center","style":{"spacing":{"margin":{"top":"24px","bottom":"24px"}}}} -->
+<p class="has-text-align-center" style="margin-top:24px;margin-bottom:24px"><strong>Contact :</strong> <a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a> &nbsp;·&nbsp; <a href="https://ewendaviau.com" target="_blank" rel="noopener">ewendaviau.com</a></p>
+<!-- /wp:paragraph -->
 
 <!-- wp:html -->
 <!--
@@ -1075,20 +1091,6 @@ function sl_handle_inscription(WP_REST_Request $request) {
 <script>
 /**
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║  STAGE_CONFIG — MODIFIER ICI CHAQUE ANNÉE                      ║
- * ║  Sur WordPress, éditez ce bloc dans le Custom HTML              ║
- * ║  pour mettre à jour l'année et les dates des sessions.          ║
- * ╚══════════════════════════════════════════════════════════════════╝
- */
-var STAGE_CONFIG = {
-  annee: 2026,
-  sessions: [
-    { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Mercredi 8 – Vendredi 17 avril 2026' },
-    { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Mercredi 14 – Vendredi 23 octobre 2026' }
-  ]
-};
-
-/* ╔══════════════════════════════════════════════════════════════════╗
  * ║  buildSVG_PlanLite — Self-contained TikZ-style keyboard plan   ║
  * ║  renderer, extracted from outils/clavier-accordeon.             ║
  * ║  Accepts raw preset JSON format (rangees + notes) and renders   ║
@@ -1363,7 +1365,8 @@ var buildSVG_PlanLite = (function () {
   var DEPOSIT_RATE = 0.4;      /* 40% deposit on total price */
 
   /* ── Populate dynamic content from STAGE_CONFIG ── */
-  document.getElementById('heroBadge').textContent = 'Inscription \u00b7 Stage ' + ANNEE;
+  var heroBadge = document.getElementById('heroBadge');
+  if (heroBadge) heroBadge.textContent = 'Inscription \u00b7 Stage ' + ANNEE;
   document.title = 'Formulaire d\u2019inscription \u2013 Stage de lutherie accord\u00e9on diatonique ' + ANNEE;
 
   var sessionContainer = document.getElementById('sessionOptions');
