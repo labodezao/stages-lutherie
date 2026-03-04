@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Formulaire d'inscription – Stage de lutherie accordéon diatonique 2026</title>
-  <meta name="description" content="Formulaire d'inscription au stage de fabrication d'accordéon diatonique. Sessions 2026 : 8-17 avril et 14-23 octobre à Saint-Nazaire.">
+  <title>Formulaire d'inscription – Stage de lutherie accordéon diatonique</title>
+  <meta name="description" content="Formulaire d'inscription au stage de fabrication d'accordéon diatonique à Saint-Nazaire.">
 
   <!-- jsPDF for PDF generation -->
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf@4.2.0/dist/jspdf.umd.min.js"></script>
@@ -302,6 +302,9 @@
     .insc-conditional { display:none; }
     .insc-conditional.visible { display:block; }
 
+    /* ── Hints ── */
+    .hint { font-size:0.8rem; color:#999; margin-top:4px; }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .insc-hero h1 { font-size:2rem; }
@@ -338,7 +341,7 @@
   <!-- ════════════════ HERO ════════════════ -->
   <section class="insc-hero">
     <div class="insc-hero-content">
-      <div class="insc-hero-badge">Inscription · Stage 2026</div>
+      <div class="insc-hero-badge" id="heroBadge">Inscription · Stage</div>
       <h1>Formulaire d'inscription<br><span class="accent">Stage de lutherie</span></h1>
       <p>Accordéon diatonique · Saint-Nazaire · 10 jours</p>
     </div>
@@ -397,21 +400,8 @@
         <h2>Choix de la session</h2>
       </div>
       <div class="insc-section-body">
-        <div class="insc-options">
-          <label class="insc-option-card">
-            <input type="radio" name="session" value="avril2026" required>
-            <span class="card-label">
-              <span class="card-title">🌸 Printemps</span>
-              <span class="card-sub">Mercredi 8 – Vendredi 17 avril 2026</span>
-            </span>
-          </label>
-          <label class="insc-option-card">
-            <input type="radio" name="session" value="octobre2026">
-            <span class="card-label">
-              <span class="card-title">🍂 Automne</span>
-              <span class="card-sub">Mercredi 14 – Vendredi 23 octobre 2026</span>
-            </span>
-          </label>
+        <div class="insc-options" id="sessionOptions">
+          <!-- Sessions are populated dynamically from STAGE_CONFIG -->
         </div>
       </div>
     </div>
@@ -450,6 +440,15 @@
               <span class="card-sub">MD : 2 voix · 33 boutons · 3 rangées<br>MG : 18 boutons · 4 voix · 3 rangées</span>
               <span class="card-price">4 880 €</span>
               <span class="card-deposit">Acompte : 1 900 €</span>
+            </span>
+          </label>
+          <label class="insc-option-card">
+            <input type="radio" name="modele" value="33/24b" data-price="6250" data-deposit="2500">
+            <span class="card-label">
+              <span class="card-title">33 / 24 basses</span>
+              <span class="card-sub">MD : 2 voix · 33 boutons · 3 rangées<br>MG : 24 boutons · 4 voix · 4 rangées</span>
+              <span class="card-price">6 250 €</span>
+              <span class="card-deposit">Acompte : 2 500 €</span>
             </span>
           </label>
         </div>
@@ -587,6 +586,7 @@
               <option value="8b">8 basses</option>
               <option value="12b">12 basses</option>
               <option value="18b">18 basses</option>
+              <option value="24b">24 basses</option>
             </select>
           </div>
           <div class="insc-field">
@@ -651,7 +651,32 @@
       </div>
     </div>
 
-    <!-- ════════════════ 7. RÉCAPITULATIF ════════════════ -->
+    <!-- ════════════════ 7. PLAN DE CLAVIER PERSONNALISÉ ════════════════ -->
+    <div class="insc-section">
+      <div class="insc-section-header">
+        <span class="icon">🎼</span>
+        <h2>Plan de clavier personnalisé (optionnel)</h2>
+      </div>
+      <div class="insc-section-body">
+        <div class="insc-callout">
+          <strong>Vous avez un plan de clavier personnalisé ?</strong><br>
+          Utilisez notre <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener" style="color:var(--gold); font-weight:600;">outil de génération de plans de clavier</a> pour créer votre disposition, puis exportez le JSON et collez-le ci-dessous.
+        </div>
+        <div class="insc-field" style="margin-top:14px;">
+          <label for="planClavier">Plan de clavier (JSON)</label>
+          <textarea id="planClavier" name="planClavier" rows="4" placeholder='Collez ici le JSON exporté depuis l&#39;outil de plan de clavier…' style="font-family:monospace; font-size:0.82rem;"></textarea>
+          <div class="hint">Exportez votre plan depuis l'outil clavier → bouton « Exporter JSON », puis collez le contenu ici.</div>
+        </div>
+        <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
+          <div class="insc-callout" style="border-left-color:var(--wood-medium);">
+            <strong>Aperçu du plan importé :</strong>
+            <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ 8. RÉCAPITULATIF ════════════════ -->
     <div class="insc-section insc-summary">
       <div class="insc-section-header insc-summary-header">
         <span class="icon">📋</span>
@@ -673,6 +698,7 @@
             <tr><td>Basses MG</td><td id="sumBassesMG">–</td></tr>
             <tr><td>Couleur sangles</td><td id="sumSangles">–</td></tr>
             <tr><td>Couleur soufflet</td><td id="sumSoufflet">–</td></tr>
+            <tr><td>Plan de clavier</td><td id="sumPlan">–</td></tr>
           </tbody>
         </table>
         <div class="insc-summary-total" id="summaryTotal">
@@ -683,7 +709,7 @@
       </div>
     </div>
 
-    <!-- ════════════════ 8. CONDITIONS ════════════════ -->
+    <!-- ════════════════ 9. CONDITIONS ════════════════ -->
     <div class="insc-section">
       <div class="insc-section-header">
         <span class="icon">📜</span>
@@ -695,7 +721,7 @@
           <p>Pour être valide, ce bon doit être accompagné d'un <strong>acompte de 40 %</strong> du prix total.</p>
           <p>L'acompte ne pourra être restitué si le client annule son inscription après le début de la fabrication (2 mois avant le stage).</p>
           <p>En cas d'annulation, il vous faudra déplacer votre venue à une autre session ou trouver une personne qui vous remplace.</p>
-          <p>Si vous n'arrivez pas à finir votre instrument dans le délai imparti, il vous est possible de revenir finir l'instrument à un prochain stage <strong>sans surcoût supplémentaire</strong>.</p>
+          <p>Si vous n'arrivez pas à finir votre instrument dans le délai imparti, il vous est possible de revenir finir l'instrument à un prochain stage moyennant un <strong>tarif forfaitaire de 80 € par jour</strong>.</p>
         </div>
         <div class="insc-field" style="margin-top:18px;">
           <label>
@@ -715,6 +741,7 @@
         ✉️ Envoyer l'inscription
       </button>
     </div>
+    <div id="sendStatus" class="insc-conditional" style="margin-top:18px; text-align:center;"></div>
 
     <div class="insc-callout" style="margin-top:24px; text-align:center;">
       <strong>Contact :</strong> <a href="mailto:contact@ewendaviau.com" style="color:var(--gold)">contact@ewendaviau.com</a>
@@ -726,14 +753,232 @@
 
 </div><!-- .inscription-page -->
 
+<!--
+  ════════════════════════════════════════════════════════════════
+  WordPress Configuration:
+  To enable server-side email sending with PDF attachment,
+  add the PHP snippet below to your theme's functions.php
+  or use the Code Snippets plugin.
+
+  The form will POST to: /wp-json/stages-lutherie/v1/inscription
+  
+  If the endpoint is not available (standalone mode), the form
+  falls back to generating the PDF for manual download + mailto.
+  ════════════════════════════════════════════════════════════════
+-->
+
+<!--
+  ┌──────────────────────────────────────────────────────────────┐
+  │  WordPress functions.php snippet — COPY THIS BLOCK          │
+  │  (or paste it in the "Code Snippets" plugin)                │
+  └──────────────────────────────────────────────────────────────┘
+
+<?php
+/**
+ * Stages Lutherie — Inscription REST endpoint
+ * Handles form submission with PDF attachment.
+ *
+ * Sends:
+ *   1) Email to luthier with PDF recap attached
+ *   2) Confirmation email to trainee with bank details
+ *
+ * Editable settings in WordPress: Settings → Inscription Stage
+ */
+
+// ── Settings page ──
+add_action('admin_menu', function () {
+    add_options_page(
+        'Inscription Stage',
+        'Inscription Stage',
+        'manage_options',
+        'inscription-stage',
+        'sl_inscription_settings_page'
+    );
+});
+
+add_action('admin_init', function () {
+    register_setting('sl_inscription', 'sl_luthier_email');
+    register_setting('sl_inscription', 'sl_bank_details');
+    register_setting('sl_inscription', 'sl_confirmation_subject');
+    register_setting('sl_inscription', 'sl_confirmation_body');
+});
+
+function sl_inscription_settings_page() {
+    $defaults = array(
+        'sl_luthier_email'       => 'contact@ewendaviau.com',
+        'sl_bank_details'        => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
+        'sl_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
+        'sl_confirmation_body'   => "Bonjour {nom},\n\nMerci pour votre inscription au stage de lutherie !\n\nVoici les informations pour valider votre inscription :\n\n📋 Modèle choisi : {modele}\n💰 Acompte à verser (40 %) : {acompte} €\n📅 Session : {session}\n\n🏦 Coordonnées bancaires :\n{bank_details}\n\n⚠️ Merci d'indiquer en référence de virement : STAGE-{nom}\n\nVotre inscription sera confirmée dès réception de l'acompte.\n\nÀ très bientôt à l'atelier !\n\nEwen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\ncontact@ewendaviau.com\newendaviau.com",
+    );
+    ?>
+    <div class="wrap">
+        <h1>Inscription Stage — Paramètres</h1>
+        <form method="post" action="options.php">
+            <?php settings_fields('sl_inscription'); ?>
+            <table class="form-table">
+                <tr>
+                    <th>Email du luthier</th>
+                    <td><input type="email" name="sl_luthier_email" value="<?php echo esc_attr(get_option('sl_luthier_email', $defaults['sl_luthier_email'])); ?>" class="regular-text"></td>
+                </tr>
+                <tr>
+                    <th>Coordonnées bancaires</th>
+                    <td><textarea name="sl_bank_details" rows="4" class="large-text"><?php echo esc_textarea(get_option('sl_bank_details', $defaults['sl_bank_details'])); ?></textarea></td>
+                </tr>
+                <tr>
+                    <th>Objet du mail de confirmation</th>
+                    <td><input type="text" name="sl_confirmation_subject" value="<?php echo esc_attr(get_option('sl_confirmation_subject', $defaults['sl_confirmation_subject'])); ?>" class="large-text"></td>
+                </tr>
+                <tr>
+                    <th>Corps du mail de confirmation</th>
+                    <td>
+                        <textarea name="sl_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea(get_option('sl_confirmation_body', $defaults['sl_confirmation_body'])); ?></textarea>
+                        <p class="description">Variables : {nom}, {modele}, {acompte}, {session}, {bank_details}, {email}, {telephone}</p>
+                    </td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
+}
+
+// ── REST endpoint ──
+add_action('rest_api_init', function () {
+    register_rest_route('stages-lutherie/v1', '/inscription', array(
+        'methods'  => 'POST',
+        'callback' => 'sl_handle_inscription',
+        'permission_callback' => '__return_true',
+    ));
+});
+
+function sl_handle_inscription(WP_REST_Request $request) {
+    $data       = $request->get_json_params();
+    $fields     = isset($data['fields']) ? $data['fields'] : array();
+    $pdf_base64 = isset($data['pdfBase64']) ? $data['pdfBase64'] : '';
+
+    $nom     = sanitize_text_field(isset($fields['nom']) ? $fields['nom'] : '');
+    $email   = sanitize_email(isset($fields['email']) ? $fields['email'] : '');
+    $modele  = sanitize_text_field(isset($fields['modele']) ? $fields['modele'] : '');
+    $acompte = sanitize_text_field(isset($fields['acompte']) ? $fields['acompte'] : '');
+    $session = sanitize_text_field(isset($fields['session']) ? $fields['session'] : '');
+    $tel     = sanitize_text_field(isset($fields['telephone']) ? $fields['telephone'] : '');
+
+    if (empty($nom) || empty($email)) {
+        return new WP_REST_Response(array('success' => false, 'message' => 'Nom et email requis.'), 400);
+    }
+
+    // Save PDF to temp file
+    $pdf_path = '';
+    if (!empty($pdf_base64)) {
+        $pdf_data = base64_decode($pdf_base64);
+        $pdf_path = wp_tempnam('inscription_' . sanitize_file_name($nom) . '.pdf');
+        file_put_contents($pdf_path, $pdf_data);
+    }
+
+    $defaults = array(
+        'sl_luthier_email'        => 'contact@ewendaviau.com',
+        'sl_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
+        'sl_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
+        'sl_confirmation_body'    => "Bonjour {nom},\n\nMerci pour votre inscription !",
+    );
+
+    $luthier_email = get_option('sl_luthier_email', $defaults['sl_luthier_email']);
+    $bank_details  = get_option('sl_bank_details', $defaults['sl_bank_details']);
+    $conf_subject  = get_option('sl_confirmation_subject', $defaults['sl_confirmation_subject']);
+    $conf_body     = get_option('sl_confirmation_body', $defaults['sl_confirmation_body']);
+
+    // 1) Email to luthier with PDF
+    $luthier_subject = 'Nouvelle inscription stage — ' . $nom;
+    $luthier_body    = "Nouvelle inscription reçue :\n\nNom : $nom\nEmail : $email\nTéléphone : $tel\nModèle : $modele\nSession : $session\nAcompte : $acompte €\n\nLe récapitulatif PDF est joint.";
+    $attachments     = !empty($pdf_path) ? array($pdf_path) : array();
+    wp_mail($luthier_email, $luthier_subject, $luthier_body, array(), $attachments);
+
+    // 2) Confirmation email to trainee
+    $replacements = array(
+        '{nom}'          => $nom,
+        '{modele}'       => $modele,
+        '{acompte}'      => $acompte,
+        '{session}'      => $session,
+        '{bank_details}' => $bank_details,
+        '{email}'        => $email,
+        '{telephone}'    => $tel,
+    );
+    $conf_body    = str_replace(array_keys($replacements), array_values($replacements), $conf_body);
+    $conf_subject = str_replace(array_keys($replacements), array_values($replacements), $conf_subject);
+    wp_mail($email, $conf_subject, $conf_body);
+
+    // Cleanup
+    if (!empty($pdf_path) && file_exists($pdf_path)) {
+        unlink($pdf_path);
+    }
+
+    return new WP_REST_Response(array('success' => true, 'message' => 'Inscription envoyée avec succès !'), 200);
+}
+?>
+
+-->
+
 <script>
+/**
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║  STAGE_CONFIG — MODIFIER ICI CHAQUE ANNÉE                      ║
+ * ║  Sur WordPress, éditez ce bloc dans le Custom HTML              ║
+ * ║  pour mettre à jour l'année et les dates des sessions.          ║
+ * ╚══════════════════════════════════════════════════════════════════╝
+ */
+var STAGE_CONFIG = {
+  annee: 2026,
+  sessions: [
+    { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Mercredi 8 – Vendredi 17 avril 2026' },
+    { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Mercredi 14 – Vendredi 23 octobre 2026' }
+  ]
+};
+
 (function () {
   'use strict';
+
+  /* ── Configuration ── */
+  var WP_ENDPOINT = '/wp-json/stages-lutherie/v1/inscription';
+  var ANNEE = STAGE_CONFIG.annee;
+
+  /* ── Populate dynamic content from STAGE_CONFIG ── */
+  document.getElementById('heroBadge').textContent = 'Inscription \u00b7 Stage ' + ANNEE;
+  document.title = 'Formulaire d\u2019inscription \u2013 Stage de lutherie accord\u00e9on diatonique ' + ANNEE;
+
+  var sessionContainer = document.getElementById('sessionOptions');
+  STAGE_CONFIG.sessions.forEach(function (s, i) {
+    var label = document.createElement('label');
+    label.className = 'insc-option-card';
+    label.innerHTML = '<input type="radio" name="session" value="' + s.id + ANNEE + '"' + (i === 0 ? ' required' : '') + '>'
+      + '<span class="card-label">'
+      + '<span class="card-title">' + s.icon + ' ' + s.saison + '</span>'
+      + '<span class="card-sub">' + s.dates + '</span>'
+      + '</span>';
+    sessionContainer.appendChild(label);
+  });
+
+  /* Build SESSION_LABELS from config */
+  var SESSION_LABELS = {};
+  STAGE_CONFIG.sessions.forEach(function (s) {
+    SESSION_LABELS[s.id + ANNEE] = s.icon + ' ' + s.dates;
+  });
 
   /* ── References ── */
   var form = document.getElementById('inscriptionForm');
   var nbMD = document.getElementById('nbBoutonsMD');
   var dispoWrap = document.getElementById('dispositionWrap');
+
+  /* ── Helpers ── */
+  function getRadioVal(name) {
+    var el = form.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  function selVal(id) {
+    var el = document.getElementById(id);
+    if (!el || el.selectedIndex <= 0) return '';
+    return el.options[el.selectedIndex].text;
+  }
 
   /* ── Show/hide disposition field when 3 rows selected ── */
   nbMD.addEventListener('change', function () {
@@ -760,27 +1005,58 @@
       } else if (val === '33/18b') {
         nbMD.value = '33';
         document.getElementById('nbBoutonsMG').value = '18b';
+      } else if (val === '33/24b') {
+        nbMD.value = '33';
+        document.getElementById('nbBoutonsMG').value = '24b';
       }
       nbMD.dispatchEvent(new Event('change'));
     });
   });
 
+  /* ── Keyboard Plan Parser ── */
+  var planData = null;
+  document.getElementById('planClavier').addEventListener('input', function () {
+    var raw = this.value.trim();
+    var preview = document.getElementById('planPreview');
+    var info = document.getElementById('planPreviewInfo');
+    planData = null;
+
+    if (!raw) {
+      preview.classList.remove('visible');
+      updateSummary();
+      return;
+    }
+
+    try {
+      var parsed = JSON.parse(raw);
+      /* Accept both single instrument and array */
+      var inst = Array.isArray(parsed) ? parsed[0] : parsed;
+      if (!inst || !inst.rangees) throw new Error('Format invalide');
+
+      planData = inst;
+      var nbRows = inst.nbRangees || (inst.rangees ? inst.rangees.length : '?');
+      var totalBtns = 0;
+      if (inst.rangees) {
+        inst.rangees.forEach(function (r) { totalBtns += (r.nb || 0); });
+      }
+      var lhBtns = 0;
+      if (inst.lhRows) {
+        inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
+      }
+      var name = inst.nom || '(sans nom)';
+
+      info.innerHTML = '<strong>' + name + '</strong><br>'
+        + 'MD : ' + nbRows + ' rangées · ' + totalBtns + ' boutons<br>'
+        + 'MG : ' + lhBtns + ' boutons';
+      preview.classList.add('visible');
+    } catch (e) {
+      info.innerHTML = '<span style="color:#c0392b;">⚠ JSON invalide — ' + e.message + '</span>';
+      preview.classList.add('visible');
+    }
+    updateSummary();
+  });
+
   /* ── Live Summary Update ── */
-  var SESSION_LABELS = {
-    'avril2026': '🌸 8–17 avril 2026',
-    'octobre2026': '🍂 14–23 octobre 2026'
-  };
-
-  function getRadioVal(name) {
-    var el = form.querySelector('input[name="' + name + '"]:checked');
-    return el ? el.value : '';
-  }
-
-  function selVal(id) {
-    var el = document.getElementById(id);
-    if (!el || el.selectedIndex <= 0) return '';
-    return el.options[el.selectedIndex].text;
-  }
 
   function updateSummary() {
     document.getElementById('sumNom').textContent = document.getElementById('nom').value || '–';
@@ -801,6 +1077,7 @@
     document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '–';
     document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '–';
     document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '–';
+    document.getElementById('sumPlan').textContent = planData ? (planData.nom || 'Plan personnalisé') : '–';
 
     /* Price */
     var modEl = form.querySelector('input[name="modele"]:checked');
@@ -819,13 +1096,8 @@
   form.addEventListener('input', updateSummary);
   form.addEventListener('change', updateSummary);
 
-  /* ── PDF Generation ── */
-  document.getElementById('btnPDF').addEventListener('click', function () {
-    if (typeof window.jspdf === 'undefined') {
-      alert('La bibliothèque PDF n\'est pas encore chargée. Veuillez réessayer dans quelques secondes.');
-      return;
-    }
-
+  /* ── PDF Generation (returns jsPDF doc) ── */
+  function buildPDF() {
     var jsPDF = window.jspdf.jsPDF;
     var doc = new jsPDF({ unit: 'mm', format: 'a4' });
     var W = 210;
@@ -847,11 +1119,12 @@
     doc.text('Formulaire d\'inscription', W / 2, 16, { align: 'center' });
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
-    doc.text('Stage de lutherie – Accordéon diatonique 2026', W / 2, 26, { align: 'center' });
+    doc.text('Stage de lutherie \u2013 Accord\u00e9on diatonique ' + ANNEE, W / 2, 26, { align: 'center' });
     y = 44;
 
     /* Helper: section title */
     function sectionTitle(title) {
+      if (y > 265) { doc.addPage(); y = MARGIN; }
       doc.setFillColor.apply(doc, gold);
       doc.rect(MARGIN, y, CW, 8, 'F');
       doc.setTextColor.apply(doc, woodDark);
@@ -870,51 +1143,51 @@
       doc.text(label, MARGIN, y);
       doc.setTextColor.apply(doc, woodDark);
       doc.setFont('helvetica', 'bold');
-      doc.text(String(value || '–'), MARGIN + 60, y);
+      doc.text(String(value || '\u2013'), MARGIN + 60, y);
       y += 6.5;
     }
 
     /* 1. Coordonnées */
-    sectionTitle('Coordonnées personnelles');
-    addLine('Nom prénom', document.getElementById('nom').value);
+    sectionTitle('Coordonn\u00e9es personnelles');
+    addLine('Nom pr\u00e9nom', document.getElementById('nom').value);
     addLine('Date de naissance', document.getElementById('dateNaissance').value);
     addLine('Adresse', document.getElementById('adresse').value);
     addLine('CP + Ville', document.getElementById('cp').value + ' ' + document.getElementById('ville').value);
-    addLine('Téléphone', document.getElementById('telephone').value);
+    addLine('T\u00e9l\u00e9phone', document.getElementById('telephone').value);
     addLine('Email', document.getElementById('email').value);
     y += 4;
 
     /* 2. Session */
     sectionTitle('Session choisie');
     var sessVal = getRadioVal('session');
-    addLine('Session', SESSION_LABELS[sessVal] || '–');
+    addLine('Session', SESSION_LABELS[sessVal] || '\u2013');
     y += 4;
 
     /* 3. Modèle */
-    sectionTitle('Modèle');
-    addLine('Modèle', getRadioVal('modele'));
+    sectionTitle('Mod\u00e8le');
+    addLine('Mod\u00e8le', getRadioVal('modele'));
     y += 4;
 
     /* 4. Main Droite */
     sectionTitle('Caisse Main Droite');
-    addLine('Nb boutons', selVal('nbBoutonsMD') || '–');
-    addLine('Disposition', selVal('disposition') || '–');
-    addLine('Tonalité', selVal('tonalite') || '–');
-    addLine('Voix 1', selVal('voix1') || '–');
-    addLine('Voix 2', selVal('voix2') || '–');
-    addLine('Accordage', selVal('accordage') || '–');
-    addLine('Boutons', selVal('boutonsMD') || '–');
-    addLine('Bois clavier', selVal('boisClavier') || '–');
-    addLine('Bois grille/caisse', selVal('boisGrille') || '–');
-    addLine('Marquage boutons', document.getElementById('marquageMD').value || '–');
+    addLine('Nb boutons', selVal('nbBoutonsMD') || '\u2013');
+    addLine('Disposition', selVal('disposition') || '\u2013');
+    addLine('Tonalit\u00e9', selVal('tonalite') || '\u2013');
+    addLine('Voix 1', selVal('voix1') || '\u2013');
+    addLine('Voix 2', selVal('voix2') || '\u2013');
+    addLine('Accordage', selVal('accordage') || '\u2013');
+    addLine('Boutons', selVal('boutonsMD') || '\u2013');
+    addLine('Bois clavier', selVal('boisClavier') || '\u2013');
+    addLine('Bois grille/caisse', selVal('boisGrille') || '\u2013');
+    addLine('Marquage boutons', document.getElementById('marquageMD').value || '\u2013');
     var remMD = document.getElementById('remarquesMD').value;
     if (remMD) addLine('Remarques MD', remMD);
     y += 4;
 
     /* 5. Main Gauche */
     sectionTitle('Caisse Main Gauche');
-    addLine('Nb boutons basses', selVal('nbBoutonsMG') || '–');
-    addLine('Couleur sangles', selVal('couleurSangles') || '–');
+    addLine('Nb boutons basses', selVal('nbBoutonsMG') || '\u2013');
+    addLine('Couleur sangles', selVal('couleurSangles') || '\u2013');
     var remMG = document.getElementById('remarquesMG').value;
     if (remMG) addLine('Remarques MG', remMG);
     y += 4;
@@ -922,22 +1195,37 @@
     /* 6. Soufflet */
     sectionTitle('Le Soufflet');
     addLine('Couleur soufflet', getRadioVal('couleurSoufflet'));
-    y += 6;
+    y += 4;
+
+    /* 7. Plan de clavier */
+    if (planData) {
+      sectionTitle('Plan de clavier personnalis\u00e9');
+      addLine('Nom du plan', planData.nom || '(personnalis\u00e9)');
+      if (planData.rangees) {
+        planData.rangees.forEach(function (r, i) {
+          addLine('Rang\u00e9e ' + (i + 1), (r.nom || '') + ' \u2013 ' + (r.nb || 0) + ' boutons');
+        });
+      }
+      y += 4;
+    }
+
+    y += 2;
 
     /* Total */
     var modEl = form.querySelector('input[name="modele"]:checked');
     if (modEl) {
       var price = parseInt(modEl.dataset.price, 10);
       var deposit = parseInt(modEl.dataset.deposit, 10);
+      if (y > 255) { doc.addPage(); y = MARGIN; }
       doc.setFillColor(255, 248, 225);
       doc.roundedRect(MARGIN, y, CW, 22, 3, 3, 'F');
       doc.setTextColor.apply(doc, woodDark);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(14);
-      doc.text('Prix total : ' + price.toLocaleString('fr-FR') + ' €', W / 2, y + 9, { align: 'center' });
+      doc.text('Prix total : ' + price.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + 9, { align: 'center' });
       doc.setFontSize(10);
       doc.setTextColor.apply(doc, gold);
-      doc.text('Acompte à l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' €', W / 2, y + 17, { align: 'center' });
+      doc.text('Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + 17, { align: 'center' });
       y += 28;
     }
 
@@ -946,8 +1234,8 @@
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(150, 150, 150);
-    var terms = 'Ce bon de commande vous engage. Pour être valide, ce bon doit être accompagné d\'un acompte de 40 %. '
-      + 'Il ne pourra être restitué si le client annule son inscription après le début de la fabrication (2 mois avant le stage).';
+    var terms = 'Ce bon de commande vous engage. Pour \u00eatre valide, ce bon doit \u00eatre accompagn\u00e9 d\'un acompte de 40 %. '
+      + 'Il ne pourra \u00eatre restitu\u00e9 si le client annule son inscription apr\u00e8s le d\u00e9but de la fabrication (2 mois avant le stage).';
     var splitTerms = doc.splitTextToSize(terms, CW);
     doc.text(splitTerms, MARGIN, y);
     y += splitTerms.length * 4 + 6;
@@ -959,16 +1247,25 @@
     y += 5;
     doc.setFontSize(8);
     doc.setTextColor.apply(doc, grey);
-    doc.text('Ewen Daviau – 9 rue Fernand de Magellan, 44600 Saint-Nazaire', W / 2, y, { align: 'center' });
+    doc.text('Ewen Daviau \u2013 9 rue Fernand de Magellan, 44600 Saint-Nazaire', W / 2, y, { align: 'center' });
     y += 4;
-    doc.text('contact@ewendaviau.com · ewendaviau.com', W / 2, y, { align: 'center' });
+    doc.text('contact@ewendaviau.com \u00b7 ewendaviau.com', W / 2, y, { align: 'center' });
 
-    /* Save */
-    var safeName = (document.getElementById('nom').value || 'inscription').replace(/[^a-zA-ZÀ-ÿ0-9]/g, '_');
+    return doc;
+  }
+
+  /* ── Download PDF button ── */
+  document.getElementById('btnPDF').addEventListener('click', function () {
+    if (typeof window.jspdf === 'undefined') {
+      alert('La biblioth\u00e8que PDF n\'est pas encore charg\u00e9e. Veuillez r\u00e9essayer dans quelques secondes.');
+      return;
+    }
+    var doc = buildPDF();
+    var safeName = (document.getElementById('nom').value || 'inscription').replace(/[^a-zA-Z\u00C0-\u00FF0-9]/g, '_');
     doc.save('inscription_' + safeName + '.pdf');
   });
 
-  /* ── Form Submission (mailto fallback) ── */
+  /* ── Form Submission ── */
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!document.getElementById('acceptTerms').checked) {
@@ -976,18 +1273,94 @@
       return;
     }
 
-    var data = new FormData(form);
-    var lines = [];
-    lines.push('INSCRIPTION STAGE DE LUTHERIE 2026');
-    lines.push('');
-    for (var pair of data.entries()) {
-      if (pair[0] === 'acceptTerms') continue;
-      lines.push(pair[0] + ' : ' + pair[1]);
+    if (typeof window.jspdf === 'undefined') {
+      alert('La biblioth\u00e8que PDF n\'est pas encore charg\u00e9e. Veuillez r\u00e9essayer dans quelques secondes.');
+      return;
     }
 
-    var subject = encodeURIComponent('Inscription stage lutherie 2026 – ' + (document.getElementById('nom').value || ''));
-    var body = encodeURIComponent(lines.join('\n'));
-    window.location.href = 'mailto:contact@ewendaviau.com?subject=' + subject + '&body=' + body;
+    var statusEl = document.getElementById('sendStatus');
+    statusEl.classList.add('visible');
+    statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:var(--gold);"><strong>\u23f3 Envoi en cours\u2026</strong></div>';
+
+    /* Build PDF as base64 */
+    var doc = buildPDF();
+    var pdfBase64 = doc.output('datauristring').split(',')[1];
+
+    /* Collect form fields */
+    var modEl = form.querySelector('input[name="modele"]:checked');
+    var deposit = modEl ? parseInt(modEl.dataset.deposit, 10) : 0;
+    var sessVal = getRadioVal('session');
+
+    var fields = {
+      nom: document.getElementById('nom').value,
+      dateNaissance: document.getElementById('dateNaissance').value,
+      adresse: document.getElementById('adresse').value,
+      cp: document.getElementById('cp').value,
+      ville: document.getElementById('ville').value,
+      telephone: document.getElementById('telephone').value,
+      email: document.getElementById('email').value,
+      session: SESSION_LABELS[sessVal] || sessVal,
+      modele: getRadioVal('modele'),
+      acompte: deposit.toLocaleString('fr-FR'),
+      tonalite: selVal('tonalite'),
+      disposition: selVal('disposition'),
+      voix1: selVal('voix1'),
+      voix2: selVal('voix2'),
+      accordage: selVal('accordage'),
+      boutonsMD: selVal('boutonsMD'),
+      boisClavier: selVal('boisClavier'),
+      boisGrille: selVal('boisGrille'),
+      marquageMD: document.getElementById('marquageMD').value,
+      remarquesMD: document.getElementById('remarquesMD').value,
+      nbBoutonsMG: selVal('nbBoutonsMG'),
+      couleurSangles: selVal('couleurSangles'),
+      remarquesMG: document.getElementById('remarquesMG').value,
+      couleurSoufflet: getRadioVal('couleurSoufflet'),
+      planClavier: planData ? (planData.nom || 'Plan personnalis\u00e9') : ''
+    };
+
+    /* Try WordPress endpoint first */
+    fetch(WP_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: fields, pdfBase64: pdfBase64 })
+    })
+    .then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success) {
+        statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#27ae60;">'
+          + '<strong>\u2705 Inscription envoy\u00e9e avec succ\u00e8s !</strong><br>'
+          + 'Un email de confirmation a \u00e9t\u00e9 envoy\u00e9 \u00e0 <strong>' + fields.email + '</strong> avec les coordonn\u00e9es bancaires pour l\'acompte.'
+          + '</div>';
+      } else {
+        throw new Error(json.message || 'Erreur serveur');
+      }
+    })
+    .catch(function () {
+      /* Fallback: download PDF + open mailto */
+      var safeName = (fields.nom || 'inscription').replace(/[^a-zA-Z\u00C0-\u00FF0-9]/g, '_');
+      doc.save('inscription_' + safeName + '.pdf');
+
+      var lines = ['INSCRIPTION STAGE DE LUTHERIE ' + ANNEE, ''];
+      Object.keys(fields).forEach(function (k) {
+        if (fields[k]) lines.push(k + ' : ' + fields[k]);
+      });
+      lines.push('', '(Le r\u00e9capitulatif PDF est joint en pi\u00e8ce jointe s\u00e9par\u00e9e)');
+
+      var subject = encodeURIComponent('Inscription stage lutherie ' + ANNEE + ' \u2013 ' + (fields.nom || ''));
+      var body = encodeURIComponent(lines.join('\n'));
+      window.location.href = 'mailto:contact@ewendaviau.com?subject=' + subject + '&body=' + body;
+
+      statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#e67e22;">'
+        + '<strong>\u2709\uFE0F Mode hors-ligne</strong><br>'
+        + 'Le PDF r\u00e9capitulatif a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9. Merci de l\'envoyer par email \u00e0 '
+        + '<a href="mailto:contact@ewendaviau.com" style="color:var(--gold)">contact@ewendaviau.com</a> '
+        + 'en pi\u00e8ce jointe.'
+        + '</div>';
+    });
   });
 
 })();
