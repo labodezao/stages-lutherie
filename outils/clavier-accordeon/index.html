@@ -377,10 +377,18 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <input type="text" id="order-reed-type" placeholder="Ex : Tipo a mano" oninput="onAnyChange()"></div>
         <div class="form-group"><label data-i="orderTuning">Accord de base</label>
           <select id="order-tuning" onchange="onAnyChange()">
-            <option value="440">440 Hz</option>
-            <option value="441">441 Hz</option>
-            <option value="442">442 Hz</option>
-            <option value="443">443 Hz</option>
+            <option value="400">A4 = 400 Hz</option>
+            <option value="415">A4 = 415 Hz</option>
+            <option value="432">A4 = 432 Hz</option>
+            <option value="435">A4 = 435 Hz</option>
+            <option value="438">A4 = 438 Hz</option>
+            <option value="439">A4 = 439 Hz</option>
+            <option value="440" selected>A4 = 440 Hz</option>
+            <option value="441">A4 = 441 Hz</option>
+            <option value="442">A4 = 442 Hz</option>
+            <option value="443">A4 = 443 Hz</option>
+            <option value="444">A4 = 444 Hz</option>
+            <option value="445">A4 = 445 Hz</option>
           </select></div>
         <div class="form-group"><label data-i="orderTremolo">Tremolo (± centièmes de Hz) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Tremolo" data-tip="Écart de fréquence entre le rang naturel et le rang tremolo (en centièmes d'un demi-ton). Ex: ±7 Cents = vibrato lent doux. ±15 Cents = vibrato plus prononcé.&#10;—&#10;Frequency offset between natural and tremolo reed rows (in cents = 1/100 of a semitone). E.g. ±7 cents = gentle slow vibrato.">ⓘ</span></label>
           <input type="text" id="order-tremolo" placeholder="Ex : ± 7 Cents" oninput="onAnyChange()"></div>
@@ -783,6 +791,8 @@ function noteToMidi(s){
   return null;
 }
 const MIDI_TO_FR=['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+const A4_MIDI=69; // A4 (La4) = MIDI 69
+function midiToFreq(midi,tuning){return(tuning||440)*Math.pow(2,(midi-A4_MIDI)/12);}
 function midiToFr(midi){if(midi===null||midi===undefined)return'';const oct=Math.floor(midi/12)-1;return MIDI_TO_FR[((midi%12)+12)%12]+oct;}
 function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi):'';}
 
@@ -1279,8 +1289,8 @@ function readNoteInputsIntoCFG(){
 
 /* ── Render row configs ── */
 const REGISTERS=['B','N','N+','N-','A'];
-const REGISTER_LABELS={'B':'B (16\' grave)','N':'N (8\' naturel 440)','N+':'N+ (8\'+ aigu)','N-':'N- (8\'- grave)','A':'A (4\' piccolo)'};
-const REGISTER_LABELS_EN={'B':'B (16\' low)','N':'N (8\' natural 440)','N+':'N+ (8\'+ sharp)','N-':'N- (8\'- flat)','A':'A (4\' piccolo)'};
+const REGISTER_LABELS={'B':'B (16\' grave)','N':'N (8\' naturel A4)','N+':'N+ (8\'+ aigu)','N-':'N- (8\'- grave)','A':'A (4\' piccolo)'};
+const REGISTER_LABELS_EN={'B':'B (16\' low)','N':'N (8\' natural A4)','N+':'N+ (8\'+ sharp)','N-':'N- (8\'- flat)','A':'A (4\' piccolo)'};
 function renderRangeesCfg(){
   const wrap=document.getElementById('rangees-cfg');let html='';
   const rLabels=lang==='en'?REGISTER_LABELS_EN:REGISTER_LABELS;
@@ -1290,7 +1300,7 @@ function renderRangeesCfg(){
     html+=`<div class="rangee-cfg">
       <label>R${r+1} — Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
-      <label style="margin-top:3px;">Registre <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: Registre" data-tip="B (16') : une octave plus grave.&#10;N (8') : hauteur naturelle 440 Hz.&#10;N+ (8'+) : légèrement plus haut (442 Hz).&#10;N- (8'-) : légèrement plus bas (438 Hz).&#10;A (4') : une octave plus aigu (piccolo).&#10;—&#10;B(16')=low octave · N(8')=natural 440 Hz · N+(8'+)=+2Hz · N-(8'-)=-2Hz · A(4')=high octave">ⓘ</span></label>
+      <label style="margin-top:3px;">Registre <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: Registre" data-tip="B (16') : une octave plus grave.&#10;N (8') : hauteur naturelle (A4 = diapason sélectionné).&#10;N+ (8'+) : légèrement plus haut (+2 Hz).&#10;N- (8'-) : légèrement plus bas (-2 Hz).&#10;A (4') : une octave plus aigu (piccolo).&#10;—&#10;B(16')=low octave · N(8')=natural (A4 = selected tuning) · N+(8'+)=+2Hz · N-(8'-)=-2Hz · A(4')=high octave">ⓘ</span></label>
       <select id="rreg-${r}" style="font-size:.76rem;padding:3px 5px;" onchange="CFG.rangees[${r}].register=this.value;onAnyChange()">
         ${REGISTERS.map(rv=>`<option value="${rv}"${rv===reg?' selected':''}>${rLabels[rv]}</option>`).join('')}
       </select>
