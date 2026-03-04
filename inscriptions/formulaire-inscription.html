@@ -1101,8 +1101,10 @@ var STAGE_CONFIG = {
     var jsPDF = window.jspdf.jsPDF;
     var doc = new jsPDF({ unit: 'mm', format: 'a4' });
     var W = 210;
+    var H = 297;
     var MARGIN = 18;
     var CW = W - 2 * MARGIN;
+    var PAGE_LIMIT = H - MARGIN - 14; /* max y before forcing page break */
     var y = MARGIN;
 
     /* Colors */
@@ -1124,7 +1126,7 @@ var STAGE_CONFIG = {
 
     /* Helper: section title */
     function sectionTitle(title) {
-      if (y > 265) { doc.addPage(); y = MARGIN; }
+      if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
       doc.setFillColor.apply(doc, gold);
       doc.rect(MARGIN, y, CW, 8, 'F');
       doc.setTextColor.apply(doc, woodDark);
@@ -1136,7 +1138,7 @@ var STAGE_CONFIG = {
 
     /* Helper: line */
     function addLine(label, value) {
-      if (y > 270) { doc.addPage(); y = MARGIN; }
+      if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9.5);
       doc.setTextColor.apply(doc, grey);
@@ -1216,7 +1218,7 @@ var STAGE_CONFIG = {
     if (modEl) {
       var price = parseInt(modEl.dataset.price, 10);
       var deposit = parseInt(modEl.dataset.deposit, 10);
-      if (y > 255) { doc.addPage(); y = MARGIN; }
+      if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
       doc.setFillColor(255, 248, 225);
       doc.roundedRect(MARGIN, y, CW, 22, 3, 3, 'F');
       doc.setTextColor.apply(doc, woodDark);
@@ -1230,7 +1232,7 @@ var STAGE_CONFIG = {
     }
 
     /* Terms */
-    if (y > 250) { doc.addPage(); y = MARGIN; }
+    if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(150, 150, 150);
