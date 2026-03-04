@@ -543,7 +543,7 @@ fr:{
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Poussé',svgPull:'↑ Tiré',
   svgHigh:'AIGU ▶',svgLow:'◀ GRAVE',svgBellowsPush:'POUSSÉ',svgBellowsPull:'TIRÉ',
   svgRH:'Main Droite',svgLH:'Main Gauche',svgSommierRH:'SOMMIER — Main Droite',svgSommierLH:'SOMMIER — Main Gauche',
-  svgMidi:'MIDI',svgGeneratedBy:'Généré le',svgPlan:'Plan de clavier',svgBellows:'SOUFFLET',
+  svgMidi:'MIDI',svgGeneratedBy:'Généré le',svgPlan:'Plan de clavier',svgBellows:'SOUFFLET',svgTuningRef:'Diapason',
   // Manufacturer table
   mfrRH:'MAIN DROITE — Plaque anches mélodie (bisonore)',
   mfrLH:'MAIN GAUCHE — Plaques basses, accords',
@@ -616,7 +616,7 @@ en:{
   svgClient:'Client',svgLuthier:'Luthier',svgPush:'↓ Push',svgPull:'↑ Pull',
   svgHigh:'TREBLE ▶',svgLow:'◀ BASS',svgBellowsPush:'PUSH',svgBellowsPull:'PULL',
   svgRH:'Right Hand',svgLH:'Left Hand',svgSommierRH:'REED PLATE — Right Hand',svgSommierLH:'REED PLATE — Left Hand',
-  svgMidi:'MIDI',svgGeneratedBy:'Generated on',svgPlan:'Keyboard plan',svgBellows:'BELLOWS',
+  svgMidi:'MIDI',svgGeneratedBy:'Generated on',svgPlan:'Keyboard plan',svgBellows:'BELLOWS',svgTuningRef:'Tuning ref.',
   mfrRH:'RIGHT HAND — Melody reed plate (bisonoric)',
   mfrLH:'LEFT HAND — Bass & chord plates',
   mfrRow:'Row',mfrNo:'No.',mfrPushNote:'Push Note ↓',mfrPullNote:'Pull Note ↑',
@@ -1741,6 +1741,8 @@ function buildSVG_Droite(data,dark){
   const fy=MARG+HEAD+data.droite.length*VGAP+14;
   s+=`<line x1="${BASE}" y1="${fy}" x2="${W-MARG-44}" y2="${fy}" stroke="${dark?'#3E2723':'#D7CCC8'}" stroke-width="1"/>`;
   s+=tx(BASE,fy+14,`${escSVG(data.nomLuthier)} — ewendaviau.com`,7.5,dark?'#5D4037':'#BCAAA4','normal','start');
+  const tuningHz=(data.orderSpecs&&data.orderSpecs.tuning)||'440';
+  s+=tx(W-MARG,fy+14,`${t('svgTuningRef')} : A4 = ${tuningHz} Hz`,7.5,dark?'#5D4037':'#BCAAA4','normal','end');
   s+=svg_close();return s;
 }
 
@@ -2437,7 +2439,8 @@ async function downloadPDF(which){
     pdf.setFontSize(6);pdf.setFont('helvetica','normal');pdf.setTextColor(...GRAY);
     pdf.text(`${data.nomLuthier||''}  —  ewendaviau.com`,ML,PH-6.5);
     pdf.text(`${pg} / ${total}`,PW/2,PH-6.5,{align:'center'});
-    pdf.text(fmtDate(data.date),PW-MR,PH-6.5,{align:'right'});
+    const tuningHz=(data.orderSpecs&&data.orderSpecs.tuning)||'440';
+    pdf.text(`${fmtDate(data.date)}  ·  A4 = ${tuningHz} Hz`,PW-MR,PH-6.5,{align:'right'});
   }
 
   const fileName=`${(data.nomInstrument||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_')}_${which==='visual'?'plan':'fabricant'}.pdf`;
