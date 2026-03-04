@@ -1,50 +1,48 @@
-# Intégration Gutenberg — Formulaire d'inscription
+# Intégration Gutenberg — Page d'inscription
 
 ---
 
-## ✅ Méthode recommandée — Coller dans l'éditeur de code
+## ✅ Méthode recommandée — Blocs natifs Gutenberg
 
-Utilisez les fichiers **`*-blocs-gutenberg.txt`** : ouvrez le lien raw, sélectionnez tout (`Ctrl+A`), copiez, collez dans Gutenberg.
+Utilisez les fichiers **`page-inscription-*-blocs-gutenberg.txt`** : ce sont de vraies pages Gutenberg composées de blocs natifs (`wp:cover`, `wp:heading`, `wp:columns`, `wp:list`, `wp:buttons`…).  
+Zéro CSS personnalisé — tout est éditable visuellement dans WordPress.
 
-### 🇫🇷 Formulaire français
+### 🇫🇷 Page d'inscription (français)
 
-> **https://raw.githubusercontent.com/labodezao/stages-lutherie/copilot/create-internship-registration-form/inscriptions/formulaire-inscription-blocs-gutenberg.txt**
+> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/page-inscription-blocs-gutenberg.txt**
 
-### 🇬🇧 English form
+### 🇬🇧 Registration page (English)
 
-> **https://raw.githubusercontent.com/labodezao/stages-lutherie/copilot/create-internship-registration-form/inscriptions/formulaire-inscription-en-blocs-gutenberg.txt**
+> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/page-inscription-en-blocs-gutenberg.txt**
 
 ### Étapes dans WordPress
 
-1. Ouvrez la page WordPress où vous voulez placer le formulaire.
+1. WordPress → **Pages → Ajouter une page**, donnez-lui un titre (ex. : _Inscription_).
 2. En haut à droite, cliquez sur **⋮ → Éditeur de code** (raccourci `Ctrl + Shift + Alt + M`).
-3. Sélectionnez tout (`Ctrl+A`) et collez.
-4. Cliquez **⋮ → Éditeur visuel** pour vérifier le rendu, puis **Mettre à jour**.
+3. Ouvrez le lien _raw_ ci-dessus, sélectionnez tout (`Ctrl+A`), copiez, collez.
+4. Cliquez **⋮ → Éditeur visuel** pour vérifier le rendu.
+5. Mettez à jour les liens `VOTRE-SITE.COM` dans les boutons CTA, puis **Publier**.
 
-> Le fichier commence par un commentaire d'instructions, suivi du bloc `<!-- wp:html -->` contenant le formulaire complet.
-
----
-
-## Méthode alternative — Importer le JSON comme bloc réutilisable
-
-Les fichiers `*-gutenberg.json` sont au format `wp_block` (Synced Pattern).
-
-**WordPress 6.3+ (Motifs synchronisés) :**
-
-1. WordPress Admin → **Apparence → Éditeur → Motifs**.
-2. Cliquez sur **⋮ → Importer depuis JSON**.
-3. Sélectionnez `formulaire-inscription-gutenberg.json` (FR) ou `formulaire-inscription-en-gutenberg.json` (EN).
-4. Le motif apparaît dans la bibliothèque — insérez-le dans n'importe quelle page.
+> Les blocs sont entièrement éditables : couleurs, textes, liens, images — tout se modifie directement dans l'éditeur visuel.
 
 ---
 
-## Fichiers
+## Formulaire interactif (avec calcul de prix et PDF)
+
+Le formulaire d'inscription avec calcul automatique du prix, génération de PDF et envoi par email REST WordPress se trouve dans :
 
 | Fichier | Usage |
 |---|---|
-| `formulaire-inscription-blocs-gutenberg.txt` | ⭐ **À coller dans Éditeur de code** (FR) |
-| `formulaire-inscription-en-blocs-gutenberg.txt` | ⭐ **À coller dans Éditeur de code** (EN) |
+| `formulaire-inscription.html` | Formulaire interactif complet (FR) — à coller dans un bloc HTML personnalisé |
+| `formulaire-inscription-en.html` | Interactive form (EN) — paste into a Custom HTML block |
 | `formulaire-inscription-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (FR) |
 | `formulaire-inscription-en-gutenberg.json` | Import JSON Gutenberg — Synced Pattern (EN) |
-| `formulaire-inscription.html` | Source HTML brut (FR) |
-| `formulaire-inscription-en.html` | Source HTML brut (EN) |
+
+---
+
+## Fichiers de blocs natifs
+
+| Fichier | Usage |
+|---|---|
+| `page-inscription-blocs-gutenberg.txt` | ⭐ **Page d'inscription en blocs natifs** (FR) |
+| `page-inscription-en-blocs-gutenberg.txt` | ⭐ **Registration page in native blocks** (EN) |
