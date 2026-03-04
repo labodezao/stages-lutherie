@@ -1,17 +1,21 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Formulaire d'inscription – Stage de lutherie accordéon diatonique</title>
-  <meta name="description" content="Formulaire d'inscription au stage de fabrication d'accordéon diatonique à Saint-Nazaire.">
+<!-- wp:html -->
+<!--
+  ════════════════════════════════════════════════════════════════
+  Formulaire d'inscription — Stage de lutherie accordéon diatonique
+  ════════════════════════════════════════════════════════════════
+  Compatible WordPress Gutenberg : collez ce fichier entier dans
+  un bloc « HTML personnalisé » (Custom HTML).
 
-  <!-- jsPDF for PDF generation -->
-  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@4.2.0/dist/jspdf.umd.min.js"></script>
+  Le CSS est scopé sous .inscription-page pour éviter tout conflit
+  avec le thème WordPress.
+  ════════════════════════════════════════════════════════════════
+-->
 
-  <!-- WordPress Gutenberg Compatible CSS -->
-  <style type="text/css">
+<!-- jsPDF for PDF generation -->
+<script defer src="https://cdn.jsdelivr.net/npm/jspdf@4.2.0/dist/jspdf.umd.min.js"></script>
+
+<!-- WordPress Gutenberg Compatible CSS -->
+<style type="text/css">
     /* ── Base Reset for WordPress ── */
     .inscription-page { margin:0; padding:0; box-sizing:border-box; }
     .inscription-page *, .inscription-page *::before, .inscription-page *::after { box-sizing:inherit; }
@@ -384,8 +388,6 @@
     }
     .insc-option-card input:checked + .card-label .color-swatch { border-color: var(--gold); }
   </style>
-</head>
-<body>
 
 <div class="inscription-page">
 
@@ -1982,6 +1984,4 @@ var buildSVG_PlanLite = (function () {
 
 })();
 </script>
-
-</body>
-</html>
+<!-- /wp:html -->
