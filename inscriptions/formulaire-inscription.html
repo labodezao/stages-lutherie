@@ -567,7 +567,7 @@
 
         <div class="insc-inline-row">
           <div class="insc-field">
-            <label for="voix1">Voix 1</label>
+            <label for="voix1">Voix MD</label>
             <select id="voix1" name="voix1">
               <option value="">– Choisir –</option>
               <option value="Basson">Basson</option>
@@ -576,14 +576,21 @@
             </select>
           </div>
           <div class="insc-field">
-            <label for="voix2">Voix 2</label>
-            <select id="voix2" name="voix2">
-              <option value="">– Choisir –</option>
-              <option value="Basson">Basson</option>
-              <option value="Flute">Flûte</option>
-              <option value="Piccolo">Piccolo</option>
-            </select>
+            <label style="font-weight:600; font-size:0.95rem; cursor:pointer;">
+              <input type="checkbox" id="upgrade2V" name="upgrade2V" value="oui">
+              Option <strong>2 Voix avec registres</strong>
+            </label>
+            <div class="hint" style="color:#b8860b;">⚠️ Nécessite obligatoirement un 2<sup>e</sup> stage</div>
           </div>
+        </div>
+        <div class="insc-field insc-conditional" id="voix2Wrap">
+          <label for="voix2">Voix 2 MD</label>
+          <select id="voix2" name="voix2">
+            <option value="">– Choisir –</option>
+            <option value="Basson">Basson</option>
+            <option value="Flute">Flûte</option>
+            <option value="Piccolo">Piccolo</option>
+          </select>
         </div>
 
         <div class="insc-inline-row">
@@ -621,6 +628,29 @@
           <div class="insc-field">
             <label for="marquageMD">Marquage des boutons</label>
             <input type="text" id="marquageMD" name="marquageMD" placeholder="ex : tactile, visuel, aucun…">
+          </div>
+        </div>
+
+        <!-- Choix de la grille -->
+        <div class="insc-inline-row" style="margin-top:14px;">
+          <div class="insc-field">
+            <label for="numGrille">Choix de la grille</label>
+            <select id="numGrille" name="numGrille">
+              <option value="">– Choisir –</option>
+              <option value="1">Grille n°1</option>
+              <option value="2">Grille n°2</option>
+              <option value="3">Grille n°3</option>
+              <option value="4">Grille n°4</option>
+              <option value="5">Grille n°5</option>
+              <option value="6">Grille n°6</option>
+              <option value="custom">Personnalisée</option>
+            </select>
+          </div>
+          <div class="insc-field insc-conditional" id="grillePreview" style="text-align:center;">
+            <div id="grilleVisual" style="width:120px;height:120px;margin:0 auto 8px;border:2px solid var(--accent,#5D4037);border-radius:8px;display:flex;align-items:center;justify-content:center;background:#FBF5F0;font-size:2.5rem;color:var(--accent,#5D4037);">
+              <span id="grilleVisualLabel" style="font-size:0.85rem;color:#999;">Sélectionnez une grille</span>
+            </div>
+            <div id="grilleInfo" style="font-size:0.85rem;color:#666;"></div>
           </div>
         </div>
 
@@ -823,6 +853,7 @@
             <tr><td>Session</td><td id="sumSession">–</td></tr>
             <tr><td>Modèle</td><td id="sumModele">–</td></tr>
             <tr><td>Option Anche a mano Blue Star</td><td id="sumAnche">–</td></tr>
+            <tr><td>Upgrade 2 Voix (registres)</td><td id="sumUpgrade2V">–</td></tr>
             <tr><td>Tonalité</td><td id="sumTona">–</td></tr>
             <tr><td>Disposition</td><td id="sumDispo">–</td></tr>
             <tr><td>Voix</td><td id="sumVoix">–</td></tr>
@@ -830,6 +861,7 @@
             <tr><td>Boutons (matériau)</td><td id="sumBoutons">–</td></tr>
             <tr><td>Bois clavier</td><td id="sumBoisClavier">–</td></tr>
             <tr><td>Bois grille + caisse</td><td id="sumBoisGrille">–</td></tr>
+            <tr><td>Grille</td><td id="sumGrille">–</td></tr>
             <tr><td>Basses MG</td><td id="sumBassesMG">–</td></tr>
             <tr><td>Couleur sangles</td><td id="sumSangles">–</td></tr>
             <tr><td>Couleur soufflet</td><td id="sumSoufflet">–</td></tr>
@@ -1504,7 +1536,7 @@ var buildSVG_PlanLite = (function () {
   document.getElementById('upgrade2V').addEventListener('change', function () {
     var wrap = document.getElementById('voix2Wrap');
     if (this.checked) { wrap.classList.add('visible'); }
-    else { wrap.classList.remove('visible'); document.getElementById('voix2MD').value = ''; }
+    else { wrap.classList.remove('visible'); document.getElementById('voix2').value = ''; }
     updateSummary();
   });
 
@@ -1545,8 +1577,8 @@ var buildSVG_PlanLite = (function () {
     document.getElementById('sumTona').textContent = selVal('tonalite') || '–';
     document.getElementById('sumDispo').textContent = selVal('disposition') || '–';
 
-    var v1 = selVal('voixMD');
-    var v2 = document.getElementById('upgrade2V').checked ? selVal('voix2MD') : '';
+    var v1 = selVal('voix1');
+    var v2 = document.getElementById('upgrade2V').checked ? selVal('voix2') : '';
     document.getElementById('sumVoix').textContent = v2 ? (v1 || '–') + ' / ' + v2 + ' (2V registres)' : (v1 || '–') + ' (1V)';
 
     document.getElementById('sumAccordage').textContent = selVal('accordage') || '–';
@@ -1719,12 +1751,16 @@ var buildSVG_PlanLite = (function () {
     addLine('Nb boutons', selVal('nbBoutonsMD') || '\u2013');
     addLine('Disposition', selVal('disposition') || '\u2013');
     addLine('Tonalit\u00e9', selVal('tonalite') || '\u2013');
-    addLine('Voix 1', selVal('voix1') || '\u2013');
-    addLine('Voix 2', selVal('voix2') || '\u2013');
+    addLine('Voix MD', selVal('voix1') || '\u2013');
+    var pdfUp2V = document.getElementById('upgrade2V').checked;
+    addLine('Upgrade 2V registres', pdfUp2V ? 'Oui (2\u1d49 stage n\u00e9cessaire)' : 'Non');
+    if (pdfUp2V) addLine('Voix 2 MD', selVal('voix2') || '\u2013');
     addLine('Accordage', selVal('accordage') || '\u2013');
     addLine('Boutons', selVal('boutonsMD') || '\u2013');
     addLine('Bois clavier', selVal('boisClavier') || '\u2013');
     addLine('Bois grille/caisse', selVal('boisGrille') || '\u2013');
+    var pdfGrille = selVal('numGrille');
+    addLine('Grille', pdfGrille ? (GRILLE_DESCRIPTIONS[pdfGrille] || 'Grille n\u00b0' + pdfGrille) : '\u2013');
     addLine('Marquage boutons', document.getElementById('marquageMD').value || '\u2013');
     var remMD = document.getElementById('remarquesMD').value;
     if (remMD) addLine('Remarques MD', remMD);
@@ -1861,11 +1897,13 @@ var buildSVG_PlanLite = (function () {
       tonalite: selVal('tonalite'),
       disposition: selVal('disposition'),
       voix1: selVal('voix1'),
-      voix2: selVal('voix2'),
+      upgrade2V: document.getElementById('upgrade2V').checked ? 'Oui — 2 Voix avec registres (2e stage nécessaire)' : 'Non',
+      voix2: document.getElementById('upgrade2V').checked ? selVal('voix2') : '',
       accordage: selVal('accordage'),
       boutonsMD: selVal('boutonsMD'),
       boisClavier: selVal('boisClavier'),
       boisGrille: selVal('boisGrille'),
+      numGrille: selVal('numGrille') ? (GRILLE_DESCRIPTIONS[selVal('numGrille')] || 'Grille n°' + selVal('numGrille')) : '',
       marquageMD: document.getElementById('marquageMD').value,
       remarquesMD: document.getElementById('remarquesMD').value,
       nbBoutonsMG: selVal('nbBoutonsMG'),
