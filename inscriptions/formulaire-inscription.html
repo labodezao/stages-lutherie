@@ -7,9 +7,8 @@
   <title>Formulaire d'inscription – Stage de lutherie accordéon diatonique 2026</title>
   <meta name="description" content="Formulaire d'inscription au stage de fabrication d'accordéon diatonique. Sessions 2026 : 8-17 avril et 14-23 octobre à Saint-Nazaire.">
 
-  <!-- jsPDF for future PDF generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+  <!-- jsPDF for PDF generation -->
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@4.2.0/dist/jspdf.umd.min.js"></script>
 
   <!-- WordPress Gutenberg Compatible CSS -->
   <style type="text/css">
@@ -470,7 +469,7 @@
             <label for="nbBoutonsMD">Nb boutons</label>
             <select id="nbBoutonsMD" name="nbBoutonsMD">
               <option value="">– Choisir –</option>
-              <option value="23">2 rangées (21 boutons)</option>
+              <option value="21">2 rangées (21 boutons)</option>
               <option value="33">3 rangées (33 boutons)</option>
             </select>
           </div>
@@ -753,7 +752,7 @@
     r.addEventListener('change', function () {
       var val = this.value;
       if (val === '21/8b') {
-        nbMD.value = '23';
+        nbMD.value = '21';
         document.getElementById('nbBoutonsMG').value = '8b';
       } else if (val === '33/12b') {
         nbMD.value = '33';
@@ -779,8 +778,8 @@
 
   function selVal(id) {
     var el = document.getElementById(id);
-    if (!el) return '';
-    return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+    if (!el || el.selectedIndex <= 0) return '';
+    return el.options[el.selectedIndex].text;
   }
 
   function updateSummary() {
@@ -788,28 +787,19 @@
     var sess = getRadioVal('session');
     document.getElementById('sumSession').textContent = SESSION_LABELS[sess] || '–';
     document.getElementById('sumModele').textContent = getRadioVal('modele') || '–';
-
-    var tona = document.getElementById('tonalite');
-    document.getElementById('sumTona').textContent = tona.value ? tona.options[tona.selectedIndex].text : '–';
-
-    var dispo = document.getElementById('disposition');
-    document.getElementById('sumDispo').textContent = dispo.value || '–';
+    document.getElementById('sumTona').textContent = selVal('tonalite') || '–';
+    document.getElementById('sumDispo').textContent = selVal('disposition') || '–';
 
     var v1 = document.getElementById('voix1').value;
     var v2 = document.getElementById('voix2').value;
     document.getElementById('sumVoix').textContent = (v1 || v2) ? (v1 || '–') + ' / ' + (v2 || '–') : '–';
 
-    document.getElementById('sumAccordage').textContent = document.getElementById('accordage').value || '–';
-    document.getElementById('sumBoutons').textContent = document.getElementById('boutonsMD').value || '–';
-
-    var bClav = document.getElementById('boisClavier');
-    document.getElementById('sumBoisClavier').textContent = bClav.value || '–';
-
-    var bGr = document.getElementById('boisGrille');
-    document.getElementById('sumBoisGrille').textContent = bGr.value || '–';
-
-    document.getElementById('sumBassesMG').textContent = document.getElementById('nbBoutonsMG').value || '–';
-    document.getElementById('sumSangles').textContent = document.getElementById('couleurSangles').value || '–';
+    document.getElementById('sumAccordage').textContent = selVal('accordage') || '–';
+    document.getElementById('sumBoutons').textContent = selVal('boutonsMD') || '–';
+    document.getElementById('sumBoisClavier').textContent = selVal('boisClavier') || '–';
+    document.getElementById('sumBoisGrille').textContent = selVal('boisGrille') || '–';
+    document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '–';
+    document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '–';
     document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '–';
 
     /* Price */
@@ -907,15 +897,15 @@
 
     /* 4. Main Droite */
     sectionTitle('Caisse Main Droite');
-    addLine('Nb boutons', selVal('nbBoutonsMD'));
-    addLine('Disposition', document.getElementById('disposition').value || '–');
-    addLine('Tonalité', document.getElementById('tonalite').value || '–');
-    addLine('Voix 1', document.getElementById('voix1').value || '–');
-    addLine('Voix 2', document.getElementById('voix2').value || '–');
-    addLine('Accordage', document.getElementById('accordage').value || '–');
-    addLine('Boutons', document.getElementById('boutonsMD').value || '–');
-    addLine('Bois clavier', document.getElementById('boisClavier').value || '–');
-    addLine('Bois grille/caisse', document.getElementById('boisGrille').value || '–');
+    addLine('Nb boutons', selVal('nbBoutonsMD') || '–');
+    addLine('Disposition', selVal('disposition') || '–');
+    addLine('Tonalité', selVal('tonalite') || '–');
+    addLine('Voix 1', selVal('voix1') || '–');
+    addLine('Voix 2', selVal('voix2') || '–');
+    addLine('Accordage', selVal('accordage') || '–');
+    addLine('Boutons', selVal('boutonsMD') || '–');
+    addLine('Bois clavier', selVal('boisClavier') || '–');
+    addLine('Bois grille/caisse', selVal('boisGrille') || '–');
     addLine('Marquage boutons', document.getElementById('marquageMD').value || '–');
     var remMD = document.getElementById('remarquesMD').value;
     if (remMD) addLine('Remarques MD', remMD);
@@ -923,8 +913,8 @@
 
     /* 5. Main Gauche */
     sectionTitle('Caisse Main Gauche');
-    addLine('Nb boutons basses', document.getElementById('nbBoutonsMG').value || '–');
-    addLine('Couleur sangles', document.getElementById('couleurSangles').value || '–');
+    addLine('Nb boutons basses', selVal('nbBoutonsMG') || '–');
+    addLine('Couleur sangles', selVal('couleurSangles') || '–');
     var remMG = document.getElementById('remarquesMG').value;
     if (remMG) addLine('Remarques MG', remMG);
     y += 4;
