@@ -419,7 +419,21 @@ var STAGE_CONFIG = {
 <!-- wp:html -->
 <div class="insc-section-body">
 <div class="insc-options" id="sessionOptions">
-          <!-- Sessions are populated dynamically from STAGE_CONFIG -->
+          <!-- ════ UPDATE EVERY YEAR — keep in sync with STAGE_CONFIG above ════ -->
+          <label class="insc-option-card">
+            <input type="radio" name="session" value="avril2026" required>
+            <span class="card-label">
+              <span class="card-title">🌸 Spring</span>
+              <span class="card-sub">Wednesday 8 – Friday 17 April 2026</span>
+            </span>
+          </label>
+          <label class="insc-option-card">
+            <input type="radio" name="session" value="octobre2026">
+            <span class="card-label">
+              <span class="card-title">🍂 Autumn</span>
+              <span class="card-sub">Wednesday 14 – Friday 23 October 2026</span>
+            </span>
+          </label>
         </div>
 </div>
 <!-- /wp:html -->
@@ -1370,16 +1384,18 @@ var buildSVG_PlanLite = (function () {
   document.title = 'Registration Form \u2013 Diatonic Accordion Building Workshop ' + ANNEE;
 
   var sessionContainer = document.getElementById('sessionOptions');
-  STAGE_CONFIG.sessions.forEach(function (s, i) {
-    var label = document.createElement('label');
-    label.className = 'insc-option-card';
-    label.innerHTML = '<input type="radio" name="session" value="' + s.id + ANNEE + '"' + (i === 0 ? ' required' : '') + '>'
-      + '<span class="card-label">'
-      + '<span class="card-title">' + s.icon + ' ' + s.saison + '</span>'
-      + '<span class="card-sub">' + s.dates + '</span>'
-      + '</span>';
-    sessionContainer.appendChild(label);
-  });
+  if (sessionContainer && sessionContainer.children.length === 0) {
+    STAGE_CONFIG.sessions.forEach(function (s, i) {
+      var label = document.createElement('label');
+      label.className = 'insc-option-card';
+      label.innerHTML = '<input type="radio" name="session" value="' + s.id + ANNEE + '"' + (i === 0 ? ' required' : '') + '>'
+        + '<span class="card-label">'
+        + '<span class="card-title">' + s.icon + ' ' + s.saison + '</span>'
+        + '<span class="card-sub">' + s.dates + '</span>'
+        + '</span>';
+      sessionContainer.appendChild(label);
+    });
+  }
 
   /* Build SESSION_LABELS from config */
   var SESSION_LABELS = {};
