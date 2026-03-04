@@ -1674,7 +1674,7 @@ function buildSVG_Droite(data,dark){
   const pushTx=dark?'#F5D061':'#3E2723',pullTx=dark?'#FFF8E1':'#8b6914';
   const subtl=dark?'#A1887F':'#888888',stroke=dark?'#D4A017':'#5D4037';
   const band1=dark?'#241810':'#FBF5F0',band2=dark?'#1E140E':'#F5EDE6';
-  const numTx=dark?'rgba(212,160,23,.3)':'rgba(62,39,35,.2)';
+  const numTx=dark?'rgba(212,160,23,.7)':'rgba(93,64,55,.6)';
 
   const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
   const allOffs=data.droite.map(r=>r.offset||0);
@@ -1727,7 +1727,7 @@ function buildSVG_Droite(data,dark){
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-      s+=tx(cx,cy+3.5,row.boutons.length-bi,7.5,numTx,'normal','middle');
+      s+=tx(cx-R+5,cy+R-4,row.boutons.length-bi,7,numTx,'bold','start');
       if(btn.p){const fs=btn.p.length>6?7:8.5;s+=tx(cx,cy-9,dn(btn.p),fs,pushTx,'bold','middle');}
       if(btn.t){const fs=btn.t.length>6?7:8.5;s+=tx(cx,cy+19,dn(btn.t),fs,pullTx,'bold','middle');}
       if(data.showMidi){
@@ -1754,7 +1754,7 @@ function buildSVG_Gauche(data,dark){
   const pushTx=dark?'#F5D061':'#3E2723',pullTx=dark?'#FFF8E1':'#8b6914';
   const stroke=dark?'#D4A017':'#5D4037';
   const band1=dark?'#241810':'#FBF5F0',band2=dark?'#1E140E':'#F5EDE6';
-  const numTx=dark?'rgba(212,160,23,.3)':'rgba(62,39,35,.2)';
+  const numTx=dark?'rgba(212,160,23,.7)':'rgba(93,64,55,.6)';
   const pushTx2=dark?'rgba(245,208,97,.55)':'rgba(62,39,35,.5)';
   const pullTx2=dark?'rgba(255,248,225,.55)':'rgba(139,105,20,.5)';
 
@@ -1788,7 +1788,7 @@ function buildSVG_Gauche(data,dark){
           s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
           s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
           s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-          s+=tx(cx,cy+3.5,pi+1,7.5,numTx,'normal','middle');
+          s+=tx(cx-R+5,cy+R-4,pi+1,7,numTx,'bold','start');
           s+=tx(cx-R+5,cy-R+8,lbl,7,lblCol,'bold','start');
           const btn2HasNotes=btn2&&(btn2.p||btn2.t);
           if(btn2HasNotes){
@@ -1873,7 +1873,7 @@ function buildSVG_Gauche(data,dark){
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-      s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
+      s+=tx(cx-R+5,cy+R-4,bi+1,7,numTx,'bold','start');
       const btn2HasNotes=has2&&btn2&&(btn2.p||btn2.t);
       if(btn2HasNotes){
         // 2-voice layout: V1 outer, V2 inner (closer to center divider)
@@ -1992,7 +1992,7 @@ function buildSommierSection(title,rows,dark){
   const bg=dark?'#1A0F0A':'#fff';
   const pushBg=dark?'#2C1810':'#EFEBE9',pullBg=dark?'#1A0F0A':'#FFF8E1';
   const pushTx=dark?'#F5D061':'#3E2723',pullTx=dark?'#FFF8E1':'#8b6914';
-  const numTx=dark?'rgba(212,160,23,.4)':'rgba(62,39,35,.3)';
+  const numTx=dark?'rgba(212,160,23,.7)':'rgba(93,64,55,.6)';
   const sep=dark?'#3E2723':'#D7CCC8';
   const showMidi=document.getElementById('show-midi')?.checked;
 
@@ -2001,7 +2001,7 @@ function buildSommierSection(title,rows,dark){
     o+=`<rect x="${cx}" y="${cy}" width="${CW}" height="${CH/2}" fill="${pushBg}" stroke="${dark?'#3E2723':'#BCAAA4'}" stroke-width=".7"/>`;
     o+=`<rect x="${cx}" y="${cy+CH/2}" width="${CW}" height="${CH/2}" fill="${pullBg}" stroke="${dark?'#5D4037':'#D7CCC8'}" stroke-width=".7"/>`;
     o+=`<line x1="${cx}" y1="${cy+CH/2}" x2="${cx+CW}" y2="${cy+CH/2}" stroke="${sep}" stroke-width=".8"/>`;
-    o+=tx(cx+3,cy+9,num,6.5,numTx,'normal','start');
+    o+=tx(cx+3,cy+CH-4,num,6.5,numTx,'bold','start');
     if(pNote){const fs=pNote.length>6?7:8.5;o+=tx(cx+CW/2,cy+16,dn(pNote),fs,pushTx,'bold','middle');}
     if(tNote){const fs=tNote.length>6?7:8.5;o+=tx(cx+CW/2,cy+CH-7,dn(tNote),fs,pullTx,'bold','middle');}
     if(showMidi){
