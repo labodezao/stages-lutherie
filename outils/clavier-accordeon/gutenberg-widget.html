@@ -84,6 +84,24 @@
   </div>
 
 </div>
+  <!-- Edit popup (click on SVG button) -->
+  <div id="cw-edit-popup" class="cw-edit-popup cw-hidden">
+    <div class="cw-ep-title" id="cw-ep-title">Bouton</div>
+    <div class="cw-ep-row">
+      <label class="cw-ep-label">↓ Poussé</label>
+      <input type="text" id="cw-ep-push" class="cw-ep-input" placeholder="ex : Sol4">
+    </div>
+    <div class="cw-ep-row">
+      <label class="cw-ep-label">↑ Tiré</label>
+      <input type="text" id="cw-ep-pull" class="cw-ep-input" placeholder="ex : La4">
+    </div>
+    <div class="cw-ep-actions">
+      <button id="cw-ep-save" class="cw-btn cw-btn-gold cw-btn-sm">✓ Appliquer</button>
+      <button id="cw-ep-cancel" class="cw-btn cw-btn-sm">Annuler</button>
+    </div>
+  </div>
+
+</div>
 
 <style>
 /* ═══════════════════════════════════════════════════
@@ -365,6 +383,54 @@
 .clavier-widget.cw-dark .cw-btn-danger:hover {
   background: #3a1515;
 }
+
+/* Edit popup */
+.clavier-widget .cw-edit-popup {
+  position: fixed;
+  z-index: 9999;
+  background: var(--card-bg);
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.22);
+  min-width: 210px;
+  font-size: .88rem;
+}
+.clavier-widget .cw-ep-title {
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-size: .9rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 5px;
+}
+.clavier-widget .cw-ep-row { margin-bottom: 6px; }
+.clavier-widget .cw-ep-label {
+  display: block;
+  font-size: .78rem;
+  color: var(--text2);
+  margin-bottom: 2px;
+}
+.clavier-widget .cw-ep-input {
+  width: 100%;
+  padding: 5px 8px;
+  font-size: .88rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: inherit;
+}
+.clavier-widget .cw-ep-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+.clavier-widget .cw-ep-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.clavier-widget .cw-edit-btn { cursor: pointer; }
 </style>
 
 <script>
@@ -498,8 +564,9 @@
     var textColor    = dark ? '#ccc' : '#1E293B';
     var ruleColor    = dark ? '#444' : '#E2E8F0';
 
-    function drawBtn(cx, cy, btn, btn2){
+    function drawBtn(cx, cy, btn, btn2, editId){
       var o = '';
+      if(editId) o += '<g class="cw-edit-btn" data-edit="'+editId+'">'
       o += '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+bg+'" stroke="'+circleBorder+'" stroke-width="1"/>';
       o += '<path d="M'+(cx-R)+','+cy+' A'+R+','+R+' 0 0,1 '+(cx+R)+','+cy+'" fill="'+pushBg+'"/>';
       o += '<path d="M'+(cx-R)+','+cy+' A'+R+','+R+' 0 0,0 '+(cx+R)+','+cy+'" fill="'+pullBg+'"/>';
@@ -515,6 +582,7 @@
         if(btn.p) o += svgBtnVal(btn.p, cx, cy-7, pushTx);
         if(btn.t) o += svgBtnVal(btn.t, cx, cy+15, pullTx);
       }
+      if(editId) o += '</g>';
       return o;
     }
 
@@ -567,21 +635,21 @@
           lhSecRows.push({nom:lbl2,items:intItems3,items2:intItems4,offset:0,interleavedTypes:intTypes2,interleavedIndices:intIndices2});
         }
       }
-      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0});
+      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0});
     } else {
       var lhRowCfg = (data.lhRows && data.lhRows.length) ? data.lhRows : [{nb:data.basses.length||1,offset:0}];
       var accSecs=[], basSecs=[];
       var bIdx=0, aIdx=0;
       var vA2 = data.nbVoixAccords||2, vB2 = data.nbVoixBasses||2;
       lhRowCfg.forEach(function(row, ri){
-        accSecs.push({nom:lhRowCfg.length===1?'Accords':(ri===0?'Accords':'\u21b3+'+aIdx),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA2>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0});
+        accSecs.push({nom:lhRowCfg.length===1?'Accords':(ri===0?'Accords':'\u21b3+'+aIdx),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA2>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0,src:'accords',startIdx:aIdx});
         aIdx += row.nb;
-        basSecs.push({nom:lhRowCfg.length===1?'Basses':(ri===0?'Basses':'\u21b3+'+bIdx),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB2>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0});
+        basSecs.push({nom:lhRowCfg.length===1?'Basses':(ri===0?'Basses':'\u21b3+'+bIdx),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB2>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0,src:'basses',startIdx:bIdx});
         bIdx += row.nb;
       });
       if(data.lhBassFirst){ basSecs.forEach(function(s2){lhSecRows.push(s2);}); accSecs.forEach(function(s2){lhSecRows.push(s2);}); }
       else                { accSecs.forEach(function(s2){lhSecRows.push(s2);}); basSecs.forEach(function(s2){lhSecRows.push(s2);}); }
-      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0});
+      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0});
     }
 
     var nLH = lhSecRows.length;
@@ -677,7 +745,7 @@
       var suffix = ri===0 ? '' : ri===1 ? "'" : "''";
       row.boutons.forEach(function(btn, bi){
         var cy = gridTop + off + bi*BGAP + BGAP/2;
-        s += drawBtn(cx, cy, btn, null);
+        s += drawBtn(cx, cy, btn, null, 'rh:'+ri+':'+bi);
         s += tx(cx-R-1, cy+R+2, (bi+1)+suffix, 5.5, numTx, 'bold', 'start');
       });
     });
@@ -712,7 +780,15 @@
         }
         sec.items.forEach(function(btn, bi){
           var cy = lhGridTop + off + bi*BGAP + BGAP/2;
-          s += drawBtn(cx, cy, btn, has2 ? (sec.items2[bi]||null) : null);
+          var lhEditId = null;
+          if(sec.interleavedTypes){
+            var eTyp = sec.interleavedTypes[bi] === 'B' ? 'basses' : 'accords';
+            var eIdx = sec.interleavedIndices ? (sec.interleavedIndices[bi] - 1) : bi;
+            lhEditId = eTyp + ':' + eIdx;
+          } else if(sec.src){
+            lhEditId = sec.src + ':' + (sec.startIdx + bi);
+          }
+          s += drawBtn(cx, cy, btn, has2 ? (sec.items2[bi]||null) : null, lhEditId);
           if(sec.interleavedTypes){
             var typ = sec.interleavedTypes[bi];
             var idx = sec.interleavedIndices ? sec.interleavedIndices[bi] : '';
@@ -841,6 +917,7 @@
     // SVG preview
     try {
       $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+      bindSVGEditing();
     } catch(e){
       $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+e.message+'</p>';
     }
@@ -994,6 +1071,7 @@
     if(nomI) currentData.nomInstrument = nomI;
     try {
       $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+      bindSVGEditing();
     } catch(err){
       $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+err.message+'</p>';
     }
@@ -1145,6 +1223,91 @@
     });
   }
 
+
+  /* ═══════════════════════════════════════════════════
+     SVG CLICK-TO-EDIT (popup édition poussé / tiré)
+     ═══════════════════════════════════════════════════ */
+  var _editCurrent = null;
+
+  function bindSVGEditing(){
+    if(!widget) return;
+    widget.querySelectorAll('.cw-edit-btn').forEach(function(g){
+      g.addEventListener('click', function(e){
+        e.stopPropagation();
+        openEditPopup(g.getAttribute('data-edit'), e);
+      });
+    });
+  }
+
+  function openEditPopup(editId, e){
+    if(!currentPreset || !editId) return;
+    var parts = editId.split(':');
+    var btn = null, title = '';
+    if(parts[0] === 'rh'){
+      var ri = parseInt(parts[1]), bi = parseInt(parts[2]);
+      var row = (currentPreset.rangees || [])[ri];
+      var rowNotes = ((currentPreset.notes || {}).droite || [])[ri] || [];
+      btn = rowNotes[bi] || {p:'', t:''};
+      title = (row ? row.nom : 'Rangée '+(ri+1)) + ' — Bouton '+(bi+1);
+      _editCurrent = {src:'rh', ri:ri, bi:bi};
+    } else {
+      var src = parts[0];
+      var idx = parseInt(parts[1]);
+      var arr = ((currentPreset.notes || {})[src] || []);
+      btn = arr[idx] || {p:'', t:''};
+      var srcLabel = src === 'basses' ? 'Basse' : src === 'accords' ? 'Accord' : 'Terzetto';
+      title = srcLabel + ' '+(idx+1);
+      _editCurrent = {src:src, idx:idx};
+    }
+    $('cw-ep-title').textContent = title;
+    $('cw-ep-push').value = btn.p || '';
+    $('cw-ep-pull').value = btn.t || '';
+    var popup = $('cw-edit-popup');
+    popup.classList.remove('cw-hidden');
+    var pw = popup.offsetWidth || 220, ph = popup.offsetHeight || 160;
+    var left = Math.min(e.clientX + 8, window.innerWidth  - pw - 8);
+    var top  = Math.min(e.clientY + 8, window.innerHeight - ph - 8);
+    popup.style.left = Math.max(8, left) + 'px';
+    popup.style.top  = Math.max(8, top)  + 'px';
+    $('cw-ep-push').focus();
+    $('cw-ep-push').select();
+  }
+
+  function closeEditPopup(){
+    $('cw-edit-popup').classList.add('cw-hidden');
+    _editCurrent = null;
+  }
+
+  function saveEditPopup(){
+    if(!_editCurrent || !currentPreset) return;
+    var p = $('cw-ep-push').value.trim();
+    var t = $('cw-ep-pull').value.trim();
+    var notes = currentPreset.notes || (currentPreset.notes = {});
+    if(_editCurrent.src === 'rh'){
+      var ri = _editCurrent.ri, bi = _editCurrent.bi;
+      if(!notes.droite)       notes.droite       = [];
+      if(!notes.droite[ri])   notes.droite[ri]   = [];
+      if(!notes.droite[ri][bi]) notes.droite[ri][bi] = {};
+      notes.droite[ri][bi].p = p;
+      notes.droite[ri][bi].t = t;
+    } else {
+      var src2 = _editCurrent.src, idx2 = _editCurrent.idx;
+      if(!notes[src2])        notes[src2]        = [];
+      if(!notes[src2][idx2])  notes[src2][idx2]  = {};
+      notes[src2][idx2].p = p;
+      notes[src2][idx2].t = t;
+    }
+    closeEditPopup();
+    currentData = toData(currentPreset);
+    currentData.nomJoueur = $('cw-nom-joueur').value.trim();
+    var nomI = $('cw-nom-instrument').value.trim();
+    if(nomI) currentData.nomInstrument = nomI;
+    try {
+      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+      bindSVGEditing();
+    } catch(e2){ /* ignore */ }
+  }
+
   /* ═══════════════════════════════════════════════════
      INIT
      ═══════════════════════════════════════════════════ */
@@ -1168,6 +1331,22 @@
     $('cw-save-btn').addEventListener('click', savePlan);
     $('cw-load-btn').addEventListener('click', loadPlan);
     $('cw-delete-btn').addEventListener('click', deletePlan);
+
+    // Edit popup events
+    $('cw-ep-save').addEventListener('click', saveEditPopup);
+    $('cw-ep-cancel').addEventListener('click', closeEditPopup);
+    [$('cw-ep-push'), $('cw-ep-pull')].forEach(function(inp){
+      inp.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter')  saveEditPopup();
+        if(ev.key === 'Escape') closeEditPopup();
+      });
+    });
+    document.addEventListener('click', function(ev){
+      var popup = $('cw-edit-popup');
+      if(popup && !popup.classList.contains('cw-hidden') && !popup.contains(ev.target)){
+        closeEditPopup();
+      }
+    });
   }
 
   // Run init when DOM is ready
