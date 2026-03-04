@@ -579,8 +579,12 @@
             <label style="font-weight:600; font-size:0.95rem; cursor:pointer;">
               <input type="checkbox" id="upgrade2V" name="upgrade2V" value="oui">
               Option <strong>2 Voix avec registres</strong>
+              <span style="color:var(--gold); font-weight:700;">+ 8 %</span>
             </label>
             <div class="hint" style="color:#b8860b;">⚠️ Nécessite obligatoirement un 2<sup>e</sup> stage</div>
+            <div class="hint" style="margin-left:24px;">
+              Surcoût par modèle : 21/8b +226 € · 33/12b +360 € · 33/18b +390 € · 33/24b +500 €
+            </div>
           </div>
         </div>
         <div class="insc-field insc-conditional" id="voix2Wrap">
@@ -1372,6 +1376,7 @@ var buildSVG_PlanLite = (function () {
   var WP_ENDPOINT = '/wp-json/stages-lutherie/v1/inscription';
   var ANNEE = STAGE_CONFIG.annee;
   var ANCHE_SURCHARGE = 1.15;  /* 15% surcharge multiplier for Anche a mano Blue Star */
+  var UPGRADE_2V_SURCHARGE = 1.08; /* 8% surcharge multiplier for 2 Voix upgrade */
   var DEPOSIT_RATE = 0.4;      /* 40% deposit on total price */
 
   /* ── Populate dynamic content from STAGE_CONFIG ── */
@@ -1511,19 +1516,28 @@ var buildSVG_PlanLite = (function () {
 
   /* ── Live Summary Update ── */
 
-  /* Update model card prices when anche a mano is toggled */
+  /* Compute total price from base, factoring in active surcharges */
+  function computePrice(base) {
+    var price = base;
+    if (document.getElementById('ancheAMano').checked) price = Math.round(price * ANCHE_SURCHARGE);
+    if (document.getElementById('upgrade2V').checked) price = Math.round(price * UPGRADE_2V_SURCHARGE);
+    return price;
+  }
+
+  /* Update model card prices when options are toggled */
   function updateModelCardPrices() {
     var ancheChecked = document.getElementById('ancheAMano').checked;
+    var up2V = document.getElementById('upgrade2V').checked;
+    var hasOption = ancheChecked || up2V;
     document.querySelectorAll('.card-price[data-base]').forEach(function (el) {
       var base = parseInt(el.dataset.base, 10);
-      var price = ancheChecked ? Math.round(base * ANCHE_SURCHARGE) : base;
-      el.textContent = price.toLocaleString('fr-FR') + ' \u20ac';
-      el.style.color = ancheChecked ? '#b8860b' : '';
+      el.textContent = computePrice(base).toLocaleString('fr-FR') + ' \u20ac';
+      el.style.color = hasOption ? '#b8860b' : '';
     });
     document.querySelectorAll('.card-deposit[data-base-dep]').forEach(function (el) {
       var baseDep = parseInt(el.getAttribute('data-base-dep'), 10);
       var base = parseInt(el.closest('.card-label').querySelector('.card-price').dataset.base, 10);
-      var dep = ancheChecked ? Math.round(Math.round(base * ANCHE_SURCHARGE) * DEPOSIT_RATE) : baseDep;
+      var dep = hasOption ? Math.round(computePrice(base) * DEPOSIT_RATE) : baseDep;
       el.textContent = 'Acompte : ' + dep.toLocaleString('fr-FR') + ' \u20ac';
     });
   }
@@ -1537,6 +1551,7 @@ var buildSVG_PlanLite = (function () {
     var wrap = document.getElementById('voix2Wrap');
     if (this.checked) { wrap.classList.add('visible'); }
     else { wrap.classList.remove('visible'); document.getElementById('voix2').value = ''; }
+    updateModelCardPrices();
     updateSummary();
   });
 
@@ -1600,13 +1615,13 @@ var buildSVG_PlanLite = (function () {
 
     /* Upgrade 2V */
     var up2V = document.getElementById('upgrade2V').checked;
-    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Oui (2\u1d49 stage n\u00e9cessaire)' : 'Non';
+    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Oui (+8 % — 2\u1d49 stage n\u00e9cessaire)' : 'Non';
 
-    /* Price with anche a mano surcharge */
+    /* Price with surcharges */
     var modEl = form.querySelector('input[name="modele"]:checked');
     if (modEl) {
       var basePrice = parseInt(modEl.dataset.price, 10);
-      var price = ancheChecked ? Math.round(basePrice * ANCHE_SURCHARGE) : basePrice;
+      var price = computePrice(basePrice);
       var deposit = Math.round(price * DEPOSIT_RATE);
       document.getElementById('sumPrice').textContent = price.toLocaleString('fr-FR') + ' \u20ac';
       document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac';
@@ -1753,7 +1768,7 @@ var buildSVG_PlanLite = (function () {
     addLine('Tonalit\u00e9', selVal('tonalite') || '\u2013');
     addLine('Voix MD', selVal('voix1') || '\u2013');
     var pdfUp2V = document.getElementById('upgrade2V').checked;
-    addLine('Upgrade 2V registres', pdfUp2V ? 'Oui (2\u1d49 stage n\u00e9cessaire)' : 'Non');
+    addLine('Upgrade 2V registres', pdfUp2V ? 'Oui (+8 % — 2\u1d49 stage n\u00e9cessaire)' : 'Non');
     if (pdfUp2V) addLine('Voix 2 MD', selVal('voix2') || '\u2013');
     addLine('Accordage', selVal('accordage') || '\u2013');
     addLine('Boutons', selVal('boutonsMD') || '\u2013');
@@ -1797,24 +1812,31 @@ var buildSVG_PlanLite = (function () {
     var modEl = form.querySelector('input[name="modele"]:checked');
     if (modEl) {
       var basePrice = parseInt(modEl.dataset.price, 10);
-      var price = pdfAncheChecked ? Math.round(basePrice * ANCHE_SURCHARGE) : basePrice;
+      var price = computePrice(basePrice);
       var deposit = Math.round(price * DEPOSIT_RATE);
       if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
       doc.setFillColor(255, 248, 225);
-      doc.roundedRect(MARGIN, y, CW, 28, 3, 3, 'F');
+      var boxH = 28;
+      var surchargeLines = [];
+      if (pdfAncheChecked) surchargeLines.push('Anche a mano Blue Star +' + Math.round(basePrice * (ANCHE_SURCHARGE - 1)).toLocaleString('fr-FR') + ' \u20ac');
+      if (pdfUp2V) surchargeLines.push('2 Voix +' + Math.round(basePrice * (UPGRADE_2V_SURCHARGE - 1)).toLocaleString('fr-FR') + ' \u20ac');
+      if (surchargeLines.length) boxH += 8 * surchargeLines.length;
+      doc.roundedRect(MARGIN, y, CW, boxH, 3, 3, 'F');
       doc.setTextColor.apply(doc, woodDark);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(14);
       doc.text('Prix total : ' + price.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + 9, { align: 'center' });
-      if (pdfAncheChecked) {
+      var ySub = y + 17;
+      if (surchargeLines.length) {
         doc.setFontSize(9);
         doc.setTextColor(150, 120, 50);
-        doc.text('(dont Anche a mano Blue Star +' + Math.round(basePrice * (ANCHE_SURCHARGE - 1)).toLocaleString('fr-FR') + ' \u20ac)', W / 2, y + 17, { align: 'center' });
+        doc.text('(dont ' + surchargeLines.join(', ') + ')', W / 2, ySub, { align: 'center' });
+        ySub += 8 * surchargeLines.length;
       }
       doc.setFontSize(10);
       doc.setTextColor.apply(doc, gold);
-      doc.text('Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + (pdfAncheChecked ? 24 : 17), { align: 'center' });
-      y += 32;
+      doc.text('Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac', W / 2, ySub, { align: 'center' });
+      y += boxH + 4;
     }
 
     /* Terms */
@@ -1877,8 +1899,9 @@ var buildSVG_PlanLite = (function () {
     /* Collect form fields */
     var modEl = form.querySelector('input[name="modele"]:checked');
     var ancheOui = document.getElementById('ancheAMano').checked;
+    var up2VOui = document.getElementById('upgrade2V').checked;
     var basePrice = modEl ? parseInt(modEl.dataset.price, 10) : 0;
-    var totalPrice = ancheOui ? Math.round(basePrice * ANCHE_SURCHARGE) : basePrice;
+    var totalPrice = computePrice(basePrice);
     var deposit = Math.round(totalPrice * DEPOSIT_RATE);
     var sessVal = getRadioVal('session');
 
@@ -1897,8 +1920,8 @@ var buildSVG_PlanLite = (function () {
       tonalite: selVal('tonalite'),
       disposition: selVal('disposition'),
       voix1: selVal('voix1'),
-      upgrade2V: document.getElementById('upgrade2V').checked ? 'Oui — 2 Voix avec registres (2e stage nécessaire)' : 'Non',
-      voix2: document.getElementById('upgrade2V').checked ? selVal('voix2') : '',
+      upgrade2V: up2VOui ? 'Oui — 2 Voix avec registres (+8 % — 2e stage nécessaire)' : 'Non',
+      voix2: up2VOui ? selVal('voix2') : '',
       accordage: selVal('accordage'),
       boutonsMD: selVal('boutonsMD'),
       boisClavier: selVal('boisClavier'),
