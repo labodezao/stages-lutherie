@@ -47,7 +47,7 @@ L'atelier est situé dans un **quartier calme et résidentiel** de Saint-Nazaire
 
 ## 🎵 Modèles d'accordéons & tarifs
 
-Vous avez le choix entre trois modèles d'accordéons diatoniques, chacun adapté à différents niveaux de jeu et styles musicaux.
+Vous avez le choix entre quatre modèles d'accordéons diatoniques, chacun adapté à différents niveaux de jeu et styles musicaux.
 
 ### Modèle 21/8 basses – 2 820 €
 
@@ -69,6 +69,13 @@ Vous avez le choix entre trois modèles d'accordéons diatoniques, chacun adapt�
 - **Main gauche** : 18 basses (plus de possibilités harmoniques)
 - **Idéal pour** : Musiciens confirmés, répertoire complexe
 - **Acompte à l'inscription (40%)** : 1 900 €
+
+### Modèle 33/24 basses – 6 250 €
+
+- **Main droite** : 33 boutons sur 3 rangées
+- **Main gauche** : 24 basses (maximum de possibilités harmoniques)
+- **Idéal pour** : Musiciens exigeants, configurations avancées
+- **Acompte à l'inscription (40%)** : 2 500 €
 
 ### Modalités de paiement
 

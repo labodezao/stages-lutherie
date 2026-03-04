@@ -101,6 +101,7 @@ Created version 3 email templates in both languages with:
 | 21/8   | €2,820  | €900         | Compact model |
 | 33/12  | €4,500  | €1,500       | Versatile (Popular) |
 | 33/18  | €4,880  | €1,900       | Professional |
+| 33/24  | €6,250  | €2,500       | Advanced |
 
 #### 10-Day Program
 1. **Days 1-2**: Structure & wood (case fabrication, mechanical base)

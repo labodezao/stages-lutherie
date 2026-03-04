@@ -47,7 +47,7 @@ The workshop is located in a **quiet residential area** of Saint-Nazaire, offeri
 
 ## 🎵 Accordion Models & Pricing
 
-You can choose from three models of diatonic accordions, each suited to different playing levels and musical styles.
+You can choose from four models of diatonic accordions, each suited to different playing levels and musical styles.
 
 ### Model 21/8 basses – €2,820
 
@@ -69,6 +69,13 @@ You can choose from three models of diatonic accordions, each suited to differen
 - **Left hand**: 18 basses (more harmonic possibilities)
 - **Ideal for**: Advanced musicians, complex repertoire
 - **Deposit at registration (40%)**: €1,900
+
+### Model 33/24 basses – €6,250
+
+- **Right hand**: 33 buttons on 3 rows
+- **Left hand**: 24 basses (maximum harmonic possibilities)
+- **Ideal for**: Demanding musicians, advanced configurations
+- **Deposit at registration (40%)**: €2,500
 
 ### Payment Terms
 

@@ -12,7 +12,7 @@ Page commerciale complète pour les stages de fabrication d'accordéons diatoniq
 1. **Hero Section** - Bannière d'accueil avec titre accrocheur
 2. **Dates** - Sessions printemps et automne 2026
 3. **Présentation** - Esprit du stage, public cible, objectifs
-4. **Tarifs & Modèles** - 3 modèles (21/8, 33/12, 33/18) avec prix et acomptes
+4. **Tarifs & Modèles** - 4 modèles (21/8, 33/12, 33/18, 33/24) avec prix et acomptes
 5. **Programme détaillé** - 10 jours décrits étape par étape
 6. **Options** - Plus de 100 combinaisons possibles (bois, tonalités, grilles, etc.)
 7. **Informations pratiques** - Lieu, horaires, inclus/non inclus, conditions
@@ -20,8 +20,8 @@ Page commerciale complète pour les stages de fabrication d'accordéons diatoniq
 9. **Contact** - Liens vers site web, email, vidéo YouTube
 
 ### Informations détaillées
-✅ **Modèles**: 21/8 (2820€), 33/12 (4500€), 33/18 (4880€)
-✅ **Acomptes**: 900€ / 1500€ / 1900€ (40%)
+✅ **Modèles**: 21/8 (2820€), 33/12 (4500€), 33/18 (4880€), 33/24 (6250€)
+✅ **Acomptes**: 900€ / 1500€ / 1900€ / 2500€ (40%)
 ✅ **Dates 2026**: 8-17 avril & 14-23 octobre
 ✅ **Lieu**: 9 rue Fernand de Magellan, Saint-Nazaire (44)
 ✅ **Options complètes**: essences bois, tonalités, layouts, grilles, soufflets, anches

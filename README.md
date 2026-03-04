@@ -14,6 +14,7 @@ Stages de 10 jours pour **fabriquer votre propre accordéon diatonique** de A à
 - **21/8 basses** – 2820 € (acompte 900 €)
 - **33/12 basses** – 4500 € (acompte 1500 €)
 - **33/18 basses** – 4880 € (acompte 1900 €)
+- **33/24 basses** – 6250 € (acompte 2500 €)
 
 ## 📚 Documentation
 

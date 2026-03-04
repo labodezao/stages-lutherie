@@ -22,6 +22,7 @@ Une expérience unique et accessible à tous, dès 13 ans, **sans aucune expéri
 - **21/8 basses** – 2 820 € (acompte 900 €)
 - **33/12 basses** – 4 500 € (acompte 1 500 €)
 - **33/18 basses** – 4 880 € (acompte 1 900 €)
+- **33/24 basses** – 6 250 € (acompte 2 500 €)
 
 ## 📖 Documentation Complète
 

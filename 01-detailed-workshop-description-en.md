@@ -33,11 +33,11 @@ date: "2026"
 - Basic musical handling of the instrument you built
 
 ## Models, Pricing, Options
-- Models: 21/8 (€2820), 33/12 (€4500), 33/18 (€4880)
-- Deposit (40%): €900 / €1500 / €1900 at registration
+- Models: 21/8 (€2820), 33/12 (€4500), 33/18 (€4880), 33/24 (€6250)
+- Deposit (40%): €900 / €1500 / €1900 / €2500 at registration
 - Woods: cherry, walnut, maple sycamore
 - Right hand: 21 or 33 buttons; Heim / Milleret-Pignol layouts; keys G/C, D/G, A/D; dry/semi-dry tuning; tactile/visual/no marking
-- Left hand: 8 / 12 / 18 basses; Milleret-Pignol, Heim or custom layout (extra cost)
+- Left hand: 8 / 12 / 18 / 24 basses; Milleret-Pignol, Heim or custom layout (extra cost)
 - Mechanics: mushroom buttons in natural wood, black nacre or white nacre
 - Decorative grills: >100 numbered models (choose at registration)
 - Bellows: colors black/red/blue/green/orange/mixed; standard/reinforced/brushed metal/custom corners

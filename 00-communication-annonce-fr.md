@@ -21,8 +21,8 @@ date: "2026"
 - Horaires indicatifs : 9h30–12h30 / 14h00–17h30
 - Lieu : Atelier (9 rue Fernand de Magellan, Saint-Nazaire 44)
 - Repas & hébergement : non inclus
-- Modèles : 21/8 (2820 €), 33/12 (4500 €), 33/18 (4880 €)
-- Acompte (40 %) à l’inscription : 900 € / 1500 € / 1900 € selon modèle
+- Modèles : 21/8 (2820 €), 33/12 (4500 €), 33/18 (4880 €), 33/24 (6250 €)
+- Acompte (40 %) à l’inscription : 900 € / 1500 € / 1900 € / 2500 € selon modèle
 - Places limitées (petits groupes)
 
 ## S’inscrire

@@ -19,10 +19,11 @@ Version 3 email visuals with comprehensive workshop information in both French a
 
 ## New Features in Version 3
 
-### 1. Complete Pricing (All 3 Models)
+### 1. Complete Pricing (All 4 Models)
 - **21/8**: €2,820 (deposit: €900)
 - **33/12**: €4,500 (deposit: €1,500) ⭐ Popular
 - **33/18**: €4,880 (deposit: €1,900)
+- **33/24**: €6,250 (deposit: €2,500)
 
 All with deposit amounts (40%) clearly displayed.
 
@@ -143,7 +144,7 @@ Strong CTA section with:
 ## Comparison with Previous Versions
 
 ### Version 1 (Original)
-- Basic pricing (21/8, 33/12)
+- Basic pricing (21/8, 33/12, 33/18, 33/24)
 - Simple program mention
 - Limited options info
 - ~20 KB
