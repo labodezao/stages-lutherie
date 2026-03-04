@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visuels Nouveaux Thèmes — Stage Lutherie Accordéon 2026</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Open+Sans:wght@300;400;600;700;800&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --wood-dark:   #3E2723;
+      --wood-medium: #5D4037;
+      --wood-light:  #8D6E63;
+      --cream:       #FFF8E1;
+      --gold:        #D4A017;
+      --gold-light:  #F5D061;
+      --accent-red:  #B71C1C;
+    }
+
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: #111;
+      padding: 40px;
+      color: #fff;
+    }
+
+    h2.section-title {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 60px 0 12px;
+    }
+    h2.section-title:first-of-type { margin-top: 0; }
+
+    .format-info {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       THEME 1 — VENEZ EN FAMILLE
+    ══════════════════════════════════════════════════════════ */
+
+    /* Facebook 1200×630 */
+    #fam-fb {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #2C1810 0%, #3E2723 35%, #5D4037 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #fam-fb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .fam-fb-content {
+      position: absolute;
+      left: 0; top: 0;
+      width: 720px; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 45px 55px;
+      z-index: 2;
+    }
+    .fam-fb-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 22px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      align-self: flex-start;
+    }
+    .fam-fb-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 46px;
+      line-height: 1.12;
+      color: #fff;
+      text-shadow: 0 2px 15px rgba(0,0,0,0.4);
+    }
+    .fam-fb-title em { color: var(--gold-light); font-style: italic; }
+    .fam-fb-sub {
+      margin-top: 10px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+    }
+    .fam-fb-points {
+      margin-top: 16px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fam-fb-points li {
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+    }
+    .fam-fb-dates {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+    }
+    .fam-fb-date-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 8px 18px;
+      text-align: center;
+    }
+    .fam-fb-date-pill .dl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 2px; }
+    .fam-fb-date-pill .dv { font-family: 'Playfair Display', Georgia, serif; font-size: 16px; font-weight: 700; color: #fff; }
+    .fam-fb-cta {
+      display: inline-block;
+      margin-top: 18px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      align-self: flex-start;
+    }
+
+    .fam-fb-photos {
+      position: absolute;
+      right: 0; top: 0;
+      width: 480px; height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px;
+    }
+    .fam-fb-photos .photo {
+      flex: 1;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .fam-fb-photos .photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .fam-fb-year {
+      position: absolute;
+      bottom: -15px; right: 490px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 180px; font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      z-index: 0;
+    }
+
+    /* Instagram 1080×1080 */
+    #fam-ig {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 45%, #4A2800 0%, #3E2723 35%, #2C1810 70%, #1A0F0A 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #fam-ig::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+    #fam-ig::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,160,23,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .fam-ig-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 70px;
+      text-align: center;
+      z-index: 2;
+    }
+    .fam-ig-badge {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 24px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+    }
+    .fam-ig-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 54px;
+      line-height: 1.1;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .fam-ig-title em { color: var(--gold-light); font-style: italic; }
+    .fam-ig-divider {
+      width: 80px; height: 3px;
+      background: var(--gold);
+      margin: 30px auto;
+      border-radius: 2px;
+    }
+    .fam-ig-features {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .fam-ig-feat {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 22px 28px;
+      text-align: center;
+      width: 220px;
+    }
+    .fam-ig-feat-icon { font-size: 30px; margin-bottom: 10px; }
+    .fam-ig-feat-label {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #fff;
+    }
+    .fam-ig-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.4);
+      padding: 22px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 3;
+    }
+    .fam-ig-bottom-cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+    }
+    .fam-ig-bottom-url {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+    }
+
+    .fam-ig-year {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 260px; font-weight: 900;
+      color: rgba(255,255,255,0.02);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+
+    /* ══════════════════════════════════════════════════════════
+       THEME 2 — UNE EXPÉRIENCE INOUBLIABLE
+    ══════════════════════════════════════════════════════════ */
+
+    /* Facebook 1200×630 */
+    #exp-fb {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1A0800 0%, #3E2723 40%, #6D4C41 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #exp-fb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .exp-fb-content {
+      position: absolute;
+      left: 0; top: 0;
+      width: 720px; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 45px 55px;
+      z-index: 2;
+    }
+    .exp-fb-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 22px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      align-self: flex-start;
+    }
+    .exp-fb-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 46px;
+      line-height: 1.12;
+      color: #fff;
+      text-shadow: 0 2px 15px rgba(0,0,0,0.4);
+    }
+    .exp-fb-title em { color: var(--gold-light); font-style: italic; }
+    .exp-fb-points {
+      margin-top: 18px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .exp-fb-points li {
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+    }
+    .exp-fb-dates {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+    }
+    .exp-fb-date-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 8px 18px;
+      text-align: center;
+    }
+    .exp-fb-date-pill .dl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 2px; }
+    .exp-fb-date-pill .dv { font-family: 'Playfair Display', Georgia, serif; font-size: 16px; font-weight: 700; color: #fff; }
+    .exp-fb-cta {
+      display: inline-block;
+      margin-top: 18px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      align-self: flex-start;
+    }
+
+    .exp-fb-quote-panel {
+      position: absolute;
+      right: 0; top: 0;
+      width: 480px; height: 100%;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 50px;
+      text-align: center;
+      z-index: 2;
+    }
+    .exp-fb-quote-mark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 120px;
+      line-height: 0.6;
+      color: var(--gold);
+      opacity: 0.3;
+      margin-bottom: 10px;
+    }
+    .exp-fb-quote-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.3;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .exp-fb-quote-attr {
+      margin-top: 20px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+    }
+
+    .exp-fb-year {
+      position: absolute;
+      bottom: -15px; right: 490px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 180px; font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      z-index: 0;
+    }
+
+    /* Instagram 1080×1080 */
+    #exp-ig {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 40%, #4A2800 0%, #3E2723 40%, #1A0F0A 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #exp-ig::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .exp-ig-10 {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 400px; font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .exp-ig-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 70px;
+      text-align: center;
+      z-index: 2;
+    }
+    .exp-ig-badge {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 24px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    .exp-ig-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 54px;
+      line-height: 1.1;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .exp-ig-title em { color: var(--gold-light); font-style: italic; }
+    .exp-ig-timeline {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .exp-ig-tl-step {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 16px 24px;
+      text-align: center;
+    }
+    .exp-ig-tl-step .day {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+    .exp-ig-tl-step .desc {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px; font-weight: 700;
+      color: #fff;
+    }
+    .exp-ig-tl-arrow {
+      font-size: 28px;
+      color: var(--gold);
+    }
+    .exp-ig-proofs {
+      margin-top: 35px;
+      display: flex;
+      gap: 30px;
+    }
+    .exp-ig-proof {
+      text-align: center;
+    }
+    .exp-ig-proof .num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 40px; font-weight: 900;
+      color: var(--gold-light);
+    }
+    .exp-ig-proof .lbl {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
+    }
+    .exp-ig-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.4);
+      padding: 22px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 3;
+    }
+    .exp-ig-bottom-cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+    }
+    .exp-ig-bottom-url {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+    }
+
+
+    /* ══════════════════════════════════════════════════════════
+       THEME 3 — OFFREZ UN STAGE
+    ══════════════════════════════════════════════════════════ */
+
+    /* Facebook 1200×630 */
+    #gift-fb {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #2C1810 0%, #4A2800 40%, #5D4037 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #gift-fb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .gift-fb-content {
+      position: absolute;
+      left: 0; top: 0;
+      width: 720px; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 45px 55px;
+      z-index: 2;
+    }
+    .gift-fb-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 22px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      align-self: flex-start;
+    }
+    .gift-fb-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 46px;
+      line-height: 1.12;
+      color: #fff;
+      text-shadow: 0 2px 15px rgba(0,0,0,0.4);
+    }
+    .gift-fb-title em { color: var(--gold-light); font-style: italic; }
+    .gift-fb-sub {
+      margin-top: 10px;
+      font-size: 17px;
+      color: rgba(255,255,255,0.75);
+      font-style: italic;
+    }
+    .gift-fb-points {
+      margin-top: 16px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .gift-fb-points li {
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+    }
+    .gift-fb-cta {
+      display: inline-block;
+      margin-top: 20px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      align-self: flex-start;
+    }
+
+    .gift-fb-panel {
+      position: absolute;
+      right: 0; top: 0;
+      width: 480px; height: 100%;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 50px;
+      text-align: center;
+      z-index: 2;
+    }
+    .gift-fb-panel-icon {
+      font-size: 90px;
+      margin-bottom: 20px;
+    }
+    .gift-fb-panel-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.35;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .gift-fb-year {
+      position: absolute;
+      bottom: -15px; right: 490px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 180px; font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      z-index: 0;
+    }
+
+    /* Instagram 1080×1080 */
+    #gift-ig {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 45%, #5C3A00 0%, #3E2723 40%, #1A0F0A 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #gift-ig::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+    #gift-ig::after {
+      content: '';
+      position: absolute;
+      top: 38%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,160,23,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .gift-ig-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 70px;
+      text-align: center;
+      z-index: 2;
+    }
+    .gift-ig-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    .gift-ig-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 54px;
+      line-height: 1.1;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .gift-ig-title em { color: var(--gold-light); font-style: italic; }
+    .gift-ig-occasions {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+    }
+    .gift-ig-occasion {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 25px;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .gift-ig-price {
+      margin-top: 30px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+    .gift-ig-price span {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.6);
+    }
+    .gift-ig-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.4);
+      padding: 22px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 3;
+    }
+    .gift-ig-bottom-cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+    }
+    .gift-ig-bottom-url {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+    }
+
+    .gift-ig-year {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 260px; font-weight: 900;
+      color: rgba(255,255,255,0.02);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+
+    /* ══════════════════════════════════════════════════════════
+       THEME 4 — CRÉEZ UN HÉRITAGE
+    ══════════════════════════════════════════════════════════ */
+
+    /* Facebook 1200×630 */
+    #leg-fb {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1A0F0A 0%, #3E2723 35%, #5D4037 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #leg-fb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .leg-fb-content {
+      position: absolute;
+      left: 0; top: 0;
+      width: 720px; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 45px 55px;
+      z-index: 2;
+    }
+    .leg-fb-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 22px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      align-self: flex-start;
+    }
+    .leg-fb-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 44px;
+      line-height: 1.12;
+      color: #fff;
+      text-shadow: 0 2px 15px rgba(0,0,0,0.4);
+    }
+    .leg-fb-title em { color: var(--gold-light); font-style: italic; }
+    .leg-fb-points {
+      margin-top: 18px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .leg-fb-points li {
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+    }
+    .leg-fb-cta {
+      display: inline-block;
+      margin-top: 22px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      align-self: flex-start;
+    }
+
+    .leg-fb-photos {
+      position: absolute;
+      right: 0; top: 0;
+      width: 480px; height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px;
+    }
+    .leg-fb-photos .photo {
+      flex: 1;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .leg-fb-photos .photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .leg-fb-year {
+      position: absolute;
+      bottom: -15px; right: 490px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 180px; font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      z-index: 0;
+    }
+
+    /* Instagram 1080×1080 */
+    #leg-ig {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 45%, #3E2723 0%, #2C1810 50%, #1A0F0A 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #leg-ig::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .leg-ig-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 70px;
+      text-align: center;
+      z-index: 2;
+    }
+    .leg-ig-badge {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 24px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    .leg-ig-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 56px;
+      line-height: 1.1;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .leg-ig-title em { color: var(--gold-light); font-style: italic; }
+    .leg-ig-divider {
+      width: 80px; height: 3px;
+      background: var(--gold);
+      margin: 28px auto;
+      border-radius: 2px;
+    }
+    .leg-ig-woods {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .leg-ig-wood {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px 30px;
+      text-align: center;
+    }
+    .leg-ig-wood-icon { font-size: 28px; margin-bottom: 8px; }
+    .leg-ig-wood-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+    }
+    .leg-ig-combos {
+      margin-top: 25px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+    }
+    .leg-ig-proofs {
+      margin-top: 25px;
+      display: flex;
+      gap: 30px;
+    }
+    .leg-ig-proof { text-align: center; }
+    .leg-ig-proof .num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 36px; font-weight: 900;
+      color: var(--gold-light);
+    }
+    .leg-ig-proof .lbl {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
+    }
+    .leg-ig-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.4);
+      padding: 22px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 3;
+    }
+    .leg-ig-bottom-cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+    }
+    .leg-ig-bottom-url {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+    }
+
+    .leg-ig-year {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 260px; font-weight: 900;
+      color: rgba(255,255,255,0.02);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+
+    /* ══════════════════════════════════════════════════════════
+       THEME 5 — ZÉRO EXPÉRIENCE, 100% RÉUSSITE
+       Instagram Story 1080×1920
+    ══════════════════════════════════════════════════════════ */
+
+    #zero-story {
+      width: 1080px;
+      height: 1920px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #1A0F0A 0%, #3E2723 30%, #5D4037 60%, #3E2723 100%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #zero-story::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .zero-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 60px 60px;
+      z-index: 2;
+    }
+    .zero-badge {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 26px;
+      border-radius: 20px;
+      margin-bottom: 50px;
+    }
+    .zero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 60px;
+      line-height: 1.1;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+      margin-bottom: 50px;
+    }
+    .zero-title em { color: var(--gold-light); font-style: italic; }
+
+    .zero-steps {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .zero-step {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .zero-step-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px; font-weight: 900;
+      color: var(--gold-light);
+      white-space: nowrap;
+    }
+    .zero-step-label {
+      font-size: 18px; font-weight: 600;
+      color: #fff;
+    }
+    .zero-step-icon {
+      margin-left: auto;
+      font-size: 26px;
+    }
+
+    .zero-reassurance {
+      margin-top: 45px;
+      text-align: center;
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      max-width: 700px;
+    }
+
+    .zero-dates {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+    }
+    .zero-date-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 14px 28px;
+      text-align: center;
+    }
+    .zero-date-pill .dl { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 4px; }
+    .zero-date-pill .dv { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: #fff; }
+
+    .zero-cta {
+      margin-top: 35px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 18px;
+      padding: 16px 40px;
+      border-radius: 30px;
+      text-decoration: none;
+    }
+    .zero-url {
+      margin-top: 20px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+    }
+
+    .zero-year {
+      position: absolute;
+      bottom: 200px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 220px; font-weight: 900;
+      color: rgba(255,255,255,0.02);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+
+    /* ══════════════════════════════════════════════════════════
+       THEME 6 — UN INSTRUMENT UNIQUE AU MONDE
+       Instagram Story 1080×1920
+    ══════════════════════════════════════════════════════════ */
+
+    #uniq-story {
+      width: 1080px;
+      height: 1920px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 30%, #4A2800 0%, #3E2723 30%, #1A0F0A 80%);
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    #uniq-story::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(92deg, transparent, transparent 4px, rgba(255,255,255,0.016) 4px, rgba(255,255,255,0.016) 8px);
+    }
+
+    .uniq-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 70px 55px 55px;
+      z-index: 2;
+    }
+    .uniq-badge {
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 26px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+    }
+    .uniq-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: 52px;
+      line-height: 1.12;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+      margin-bottom: 35px;
+    }
+    .uniq-title em { color: var(--gold-light); font-style: italic; }
+
+    .uniq-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+    }
+    .uniq-option {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px 22px;
+    }
+    .uniq-option-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .uniq-option-icon { font-size: 22px; }
+    .uniq-option-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+    }
+    .uniq-option-details {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+    }
+
+    .uniq-combos-badge {
+      margin-top: 22px;
+      background: rgba(212,160,23,0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 2px;
+      padding: 10px 30px;
+      border-radius: 25px;
+    }
+
+    .uniq-models {
+      margin-top: 25px;
+      display: flex;
+      gap: 14px;
+      width: 100%;
+    }
+    .uniq-model {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .uniq-model.featured {
+      border-color: var(--gold);
+      background: rgba(212,160,23,0.1);
+    }
+    .uniq-model-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px; font-weight: 900;
+      color: #fff;
+    }
+    .uniq-model-star {
+      font-size: 14px;
+      color: var(--gold-light);
+      margin-top: 2px;
+    }
+    .uniq-model-price {
+      font-size: 20px; font-weight: 800;
+      color: var(--gold-light);
+      margin-top: 6px;
+    }
+
+    .uniq-cta {
+      margin-top: 30px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      font-size: 18px;
+      padding: 16px 40px;
+      border-radius: 30px;
+      text-decoration: none;
+    }
+    .uniq-url {
+      margin-top: 18px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+    }
+
+    .uniq-year {
+      position: absolute;
+      bottom: 300px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 220px; font-weight: 900;
+      color: rgba(255,255,255,0.02);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       THEME 1 — VENEZ EN FAMILLE
+  ═══════════════════════════════════════════════════════ -->
+
+  <h2 class="section-title">Thème 1 — Venez en famille · Facebook Post</h2>
+  <p class="format-info">Format : 1200 × 630 px · Cible : familles, expérience multigénérationnelle</p>
+
+  <div id="fam-fb">
+    <div class="fam-fb-year">2026</div>
+    <div class="fam-fb-content">
+      <span class="fam-fb-badge">Stage lutherie · En famille</span>
+      <h1 class="fam-fb-title">Venez en famille<br>créer des <em>souvenirs uniques</em></h1>
+      <p class="fam-fb-sub">Partagez une aventure humaine et artisanale avec vos proches</p>
+      <ul class="fam-fb-points">
+        <li>👨‍👩‍👧‍👦 Parents, enfants, grands-parents</li>
+        <li>🎵 Partagez la passion de la musique</li>
+        <li>🏠 Un projet familial inoubliable</li>
+      </ul>
+      <div class="fam-fb-dates">
+        <div class="fam-fb-date-pill">
+          <div class="dl">Printemps 🌸</div>
+          <div class="dv">8–17 avril 2026</div>
+        </div>
+        <div class="fam-fb-date-pill">
+          <div class="dl">Automne 🍂</div>
+          <div class="dv">14–23 oct. 2026</div>
+        </div>
+      </div>
+      <a class="fam-fb-cta" href="https://stages.ewendaviau.com">Réservez pour la famille →</a>
+    </div>
+    <div class="fam-fb-photos">
+      <div class="photo"><img src="Collage_20220425_180111.jpg" alt="Atelier lutherie en famille"></div>
+      <div class="photo"><img src="Jour 5 (25).jpg" alt="Travail du bois en stage"></div>
+      <div class="photo"><img src="Jour 10 (1).jpg" alt="Accordéon terminé"></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Thème 1 — Venez en famille · Instagram Post</h2>
+  <p class="format-info">Format : 1080 × 1080 px · Design centré avec boîtes de fonctionnalités</p>
+
+  <div id="fam-ig">
+    <div class="fam-ig-year">2026</div>
+    <div class="fam-ig-center">
+      <span class="fam-ig-badge">🏠 Expérience famille</span>
+      <h1 class="fam-ig-title">Venez en famille<br><em>créer ensemble</em></h1>
+      <div class="fam-ig-divider"></div>
+      <div class="fam-ig-features">
+        <div class="fam-ig-feat">
+          <div class="fam-ig-feat-icon">👨‍👩‍👧</div>
+          <div class="fam-ig-feat-label">Multigénérationnel</div>
+        </div>
+        <div class="fam-ig-feat">
+          <div class="fam-ig-feat-icon">✨</div>
+          <div class="fam-ig-feat-label">Souvenirs uniques</div>
+        </div>
+        <div class="fam-ig-feat">
+          <div class="fam-ig-feat-icon">❤️</div>
+          <div class="fam-ig-feat-label">Lien familial</div>
+        </div>
+      </div>
+    </div>
+    <div class="fam-ig-bottom">
+      <a class="fam-ig-bottom-cta" href="https://stages.ewendaviau.com">Réservez en famille →</a>
+      <span class="fam-ig-bottom-url">stages.ewendaviau.com</span>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       THEME 2 — UNE EXPÉRIENCE INOUBLIABLE
+  ═══════════════════════════════════════════════════════ -->
+
+  <h2 class="section-title">Thème 2 — Une expérience inoubliable · Facebook Post</h2>
+  <p class="format-info">Format : 1200 × 630 px · Cible : expérience transformative, bucket-list</p>
+
+  <div id="exp-fb">
+    <div class="exp-fb-year">2026</div>
+    <div class="exp-fb-content">
+      <span class="exp-fb-badge">🌟 Expérience unique en France</span>
+      <h1 class="exp-fb-title">10 jours qui vont<br><em>changer votre vie</em></h1>
+      <ul class="exp-fb-points">
+        <li>✨ De la planche de bois à votre instrument</li>
+        <li>🎶 Repartez avec un accordéon fait de vos mains</li>
+        <li>🤝 Guidé par un maître luthier</li>
+      </ul>
+      <div class="exp-fb-dates">
+        <div class="exp-fb-date-pill">
+          <div class="dl">Printemps 🌸</div>
+          <div class="dv">8–17 avril 2026</div>
+        </div>
+        <div class="exp-fb-date-pill">
+          <div class="dl">Automne 🍂</div>
+          <div class="dv">14–23 oct. 2026</div>
+        </div>
+      </div>
+      <a class="exp-fb-cta" href="https://stages.ewendaviau.com">Vivez l'expérience →</a>
+    </div>
+    <div class="exp-fb-quote-panel">
+      <div class="exp-fb-quote-mark">"</div>
+      <p class="exp-fb-quote-text">J'ai vécu les 10 plus beaux jours de ma vie</p>
+      <p class="exp-fb-quote-attr">— Un ancien stagiaire</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Thème 2 — Une expérience inoubliable · Instagram Post</h2>
+  <p class="format-info">Format : 1080 × 1080 px · Design dramatique avec timeline et preuves sociales</p>
+
+  <div id="exp-ig">
+    <div class="exp-ig-10">10</div>
+    <div class="exp-ig-center">
+      <span class="exp-ig-badge">🌟 Expérience unique</span>
+      <h1 class="exp-ig-title">Une expérience<br><em>inoubliable</em></h1>
+      <div class="exp-ig-timeline">
+        <div class="exp-ig-tl-step">
+          <div class="day">Jour 1</div>
+          <div class="desc">Planche de bois</div>
+        </div>
+        <div class="exp-ig-tl-arrow">→</div>
+        <div class="exp-ig-tl-step">
+          <div class="day">Jour 10</div>
+          <div class="desc">Votre accordéon</div>
+        </div>
+      </div>
+      <div class="exp-ig-proofs">
+        <div class="exp-ig-proof">
+          <div class="num">30+</div>
+          <div class="lbl">accordéons construits</div>
+        </div>
+        <div class="exp-ig-proof">
+          <div class="num">10</div>
+          <div class="lbl">jours de stage</div>
+        </div>
+        <div class="exp-ig-proof">
+          <div class="num">6</div>
+          <div class="lbl">max par session</div>
+        </div>
+      </div>
+    </div>
+    <div class="exp-ig-bottom">
+      <a class="exp-ig-bottom-cta" href="https://stages.ewendaviau.com">Vivez l'expérience →</a>
+      <span class="exp-ig-bottom-url">stages.ewendaviau.com</span>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       THEME 3 — OFFREZ UN STAGE
+  ═══════════════════════════════════════════════════════ -->
+
+  <h2 class="section-title">Thème 3 — Offrez un stage · Facebook Post</h2>
+  <p class="format-info">Format : 1200 × 630 px · Cible : idée cadeau, Noël, anniversaire, retraite</p>
+
+  <div id="gift-fb">
+    <div class="gift-fb-year">2026</div>
+    <div class="gift-fb-content">
+      <span class="gift-fb-badge">🎁 Idée cadeau unique</span>
+      <h1 class="gift-fb-title">Offrez un stage<br>de <em>lutherie</em></h1>
+      <p class="gift-fb-sub">Le cadeau le plus original et inoubliable</p>
+      <ul class="gift-fb-points">
+        <li>🎄 Noël, anniversaire, retraite…</li>
+        <li>🎵 Un instrument fait de ses propres mains</li>
+        <li>💝 Un souvenir pour toute la vie</li>
+        <li>📜 Bon cadeau personnalisable</li>
+      </ul>
+      <a class="gift-fb-cta" href="https://stages.ewendaviau.com">Offrir le stage →</a>
+    </div>
+    <div class="gift-fb-panel">
+      <div class="gift-fb-panel-icon">🎁</div>
+      <p class="gift-fb-panel-text">Le cadeau dont on se souvient<br>toute la vie</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Thème 3 — Offrez un stage · Instagram Post</h2>
+  <p class="format-info">Format : 1080 × 1080 px · Design chaleureux centré sur le cadeau</p>
+
+  <div id="gift-ig">
+    <div class="gift-ig-year">2026</div>
+    <div class="gift-ig-center">
+      <div class="gift-ig-icon">🎁</div>
+      <h1 class="gift-ig-title">Offrez un stage<br><em>inoubliable</em></h1>
+      <div class="gift-ig-occasions">
+        <span class="gift-ig-occasion">🎄 Noël</span>
+        <span class="gift-ig-occasion">🎂 Anniversaire</span>
+        <span class="gift-ig-occasion">🎓 Retraite</span>
+      </div>
+      <div class="gift-ig-price"><span>À partir de </span>2 820 €</div>
+    </div>
+    <div class="gift-ig-bottom">
+      <a class="gift-ig-bottom-cta" href="https://stages.ewendaviau.com">Offrir le stage →</a>
+      <span class="gift-ig-bottom-url">stages.ewendaviau.com</span>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       THEME 4 — CRÉEZ UN HÉRITAGE
+  ═══════════════════════════════════════════════════════ -->
+
+  <h2 class="section-title">Thème 4 — Créez un héritage · Facebook Post</h2>
+  <p class="format-info">Format : 1200 × 630 px · Cible : transmission, instrument d'héritage, bois nobles</p>
+
+  <div id="leg-fb">
+    <div class="leg-fb-year">2026</div>
+    <div class="leg-fb-content">
+      <span class="leg-fb-badge">🏛️ Héritage &amp; transmission</span>
+      <h1 class="leg-fb-title">Créez un instrument<br>qui <em>traversera les générations</em></h1>
+      <ul class="leg-fb-points">
+        <li>🌳 Bois nobles : cerisier, noyer, érable</li>
+        <li>⏳ Un savoir-faire ancestral entre vos mains</li>
+        <li>🎵 Votre accordéon, votre signature sonore</li>
+        <li>👨‍👧 À transmettre de génération en génération</li>
+      </ul>
+      <a class="leg-fb-cta" href="https://stages.ewendaviau.com">Créez votre héritage →</a>
+    </div>
+    <div class="leg-fb-photos">
+      <div class="photo"><img src="Collage_20220425_180332.jpg" alt="Bois nobles de lutherie"></div>
+      <div class="photo"><img src="Jour 5 (25).jpg" alt="Travail artisanal du bois"></div>
+      <div class="photo"><img src="Jour 10 (1).jpg" alt="Accordéon terminé, un héritage"></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Thème 4 — Créez un héritage · Instagram Post</h2>
+  <p class="format-info">Format : 1080 × 1080 px · Design élégant avec essences de bois et accents dorés</p>
+
+  <div id="leg-ig">
+    <div class="leg-ig-year">2026</div>
+    <div class="leg-ig-center">
+      <span class="leg-ig-badge">🏛️ Héritage &amp; transmission</span>
+      <h1 class="leg-ig-title">Créez un <em>héritage</em></h1>
+      <div class="leg-ig-divider"></div>
+      <div class="leg-ig-woods">
+        <div class="leg-ig-wood">
+          <div class="leg-ig-wood-icon">🌳</div>
+          <div class="leg-ig-wood-name">Cerisier</div>
+        </div>
+        <div class="leg-ig-wood">
+          <div class="leg-ig-wood-icon">🌳</div>
+          <div class="leg-ig-wood-name">Noyer</div>
+        </div>
+        <div class="leg-ig-wood">
+          <div class="leg-ig-wood-icon">🌳</div>
+          <div class="leg-ig-wood-name">Érable</div>
+        </div>
+      </div>
+      <div class="leg-ig-combos">100+ combinaisons possibles</div>
+      <div class="leg-ig-proofs">
+        <div class="leg-ig-proof">
+          <div class="num">30+</div>
+          <div class="lbl">accordéons construits</div>
+        </div>
+        <div class="leg-ig-proof">
+          <div class="num">2021</div>
+          <div class="lbl">depuis</div>
+        </div>
+        <div class="leg-ig-proof">
+          <div class="num">6</div>
+          <div class="lbl">max par session</div>
+        </div>
+      </div>
+    </div>
+    <div class="leg-ig-bottom">
+      <a class="leg-ig-bottom-cta" href="https://stages.ewendaviau.com">Créez votre héritage →</a>
+      <span class="leg-ig-bottom-url">stages.ewendaviau.com</span>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       THEME 5 — ZÉRO EXPÉRIENCE, 100% RÉUSSITE
+       Instagram Story 1080×1920
+  ═══════════════════════════════════════════════════════ -->
+
+  <h2 class="section-title">Thème 5 — Zéro expérience, 100% réussite · Instagram Story</h2>
+  <p class="format-info">Format : 1080 × 1920 px · Cible : débutants, accessibilité, pas de prérequis</p>
+
+  <div id="zero-story">
+    <div class="zero-year">2026</div>
+    <div class="zero-wrap">
+      <span class="zero-badge">🎯 Accessible à tous</span>
+      <h1 class="zero-title">Zéro expérience<br>requise,<br><em>100% réussite</em></h1>
+      <div class="zero-steps">
+        <div class="zero-step">
+          <span class="zero-step-num">Jour 1–2</span>
+          <span class="zero-step-label">Structure &amp; bois</span>
+          <span class="zero-step-icon">🪵</span>
+        </div>
+        <div class="zero-step">
+          <span class="zero-step-num">Jour 3–4</span>
+          <span class="zero-step-label">Claviers</span>
+          <span class="zero-step-icon">🎹</span>
+        </div>
+        <div class="zero-step">
+          <span class="zero-step-num">Jour 5–6</span>
+          <span class="zero-step-label">Soufflet</span>
+          <span class="zero-step-icon">🌬️</span>
+        </div>
+        <div class="zero-step">
+          <span class="zero-step-num">Jour 7–10</span>
+          <span class="zero-step-label">Anches &amp; accordage</span>
+          <span class="zero-step-icon">🎵</span>
+        </div>
+      </div>
+      <p class="zero-reassurance">Guidé pas à pas par un maître luthier · Depuis 2021, tous les stagiaires sont repartis avec leur instrument</p>
+      <div class="zero-dates">
+        <div class="zero-date-pill">
+          <div class="dl">Printemps 🌸</div>
+          <div class="dv">8–17 avril 2026</div>
+        </div>
+        <div class="zero-date-pill">
+          <div class="dl">Automne 🍂</div>
+          <div class="dv">14–23 oct. 2026</div>
+        </div>
+      </div>
+      <a class="zero-cta" href="https://stages.ewendaviau.com">Je m'inscris →</a>
+      <span class="zero-url">stages.ewendaviau.com</span>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       THEME 6 — UN INSTRUMENT UNIQUE AU MONDE
+       Instagram Story 1080×1920
+  ═══════════════════════════════════════════════════════ -->
+
+  <h2 class="section-title">Thème 6 — Un instrument unique au monde · Instagram Story</h2>
+  <p class="format-info">Format : 1080 × 1920 px · Cible : personnalisation, sur-mesure, choix de bois et tonalités</p>
+
+  <div id="uniq-story">
+    <div class="uniq-year">2026</div>
+    <div class="uniq-wrap">
+      <span class="uniq-badge">✨ Sur mesure</span>
+      <h1 class="uniq-title">Votre accordéon,<br><em>unique au monde</em></h1>
+
+      <div class="uniq-options">
+        <div class="uniq-option">
+          <div class="uniq-option-head">
+            <span class="uniq-option-icon">🌳</span>
+            <span class="uniq-option-name">Essence de bois</span>
+          </div>
+          <div class="uniq-option-details">Cerisier, Noyer, Érable</div>
+        </div>
+        <div class="uniq-option">
+          <div class="uniq-option-head">
+            <span class="uniq-option-icon">🎵</span>
+            <span class="uniq-option-name">Tonalités</span>
+          </div>
+          <div class="uniq-option-details">Sol/Do, Ré/Sol, La/Ré</div>
+        </div>
+        <div class="uniq-option">
+          <div class="uniq-option-head">
+            <span class="uniq-option-icon">⚙️</span>
+            <span class="uniq-option-name">Dispositions</span>
+          </div>
+          <div class="uniq-option-details">Heim, Milleret-Pignol, Custom</div>
+        </div>
+        <div class="uniq-option">
+          <div class="uniq-option-head">
+            <span class="uniq-option-icon">🎨</span>
+            <span class="uniq-option-name">Grilles</span>
+          </div>
+          <div class="uniq-option-details">100+ modèles décoratifs</div>
+        </div>
+        <div class="uniq-option">
+          <div class="uniq-option-head">
+            <span class="uniq-option-icon">🎨</span>
+            <span class="uniq-option-name">Soufflets</span>
+          </div>
+          <div class="uniq-option-details">Couleurs au choix</div>
+        </div>
+        <div class="uniq-option">
+          <div class="uniq-option-head">
+            <span class="uniq-option-icon">🔧</span>
+            <span class="uniq-option-name">Main gauche</span>
+          </div>
+          <div class="uniq-option-details">Configuration personnalisée</div>
+        </div>
+      </div>
+
+      <span class="uniq-combos-badge">100+ combinaisons</span>
+
+      <div class="uniq-models">
+        <div class="uniq-model">
+          <div class="uniq-model-name">21/8</div>
+          <div class="uniq-model-price">2 820 €</div>
+        </div>
+        <div class="uniq-model featured">
+          <div class="uniq-model-name">33/12</div>
+          <div class="uniq-model-star">⭐ Populaire</div>
+          <div class="uniq-model-price">4 500 €</div>
+        </div>
+        <div class="uniq-model">
+          <div class="uniq-model-name">33/18</div>
+          <div class="uniq-model-price">4 880 €</div>
+        </div>
+      </div>
+
+      <a class="uniq-cta" href="https://stages.ewendaviau.com">Configurez le vôtre →</a>
+      <span class="uniq-url">stages.ewendaviau.com</span>
+    </div>
+  </div>
+
+</body>
+</html>
