@@ -1544,7 +1544,7 @@ var buildSVG_PlanLite = (function () {
 
   /* ── Sélecteur visuel de grille ──────────────────────────── */
   (function () {
-    var BASE = 'img/grilles/thumbs/';
+    var BASE = 'https://ewendaviau.com/wp-content/uploads/2026/03/';
     var TOTAL = 81;
     var grid  = document.getElementById('grilleSelectorGrid');
     var input = document.getElementById('numGrille');
@@ -1559,7 +1559,7 @@ var buildSVG_PlanLite = (function () {
         cell.style.cssText = 'cursor:pointer;border:2px solid transparent;border-radius:6px;padding:2px;background:#fff;transition:border-color .15s;';
         cell.title = 'Grille n\u00b0' + n;
         var imgEl = document.createElement('img');
-        imgEl.src = BASE + 'grille-' + pad(n) + '.png';
+        imgEl.src = BASE + 'grille-' + pad(n) + '-1.png';
         imgEl.alt = 'Grille n\u00b0' + n;
         imgEl.loading = 'lazy';
         imgEl.style.cssText = 'width:100%;display:block;border-radius:4px;aspect-ratio:1/1;object-fit:contain;background:#fff;';
