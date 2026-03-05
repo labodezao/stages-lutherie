@@ -413,7 +413,7 @@
 /* Edit popup — removed (merged into unified note picker) */
 
 /* ── Unified note picker ── */
-.clavier-widget .cw-note-picker{position:fixed;z-index:10000;background:var(--card-bg);border:2px solid var(--gold);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.25);padding:0;min-width:310px;font-size:.85rem;overflow:hidden}
+.clavier-widget .cw-note-picker{display:none;position:fixed;z-index:10000;background:var(--card-bg);border:2px solid var(--gold);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.25);padding:0;min-width:310px;font-size:.85rem;overflow:hidden}
 .clavier-widget .cw-np-header{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(184,134,11,.08)}
 .clavier-widget .cw-np-hd-title{font-weight:700;color:var(--gold);font-size:.88rem;flex:1}
 .clavier-widget .cw-np-close-btn{border:none;background:none;font-size:.85rem;color:var(--text2);cursor:pointer;padding:2px 6px;border-radius:4px;font-family:inherit;line-height:1}
@@ -537,7 +537,7 @@
     return m ? {note:m[1], oct:m[2]} : {note:v.trim(), oct:''};
   }
 
-  function openNotePicker(editId, evt){
+  function openNotePicker(editId, evt, initialSlot){
     if(!currentPreset || !editId) return;
     var parts = editId.split(':');
     var btn = {p:'', t:''}, title = '';
@@ -564,12 +564,12 @@
       pullNote: tParsed.note, pullOct: tParsed.oct
     };
     $('cw-np-btn-title').textContent = title;
-    cwSwitchSlot('push');
+    cwSwitchSlot(initialSlot || 'push');
     cwPickerHL();
     cwPickerUpdateBadges();
 
     var pk = $('cw-note-picker');
-    pk.classList.remove('cw-hidden');
+    pk.style.display = 'block';
     /* Position popup near click but keep in viewport */
     var pw = pk.offsetWidth || 320, ph = pk.offsetHeight || 340;
     var x = evt.clientX + 12, y = evt.clientY + 12;
@@ -580,7 +580,8 @@
   }
 
   function closeNotePicker(){
-    $('cw-note-picker').classList.add('cw-hidden');
+    var pk = $('cw-note-picker');
+    pk.style.display = 'none';
     _cwEdit = null; _cwNote = ''; _cwOct = '';
   }
 
@@ -1620,16 +1621,36 @@
     $('cw-np-apply-btn').addEventListener('click', cwPickerApply);
     $('cw-np-tab-push').addEventListener('click', function(){ if(_cwEdit) cwSwitchSlot('push'); });
     $('cw-np-tab-pull').addEventListener('click', function(){ if(_cwEdit) cwSwitchSlot('pull'); });
+    // Click-outside: close picker (inspired by offline tool — check style.display, not class)
     document.addEventListener('click', function(ev){
       var picker = $('cw-note-picker');
-      if(picker){
-        if(!picker.classList.contains('cw-hidden')){
-          if(!picker.contains(ev.target)){
-            if(!ev.target.closest('.cw-edit-btn')){
-              closeNotePicker();
-            }
+      if(picker && picker.style.display === 'block'){
+        if(!picker.contains(ev.target)){
+          if(!ev.target.closest('.cw-edit-btn') && !ev.target.closest('input[data-section]')){
+            closeNotePicker();
           }
         }
+      }
+    });
+    // Note table inputs → open picker on click (inspired by offline tool)
+    $('cw-rh-tables').addEventListener('click', function(e){
+      var inp = e.target.closest('input[data-section="rh"]');
+      if(inp && currentPreset){
+        var ri = parseInt(inp.getAttribute('data-row'), 10);
+        var bi = parseInt(inp.getAttribute('data-btn'), 10);
+        var dir = inp.getAttribute('data-dir');
+        e.stopPropagation();
+        openNotePicker('rh:'+ri+':'+bi, e, dir === 'p' ? 'push' : 'pull');
+      }
+    });
+    $('cw-lh-tables').addEventListener('click', function(e){
+      var inp = e.target.closest('input[data-section]');
+      if(inp && currentPreset){
+        var sec = inp.getAttribute('data-section');
+        var bi  = parseInt(inp.getAttribute('data-btn'), 10);
+        var dir = inp.getAttribute('data-dir');
+        e.stopPropagation();
+        openNotePicker(sec+':'+bi, e, dir === 'p' ? 'push' : 'pull');
       }
     });
     initNotePicker();
