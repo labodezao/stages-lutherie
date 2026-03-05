@@ -1,3 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🪗 Clavier Accordéon — Aperçu widget</title>
+</head>
+<body>
+<!-- ════════════════════════════════════════════════════════
+     WIDGET CLAVIER ACCORDÉON — Version standalone (aperçu)
+     Pour WordPress : copier de <div class="clavier-widget">
+     jusqu'à </script> et coller dans un bloc HTML personnalisé.
+     Le fichier clavier-accordeon-gutenberg.txt contient
+     le code prêt-à-coller avec les balises wp:html.
+     ════════════════════════════════════════════════════════ -->
 <!-- WordPress Gutenberg Keyboard Plan Widget -->
 <!-- Paste this into a Custom HTML block on your WordPress page -->
 <div class="clavier-widget">
@@ -105,7 +120,7 @@
   <div id="cw-note-picker" class="cw-note-picker cw-hidden">
     <div class="cw-np-tabs">
       <button class="cw-np-tab-btn cw-active">🎵 Note</button>
-      <button style="margin-left:auto;padding:3px 8px;border:none;background:none;font-size:.73rem;color:var(--text2);cursor:pointer;" onclick="cwHidePicker()">✕</button>
+      <button id="cw-np-close" style="margin-left:auto;padding:3px 8px;border:none;background:none;font-size:.73rem;color:var(--text2);cursor:pointer;">✕</button>
     </div>
     <div class="cw-np-title">Touches naturelles</div>
     <div class="cw-np-row" id="cw-np-naturals"></div>
@@ -119,7 +134,7 @@
     </div>
     <div class="cw-np-preview">
       <span id="cw-np-preview-text">— sélectionnez note + octave —</span>
-      <button class="cw-np-clear" onclick="cwPickerClear()">Effacer</button>
+      <button id="cw-np-clear-btn" class="cw-np-clear">Effacer</button>
     </div>
   </div>
 
@@ -535,10 +550,33 @@
 
   function initCwPicker(){
     var N=CW_NOTES_FR;
-    $('cw-np-naturals').innerHTML=N.nat.map(function(n){return '<button class="cw-np-btn" onclick="cwPickerSetNote(''+n+'')">'+n+'</button>';}).join('');
-    $('cw-np-sharps').innerHTML=N.sha.map(function(n){return n?'<button class="cw-np-btn cw-sha" onclick="cwPickerSetNote(''+n+'')">'+n+'</button>':'<span style="min-width:33px;display:inline-block"></span>';}).join('');
-    $('cw-np-flats').innerHTML=N.fla.map(function(n){return n?'<button class="cw-np-btn cw-fla" onclick="cwPickerSetNote(''+n+'')">'+n+'</button>':'<span style="min-width:33px;display:inline-block"></span>';}).join('');
-    $('cw-np-octaves').innerHTML=CW_OCTAVES.map(function(o){return '<button class="cw-np-oct-btn" onclick="cwPickerSetOctave(''+o+'')">'+o+'</button>';}).join('');
+    function makeNoteBtn(n, extra){
+      var btn=document.createElement('button');
+      btn.className='cw-np-btn'+(extra?' '+extra:'');
+      btn.textContent=n;
+      btn.addEventListener('click',function(){cwPickerSetNote(n);});
+      return btn;
+    }
+    function makeOctBtn(o){
+      var btn=document.createElement('button');
+      btn.className='cw-np-oct-btn';
+      btn.textContent=o;
+      btn.addEventListener('click',function(){cwPickerSetOctave(o);});
+      return btn;
+    }
+    function makeBlank(){
+      var sp=document.createElement('span');
+      sp.style.cssText='min-width:33px;display:inline-block';
+      return sp;
+    }
+    var natC=$('cw-np-naturals'); natC.innerHTML='';
+    N.nat.forEach(function(n){natC.appendChild(makeNoteBtn(n));});
+    var shaC=$('cw-np-sharps'); shaC.innerHTML='';
+    N.sha.forEach(function(n){shaC.appendChild(n?makeNoteBtn(n,'cw-sha'):makeBlank());});
+    var flaC=$('cw-np-flats'); flaC.innerHTML='';
+    N.fla.forEach(function(n){flaC.appendChild(n?makeNoteBtn(n,'cw-fla'):makeBlank());});
+    var octC=$('cw-np-octaves'); octC.innerHTML='';
+    CW_OCTAVES.forEach(function(o){octC.appendChild(makeOctBtn(o));});
   }
   function cwShowPicker(input){
     cwPickerInput=input;cwPickerNote='';cwPickerOctave='';
@@ -1597,6 +1635,8 @@
       }}}
     });
     initCwPicker();
+    var npClose=$('cw-np-close'); if(npClose) npClose.addEventListener('click',cwHidePicker);
+    var npClear=$('cw-np-clear-btn'); if(npClear) npClear.addEventListener('click',cwPickerClear);
   }
 
   // Run init when DOM is ready
@@ -1608,3 +1648,6 @@
 
 })();
 </script>
+
+</body>
+</html>
