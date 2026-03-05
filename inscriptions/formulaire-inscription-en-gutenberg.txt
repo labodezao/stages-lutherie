@@ -1219,7 +1219,7 @@ var buildSVG_PlanLite = (function () {
       for (var i = 0; i < lhSecRows.length; i += 2) { reordered.push(lhSecRows[i + 1]); reordered.push(lhSecRows[i]); }
       lhSecRows = reordered;
     }
-    if (data.terzetto && data.terzetto.length) lhSecRows.push({ nom: 'Terzetto', items: data.terzetto, offset: 0 });
+    if (data.terzetto) if (data.terzetto.length) lhSecRows.push({ nom: 'Terzetto', items: data.terzetto, offset: 0 });
 
     var nLH = lhSecRows.length;
     var maxLHBtns = 0;
