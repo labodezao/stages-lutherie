@@ -77,6 +77,11 @@
         <button id="cw-save-btn" class="cw-btn">💾 Sauvegarder localement</button>
         <button id="cw-export-btn" class="cw-btn cw-btn-gold">📄 Copier (texte)</button>
       </div>
+      <div class="cw-row" style="margin-top:6px">
+        <button id="cw-import-file-btn" class="cw-btn cw-btn-sm">📂 Charger fichier JSON</button>
+        <button id="cw-export-json-btn" class="cw-btn cw-btn-sm cw-btn-gold">⬇ Exporter JSON</button>
+        <input type="file" id="cw-file-input" accept=".json" style="display:none">
+      </div>
       <div class="cw-row" style="margin-top:8px">
         <label class="cw-label">Plans sauvegardés</label>
         <select id="cw-saved-sel" class="cw-select">
@@ -1445,6 +1450,21 @@
     } else {fallbackCopy(txt);}
   }
 
+  function exportJSON(){
+    var snap = cwSnapshotPreset();
+    if(!snap){ showToast('Aucun plan à exporter.'); return; }
+    var blob = new Blob([JSON.stringify(snap, null, 2)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (snap.nom || 'plan-clavier').replace(/[^a-zA-Z0-9_\u00C0-\u017E\-]/g, '-') + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('\u2714 JSON téléchargé');
+  }
+
   function fallbackCopy(text){
     var ta = document.createElement('textarea');
     ta.value = text;
@@ -1527,6 +1547,7 @@
   function loadFromFile(event){
     var file = event.target.files[0];
     if(!file) return;
+    event.target.value = ''; // reset so same file can be re-loaded
     var reader = new FileReader();
     reader.onload = function(e){
       try {
@@ -1534,10 +1555,11 @@
         json = cwNormalisePreset(json);
         if(!json){ showToast('Format non reconnu'); return; }
         currentPreset = json;
+        $('cw-preset-sel').value = '';
         $('cw-nom-instrument').value = json.nom || '';
         $('cw-nom-joueur').value = json.joueur || '';
         renderAll();
-        showToast('\u2714 Fichier chargé (format compatible outil offline)');
+        showToast('\u2714 Fichier chargé');
       } catch(ex){ showToast('Erreur: JSON invalide'); }
     };
     reader.readAsText(file);
@@ -1604,6 +1626,9 @@
     });
     $('cw-theme-toggle').addEventListener('click', toggleTheme);
     $('cw-export-btn').addEventListener('click', exportText);
+    $('cw-export-json-btn').addEventListener('click', exportJSON);
+    $('cw-import-file-btn').addEventListener('click', function(){ $('cw-file-input').click(); });
+    $('cw-file-input').addEventListener('change', loadFromFile);
     $('cw-save-btn').addEventListener('click', savePlan);
     $('cw-load-btn').addEventListener('click', loadPlan);
     $('cw-delete-btn').addEventListener('click', deletePlan);

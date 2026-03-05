@@ -72,11 +72,23 @@ Glisser-déposer le fichier `.json` sur l'outil ou utiliser le bouton **Importer
 
 ### Importer un JSON dans le widget WordPress
 
-Utiliser le bouton **📂 Charger fichier** dans l'interface du widget.
+Utiliser le bouton **📂 Charger fichier JSON** dans la section *Sauvegarde & Export* du widget.
 
 ---
 
-## Modifier les presets intégrés (outil offline uniquement)
+## Modifier les presets intégrés
+
+### Via l'interface du widget (recommandé)
+
+1. **Sélectionner** le modèle à modifier dans le menu déroulant
+2. Modifier les notes via l'éditeur (tables ou clic sur le SVG)
+3. Cliquer **⬇ Exporter JSON** pour télécharger le plan en fichier `.json`
+4. Ouvrir le fichier dans un éditeur de texte pour modifier directement le JSON
+5. Réimporter avec **📂 Charger fichier JSON**
+
+Ce workflow est disponible dans les deux versions : widget WordPress et outil offline.
+
+### Modifier les presets de l'outil offline
 
 Pour l'outil offline `index.html`, les presets sont des fichiers JSON dans le dossier `presets/` :
 
@@ -91,7 +103,7 @@ Pour **ajouter un preset** à l'outil offline :
 1. Créer `presets/MONPRESET.json` au format ci-dessus
 2. Ajouter une entrée dans `PRESET_CATALOG` dans `index.html`
 
-Pour le **widget WordPress**, les presets sont inline dans `PRESETS_DATA` dans `gutenberg-widget.html`. Pour en ajouter un, modifier ce bloc JS et re-générer `clavier-accordeon-gutenberg.txt`.
+Pour le **widget WordPress**, les presets sont inline dans `PRESETS_DATA` dans `gutenberg-widget.html`. Pour en ajouter un de façon permanente, modifier ce bloc JS et re-générer `clavier-accordeon-gutenberg.txt`.
 
 ---
 
@@ -102,4 +114,6 @@ Pour le **widget WordPress**, les presets sont inline dans `PRESETS_DATA` dans `
 - 📐 **Décalage des rangées** — contrôle ±30 pour chaque rangée MD et MG
 - 💾 **Sauvegarde locale** — via `localStorage` du navigateur
 - 📄 **Copier (texte)** — exporte un résumé lisible dans le presse-papiers
+- ⬇ **Exporter JSON** — télécharge le plan courant en fichier `.json` (compatible outil offline)
+- 📂 **Charger fichier JSON** — importe un fichier `.json` (édité manuellement ou exporté par l'outil offline)
 - 🌙 **Mode sombre/clair**
