@@ -275,7 +275,7 @@ var STAGE_CONFIG = {
      *  Each layer is a full-frame div.  JS loads a pre-rendered PNG variant
      *  matching the selected option (wood species, colour…).
      *  URL pattern: ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
-     *  e.g. img/apercu/caisse-noyer.png
+     *  e.g. img/apercu/caisse-md-noyer.png
      *
      *  Fallback: solid background-color shown until image files are uploaded.
      *  Layers gain class 'has-img' when their PNG loads successfully.
@@ -742,11 +742,12 @@ var STAGE_CONFIG = {
             Chaque calque est un <div class="acc-layer"> affiché en plein cadre.
             JS construit l'URL de l'image selon l'option sélectionnée :
               ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
-            ex : img/apercu/caisse-noyer.png
+            ex : img/apercu/caisse-md-noyer.png
 
             Convention de nommage (PNG transparent, même cadre pour tous) :
               img/apercu/base.png                 — fond optionnel
-              img/apercu/caisse-noyer.png         — corps noyer  (idem erable/cerisier)
+              img/apercu/caisse-md-noyer.png      — corps MD noyer  (idem erable/cerisier)
+              img/apercu/caisse-mg-noyer.png      — corps MG noyer  (idem erable/cerisier)
               img/apercu/grille-noyer.png         — grille noyer  (idem erable/cerisier)
               img/apercu/boutons-nacrine-noire.png
               img/apercu/boutons-nacrine-blanche.png
@@ -762,17 +763,22 @@ var STAGE_CONFIG = {
           <div class="acc-layer" id="accBase"
                data-img-base="base"></div>
 
-          <!-- Calque 1 : Corps — boisClavier -->
-          <div class="acc-layer no-img" id="accCaisse"
-               data-img-base="caisse"
-               style="background-color:#8B6F47;clip-path:polygon(5% 8%,95% 8%,95% 92%,5% 92%)"></div>
+          <!-- Calque 1 : Corps MG — boisClavier -->
+          <div class="acc-layer no-img" id="accCaisseMG"
+               data-img-base="caisse-mg"
+               style="background-color:#8B6F47;clip-path:polygon(5% 8%,30% 8%,30% 92%,5% 92%)"></div>
 
           <!-- Calque 2 : Soufflet — couleurSoufflet -->
           <div class="acc-layer no-img" id="accSoufflet"
                data-img-base="soufflet"
                style="background-color:#2e6cb5;clip-path:polygon(30% 8%,55% 8%,55% 92%,30% 92%)"></div>
 
-          <!-- Calque 3 : Grille — boisClavier -->
+          <!-- Calque 3 : Corps MD — boisClavier -->
+          <div class="acc-layer no-img" id="accCaisseMD"
+               data-img-base="caisse-md"
+               style="background-color:#8B6F47;clip-path:polygon(55% 8%,95% 8%,95% 92%,55% 92%)"></div>
+
+          <!-- Calque 4 : Grille — boisGrille -->
           <div class="acc-layer no-img" id="accGrille"
                data-img-base="grille"
                style="background-color:#A0845C;clip-path:polygon(58% 12%,92% 12%,92% 42%,58% 42%)"></div>
@@ -1640,7 +1646,7 @@ var buildSVG_PlanLite = (function () {
   /* ── Aperçu accordéon — calques Nano Banana ─────────────────────────────
    * Chaque calque charge son PNG selon l'option choisie.
    * Convention : ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
-   * ex : img/apercu/caisse-noyer.png
+   * ex : img/apercu/caisse-md-noyer.png
    *
    * Fallback : background-color visible si le PNG n'existe pas encore.
    */
@@ -1708,14 +1714,16 @@ var buildSVG_PlanLite = (function () {
 
   function updateAccordionPreview() {
     var boisClavier = document.getElementById('boisClavier').value;
+    var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
     var boutons     = document.getElementById('boutonsMD').value;
     var soufflet    = getRadioVal('couleurSoufflet');
     var sangles     = document.getElementById('couleurSangles').value;
 
-    setLayerImage(document.getElementById('accCaisse'),    WOOD_COLORS,    boisClavier);
-    setLayerImage(document.getElementById('accGrille'),    WOOD_COLORS,    boisClavier);
+    setLayerImage(document.getElementById('accCaisseMD'),  WOOD_COLORS,    boisClavier);
+    setLayerImage(document.getElementById('accGrille'),    WOOD_COLORS,    boisGrille);
     setLayerImage(document.getElementById('accBoutons'),   BUTTON_COLORS,  boutons);
     setLayerImage(document.getElementById('accSoufflet'),  BELLOWS_COLORS, soufflet);
+    setLayerImage(document.getElementById('accCaisseMG'),  WOOD_COLORS,    boisClavier);
     setLayerImage(document.getElementById('accSangles'),   STRAP_COLORS,   sangles);
   }
 
