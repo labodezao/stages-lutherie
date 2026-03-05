@@ -13,6 +13,32 @@
      Le fichier clavier-accordeon-gutenberg.txt contient
      le code prêt-à-coller avec les balises wp:html.
      ════════════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════
+     PRÉSETS PERSONNALISÉS — RÉSERVÉ À L'ADMINISTRATEUR
+     ════════════════════════════════════════════════════════
+     Modifiez le tableau JSON ci-dessous pour ajouter ou
+     retirer des modèles de clavier proposés aux stagiaires.
+     Les stagiaires peuvent sélectionner ces modèles et les
+     personnaliser librement, mais ils ne peuvent PAS modifier
+     cette liste.
+
+     Format de chaque entrée :
+       {
+         "id":       "MonID",        ← identifiant unique (sans espaces)
+         "label":    "Nom affiché",  ← nom dans la liste déroulante
+         "category": "Mon groupe",   ← groupe dans la liste déroulante
+         "data":     { ... }         ← données du clavier (voir ci-dessous)
+       }
+
+     → Pour obtenir le JSON "data" d'un nouveau préset :
+       1. Chargez ou configurez un clavier dans l'outil
+       2. Cliquez "📋 Copier comme préset" (section Sauvegarde)
+       3. Collez le JSON ici (remplacez [] par le tableau obtenu)
+       4. Sauvegardez la page WordPress
+
+     Laissez [] pour n'utiliser que les modèles intégrés.
+     ════════════════════════════════════════════════════════ -->
+<script id="cw-custom-presets" type="application/json">[]</script>
 <!-- WordPress Gutenberg Keyboard Plan Widget -->
 <!-- Paste this into a Custom HTML block on your WordPress page -->
 <div class="clavier-widget">
@@ -89,6 +115,11 @@
         <button id="cw-export-json-btn" class="cw-btn cw-btn-sm cw-btn-gold">⬇ Exporter JSON</button>
         <input type="file" id="cw-file-input" accept=".json" style="display:none">
       </div>
+      <div class="cw-row" style="margin-top:6px">
+        <button id="cw-copy-preset-btn" class="cw-btn cw-btn-sm cw-btn-gold">📋 Copier comme préset</button>
+        <span class="cw-hint" style="font-size:0.78rem;color:var(--text2);display:block;margin-top:3px">Admin : collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
+      </div>
+      <textarea id="cw-preset-export-area" class="cw-textarea-export" placeholder="JSON du préset (copiez puis collez dans la page WordPress)…"></textarea>
       <div class="cw-row" style="margin-top:8px">
         <label class="cw-label">Plans sauvegardés</label>
         <select id="cw-saved-sel" class="cw-select">
@@ -411,12 +442,26 @@
   color: #8fd89f;
   border-color: #2e5a2e;
 }
+.clavier-widget .cw-textarea-export {
+  display: none;
+  width: 100%;
+  height: 110px;
+  margin-top: 6px;
+  font-size: .75rem;
+  font-family: monospace;
+  border: 1px solid var(--gold);
+  border-radius: 5px;
+  padding: 6px;
+  background: var(--card-bg);
+  color: var(--text);
+  resize: vertical;
+}
+
 .clavier-widget.cw-dark .cw-btn-danger:hover {
   background: #3a1515;
 }
 
 /* Edit popup — removed (merged into unified note picker) */
-
 /* ── Unified note picker ── */
 .clavier-widget .cw-note-picker{display:none;position:fixed;z-index:10000;background:var(--card-bg);border:2px solid var(--gold);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.25);padding:0;min-width:310px;font-size:.85rem;overflow:hidden}
 .clavier-widget .cw-np-header{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(184,134,11,.08)}
@@ -498,7 +543,69 @@
     {"id":"SolDoAlts_Gaillard","label":"Sol/Do/Alts Gaillard — 33/18","category":"33/18"}
   ];
 
-  /* ════ UNIFIED NOTE PICKER (click on SVG button) ════ */
+  /* ═══════════════════════════════════════════════════
+     CUSTOM PRESETS — lus depuis <script id="cw-custom-presets">
+     Fusionnés avec PRESET_CATALOG + PRESETS_DATA au chargement.
+     ═══════════════════════════════════════════════════ */
+  function readCustomPresets(){
+    try {
+      var tag = document.getElementById('cw-custom-presets');
+      if(!tag){ return []; }
+      return JSON.parse(tag.textContent) || [];
+    } catch(e){
+      console.warn('cw-custom-presets: JSON invalide —', e.message);
+      return [];
+    }
+  }
+
+  function mergeCustomPresets(){
+    var customs = readCustomPresets();
+    customs.forEach(function(c){
+      if(!c.id){ return; }
+      if(!c.data){ return; }
+      var exists = PRESET_CATALOG.some(function(p){ return p.id === c.id; });
+      if(!exists){
+        PRESET_CATALOG.push({
+          id: c.id,
+          label: c.label || c.id,
+          category: c.category || 'Personnalisés'
+        });
+      }
+      PRESETS_DATA[c.id] = c.data;
+    });
+  }
+
+  /* Génère une entrée JSON prête à coller dans cw-custom-presets */
+  function exportAsPreset(){
+    var snap = cwSnapshotPreset();
+    if(!snap){ showToast('Aucun modèle chargé.'); return; }
+    var rawId = ((snap.nom || snap.id || 'preset').replace(/\s+/g,'_').replace(/[^A-Za-z0-9_\-]/g,'').substring(0,40)) || ('preset_' + Date.now());
+    var entry = [{
+      id: rawId,
+      label: snap.nom || 'Préset personnalisé',
+      category: 'Personnalisés',
+      data: snap
+    }];
+    var json = JSON.stringify(entry, null, 2);
+    var area = $('cw-preset-export-area');
+    if(area){
+      area.value = json;
+      area.style.display = 'block';
+      area.focus();
+      area.select();
+    }
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(json).then(function(){
+        showToast('✔ JSON copié ! Collez-le dans le bloc cw-custom-presets de la page WordPress.');
+      }).catch(function(){
+        showToast('✔ JSON prêt — sélectionnez et copiez le texte ci-dessous.');
+      });
+    } else {
+      showToast('✔ JSON prêt — sélectionnez et copiez le texte ci-dessous.');
+    }
+  }
+
+
   var _cwEdit = null;  /* { editId, slot:'push'|'pull', pushVal, pullVal, pushNote, pushOct, pullNote, pullOct } */
   var _cwNote = '', _cwOct = '';
   var CW_NOTES_FR = {nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
@@ -1617,6 +1724,7 @@
      INIT
      ═══════════════════════════════════════════════════ */
   function init(){
+    mergeCustomPresets();
     populatePresetSelector();
     initCollapsible();
     refreshSavedList();
@@ -1639,6 +1747,7 @@
     $('cw-save-btn').addEventListener('click', savePlan);
     $('cw-load-btn').addEventListener('click', loadPlan);
     $('cw-delete-btn').addEventListener('click', deletePlan);
+    $('cw-copy-preset-btn').addEventListener('click', exportAsPreset);
 
     // Edit popup events
     $('cw-np-close').addEventListener('click', closeNotePicker);
