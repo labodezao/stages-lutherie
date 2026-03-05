@@ -498,7 +498,7 @@ var STAGE_CONFIG = {
             <span style="color:var(--gold); font-weight:700;">+ 15 %</span>
           </label>
           <div class="hint" style="margin-left:24px;">
-            Surcoût par modèle : 21/8b +423 € · 33/12b +675 € · 33/18b +732 € · 33/24b +938 €
+            Surcoût par modèle pour les anches : 21/8b +423 € · 33/12b +675 € · 33/18b +732 € · 33/24b +938 € + forfait pédagogique de 80 €/ jour de stage
           </div>
         </div>
 </div>
