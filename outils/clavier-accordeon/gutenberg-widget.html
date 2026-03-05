@@ -99,42 +99,32 @@
   </div>
 
 </div>
-  <!-- Edit popup (click on SVG button) -->
-  <div id="cw-edit-popup" class="cw-edit-popup cw-hidden">
-    <div class="cw-ep-title" id="cw-ep-title">Bouton</div>
-    <div class="cw-ep-row">
-      <label class="cw-ep-label">↓ Poussé</label>
-      <input type="text" id="cw-ep-push" class="cw-ep-input" placeholder="ex : Sol4" onfocus="cwShowPicker(this)" autocomplete="off">
-    </div>
-    <div class="cw-ep-row">
-      <label class="cw-ep-label">↑ Tiré</label>
-      <input type="text" id="cw-ep-pull" class="cw-ep-input" placeholder="ex : La4" onfocus="cwShowPicker(this)" autocomplete="off">
-    </div>
-    <div class="cw-ep-actions">
-      <button id="cw-ep-save" class="cw-btn cw-btn-gold cw-btn-sm">✓ Appliquer</button>
-      <button id="cw-ep-cancel" class="cw-btn cw-btn-sm">Annuler</button>
-    </div>
-  </div>
-
-  <!-- Sélecteur de notes (popup partagé) -->
+  <!-- Unified note picker popup (click on SVG button → push/pull tabs + note grid) -->
   <div id="cw-note-picker" class="cw-note-picker cw-hidden">
-    <div class="cw-np-tabs">
-      <button class="cw-np-tab-btn cw-active">🎵 Note</button>
-      <button id="cw-np-close" style="margin-left:auto;padding:3px 8px;border:none;background:none;font-size:.73rem;color:var(--text2);cursor:pointer;">✕</button>
+    <div class="cw-np-header">
+      <span id="cw-np-btn-title" class="cw-np-hd-title"></span>
+      <button id="cw-np-close" class="cw-np-close-btn" title="Fermer">✕</button>
     </div>
-    <div class="cw-np-title">Touches naturelles</div>
+    <div class="cw-np-slot-row">
+      <button id="cw-np-tab-push" class="cw-np-slot-btn cw-np-slot-active">↓ Poussé <span id="cw-np-badge-push" class="cw-np-badge"></span></button>
+      <button id="cw-np-tab-pull" class="cw-np-slot-btn">↑ Tiré <span id="cw-np-badge-pull" class="cw-np-badge"></span></button>
+    </div>
+    <div class="cw-np-section-lbl">Naturelles</div>
     <div class="cw-np-row" id="cw-np-naturals"></div>
-    <div class="cw-np-title" style="margin-top:6px;">Dièses</div>
+    <div class="cw-np-section-lbl">Dièses</div>
     <div class="cw-np-row" id="cw-np-sharps"></div>
-    <div class="cw-np-title" style="margin-top:6px;">Bémols</div>
+    <div class="cw-np-section-lbl">Bémols</div>
     <div class="cw-np-row" id="cw-np-flats"></div>
     <div class="cw-np-octave-row">
       <span class="cw-np-oct-lbl">Octave :</span>
-      <div id="cw-np-octaves" style="display:flex;gap:3px;"></div>
+      <div id="cw-np-octaves"></div>
     </div>
     <div class="cw-np-preview">
       <span id="cw-np-preview-text">— sélectionnez note + octave —</span>
-      <button id="cw-np-clear-btn" class="cw-np-clear">Effacer</button>
+    </div>
+    <div class="cw-np-footer">
+      <button id="cw-np-clear-btn" class="cw-btn cw-btn-sm cw-btn-danger">Effacer</button>
+      <button id="cw-np-apply-btn" class="cw-btn cw-btn-sm cw-btn-gold">✓ Appliquer</button>
     </div>
   </div>
 
@@ -421,75 +411,36 @@
   background: #3a1515;
 }
 
-/* Edit popup */
-.clavier-widget .cw-edit-popup {
-  position: fixed;
-  z-index: 9999;
-  background: var(--card-bg);
-  border: 2px solid var(--gold);
-  border-radius: 8px;
-  padding: 12px 14px 10px;
-  box-shadow: 0 6px 24px rgba(0,0,0,.22);
-  min-width: 210px;
-  font-size: .88rem;
-}
-.clavier-widget .cw-ep-title {
-  font-weight: 700;
-  color: var(--gold);
-  margin-bottom: 8px;
-  font-size: .9rem;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 5px;
-}
-.clavier-widget .cw-ep-row { margin-bottom: 6px; }
-.clavier-widget .cw-ep-label {
-  display: block;
-  font-size: .78rem;
-  color: var(--text2);
-  margin-bottom: 2px;
-}
-.clavier-widget .cw-ep-input {
-  width: 100%;
-  padding: 5px 8px;
-  font-size: .88rem;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  background: var(--card-bg);
-  color: var(--text);
-  font-family: inherit;
-}
-.clavier-widget .cw-ep-input:focus {
-  outline: none;
-  border-color: var(--gold);
-}
-.clavier-widget .cw-ep-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-.clavier-widget .cw-edit-btn { cursor: pointer; }
+/* Edit popup — removed (merged into unified note picker) */
 
-/* ── Note picker ── */
-.clavier-widget .cw-note-picker{position:fixed;z-index:10000;background:var(--card-bg);border:2px solid var(--dark);border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.2);padding:10px 12px;min-width:300px;font-size:.85rem}
-.clavier-widget .cw-np-tabs{display:flex;gap:0;margin-bottom:8px;border-bottom:1.5px solid var(--border)}
-.clavier-widget .cw-np-tab-btn{padding:3px 11px;border:none;background:none;font-family:inherit;font-size:.78rem;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
-.clavier-widget .cw-np-tab-btn.cw-active{color:var(--dark);border-bottom-color:var(--gold)}
-.clavier-widget .cw-np-title{font-size:.68rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
-.clavier-widget .cw-np-row{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:2px}
-.clavier-widget .cw-np-btn{min-width:33px;padding:4px 4px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.77rem;font-weight:700;cursor:pointer;text-align:center;color:var(--text);transition:background .1s,border-color .1s}
-.clavier-widget .cw-np-btn:hover,.clavier-widget .cw-np-btn.cw-sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+/* ── Unified note picker ── */
+.clavier-widget .cw-note-picker{position:fixed;z-index:10000;background:var(--card-bg);border:2px solid var(--gold);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.25);padding:0;min-width:310px;font-size:.85rem;overflow:hidden}
+.clavier-widget .cw-np-header{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(184,134,11,.08)}
+.clavier-widget .cw-np-hd-title{font-weight:700;color:var(--gold);font-size:.88rem;flex:1}
+.clavier-widget .cw-np-close-btn{border:none;background:none;font-size:.85rem;color:var(--text2);cursor:pointer;padding:2px 6px;border-radius:4px;font-family:inherit;line-height:1}
+.clavier-widget .cw-np-close-btn:hover{background:rgba(0,0,0,.08)}
+.clavier-widget .cw-np-slot-row{display:flex;gap:0;border-bottom:2px solid var(--border)}
+.clavier-widget .cw-np-slot-btn{flex:1;padding:7px 8px;border:none;background:var(--card-bg);font-family:inherit;font-size:.82rem;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
+.clavier-widget .cw-np-slot-btn:hover{color:var(--gold)}
+.clavier-widget .cw-np-slot-active{color:var(--dark);border-bottom-color:var(--gold)!important}
+.clavier-widget .cw-np-badge{display:inline-block;background:var(--gold);color:#fff;border-radius:10px;padding:1px 6px;font-size:.72rem;margin-left:4px;min-width:22px;text-align:center;vertical-align:middle}
+.clavier-widget .cw-np-badge:empty{display:none}
+.clavier-widget .cw-np-section-lbl{font-size:.66rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin:8px 12px 4px}
+.clavier-widget .cw-np-row{display:flex;gap:3px;flex-wrap:wrap;padding:0 12px 2px}
+.clavier-widget .cw-np-btn{min-width:34px;padding:5px 4px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;color:var(--text);transition:background .1s,border-color .1s}
+.clavier-widget .cw-np-btn:hover{background:var(--dark);color:#fff;border-color:var(--dark)}
+.clavier-widget .cw-np-btn.cw-sel{background:var(--dark);color:#fff;border-color:var(--dark)}
 .clavier-widget .cw-np-btn.cw-sha{background:#f3f0fa;border-color:#c0b0e0;color:#5a3d8a}
 .clavier-widget .cw-np-btn.cw-sha:hover,.clavier-widget .cw-np-btn.cw-sha.cw-sel{background:#5a3d8a;color:#fff;border-color:#5a3d8a}
 .clavier-widget .cw-np-btn.cw-fla{background:#fdf0ee;border-color:#e0a898;color:#8a3020}
 .clavier-widget .cw-np-btn.cw-fla:hover,.clavier-widget .cw-np-btn.cw-fla.cw-sel{background:#b8312a;color:#fff;border-color:#b8312a}
-.clavier-widget .cw-np-octave-row{display:flex;gap:3px;margin-top:6px;align-items:center}
-.clavier-widget .cw-np-oct-lbl{font-size:.68rem;font-weight:700;color:var(--text2);margin-right:3px}
-.clavier-widget .cw-np-oct-btn{width:28px;height:24px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--text)}
+.clavier-widget .cw-np-octave-row{display:flex;gap:3px;align-items:center;padding:8px 12px 4px}
+.clavier-widget .cw-np-oct-lbl{font-size:.68rem;font-weight:700;color:var(--text2);margin-right:4px}
+.clavier-widget .cw-np-oct-btn{width:30px;height:26px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--text)}
 .clavier-widget .cw-np-oct-btn:hover,.clavier-widget .cw-np-oct-btn.cw-sel{background:var(--dark);color:#fff;border-color:var(--dark)}
-.clavier-widget .cw-np-preview{margin-top:8px;padding:5px 8px;background:var(--fond);border:1px solid var(--border);border-radius:5px;font-size:.83rem;font-weight:700;color:var(--dark);min-height:30px;display:flex;align-items:center;gap:6px}
-.clavier-widget .cw-np-preview span{flex:1}
-.clavier-widget .cw-np-clear{font-size:.7rem;color:#c0392b;cursor:pointer;border:none;background:none;font-family:inherit;padding:0}
-.clavier-widget input.cw-picker-open{border-color:var(--gold)!important;box-shadow:0 0 0 2px rgba(184,134,11,.25)!important}
+.clavier-widget .cw-np-preview{margin:6px 12px 0;padding:5px 8px;background:var(--fond);border:1px solid var(--border);border-radius:5px;font-size:.84rem;font-weight:700;color:var(--dark);min-height:28px}
+.clavier-widget .cw-np-footer{display:flex;gap:6px;padding:8px 12px;border-top:1px solid var(--border);margin-top:6px;background:rgba(0,0,0,.025)}
+.clavier-widget .cw-edit-btn{cursor:pointer}
 /* ── Row offset ── */
 .clavier-widget .cw-off-wrap{display:inline-flex;align-items:center;gap:2px}
 .clavier-widget .cw-off-btn{width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:var(--card-bg);font-size:.85rem;font-weight:700;cursor:pointer;color:var(--text);padding:0;display:flex;align-items:center;justify-content:center}
@@ -543,84 +494,205 @@
     {"id":"SolDoAlts_Gaillard","label":"Sol/Do/Alts Gaillard — 33/18","category":"33/18"}
   ];
 
-  /* ════ NOTE PICKER ════ */
-  const CW_NOTES_FR={nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
-  const CW_OCTAVES=['2','3','4','5','6'];
-  var cwPickerInput=null,cwPickerNote='',cwPickerOctave='';
+  /* ════ UNIFIED NOTE PICKER (click on SVG button) ════ */
+  var _cwEdit = null;  /* { editId, slot:'push'|'pull', pushVal, pullVal, pushNote, pushOct, pullNote, pullOct } */
+  var _cwNote = '', _cwOct = '';
+  var CW_NOTES_FR = {nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
+  var CW_OCTAVES = ['2','3','4','5','6'];
 
-  function initCwPicker(){
-    var N=CW_NOTES_FR;
-    function makeNoteBtn(n, extra){
-      var btn=document.createElement('button');
-      btn.className='cw-np-btn'+(extra?' '+extra:'');
-      btn.textContent=n;
-      btn.addEventListener('click',function(){cwPickerSetNote(n);});
-      return btn;
-    }
-    function makeOctBtn(o){
-      var btn=document.createElement('button');
-      btn.className='cw-np-oct-btn';
-      btn.textContent=o;
-      btn.addEventListener('click',function(){cwPickerSetOctave(o);});
-      return btn;
+  function initNotePicker(){
+    function makeBtn(n, cls){
+      var b = document.createElement('button');
+      b.className = 'cw-np-btn' + (cls ? ' '+cls : '');
+      b.textContent = n;
+      b.addEventListener('click', function(){ cwPickerSetNote(n); });
+      return b;
     }
     function makeBlank(){
-      var sp=document.createElement('span');
-      sp.style.cssText='min-width:33px;display:inline-block';
-      return sp;
+      var s = document.createElement('span');
+      s.style.cssText = 'min-width:34px;display:inline-block';
+      return s;
     }
-    var natC=$('cw-np-naturals'); natC.innerHTML='';
-    N.nat.forEach(function(n){natC.appendChild(makeNoteBtn(n));});
-    var shaC=$('cw-np-sharps'); shaC.innerHTML='';
-    N.sha.forEach(function(n){shaC.appendChild(n?makeNoteBtn(n,'cw-sha'):makeBlank());});
-    var flaC=$('cw-np-flats'); flaC.innerHTML='';
-    N.fla.forEach(function(n){flaC.appendChild(n?makeNoteBtn(n,'cw-fla'):makeBlank());});
-    var octC=$('cw-np-octaves'); octC.innerHTML='';
-    CW_OCTAVES.forEach(function(o){octC.appendChild(makeOctBtn(o));});
+    function makeOctBtn(o){
+      var b = document.createElement('button');
+      b.className = 'cw-np-oct-btn';
+      b.textContent = o;
+      b.addEventListener('click', function(){ cwPickerSetOctave(o); });
+      return b;
+    }
+    var N = CW_NOTES_FR;
+    var natC = $('cw-np-naturals'); natC.innerHTML = '';
+    N.nat.forEach(function(n){ natC.appendChild(makeBtn(n)); });
+    var shaC = $('cw-np-sharps'); shaC.innerHTML = '';
+    N.sha.forEach(function(n){ shaC.appendChild(n ? makeBtn(n,'cw-sha') : makeBlank()); });
+    var flaC = $('cw-np-flats'); flaC.innerHTML = '';
+    N.fla.forEach(function(n){ flaC.appendChild(n ? makeBtn(n,'cw-fla') : makeBlank()); });
+    var octC = $('cw-np-octaves'); octC.innerHTML = '';
+    CW_OCTAVES.forEach(function(o){ octC.appendChild(makeOctBtn(o)); });
   }
-  function cwShowPicker(input){
-    cwPickerInput=input;cwPickerNote='';cwPickerOctave='';
-    var v=input.value.trim();
-    if(v){var m=v.match(/^(.+?)([2-6])$/);if(m){cwPickerNote=m[1];cwPickerOctave=m[2];}else cwPickerNote=v;}
-    cwUpdatePickerHL();cwUpdatePickerPreview();
-    var pk=$('cw-note-picker');pk.classList.remove('cw-hidden');
-    var rect=input.getBoundingClientRect();
-    var pw=pk.offsetWidth||305,ph=pk.offsetHeight||280;
-    var top=rect.bottom+window.scrollY+6,left=rect.left+window.scrollX;
-    if(left+pw>window.innerWidth-10)left=window.innerWidth-pw-10;
-    if(left<8)left=8;
-    if(top+ph>window.scrollY+window.innerHeight-10)top=rect.top+window.scrollY-ph-6;
-    pk.style.top=Math.max(8,top)+'px';pk.style.left=Math.max(8,left)+'px';
-    input.classList.add('cw-picker-open');
+
+  /* Parse "Sol4" → {note:'Sol', oct:'4'} */
+  function parseNoteOct(v){
+    if(!v) return {note:'', oct:''};
+    var m = v.trim().match(/^(.+?)([2-6])$/);
+    return m ? {note:m[1], oct:m[2]} : {note:v.trim(), oct:''};
   }
-  function cwHidePicker(){
+
+  function openNotePicker(editId, evt){
+    if(!currentPreset || !editId) return;
+    var parts = editId.split(':');
+    var btn = {p:'', t:''}, title = '';
+    if(parts[0] === 'rh'){
+      var ri = parseInt(parts[1]), bi = parseInt(parts[2]);
+      var row = (currentPreset.rangees || [])[ri];
+      var rowNotes = ((currentPreset.notes || {}).droite || [])[ri] || [];
+      btn = rowNotes[bi] || {p:'', t:''};
+      title = (row ? row.nom : 'Rangée '+(ri+1)) + ' — Bouton '+(bi+1);
+    } else {
+      var src = parts[0], idx = parseInt(parts[1]);
+      var arr = ((currentPreset.notes || {})[src] || []);
+      btn = arr[idx] || {p:'', t:''};
+      var lbl = src === 'basses' ? 'Basse' : src === 'accords' ? 'Accord' : 'Terzetto';
+      title = lbl + ' '+(idx+1);
+    }
+    var pParsed = parseNoteOct(btn.p || '');
+    var tParsed = parseNoteOct(btn.t || '');
+    _cwEdit = {
+      editId: editId,
+      slot: 'push',
+      pushVal: btn.p || '', pullVal: btn.t || '',
+      pushNote: pParsed.note, pushOct: pParsed.oct,
+      pullNote: tParsed.note, pullOct: tParsed.oct
+    };
+    $('cw-np-btn-title').textContent = title;
+    cwSwitchSlot('push');
+    cwPickerHL();
+    cwPickerUpdateBadges();
+
+    var pk = $('cw-note-picker');
+    pk.classList.remove('cw-hidden');
+    /* Position popup near click but keep in viewport */
+    var pw = pk.offsetWidth || 320, ph = pk.offsetHeight || 340;
+    var x = evt.clientX + 12, y = evt.clientY + 12;
+    if(x + pw > window.innerWidth  - 8) x = evt.clientX - pw - 8;
+    if(y + ph > window.innerHeight - 8) y = evt.clientY - ph - 8;
+    pk.style.left = Math.max(8, x) + 'px';
+    pk.style.top  = Math.max(8, y) + 'px';
+  }
+
+  function closeNotePicker(){
     $('cw-note-picker').classList.add('cw-hidden');
-    if(cwPickerInput){cwPickerInput.classList.remove('cw-picker-open');cwPickerInput=null;}
-    cwPickerNote='';cwPickerOctave='';
+    _cwEdit = null; _cwNote = ''; _cwOct = '';
   }
-  function cwPickerSetNote(n){cwPickerNote=n;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote){if(cwPickerOctave)cwPickerInsert();}}
-  function cwPickerSetOctave(o){cwPickerOctave=o;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote){if(cwPickerOctave)cwPickerInsert();}}
-  function cwPickerInsert(){
-    if(!cwPickerInput)return;
-    var v=cwPickerNote+cwPickerOctave;if(!v)return;
-    cwPickerInput.value=v;
-    cwPickerInput.dispatchEvent(new Event('input',{bubbles:true}));
-    cwPickerInput.dispatchEvent(new Event('change',{bubbles:true}));
-    cwHidePicker();
+
+  function cwSwitchSlot(slot){
+    if(!_cwEdit) return;
+    _cwEdit.slot = slot;
+    if(slot === 'push'){
+      _cwNote = _cwEdit.pushNote; _cwOct = _cwEdit.pushOct;
+    } else {
+      _cwNote = _cwEdit.pullNote; _cwOct = _cwEdit.pullOct;
+    }
+    widget.querySelectorAll('.cw-np-slot-btn').forEach(function(b, i){
+      b.classList.toggle('cw-np-slot-active', (i === 0 ? 'push' : 'pull') === slot);
+    });
+    cwPickerHL();
+    cwPickerUpdatePreview();
   }
+
+  function cwPickerSetNote(n){
+    _cwNote = n;
+    if(_cwEdit){ if(_cwEdit.slot === 'push') _cwEdit.pushNote = n; else _cwEdit.pullNote = n; }
+    cwPickerHL(); cwPickerUpdatePreview();
+    if(_cwNote && _cwOct) cwPickerAutoApplySlot();
+  }
+
+  function cwPickerSetOctave(o){
+    _cwOct = o;
+    if(_cwEdit){ if(_cwEdit.slot === 'push') _cwEdit.pushOct = o; else _cwEdit.pullOct = o; }
+    cwPickerHL(); cwPickerUpdatePreview();
+    if(_cwNote && _cwOct) cwPickerAutoApplySlot();
+  }
+
+  /* Auto-apply current slot and switch to the other slot if it is empty */
+  function cwPickerAutoApplySlot(){
+    if(!_cwEdit) return;
+    var val = _cwNote + _cwOct;
+    if(_cwEdit.slot === 'push'){
+      _cwEdit.pushVal = val;
+      _cwEdit.pushNote = _cwNote; _cwEdit.pushOct = _cwOct;
+      cwPickerUpdateBadges();
+      /* Switch to pull if pull is still empty */
+      if(!_cwEdit.pullVal){ cwSwitchSlot('pull'); return; }
+    } else {
+      _cwEdit.pullVal = val;
+      _cwEdit.pullNote = _cwNote; _cwEdit.pullOct = _cwOct;
+      cwPickerUpdateBadges();
+      /* Switch to push if push is still empty */
+      if(!_cwEdit.pushVal){ cwSwitchSlot('push'); return; }
+    }
+    /* Both slots have a value — apply and close */
+    cwPickerApply();
+  }
+
   function cwPickerClear(){
-    if(!cwPickerInput)return;
-    cwPickerInput.value='';
-    cwPickerInput.dispatchEvent(new Event('input',{bubbles:true}));
-    cwPickerInput.dispatchEvent(new Event('change',{bubbles:true}));
-    cwPickerNote='';cwPickerOctave='';cwUpdatePickerHL();cwUpdatePickerPreview();cwHidePicker();
+    if(!_cwEdit) return;
+    _cwNote = ''; _cwOct = '';
+    if(_cwEdit.slot === 'push'){
+      _cwEdit.pushNote = ''; _cwEdit.pushOct = ''; _cwEdit.pushVal = '';
+    } else {
+      _cwEdit.pullNote = ''; _cwEdit.pullOct = ''; _cwEdit.pullVal = '';
+    }
+    cwPickerHL(); cwPickerUpdatePreview(); cwPickerUpdateBadges();
   }
-  function cwUpdatePickerHL(){
-    widget.querySelectorAll('#cw-np-naturals .cw-np-btn,#cw-np-sharps .cw-np-btn,#cw-np-flats .cw-np-btn').forEach(function(b){b.classList.toggle('cw-sel',b.textContent===cwPickerNote);});
-    widget.querySelectorAll('#cw-np-octaves .cw-np-oct-btn').forEach(function(b){b.classList.toggle('cw-sel',b.textContent===cwPickerOctave);});
+
+  function cwPickerApply(){
+    if(!_cwEdit || !currentPreset) return;
+    /* Use note+oct only when both components are present, otherwise fall back to stored value */
+    var p = (_cwEdit.pushNote && _cwEdit.pushOct) ? (_cwEdit.pushNote + _cwEdit.pushOct) : (_cwEdit.pushVal || '');
+    var t = (_cwEdit.pullNote && _cwEdit.pullOct) ? (_cwEdit.pullNote + _cwEdit.pullOct) : (_cwEdit.pullVal || '');
+    var notes = currentPreset.notes;
+    if(!notes) { notes = {}; currentPreset.notes = notes; }
+    var eid = _cwEdit.editId;
+    var parts2 = eid.split(':');
+    if(parts2[0] === 'rh'){
+      var ri2 = parseInt(parts2[1]), bi2 = parseInt(parts2[2]);
+      if(!notes.droite)          notes.droite          = [];
+      if(!notes.droite[ri2])     notes.droite[ri2]     = [];
+      if(!notes.droite[ri2][bi2])notes.droite[ri2][bi2]= {};
+      notes.droite[ri2][bi2].p = p;
+      notes.droite[ri2][bi2].t = t;
+    } else {
+      var src3 = parts2[0], idx3 = parseInt(parts2[1]);
+      if(!notes[src3])       notes[src3]       = [];
+      if(!notes[src3][idx3]) notes[src3][idx3] = {};
+      notes[src3][idx3].p = p;
+      notes[src3][idx3].t = t;
+    }
+    closeNotePicker();
+    refreshSVG();
+    renderRHTables();
+    renderLHTables();
   }
-  function cwUpdatePickerPreview(){
-    $('cw-np-preview-text').textContent=(cwPickerNote+cwPickerOctave)||'— sélectionnez note + octave —';
+
+  function cwPickerHL(){
+    widget.querySelectorAll('#cw-np-naturals .cw-np-btn, #cw-np-sharps .cw-np-btn, #cw-np-flats .cw-np-btn').forEach(function(b){
+      b.classList.toggle('cw-sel', b.textContent === _cwNote);
+    });
+    widget.querySelectorAll('#cw-np-octaves .cw-np-oct-btn').forEach(function(b){
+      b.classList.toggle('cw-sel', b.textContent === _cwOct);
+    });
+  }
+
+  function cwPickerUpdatePreview(){
+    var txt = (_cwNote + _cwOct) || '— sélectionnez note + octave —';
+    $('cw-np-preview-text').textContent = txt;
+  }
+
+  function cwPickerUpdateBadges(){
+    if(!_cwEdit) return;
+    $('cw-np-badge-push').textContent = _cwEdit.pushVal || '';
+    $('cw-np-badge-pull').textContent = _cwEdit.pullVal || '';
   }
 
   /* ═══════════════════════════════════════════════════
@@ -1157,8 +1229,8 @@
         var btn = btns[bi] || {p:'',t:''};
         html += '<tr>';
         html += '<td class="cw-num">'+(bi+1)+'</td>';
-        html += '<td><input type="text" value="'+escAttr(btn.p||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="p" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
-        html += '<td><input type="text" value="'+escAttr(btn.t||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="t" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
+        html += '<td><input type="text" value="'+escAttr(btn.p||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="p" autocomplete="off"></td>';
+        html += '<td><input type="text" value="'+escAttr(btn.t||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="t" autocomplete="off"></td>';
         html += '</tr>';
       }
       html += '</tbody></table>';
@@ -1185,8 +1257,8 @@
       var b = basses[i] || {p:'',t:''};
       html += '<tr>';
       html += '<td class="cw-num">'+(i+1)+'</td>';
-      html += '<td><input type="text" value="'+escAttr(b.p||'')+'" data-section="basses" data-btn="'+i+'" data-dir="p" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
-      html += '<td><input type="text" value="'+escAttr(b.t||'')+'" data-section="basses" data-btn="'+i+'" data-dir="t" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(b.p||'')+'" data-section="basses" data-btn="'+i+'" data-dir="p" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(b.t||'')+'" data-section="basses" data-btn="'+i+'" data-dir="t" autocomplete="off"></td>';
       html += '</tr>';
     }
     html += '</tbody></table>';
@@ -1199,8 +1271,8 @@
       var a = accords[j] || {p:'',t:''};
       html += '<tr>';
       html += '<td class="cw-num">'+(j+1)+'</td>';
-      html += '<td><input type="text" value="'+escAttr(a.p||'')+'" data-section="accords" data-btn="'+j+'" data-dir="p" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
-      html += '<td><input type="text" value="'+escAttr(a.t||'')+'" data-section="accords" data-btn="'+j+'" data-dir="t" onfocus="cwShowPicker(this)" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(a.p||'')+'" data-section="accords" data-btn="'+j+'" data-dir="p" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(a.t||'')+'" data-section="accords" data-btn="'+j+'" data-dir="t" autocomplete="off"></td>';
       html += '</tr>';
     }
     html += '</tbody></table>';
@@ -1506,87 +1578,17 @@
 
 
   /* ═══════════════════════════════════════════════════
-     SVG CLICK-TO-EDIT (popup édition poussé / tiré)
+     SVG CLICK-TO-EDIT — handled by openNotePicker()
      ═══════════════════════════════════════════════════ */
-  var _editCurrent = null;
 
   function bindSVGEditing(){
     if(!widget) return;
     widget.querySelectorAll('.cw-edit-btn').forEach(function(g){
       g.addEventListener('click', function(e){
         e.stopPropagation();
-        openEditPopup(g.getAttribute('data-edit'), e);
+        openNotePicker(g.getAttribute('data-edit'), e);
       });
     });
-  }
-
-  function openEditPopup(editId, e){
-    if(!currentPreset || !editId) return;
-    var parts = editId.split(':');
-    var btn = null, title = '';
-    if(parts[0] === 'rh'){
-      var ri = parseInt(parts[1]), bi = parseInt(parts[2]);
-      var row = (currentPreset.rangees || [])[ri];
-      var rowNotes = ((currentPreset.notes || {}).droite || [])[ri] || [];
-      btn = rowNotes[bi] || {p:'', t:''};
-      title = (row ? row.nom : 'Rangée '+(ri+1)) + ' — Bouton '+(bi+1);
-      _editCurrent = {src:'rh', ri:ri, bi:bi};
-    } else {
-      var src = parts[0];
-      var idx = parseInt(parts[1]);
-      var arr = ((currentPreset.notes || {})[src] || []);
-      btn = arr[idx] || {p:'', t:''};
-      var srcLabel = src === 'basses' ? 'Basse' : src === 'accords' ? 'Accord' : 'Terzetto';
-      title = srcLabel + ' '+(idx+1);
-      _editCurrent = {src:src, idx:idx};
-    }
-    $('cw-ep-title').textContent = title;
-    $('cw-ep-push').value = btn.p || '';
-    $('cw-ep-pull').value = btn.t || '';
-    var popup = $('cw-edit-popup');
-    popup.classList.remove('cw-hidden');
-    var pw = popup.offsetWidth || 220, ph = popup.offsetHeight || 160;
-    var left = Math.min(e.clientX + 8, window.innerWidth  - pw - 8);
-    var top  = Math.min(e.clientY + 8, window.innerHeight - ph - 8);
-    popup.style.left = Math.max(8, left) + 'px';
-    popup.style.top  = Math.max(8, top)  + 'px';
-    $('cw-ep-push').focus();
-    $('cw-ep-push').select();
-  }
-
-  function closeEditPopup(){
-    $('cw-edit-popup').classList.add('cw-hidden');
-    _editCurrent = null;
-  }
-
-  function saveEditPopup(){
-    if(!_editCurrent || !currentPreset) return;
-    var p = $('cw-ep-push').value.trim();
-    var t = $('cw-ep-pull').value.trim();
-    var notes = currentPreset.notes || (currentPreset.notes = {});
-    if(_editCurrent.src === 'rh'){
-      var ri = _editCurrent.ri, bi = _editCurrent.bi;
-      if(!notes.droite)       notes.droite       = [];
-      if(!notes.droite[ri])   notes.droite[ri]   = [];
-      if(!notes.droite[ri][bi]) notes.droite[ri][bi] = {};
-      notes.droite[ri][bi].p = p;
-      notes.droite[ri][bi].t = t;
-    } else {
-      var src2 = _editCurrent.src, idx2 = _editCurrent.idx;
-      if(!notes[src2])        notes[src2]        = [];
-      if(!notes[src2][idx2])  notes[src2][idx2]  = {};
-      notes[src2][idx2].p = p;
-      notes[src2][idx2].t = t;
-    }
-    closeEditPopup();
-    currentData = toData(currentPreset);
-    currentData.nomJoueur = $('cw-nom-joueur').value.trim();
-    var nomI = $('cw-nom-instrument').value.trim();
-    if(nomI) currentData.nomInstrument = nomI;
-    try {
-      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
-      bindSVGEditing();
-    } catch(e2){ /* ignore */ }
   }
 
   /* ═══════════════════════════════════════════════════
@@ -1614,29 +1616,24 @@
     $('cw-delete-btn').addEventListener('click', deletePlan);
 
     // Edit popup events
-    $('cw-ep-save').addEventListener('click', saveEditPopup);
-    $('cw-ep-cancel').addEventListener('click', closeEditPopup);
-    [$('cw-ep-push'), $('cw-ep-pull')].forEach(function(inp){
-      inp.addEventListener('keydown', function(ev){
-        if(ev.key === 'Enter')  saveEditPopup();
-        if(ev.key === 'Escape') closeEditPopup();
-      });
-    });
+    $('cw-np-close').addEventListener('click', closeNotePicker);
+    $('cw-np-clear-btn').addEventListener('click', cwPickerClear);
+    $('cw-np-apply-btn').addEventListener('click', cwPickerApply);
+    $('cw-np-tab-push').addEventListener('click', function(){ if(_cwEdit) cwSwitchSlot('push'); });
+    $('cw-np-tab-pull').addEventListener('click', function(){ if(_cwEdit) cwSwitchSlot('pull'); });
     document.addEventListener('click', function(ev){
-      var popup = $('cw-edit-popup');
-      if(popup){ if(!popup.classList.contains('cw-hidden')){ if(!popup.contains(ev.target)){
-        closeEditPopup();
-      }}}
       var picker = $('cw-note-picker');
-      if(picker){ if(!picker.classList.contains('cw-hidden')){ if(!picker.contains(ev.target)){
-        if(ev.target.getAttribute){ if(!ev.target.getAttribute('onfocus')){
-          cwHidePicker();
-        }}
-      }}}
+      if(picker){
+        if(!picker.classList.contains('cw-hidden')){
+          if(!picker.contains(ev.target)){
+            if(!ev.target.closest('.cw-edit-btn')){
+              closeNotePicker();
+            }
+          }
+        }
+      }
     });
-    initCwPicker();
-    var npClose=$('cw-np-close'); if(npClose) npClose.addEventListener('click',cwHidePicker);
-    var npClear=$('cw-np-clear-btn'); if(npClear) npClear.addEventListener('click',cwPickerClear);
+    initNotePicker();
   }
 
   // Run init when DOM is ready
