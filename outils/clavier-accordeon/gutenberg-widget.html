@@ -31,10 +31,14 @@
        }
 
      → Pour obtenir le JSON "data" d'un nouveau préset :
-       1. Chargez ou configurez un clavier dans l'outil
-       2. Cliquez "📋 Copier comme préset" (section Sauvegarde)
-       3. Collez le JSON ici (remplacez [] par le tableau obtenu)
-       4. Sauvegardez la page WordPress
+       1. Accédez au widget avec #cw-admin dans l'URL (ex: /votre-page/#cw-admin)
+       2. Chargez ou configurez un clavier dans l'outil
+       3. Cliquez "📋 Copier comme préset" (section Sauvegarde)
+       4. Collez le JSON ici (remplacez [] par le tableau obtenu)
+       5. Sauvegardez la page WordPress
+
+     Mode admin : accessible via URL#cw-admin ou attribut data-cw-admin sur <div class="clavier-widget">.
+     Le bloc admin (bouton "Copier comme préset") est invisible aux stagiaires par défaut.
 
      Laissez [] pour n'utiliser que les modèles intégrés.
      ════════════════════════════════════════════════════════ -->
@@ -115,11 +119,13 @@
         <button id="cw-export-json-btn" class="cw-btn cw-btn-sm cw-btn-gold">⬇ Exporter JSON</button>
         <input type="file" id="cw-file-input" accept=".json" style="display:none">
       </div>
-      <div class="cw-row" style="margin-top:6px">
-        <button id="cw-copy-preset-btn" class="cw-btn cw-btn-sm cw-btn-gold">📋 Copier comme préset</button>
-        <span class="cw-hint" style="font-size:0.78rem;color:var(--text2);display:block;margin-top:3px">Admin : collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
+      <div id="cw-admin-block" class="cw-admin-block">
+        <div class="cw-row" style="margin-top:6px">
+          <button id="cw-copy-preset-btn" class="cw-btn cw-btn-sm cw-btn-gold">📋 Copier comme préset</button>
+          <span class="cw-hint" style="font-size:0.78rem;color:var(--text2);display:block;margin-top:3px">Admin : collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
+        </div>
+        <textarea id="cw-preset-export-area" class="cw-textarea-export" placeholder="JSON du préset (copiez puis collez dans la page WordPress)…"></textarea>
       </div>
-      <textarea id="cw-preset-export-area" class="cw-textarea-export" placeholder="JSON du préset (copiez puis collez dans la page WordPress)…"></textarea>
       <div class="cw-row" style="margin-top:8px">
         <label class="cw-label">Plans sauvegardés</label>
         <select id="cw-saved-sel" class="cw-select">
@@ -460,6 +466,9 @@
 .clavier-widget.cw-dark .cw-btn-danger:hover {
   background: #3a1515;
 }
+
+/* Admin block — hidden by default, shown via #cw-admin hash or data-cw-admin attr */
+.clavier-widget .cw-admin-block { display: none; }
 
 /* Edit popup — removed (merged into unified note picker) */
 /* ── Unified note picker ── */
@@ -1728,6 +1737,15 @@
     populatePresetSelector();
     initCollapsible();
     refreshSavedList();
+
+    // Admin block: visible only when URL hash contains #cw-admin or widget has data-cw-admin attr
+    var widget = document.querySelector('.clavier-widget');
+    var adminBlock = $('cw-admin-block');
+    if(adminBlock){
+      var isAdmin = window.location.hash === '#cw-admin';
+      if(!isAdmin){ isAdmin = widget ? widget.hasAttribute('data-cw-admin') : false; }
+      if(isAdmin){ adminBlock.style.display = 'block'; }
+    }
 
     // Event listeners
     $('cw-preset-sel').addEventListener('change', function(){
