@@ -275,7 +275,7 @@ var STAGE_CONFIG = {
      *  Each layer is a full-frame div.  JS loads a pre-rendered PNG variant
      *  matching the selected option (wood species, colour…).
      *  URL pattern: ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
-     *  e.g. img/apercu/caisse-md-noyer.png
+     *  e.g. img/apercu/caisse-noyer.png
      *
      *  Fallback: solid background-color shown until image files are uploaded.
      *  Layers gain class 'has-img' when their PNG loads successfully.
@@ -741,20 +741,17 @@ var STAGE_CONFIG = {
             ════════════════════════════
             Each layer is a full-frame div. JS builds the image URL from the
             selected option: ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
-            e.g. img/apercu/caisse-md-noyer.png
+            e.g. img/apercu/caisse-noyer.png
 
             Naming convention (transparent PNG, same frame for all):
               img/apercu/base.png                 — optional backdrop
-              img/apercu/caisse-md-noyer.png      — RH body, walnut
-              img/apercu/caisse-md-erable.png     — RH body, maple
-              img/apercu/caisse-md-cerisier.png   — RH body, cherry
+              img/apercu/caisse-noyer.png         — body, walnut  (etc. erable/cerisier)
               img/apercu/grille-noyer.png         — grille, walnut  (etc.)
               img/apercu/boutons-nacrine-noire.png
               img/apercu/boutons-nacrine-blanche.png
               img/apercu/boutons-noyer.png
               img/apercu/boutons-erable.png
               img/apercu/soufflet-bleu.png        — bellows, blue   (etc.)
-              img/apercu/caisse-mg-noyer.png      — LH body, walnut (etc.)
               img/apercu/sangles-bleu.png         — straps, blue    (etc.)
 
             Before images are available: indicative flat color zones.
@@ -764,22 +761,17 @@ var STAGE_CONFIG = {
           <div class="acc-layer" id="accBase"
                data-img-base="base"></div>
 
-          <!-- Layer 1: LH body — boisClavier -->
-          <div class="acc-layer no-img" id="accCaisseMG"
-               data-img-base="caisse-mg"
-               style="background-color:#8B6F47;clip-path:polygon(5% 8%,30% 8%,30% 92%,5% 92%)"></div>
+          <!-- Layer 1: Body — boisClavier -->
+          <div class="acc-layer no-img" id="accCaisse"
+               data-img-base="caisse"
+               style="background-color:#8B6F47;clip-path:polygon(5% 8%,95% 8%,95% 92%,5% 92%)"></div>
 
           <!-- Layer 2: Bellows — couleurSoufflet -->
           <div class="acc-layer no-img" id="accSoufflet"
                data-img-base="soufflet"
                style="background-color:#2e6cb5;clip-path:polygon(30% 8%,55% 8%,55% 92%,30% 92%)"></div>
 
-          <!-- Layer 3: RH body — boisClavier -->
-          <div class="acc-layer no-img" id="accCaisseMD"
-               data-img-base="caisse-md"
-               style="background-color:#8B6F47;clip-path:polygon(55% 8%,95% 8%,95% 92%,55% 92%)"></div>
-
-          <!-- Layer 4: Grille — boisGrille -->
+          <!-- Layer 3: Grille — boisClavier -->
           <div class="acc-layer no-img" id="accGrille"
                data-img-base="grille"
                style="background-color:#A0845C;clip-path:polygon(58% 12%,92% 12%,92% 42%,58% 42%)"></div>
@@ -1644,7 +1636,7 @@ var buildSVG_PlanLite = (function () {
   /* ── Aperçu accordéon — calques Nano Banana ─────────────────────────────
    * Chaque calque charge son PNG selon l'option choisie.
    * Convention : ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
-   * ex : img/apercu/caisse-md-noyer.png
+   * ex : img/apercu/caisse-noyer.png
    *
    * Fallback : background-color visible si le PNG n'existe pas encore.
    */
@@ -1712,16 +1704,14 @@ var buildSVG_PlanLite = (function () {
 
   function updateAccordionPreview() {
     var boisClavier = document.getElementById('boisClavier').value;
-    var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
     var boutons     = document.getElementById('boutonsMD').value;
     var soufflet    = getRadioVal('couleurSoufflet');
     var sangles     = document.getElementById('couleurSangles').value;
 
-    setLayerImage(document.getElementById('accCaisseMD'),  WOOD_COLORS,    boisClavier);
-    setLayerImage(document.getElementById('accGrille'),    WOOD_COLORS,    boisGrille);
+    setLayerImage(document.getElementById('accCaisse'),    WOOD_COLORS,    boisClavier);
+    setLayerImage(document.getElementById('accGrille'),    WOOD_COLORS,    boisClavier);
     setLayerImage(document.getElementById('accBoutons'),   BUTTON_COLORS,  boutons);
     setLayerImage(document.getElementById('accSoufflet'),  BELLOWS_COLORS, soufflet);
-    setLayerImage(document.getElementById('accCaisseMG'),  WOOD_COLORS,    boisClavier);
     setLayerImage(document.getElementById('accSangles'),   STRAP_COLORS,   sangles);
   }
 

@@ -1319,7 +1319,8 @@
     if(basses.length||accords.length){
       lines.push('','MAIN GAUCHE','──────────────────────────────────');
       if(basses.length){
-        var lhOff=(pr.lhRows ? (pr.lhRows[0] ? pr.lhRows[0].offset : 0) : 0)?(' (décalage '+(pr.lhRows[0].offset>0?'+':'')+pr.lhRows[0].offset+')'):'';
+        var _lhR0=pr.lhRows?pr.lhRows[0]:null,_lhO=_lhR0?(_lhR0.offset||0):0;
+        var lhOff=_lhO?(' (décalage '+(_lhO>0?'+':'')+_lhO+')'):'';
         lines.push('  Basses'+lhOff);
         basses.forEach(function(b,i){lines.push('    '+pad(i+1,2)+'.  ↓ '+pad(b.p||'–',8)+'  ↑ '+(b.t||'–'));});
       }
