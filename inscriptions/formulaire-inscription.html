@@ -271,36 +271,31 @@ var STAGE_CONFIG = {
       border: 1px solid #E2D9CF;
       overflow: hidden;
     }
+    /* ── Accordion photo layer system — Nano Banana ──────────────────────
+     *  Each layer is a full-frame div.  JS loads a pre-rendered PNG variant
+     *  matching the selected option (wood species, colour…).
+     *  URL pattern: ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
+     *  e.g. img/apercu/caisse-md-noyer.png
+     *
+     *  Fallback: solid background-color shown until image files are uploaded.
+     *  Layers gain class 'has-img' when their PNG loads successfully.
+     * ────────────────────────────────────────────────────────────────── */
     .accordion-preview-wrap .acc-layer {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      transition: opacity 0.3s ease;
+      transition: background-image 0s, background-color 0.25s ease;
     }
-    /* SVG placeholder fallback layers */
-    .accordion-preview-wrap .acc-placeholder {
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Schematic fallback — clip-path shapes visible before PNGs are uploaded */
+    .accordion-preview-wrap .acc-layer.no-img {
       border-radius: 4px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: rgba(255,255,255,.85);
-      text-shadow: 0 1px 2px rgba(0,0,0,.3);
-      transition: background-color 0.3s ease;
     }
-    .acc-layer-label {
-      position: absolute;
-      bottom: 3px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.55rem;
-      color: rgba(255,255,255,.5);
-      white-space: nowrap;
-      pointer-events: none;
+    /* Once the real image loads, expand to full frame */
+    .accordion-preview-wrap .acc-layer.has-img {
+      clip-path: none !important;
+      background-color: transparent !important;
     }
     .accordion-preview-hint {
       text-align: center;
@@ -742,67 +737,69 @@ var STAGE_CONFIG = {
 <div class="insc-section-body">
 <div class="accordion-preview-wrap" id="accordionPreview">
           <!--
-            Image Layer System — each layer is a positioned image that
-            changes based on selected options. Replace placeholder
-            backgrounds with actual image URLs when available.
+            CALQUES PHOTO — Nano Banana
+            ════════════════════════════
+            Chaque calque est un <div class="acc-layer"> affiché en plein cadre.
+            JS construit l'URL de l'image selon l'option sélectionnée :
+              ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
+            ex : img/apercu/caisse-md-noyer.png
 
-            To add real images:
-            1. Upload images to WordPress Media Library (or /inscriptions/img/)
-            2. Replace the style="background:..." with
-               style="background-image:url('img/caisse-md-noyer.png');"
-            3. Each option value maps to an image variant.
+            Convention de nommage (PNG transparent, même cadre pour tous) :
+              img/apercu/base.png                 — fond optionnel
+              img/apercu/caisse-md-noyer.png      — corps MD noyer
+              img/apercu/caisse-md-erable.png     — corps MD érable
+              img/apercu/caisse-md-cerisier.png   — corps MD cerisier
+              img/apercu/grille-noyer.png         — grille noyer  (idem erable/cerisier)
+              img/apercu/boutons-nacrine-noire.png
+              img/apercu/boutons-nacrine-blanche.png
+              img/apercu/boutons-noyer.png
+              img/apercu/boutons-erable.png
+              img/apercu/soufflet-bleu.png        — soufflet bleu (idem rouge/orange/noir)
+              img/apercu/caisse-mg-noyer.png      — corps MG  (idem erable/cerisier)
+              img/apercu/sangles-bleu.png         — sangles bleu (idem rouge/cuir-nat/noir)
 
-            Naming convention for image files:
-              caisse-md-{noyer|erable|cerisier}.png
-              grille-{noyer|erable|cerisier}.png
-              boutons-{nacrine-noire|nacrine-blanche|noyer|erable}.png
-              soufflet-{bleu|rouge|orange|noir}.png
-              caisse-mg-{8b|12b|18b|24b}.png
-              sangles-{bleu|rouge|cuir-nat|noir}.png
+            Avant que les images soient disponibles : zones colorées indicatives.
           -->
 
-          <!-- Layer 0: Caisse MD (wood body right side) -->
-          <div class="acc-placeholder" id="accCaisseMD"
-               style="top:8%;left:55%;width:40%;height:84%;border-radius:8px;background:#8B6F47;">
-            <span>Caisse MD</span>
-            <span class="acc-layer-label">boisClavier</span>
-          </div>
-          <!-- Layer 1: Grille + caisse secondary wood -->
-          <div class="acc-placeholder" id="accGrille"
-               style="top:12%;left:58%;width:34%;height:30%;border-radius:6px;background:#A0845C;">
-            <span>Grille</span>
-            <span class="acc-layer-label">boisGrille</span>
-          </div>
-          <!-- Layer 2: Boutons MD -->
-          <div class="acc-placeholder" id="accBoutons"
-               style="top:16%;left:62%;width:26%;height:22%;border-radius:4px;background:#333;">
-            <span>Boutons</span>
-            <span class="acc-layer-label">boutonsMD</span>
-          </div>
-          <!-- Layer 3: Soufflet (center) -->
-          <div class="acc-placeholder" id="accSoufflet"
-               style="top:8%;left:30%;width:25%;height:84%;border-radius:4px;background:#2e6cb5;">
-            <span>Soufflet</span>
-            <span class="acc-layer-label">couleurSoufflet</span>
-          </div>
-          <!-- Layer 4: Caisse MG (left side) -->
-          <div class="acc-placeholder" id="accCaisseMG"
-               style="top:8%;left:5%;width:25%;height:84%;border-radius:8px;background:#8B6F47;">
-            <span>Caisse MG</span>
-            <span class="acc-layer-label">basses</span>
-          </div>
-          <!-- Layer 5: Sangles -->
-          <div class="acc-placeholder" id="accSangles"
-               style="top:3%;left:60%;width:8%;height:94%;border-radius:3px;background:#2e6cb5;opacity:.7;">
-            <span style="font-size:.5rem;">Sangles</span>
-            <span class="acc-layer-label">sangles</span>
-          </div>
+          <!-- Calque 0 : fond de référence (optionnel) -->
+          <div class="acc-layer" id="accBase"
+               data-img-base="base"></div>
+
+          <!-- Calque 1 : Corps MG — boisClavier -->
+          <div class="acc-layer no-img" id="accCaisseMG"
+               data-img-base="caisse-mg"
+               style="background-color:#8B6F47;clip-path:polygon(5% 8%,30% 8%,30% 92%,5% 92%)"></div>
+
+          <!-- Calque 2 : Soufflet — couleurSoufflet -->
+          <div class="acc-layer no-img" id="accSoufflet"
+               data-img-base="soufflet"
+               style="background-color:#2e6cb5;clip-path:polygon(30% 8%,55% 8%,55% 92%,30% 92%)"></div>
+
+          <!-- Calque 3 : Corps MD — boisClavier -->
+          <div class="acc-layer no-img" id="accCaisseMD"
+               data-img-base="caisse-md"
+               style="background-color:#8B6F47;clip-path:polygon(55% 8%,95% 8%,95% 92%,55% 92%)"></div>
+
+          <!-- Calque 4 : Grille — boisGrille -->
+          <div class="acc-layer no-img" id="accGrille"
+               data-img-base="grille"
+               style="background-color:#A0845C;clip-path:polygon(58% 12%,92% 12%,92% 42%,58% 42%)"></div>
+
+          <!-- Calque 5 : Boutons MD — boutonsMD -->
+          <div class="acc-layer no-img" id="accBoutons"
+               data-img-base="boutons"
+               style="background-color:#333;clip-path:polygon(62% 16%,88% 16%,88% 38%,62% 38%)"></div>
+
+          <!-- Calque 6 : Sangles — couleurSangles -->
+          <div class="acc-layer no-img" id="accSangles"
+               data-img-base="sangles"
+               style="background-color:#2e6cb5;opacity:.75;clip-path:polygon(60% 3%,68% 3%,68% 97%,60% 97%)"></div>
         </div>
 </div>
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#888"},"spacing":{"padding":{"top":"0","bottom":"16px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.88rem"}}} -->
-<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">L'aperçu se met à jour automatiquement selon vos choix ci-dessus.<br><em>Images définitives à venir — zones de couleur indicatives.</em></p>
+<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">L'aperçu se met à jour automatiquement selon vos choix ci-dessus.<br><em>Les photos réelles s'afficheront dès que les calques PNG sont déposés dans <code>img/apercu/</code>.</em></p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -1648,52 +1645,88 @@ var buildSVG_PlanLite = (function () {
   }
 
   /* ── Accordion Visual Preview ── */
-  /*
-   * Image Layer System for accordion preview compositor.
+  /* ── Aperçu accordéon — calques Nano Banana ─────────────────────────────
+   * Chaque calque charge son PNG selon l'option choisie.
+   * Convention : ACC_IMG_BASE + data-img-base + '-' + slug + '.png'
+   * ex : img/apercu/caisse-md-noyer.png
    *
-   * Currently uses colored placeholder rectangles. To use real images:
-   * 1. Upload layered PNG images to inscriptions/img/ (or WordPress media)
-   * 2. Define the mapping below per option value
-   * 3. Each layer swaps background-image instead of background-color
-   *
-   * Expected image structure (transparent PNGs, same aspect ratio):
-   *   img/caisse-md-noyer.png, img/caisse-md-erable.png, img/caisse-md-cerisier.png
-   *   img/grille-noyer.png, img/grille-erable.png, img/grille-cerisier.png
-   *   img/boutons-nacrine-noire.png, img/boutons-nacrine-blanche.png, ...
-   *   img/soufflet-bleu.png, img/soufflet-rouge.png, img/soufflet-orange.png, img/soufflet-noir.png
-   *   img/caisse-mg-8b.png, img/caisse-mg-12b.png, img/caisse-mg-18b.png, img/caisse-mg-24b.png
-   *   img/sangles-bleu.png, img/sangles-rouge.png, img/sangles-cuir-nat.png, img/sangles-noir.png
+   * Fallback : background-color visible si le PNG n'existe pas encore.
    */
-  var WOOD_COLORS = { 'Noyer': '#5C3D2E', '\u00c9rable': '#C8A96E', 'Cerisier': '#8B4513' };
-  var BUTTON_COLORS = { 'Nacrine noire': '#1a1a1a', 'Nacrine blanche': '#F5F0E8', 'Noyer': '#6B4226', 'Erable': '#C8A96E' };
-  var BELLOWS_COLORS = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Orange': '#e67e22', 'Noir': '#222' };
-  var STRAP_COLORS = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Cuir Nat.': '#B5885A', 'Noir': '#222' };
 
-  /* To switch to real images, replace this function body:
-   *   el.style.backgroundImage = 'url(img/' + prefix + '-' + safeVal + '.png)';
-   *   el.style.backgroundColor = 'transparent';
-   */
-  function setLayerColor(el, colorMap, value) {
-    if (value) {
-      if (colorMap[value]) {
-        el.style.backgroundColor = colorMap[value];
+  var ACC_IMG_BASE = 'img/apercu/';
+
+  /* Correspondance valeur option → slug fichier image.
+   * Note : '\u00c9rable' (Érable, avec accent) = bois du clavier/grille.
+   *        'Erable' (sans accent) = valeur du champ boutonsMD. */
+  var VALUE_TO_SLUG = {
+    'Noyer'          : 'noyer',
+    '\u00c9rable'    : 'erable',
+    'Cerisier'       : 'cerisier',
+    'Nacrine noire'  : 'nacrine-noire',
+    'Nacrine blanche': 'nacrine-blanche',
+    'Erable'         : 'erable',
+    'Bleu'           : 'bleu',
+    'Rouge'          : 'rouge',
+    'Orange'         : 'orange',
+    'Noir'           : 'noir',
+    'Cuir Nat.'      : 'cuir-nat'
+  };
+
+  /* Couleurs de fallback (affichées avant que les PNG soient disponibles) */
+  var WOOD_COLORS    = { 'Noyer': '#5C3D2E', '\u00c9rable': '#C8A96E', 'Cerisier': '#8B4513' };
+  var BUTTON_COLORS  = { 'Nacrine noire': '#1a1a1a', 'Nacrine blanche': '#F5F0E8', 'Noyer': '#6B4226', 'Erable': '#C8A96E' };
+  var BELLOWS_COLORS = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Orange': '#e67e22', 'Noir': '#222' };
+  var STRAP_COLORS   = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Cuir Nat.': '#B5885A', 'Noir': '#222' };
+
+  /* setLayerImage: met à jour un calque selon la valeur de l'option.
+   * - Charge le PNG correspondant (probe async — si absent, background-color visible)
+   * - Classe has-img ajoutée quand l'image est disponible (désactive clip-path) */
+  function setLayerImage(el, colorMap, value) {
+    if (el) {
+      if (value) {
+        /* Toujours appliquer la couleur de fallback */
+        if (colorMap) {
+          if (colorMap[value]) {
+            el.style.backgroundColor = colorMap[value];
+          }
+        }
+        /* Construire l'URL et tenter le chargement */
+        var base = el.getAttribute('data-img-base');
+        var slug = VALUE_TO_SLUG[value];
+        if (base) {
+          if (slug) {
+            var src = ACC_IMG_BASE + base + '-' + slug + '.png';
+            var probe = new Image();
+            probe.onload = function() {
+              el.style.backgroundImage = 'url(' + src + ')';
+              el.classList.add('has-img');
+              el.classList.remove('no-img');
+            };
+            probe.onerror = function() {
+              el.style.backgroundImage = '';
+              el.classList.remove('has-img');
+              el.classList.add('no-img');
+            };
+            probe.src = src;
+          }
+        }
       }
     }
   }
 
   function updateAccordionPreview() {
     var boisClavier = document.getElementById('boisClavier').value;
-    var boisGrille = document.getElementById('boisGrille').value || boisClavier;
-    var boutons = document.getElementById('boutonsMD').value;
-    var soufflet = getRadioVal('couleurSoufflet');
-    var sangles = document.getElementById('couleurSangles').value;
+    var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
+    var boutons     = document.getElementById('boutonsMD').value;
+    var soufflet    = getRadioVal('couleurSoufflet');
+    var sangles     = document.getElementById('couleurSangles').value;
 
-    setLayerColor(document.getElementById('accCaisseMD'), WOOD_COLORS, boisClavier);
-    setLayerColor(document.getElementById('accGrille'), WOOD_COLORS, boisGrille);
-    setLayerColor(document.getElementById('accBoutons'), BUTTON_COLORS, boutons);
-    setLayerColor(document.getElementById('accSoufflet'), BELLOWS_COLORS, soufflet);
-    setLayerColor(document.getElementById('accCaisseMG'), WOOD_COLORS, boisClavier);
-    setLayerColor(document.getElementById('accSangles'), STRAP_COLORS, sangles);
+    setLayerImage(document.getElementById('accCaisseMD'),  WOOD_COLORS,    boisClavier);
+    setLayerImage(document.getElementById('accGrille'),    WOOD_COLORS,    boisGrille);
+    setLayerImage(document.getElementById('accBoutons'),   BUTTON_COLORS,  boutons);
+    setLayerImage(document.getElementById('accSoufflet'),  BELLOWS_COLORS, soufflet);
+    setLayerImage(document.getElementById('accCaisseMG'),  WOOD_COLORS,    boisClavier);
+    setLayerImage(document.getElementById('accSangles'),   STRAP_COLORS,   sangles);
   }
 
   /* Listen on all inputs */
