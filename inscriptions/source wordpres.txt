@@ -18,12 +18,12 @@
 	<meta property="og:url" content="https://ewendaviau.com/inscriptions-stages/" class="yoast-seo-meta-tag" />
 	<meta property="og:site_name" content="Ewen d&#039;Aviau, créateur d&#039;Instruments sur mesure" class="yoast-seo-meta-tag" />
 	<meta property="article:publisher" content="https://www.facebook.com/accordeons.ewendaviau/" class="yoast-seo-meta-tag" />
-	<meta property="article:modified_time" content="2026-03-05T11:00:54+00:00" class="yoast-seo-meta-tag" />
+	<meta property="article:modified_time" content="2026-03-05T11:07:42+00:00" class="yoast-seo-meta-tag" />
 	<meta property="og:image" content="https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg" class="yoast-seo-meta-tag" />
 	<meta name="twitter:card" content="summary_large_image" class="yoast-seo-meta-tag" />
 	<meta name="twitter:label1" content="Durée de lecture estimée" class="yoast-seo-meta-tag" />
 	<meta name="twitter:data1" content="4 minutes" class="yoast-seo-meta-tag" />
-	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://ewendaviau.com/inscriptions-stages/","url":"https://ewendaviau.com/inscriptions-stages/","name":"Inscriptions stages - Ewen d&#039;Aviau, créateur d&#039;Instruments sur mesure","isPartOf":{"@id":"https://ewendaviau.com/#website"},"primaryImageOfPage":{"@id":"https://ewendaviau.com/inscriptions-stages/#primaryimage"},"image":{"@id":"https://ewendaviau.com/inscriptions-stages/#primaryimage"},"thumbnailUrl":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","datePublished":"2026-03-04T13:03:49+00:00","dateModified":"2026-03-05T11:00:54+00:00","breadcrumb":{"@id":"https://ewendaviau.com/inscriptions-stages/#breadcrumb"},"inLanguage":"fr-FR","potentialAction":[{"@type":"ReadAction","target":["https://ewendaviau.com/inscriptions-stages/"]}]},{"@type":"ImageObject","inLanguage":"fr-FR","@id":"https://ewendaviau.com/inscriptions-stages/#primaryimage","url":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","contentUrl":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","width":1920,"height":2560},{"@type":"BreadcrumbList","@id":"https://ewendaviau.com/inscriptions-stages/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ewendaviau.com/"},{"@type":"ListItem","position":2,"name":"Inscriptions stages"}]},{"@type":"WebSite","@id":"https://ewendaviau.com/#website","url":"https://ewendaviau.com/","name":"Ewen d'Aviau, créateur d'Instruments sur mesure","description":"Des instruments de musique pour tous !","publisher":{"@id":"https://ewendaviau.com/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://ewendaviau.com/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"fr-FR"},{"@type":"Organization","@id":"https://ewendaviau.com/#organization","name":"Ewen d'Aviau, créateur d'Instruments sur mesure","url":"https://ewendaviau.com/","logo":{"@type":"ImageObject","inLanguage":"fr-FR","@id":"https://ewendaviau.com/#/schema/logo/image/","url":"https://ewendaviau.com/wp-content/uploads/2015/08/logo-Copie.png","contentUrl":"https://ewendaviau.com/wp-content/uploads/2015/08/logo-Copie.png","width":373,"height":366,"caption":"Ewen d'Aviau, créateur d'Instruments sur mesure"},"image":{"@id":"https://ewendaviau.com/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/accordeons.ewendaviau/"]}]}</script>
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://ewendaviau.com/inscriptions-stages/","url":"https://ewendaviau.com/inscriptions-stages/","name":"Inscriptions stages - Ewen d&#039;Aviau, créateur d&#039;Instruments sur mesure","isPartOf":{"@id":"https://ewendaviau.com/#website"},"primaryImageOfPage":{"@id":"https://ewendaviau.com/inscriptions-stages/#primaryimage"},"image":{"@id":"https://ewendaviau.com/inscriptions-stages/#primaryimage"},"thumbnailUrl":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","datePublished":"2026-03-04T13:03:49+00:00","dateModified":"2026-03-05T11:07:42+00:00","breadcrumb":{"@id":"https://ewendaviau.com/inscriptions-stages/#breadcrumb"},"inLanguage":"fr-FR","potentialAction":[{"@type":"ReadAction","target":["https://ewendaviau.com/inscriptions-stages/"]}]},{"@type":"ImageObject","inLanguage":"fr-FR","@id":"https://ewendaviau.com/inscriptions-stages/#primaryimage","url":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","contentUrl":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","width":1920,"height":2560},{"@type":"BreadcrumbList","@id":"https://ewendaviau.com/inscriptions-stages/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ewendaviau.com/"},{"@type":"ListItem","position":2,"name":"Inscriptions stages"}]},{"@type":"WebSite","@id":"https://ewendaviau.com/#website","url":"https://ewendaviau.com/","name":"Ewen d'Aviau, créateur d'Instruments sur mesure","description":"Des instruments de musique pour tous !","publisher":{"@id":"https://ewendaviau.com/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://ewendaviau.com/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"fr-FR"},{"@type":"Organization","@id":"https://ewendaviau.com/#organization","name":"Ewen d'Aviau, créateur d'Instruments sur mesure","url":"https://ewendaviau.com/","logo":{"@type":"ImageObject","inLanguage":"fr-FR","@id":"https://ewendaviau.com/#/schema/logo/image/","url":"https://ewendaviau.com/wp-content/uploads/2015/08/logo-Copie.png","contentUrl":"https://ewendaviau.com/wp-content/uploads/2015/08/logo-Copie.png","width":373,"height":366,"caption":"Ewen d'Aviau, créateur d'Instruments sur mesure"},"image":{"@id":"https://ewendaviau.com/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/accordeons.ewendaviau/"]}]}</script>
 	<!-- / Yoast SEO plugin. -->
 
 
@@ -1321,24 +1321,29 @@ var STAGE_CONFIG = {
 
 
 
-<div class="wp-block-group insc-native-section"><div class="wp-block-group__inner-container is-layout-constrained wp-block-group-is-layout-constrained">
-
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">📜 Conditions</h2>
-
-
-<p style="padding:28px 28px 8px"><strong>Ce bon de commande vous engage.</strong></p>
+<div class="wp-block-group insc-native-section has-white-background-color has-background" style="border-radius:14px;margin-bottom:32px"><div class="wp-block-group__inner-container is-layout-constrained wp-block-group-is-layout-constrained">
+<h2 class="nm-block-heading wp-block-heading insc-native-heading has-text-color has-background" style="color:#FAFAFA;background-color:#3E2723;padding-top:16px;padding-right:24px;padding-bottom:16px;padding-left:24px;font-size:1.15rem;font-weight:700">📜 Conditions</h2>
 
 
-<p style="padding:0 28px 8px">Pour être valide, ce bon doit être accompagné d&rsquo;un <strong>acompte de 40 %</strong> du prix total.</p>
+
+<p style="padding-top:28px;padding-right:28px;padding-bottom:8px;padding-left:28px"><p style="padding:28px 28px 8px"><strong>Ce bon de commande vous engage.</strong></p></p>
 
 
-<p style="padding:0 28px 8px">L&rsquo;acompte ne pourra être restitué si le client annule son inscription après le début de la fabrication (2 mois avant le stage).</p>
+
+<p style="padding-top:0;padding-right:28px;padding-bottom:8px;padding-left:28px"><p style="padding:0 28px 8px">Pour être valide, ce bon doit être accompagné d&rsquo;un <strong>acompte de 40 %</strong> du prix total.</p></p>
 
 
-<p style="padding:0 28px 8px">En cas d&rsquo;annulation, il vous faudra déplacer votre venue à une autre session ou trouver une personne qui vous remplace.</p>
+
+<p style="padding-top:0;padding-right:28px;padding-bottom:8px;padding-left:28px"><p style="padding:0 28px 8px">L&rsquo;acompte ne pourra être restitué si le client annule son inscription après le début de la fabrication (2 mois avant le stage).</p></p>
 
 
-<p style="padding:0 28px 8px">Si vous n&rsquo;arrivez pas à finir votre instrument dans le délai imparti, il vous est possible de revenir finir l&rsquo;instrument à un prochain stage moyennant un <strong>tarif forfaitaire de 80 € par jour</strong>.</p>
+
+<p style="padding-top:0;padding-right:28px;padding-bottom:8px;padding-left:28px"><p style="padding:0 28px 8px">En cas d&rsquo;annulation, il vous faudra déplacer votre venue à une autre session ou trouver une personne qui vous remplace.</p></p>
+
+
+
+<p style="padding-top:0;padding-right:28px;padding-bottom:8px;padding-left:28px"><p style="padding:0 28px 8px">Si vous n&rsquo;arrivez pas à finir votre instrument dans le délai imparti, il vous est possible de revenir finir l&rsquo;instrument à un prochain stage moyennant un <strong>tarif forfaitaire de 80 € par jour</strong>.</p></p>
+
 
 
 <div style="padding:0 28px 24px">
@@ -1349,7 +1354,6 @@ var STAGE_CONFIG = {
           </label>
         </div>
 </div>
-
 </div></div>
 
 
@@ -1831,7 +1835,7 @@ var buildSVG_PlanLite = (function () {
 
   /* ── Sélecteur visuel de grille ──────────────────────────── */
   (function () {
-    var BASE = 'img/grilles/thumbs/';
+    var BASE = 'https://ewendaviau.com/wp-content/uploads/2026/03/';
     var TOTAL = 82;
     var grid  = document.getElementById('grilleSelectorGrid');
     var input = document.getElementById('numGrille');
@@ -2370,7 +2374,7 @@ var buildSVG_PlanLite = (function () {
       <input type="hidden" name="endpoint" value="subscribers" />
       <input type="hidden" name="mailpoet_method" value="subscribe" />
 
-      <label class="mailpoet_hp_email_label" style="display: none !important;">Veuillez laisser ce champ vide<input type="email" name="data[email]"/></label><div class="mailpoet_paragraph "><input type="email" autocomplete="email" class="mailpoet_text" id="form_email_1" name="data[form_field_ZThjYmJjODk0Mjc5X2VtYWls]" title="Adresse e-mail" value="" style="width:100%;box-sizing:border-box;padding:5px;margin: 0 auto;" data-automation-id="form_email"  placeholder="Adresse e-mail *" aria-label="Adresse e-mail *" data-parsley-errors-container=".mailpoet_error_16mxy" data-parsley-required="true" required aria-required="true" data-parsley-minlength="6" data-parsley-maxlength="150" data-parsley-type-message="Cette valeur doit être un e-mail valide." data-parsley-required-message="Ce champ est nécessaire."/><span class="mailpoet_error_16mxy"></span></div>
+      <label class="mailpoet_hp_email_label" style="display: none !important;">Veuillez laisser ce champ vide<input type="email" name="data[email]"/></label><div class="mailpoet_paragraph "><input type="email" autocomplete="email" class="mailpoet_text" id="form_email_1" name="data[form_field_ZThjYmJjODk0Mjc5X2VtYWls]" title="Adresse e-mail" value="" style="width:100%;box-sizing:border-box;padding:5px;margin: 0 auto;" data-automation-id="form_email"  placeholder="Adresse e-mail *" aria-label="Adresse e-mail *" data-parsley-errors-container=".mailpoet_error_14c19" data-parsley-required="true" required aria-required="true" data-parsley-minlength="6" data-parsley-maxlength="150" data-parsley-type-message="Cette valeur doit être un e-mail valide." data-parsley-required-message="Ce champ est nécessaire."/><span class="mailpoet_error_14c19"></span></div>
 <div class="mailpoet_form_image"><figure class="size-full"><img src="http://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo.png" alt class="wp-image-2546" srcset="https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo.png 512w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-300x300.png 300w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-150x150.png 150w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-350x350.png 350w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-100x100.png 100w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-270x270.png 270w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-192x192.png 192w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-180x180.png 180w, https://ewendaviau.com/wp-content/uploads/2024/05/cropped-logo-32x32.png 32w" width=66 height=0 style="width: 66px;height: 0px"></figure></div>
 <div class="mailpoet_paragraph "><input type="submit" class="mailpoet_submit" value="Je m’abonne !" data-automation-id="subscribe-submit-button" style="width:100%;box-sizing:border-box;padding:5px;margin: 0 auto;border-color:transparent;" /><span class="mailpoet_form_loading"><span class="mailpoet_bounce1"></span><span class="mailpoet_bounce2"></span><span class="mailpoet_bounce3"></span></span></div>
 
@@ -2545,7 +2549,7 @@ var buildSVG_PlanLite = (function () {
                 <div class="nm-qty-minus nm-font nm-font-media-play flip"></div>
                 <input
             type="number"
-                        id="quantity_69a9629ab1a70"
+                        id="quantity_69a9642cd9de6"
             class="input-text qty text"
             name="cart[b14f6ccb712db7fe7cb814d3b7a1dfe6][qty]"
             value="1"
