@@ -630,26 +630,11 @@ var STAGE_CONFIG = {
         </div>
 
         <!-- Grille selection -->
-        <div class="insc-inline-row" style="margin-top:14px;">
-          <div class="insc-field">
-            <label for="numGrille">Grille selection</label>
-            <select id="numGrille" name="numGrille">
-              <option value="">– Select –</option>
-              <option value="1">Grille #1</option>
-              <option value="2">Grille #2</option>
-              <option value="3">Grille #3</option>
-              <option value="4">Grille #4</option>
-              <option value="5">Grille #5</option>
-              <option value="6">Grille #6</option>
-              <option value="custom">Custom</option>
-            </select>
-          </div>
-          <div class="insc-field insc-conditional" id="grillePreview" style="text-align:center;">
-            <div id="grilleVisual" style="width:120px;height:120px;margin:0 auto 8px;border:2px solid var(--accent,#5D4037);border-radius:8px;display:flex;align-items:center;justify-content:center;background:#FBF5F0;font-size:2.5rem;color:var(--accent,#5D4037);">
-              <span id="grilleVisualLabel" style="font-size:0.85rem;color:#999;">Select a grille</span>
-            </div>
-            <div id="grilleInfo" style="font-size:0.85rem;color:#666;"></div>
-          </div>
+        <div class="insc-field" style="margin-top:14px;">
+          <label>Grille selection <span id="grilleSelectedLabel" style="font-weight:normal;color:var(--accent,#5D4037);"></span></label>
+          <input type="hidden" id="numGrille" name="numGrille">
+          <div id="grilleSelectorGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;max-height:340px;overflow-y:auto;padding:6px;border:1px solid #e0d5cc;border-radius:8px;background:#FBF5F0;margin-top:6px;"></div>
+          <small style="color:#888;margin-top:4px;display:block;">Click a grille to select it — the number is printed on each model</small>
         </div>
 
         <div class="insc-field">
@@ -1557,34 +1542,48 @@ var buildSVG_PlanLite = (function () {
     updateSummary();
   });
 
-  /* Grille preview */
-  var GRILLE_DESCRIPTIONS = {
-    '1': 'Grille #1 \u2014 Classic',
-    '2': 'Grille #2 \u2014 Open',
-    '3': 'Grille #3 \u2014 Geometric',
-    '4': 'Grille #4 \u2014 Floral',
-    '5': 'Grille #5 \u2014 Modern',
-    '6': 'Grille #6 \u2014 Wavy',
-    'custom': 'Custom grille \u2014 to be defined together'
-  };
-  document.getElementById('numGrille').addEventListener('change', function () {
-    var val = this.value;
-    var preview = document.getElementById('grillePreview');
-    var visual = document.getElementById('grilleVisual');
-    var info = document.getElementById('grilleInfo');
-    var label = document.getElementById('grilleVisualLabel');
-    if (val) {
-      preview.classList.add('visible');
-      info.textContent = GRILLE_DESCRIPTIONS[val] || 'Grille #' + val;
-      label.textContent = val === 'custom' ? '?' : '#' + val;
-      visual.style.fontSize = '1.5rem';
-    } else {
-      preview.classList.remove('visible');
-      label.textContent = 'Select a grille';
-      visual.style.fontSize = '0.75rem';
+  /* ── Grille visual selector ──────────────────────────────── */
+  (function () {
+    var BASE  = 'https://ewendaviau.com/wp-content/uploads/2026/02/grilles/thumbs/';
+    var TOTAL = 82;
+    var grid  = document.getElementById('grilleSelectorGrid');
+    var input = document.getElementById('numGrille');
+    var lbl   = document.getElementById('grilleSelectedLabel');
+
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+    for (var i = 1; i <= TOTAL; i++) {
+      (function (n) {
+        var cell = document.createElement('div');
+        cell.id = 'grilleCell-' + n;
+        cell.style.cssText = 'cursor:pointer;border:2px solid transparent;border-radius:6px;padding:2px;background:#fff;transition:border-color .15s;';
+        cell.title = 'Grille #' + n;
+        var imgEl = document.createElement('img');
+        imgEl.src = BASE + 'grille-' + pad(n) + '.png';
+        imgEl.alt = 'Grille #' + n;
+        imgEl.loading = 'lazy';
+        imgEl.style.cssText = 'width:100%;display:block;border-radius:4px;aspect-ratio:1/1;object-fit:contain;background:#fff;';
+        cell.appendChild(imgEl);
+        cell.addEventListener('click', function () { selectGrille(n); });
+        grid.appendChild(cell);
+      })(i);
     }
-    updateSummary();
-  });
+
+    function selectGrille(n) {
+      var prev = parseInt(input.value, 10);
+      if (prev >= 1 && prev <= TOTAL) {
+        var prevCell = document.getElementById('grilleCell-' + prev);
+        if (prevCell) prevCell.style.borderColor = 'transparent';
+      }
+      input.value = n;
+      lbl.textContent = '\u2014 Grille #' + n + ' selected';
+      var cell = document.getElementById('grilleCell-' + n);
+      if (cell) cell.style.borderColor = 'var(--accent,#5D4037)';
+      updateSummary();
+    }
+
+    window.selectGrille = selectGrille;
+  })();
 
   function updateSummary() {
     document.getElementById('sumNom').textContent = document.getElementById('nom').value || '–';
@@ -1608,8 +1607,9 @@ var buildSVG_PlanLite = (function () {
     document.getElementById('sumPlan').textContent = planData ? (planData.nom || 'Custom plan') : '–';
 
     /* Grille */
-    var grilleVal = selVal('numGrille');
-    document.getElementById('sumGrille').textContent = grilleVal ? (GRILLE_DESCRIPTIONS[grilleVal] || 'Grille #' + grilleVal) : '–';
+    /* Grille */
+    var grilleVal = document.getElementById('numGrille').value;
+    document.getElementById('sumGrille').textContent = grilleVal ? 'Grille #' + grilleVal : '\u2013';
 
     /* Anche a mano */
     var ancheChecked = document.getElementById('ancheAMano').checked;
@@ -1776,8 +1776,8 @@ var buildSVG_PlanLite = (function () {
     addLine('Buttons', selVal('boutonsMD') || '\u2013');
     addLine('Keyboard wood', selVal('boisClavier') || '\u2013');
     addLine('Grille/body wood', selVal('boisGrille') || '\u2013');
-    var pdfGrille = selVal('numGrille');
-    addLine('Grille', pdfGrille ? (GRILLE_DESCRIPTIONS[pdfGrille] || 'Grille #' + pdfGrille) : '\u2013');
+    var pdfGrille = document.getElementById('numGrille').value;
+    addLine('Grille', pdfGrille ? 'Grille #' + pdfGrille : '\u2013');
     addLine('Button markings', document.getElementById('marquageMD').value || '\u2013');
     var remMD = document.getElementById('remarquesMD').value;
     if (remMD) addLine('RH Notes', remMD);
@@ -1928,7 +1928,7 @@ var buildSVG_PlanLite = (function () {
       boutonsMD: selVal('boutonsMD'),
       boisClavier: selVal('boisClavier'),
       boisGrille: selVal('boisGrille'),
-      numGrille: selVal('numGrille') ? (GRILLE_DESCRIPTIONS[selVal('numGrille')] || 'Grille #' + selVal('numGrille')) : '',
+      numGrille: document.getElementById('numGrille').value ? 'Grille #' + document.getElementById('numGrille').value : '',
       marquageMD: document.getElementById('marquageMD').value,
       remarquesMD: document.getElementById('remarquesMD').value,
       nbBoutonsMG: selVal('nbBoutonsMG'),

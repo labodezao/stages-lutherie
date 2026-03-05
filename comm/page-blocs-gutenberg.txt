@@ -871,26 +871,26 @@
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":"1.5rem"}}} -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:cover {"url":"https://ewendaviau.com/wp-content/uploads/2026/02/visuels-grille-702x1024.png","id":3655,"dimRatio":20,"customOverlayColor":"#3E2723","isUserOverlayColor":true,"minHeight":280,"minHeightUnit":"px","sizeSlug":"large","style":{"border":{"radius":"12px"}}} -->
-<div class="wp-block-cover" style="border-radius:12px;min-height:280px"><img class="wp-block-cover__image-background wp-image-3655 size-large" alt="" src="https://ewendaviau.com/wp-content/uploads/2026/02/visuels-grille-702x1024.png" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-20 has-background-dim" style="background-color:#3E2723"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
+<div class="wp-block-column"><!-- wp:cover {"url":"https://ewendaviau.com/wp-content/uploads/2026/02/visuels-grille-702x1024.png","id":3655,"dimRatio":50,"customOverlayColor":"#3E2723","isUserOverlayColor":true,"minHeight":280,"minHeightUnit":"px","sizeSlug":"large","style":{"border":{"radius":"12px"}}} -->
+<div class="wp-block-cover" style="border-radius:12px;min-height:280px"><img class="wp-block-cover__image-background wp-image-3655 size-large" alt="" src="https://ewendaviau.com/wp-content/uploads/2026/02/visuels-grille-702x1024.png" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-50 has-background-dim" style="background-color:#3E2723"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"style":{"typography":{"fontSize":"2rem"}}} -->
 <p style="font-size:2rem">🎨</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":4,"style":{"color":{"text":"#3E2723"}}} -->
-<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#3E2723">Grilles décoratives</h4>
+<!-- wp:heading {"level":4,"style":{"color":{"text":"#D4A017"}}} -->
+<h4 class="nm-block-heading wp-block-heading has-text-color" style="color:#D4A017">Grilles décoratives</h4>
 <!-- /wp:heading -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4A017"}}} -->
 <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:#D4A017;color:#D4A017"/>
 <!-- /wp:separator -->
 
-<!-- wp:list {"style":{"color":{"text":"#555"}}} -->
-<ul style="color:#555" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
-<li>Plus de 100 modèles</li>
+<!-- wp:list {"style":{"color":{"text":"#FFF8E1"}}} -->
+<ul style="color:#FFF8E1" class="nm-block-list wp-block-list has-text-color"><!-- wp:list-item -->
+<li>82 modèles numérotés</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Catalogue numéroté</li>
+<li>Catalogue visuel disponible</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
