@@ -1177,8 +1177,10 @@ var buildSVG_PlanLite = (function () {
       o += '<path d="M' + (cx - R) + ',' + cy + ' A' + R + ',' + R + ' 0 0,0 ' + (cx + R) + ',' + cy + '" fill="' + pullBg + '"/>';
       o += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="none" stroke="' + stroke + '" stroke-width="1.2"/>';
       o += '<line x1="' + (cx - R) + '" y1="' + cy + '" x2="' + (cx + R) + '" y2="' + cy + '" stroke="' + stroke + '" stroke-width=".5" opacity=".4"/>';
-      if (btn && btn.p) o += noteLabel(btn.p, cx, cy - 7, pushTx);
-      if (btn && btn.t) o += noteLabel(btn.t, cx, cy + 15, pullTx);
+      if (btn) {
+        if (btn.p) o += noteLabel(btn.p, cx, cy - 7, pushTx);
+        if (btn.t) o += noteLabel(btn.t, cx, cy + 15, pullTx);
+      }
       return o;
     }
 
@@ -1190,7 +1192,7 @@ var buildSVG_PlanLite = (function () {
 
     /* LH data (separated mode) */
     var lhSecRows = [];
-    var lhRowCfg = (data.lhRows && data.lhRows.length) ? data.lhRows : [{ nb: Math.max((data.basses || []).length, 1), offset: 0 }];
+    var lhRowCfg = data.lhRows ? (data.lhRows.length ? data.lhRows : [{ nb: Math.max((data.basses || []).length, 1), offset: 0 }]) : [{ nb: Math.max((data.basses || []).length, 1), offset: 0 }];
     var bIdx = 0, aIdx = 0;
     lhRowCfg.forEach(function (row, ri) {
       lhSecRows.push({ nom: lhRowCfg.length === 1 ? 'Accords' : 'Acc ' + (ri + 1), items: (data.accords || []).slice(aIdx, aIdx + row.nb), offset: row.offset || 0 });
@@ -1311,7 +1313,8 @@ var buildSVG_PlanLite = (function () {
     }
 
     /* LH columns */
-    if (nLH > 0 && maxLHBtns > 0) {
+    if (nLH > 0) {
+      if (maxLHBtns > 0) {
       var rhBlockH = maxRHBtns * BGAP + rhTopShift + rhBottomExtra;
       var lhBlockH = maxLHBtns * BGAP + lhTopShift + lhBottomExtra;
       var lhGridTop = gridTop + Math.round((rhBlockH - lhBlockH) / 2);
@@ -1334,6 +1337,7 @@ var buildSVG_PlanLite = (function () {
       var lhLastCx = lhX0 + (nLH - 1) * CGAP;
       for (var ii = 0; ii < maxLHBtns; ii++)
         s += tx(lhLastCx + R + 5, lhGridTop + ii * BGAP + BGAP / 2 + 3, ii + 1, 6, numTx, 'normal', 'start');
+      }
     }
 
     /* Aigus */
@@ -1369,7 +1373,8 @@ var buildSVG_PlanLite = (function () {
   document.title = 'Formulaire d\u2019inscription \u2013 Stage de lutherie accord\u00e9on diatonique ' + ANNEE;
 
   var sessionContainer = document.getElementById('sessionOptions');
-  if (sessionContainer && sessionContainer.children.length === 0) {
+  if (sessionContainer) {
+    if (sessionContainer.children.length === 0) {
     STAGE_CONFIG.sessions.forEach(function (s, i) {
       var label = document.createElement('label');
       label.className = 'insc-option-card';
@@ -1380,6 +1385,7 @@ var buildSVG_PlanLite = (function () {
         + '</span>';
       sessionContainer.appendChild(label);
     });
+    }
   }
 
   /* Build SESSION_LABELS from config */
@@ -1571,9 +1577,11 @@ var buildSVG_PlanLite = (function () {
 
     function selectGrille(n) {
       var prev = parseInt(input.value, 10);
-      if (prev >= 1 && prev <= TOTAL) {
-        var prevCell = document.getElementById('grilleCell-' + prev);
-        if (prevCell) prevCell.style.borderColor = 'transparent';
+      if (prev >= 1) {
+        if (prev <= TOTAL) {
+          var prevCell = document.getElementById('grilleCell-' + prev);
+          if (prevCell) prevCell.style.borderColor = 'transparent';
+        }
       }
       input.value = n;
       lbl.textContent = '\u2014 Grille n\u00b0' + n + ' s\u00e9lectionn\u00e9e';
