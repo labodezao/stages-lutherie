@@ -91,7 +91,6 @@
     </div>
   </div>
 
-</div>
   <!-- Unified note picker popup (click on SVG button → push/pull tabs + note grid) -->
   <div id="cw-note-picker" class="cw-note-picker cw-hidden">
     <div class="cw-np-header">
