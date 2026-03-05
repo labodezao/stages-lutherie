@@ -1545,7 +1545,7 @@ var buildSVG_PlanLite = (function () {
   /* ── Sélecteur visuel de grille ──────────────────────────── */
   (function () {
     var BASE = 'img/grilles/thumbs/';
-    var TOTAL = 82;
+    var TOTAL = 81;
     var grid  = document.getElementById('grilleSelectorGrid');
     var input = document.getElementById('numGrille');
     var lbl   = document.getElementById('grilleSelectedLabel');
