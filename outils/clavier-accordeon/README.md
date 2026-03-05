@@ -23,6 +23,10 @@
 
 Les presets (GC21, AD33, etc.) sont **intégrés directement dans le widget** (`PRESETS_DATA`). Il n'y a rien à héberger ni à uploader sur le serveur WordPress.
 
+### ⚠️ Note WordPress : opérateur `&&`
+
+WordPress encode automatiquement `&&` en `&#038;&#038;` dans les blocs HTML personnalisés, ce qui casse le JavaScript. Les fichiers `gutenberg-widget.html` et `clavier-accordeon-gutenberg.txt` utilisent des `if` imbriqués et des ternaires à la place de `&&` pour éviter ce problème.
+
 ---
 
 ## Format JSON des plans de claviers

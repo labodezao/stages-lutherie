@@ -561,8 +561,8 @@
     if(cwPickerInput){cwPickerInput.classList.remove('cw-picker-open');cwPickerInput=null;}
     cwPickerNote='';cwPickerOctave='';
   }
-  function cwPickerSetNote(n){cwPickerNote=n;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote&&cwPickerOctave)cwPickerInsert();}
-  function cwPickerSetOctave(o){cwPickerOctave=o;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote&&cwPickerOctave)cwPickerInsert();}
+  function cwPickerSetNote(n){cwPickerNote=n;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote){if(cwPickerOctave)cwPickerInsert();}}
+  function cwPickerSetOctave(o){cwPickerOctave=o;cwUpdatePickerHL();cwUpdatePickerPreview();if(cwPickerNote){if(cwPickerOctave)cwPickerInsert();}}
   function cwPickerInsert(){
     if(!cwPickerInput)return;
     var v=cwPickerNote+cwPickerOctave;if(!v)return;
@@ -679,7 +679,7 @@
       o += '<path d="M'+(cx-R)+','+cy+' A'+R+','+R+' 0 0,0 '+(cx+R)+','+cy+'" fill="'+pullBg+'"/>';
       o += '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="'+stroke+'" stroke-width="1.2"/>';
       o += '<line x1="'+(cx-R)+'" y1="'+cy+'" x2="'+(cx+R)+'" y2="'+cy+'" stroke="'+stroke+'" stroke-width=".5" opacity=".4"/>';
-      var b2ok = btn2 && (btn2.p || btn2.t);
+      var b2ok = btn2 ? (btn2.p || btn2.t) : false;
       if(b2ok){
         if(btn.p)  o += svgBtnVal(btn.p, cx, cy-11, pushTx);
         if(btn2.p) o += svgBtnVal(btn2.p, cx, cy-4, pushTx2);
@@ -716,7 +716,7 @@
               : [['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
             seq.forEach(function(x){
               var typ=x[0],src=x[1],src2=x[2],nv=x[3];
-              if(src[ii]){ intItems.push(src[ii]); intItems2.push(nv>1&&src2?src2[ii]||null:null); intTypes.push(typ); intIndices.push(ii+1); }
+              if(src[ii]){ intItems.push(src[ii]); intItems2.push(nv>1 ? (src2 ? src2[ii]||null : null) : null); intTypes.push(typ); intIndices.push(ii+1); }
             });
           }
           if(intItems.length){
@@ -735,16 +735,16 @@
               : [['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
             seq2.forEach(function(x){
               var typ=x[0],src=x[1],src2=x[2],nv=x[3];
-              if(src[i2]){ intItems3.push(src[i2]); intItems4.push(nv>1&&src2?src2[i2]||null:null); intTypes2.push(typ); intIndices2.push(i2+1); }
+              if(src[i2]){ intItems3.push(src[i2]); intItems4.push(nv>1 ? (src2 ? src2[i2]||null : null) : null); intTypes2.push(typ); intIndices2.push(i2+1); }
             });
           }
           var lbl2 = nGroups2===1 ? 'Basses / Accords' : 'Basses/Accords '+(g2+1);
           lhSecRows.push({nom:lbl2,items:intItems3,items2:intItems4,offset:0,interleavedTypes:intTypes2,interleavedIndices:intIndices2});
         }
       }
-      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0});
+      if(data.terzetto){ if(data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0}); }
     } else {
-      var lhRowCfg = (data.lhRows && data.lhRows.length) ? data.lhRows : [{nb:data.basses.length||1,offset:0}];
+      var lhRowCfg = (data.lhRows ? data.lhRows.length : 0) ? data.lhRows : [{nb:data.basses.length||1,offset:0}];
       var accSecs=[], basSecs=[];
       var bIdx=0, aIdx=0;
       var vA2 = data.nbVoixAccords||2, vB2 = data.nbVoixBasses||2;
@@ -756,7 +756,7 @@
       });
       if(data.lhBassFirst){ basSecs.forEach(function(s2){lhSecRows.push(s2);}); accSecs.forEach(function(s2){lhSecRows.push(s2);}); }
       else                { accSecs.forEach(function(s2){lhSecRows.push(s2);}); basSecs.forEach(function(s2){lhSecRows.push(s2);}); }
-      if(data.terzetto && data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0});
+      if(data.terzetto){ if(data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0}); }
     }
 
     var nLH = lhSecRows.length;
@@ -866,7 +866,7 @@
     }
 
     // LH columns
-    if(nLH > 0 && maxLHBtns > 0){
+    if(nLH > 0){ if(maxLHBtns > 0){
       var rhBlockH = maxRHBtns * BGAP + rhTopShift + rhBottomExtra;
       var lhBlockH = maxLHBtns * BGAP + lhTopShift + lhBottomExtra;
       var lhGridTop = gridTop + Math.round((rhBlockH - lhBlockH)/2);
@@ -878,7 +878,7 @@
       lhSecRows.forEach(function(sec, si){
         var cx = lhX0 + si * CGAP;
         var off = lhTopShift + (sec.offset||0) * (BGAP/2);
-        var has2 = sec.items2 && sec.items2.some(function(x){ return x != null; });
+        var has2 = sec.items2 ? sec.items2.some(function(x){ return x != null; }) : false;
         if(sec.items.length){
           var cy0 = lhGridTop + off + BGAP/2;
           var bandY = cy0 - R - 3;
@@ -906,7 +906,7 @@
       var lhLastCx = lhX0 + (nLH-1)*CGAP;
       for(var i4 = 0; i4 < maxLHBtns; i4++)
         s += tx(lhLastCx+R+5, lhGridTop+i4*BGAP+BGAP/2+3, i4+1, 6, numTx, 'normal', 'start');
-    }
+    }}
 
     s += '<text x="'+(W/2)+'" y="'+(H-MB+12)+'" font-size="8.5" fill="'+textColor+'" font-style="italic" text-anchor="middle">\u2191 Aigus</text>';
     s += '<line x1="'+MH+'" y1="'+(H-MB+20)+'" x2="'+(W-MH)+'" y2="'+(H-MB+20)+'" stroke="'+ruleColor+'" stroke-width="1"/>';
@@ -1286,7 +1286,7 @@
       nbVoixBasses: currentPreset.nbVoixBasses || 2,
       lhDisplayMode: currentPreset.lhDisplayMode || 'separated',
       lhPairedDir: currentPreset.lhPairedDir || 'vertical',
-      lhRows: JSON.parse(JSON.stringify(currentPreset.lhRows || [{nb:(currentPreset.notes&&currentPreset.notes.basses?currentPreset.notes.basses.length:6),offset:0}])),
+      lhRows: JSON.parse(JSON.stringify(currentPreset.lhRows || [{nb:(currentPreset.notes ? (currentPreset.notes.basses ? currentPreset.notes.basses.length : 6) : 6),offset:0}])),
       lhPairsPerRow: currentPreset.lhPairsPerRow || 2,
       lhBassFirst: currentPreset.lhBassFirst || false,
       notes: JSON.parse(JSON.stringify(currentPreset.notes||{}))
@@ -1319,7 +1319,7 @@
     if(basses.length||accords.length){
       lines.push('','MAIN GAUCHE','──────────────────────────────────');
       if(basses.length){
-        var lhOff=(pr.lhRows&&pr.lhRows[0]&&pr.lhRows[0].offset)?(' (décalage '+(pr.lhRows[0].offset>0?'+':'')+pr.lhRows[0].offset+')'):'';
+        var lhOff=(pr.lhRows ? (pr.lhRows[0] ? pr.lhRows[0].offset : 0) : 0)?(' (décalage '+(pr.lhRows[0].offset>0?'+':'')+pr.lhRows[0].offset+')'):'';
         lines.push('  Basses'+lhOff);
         basses.forEach(function(b,i){lines.push('    '+pad(i+1,2)+'.  ↓ '+pad(b.p||'–',8)+'  ↑ '+(b.t||'–'));});
       }
@@ -1335,8 +1335,10 @@
   function exportText(){
     var txt=buildExportText();
     if(!txt){showToast('Aucun plan à exporter.');return;}
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(function(){showToast('✔ Texte copié dans le presse-papiers');}).catch(function(){fallbackCopy(txt);});
+    if(navigator.clipboard){
+      if(navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(function(){showToast('✔ Texte copié dans le presse-papiers');}).catch(function(){fallbackCopy(txt);});
+      } else {fallbackCopy(txt);}
     } else {fallbackCopy(txt);}
   }
 
@@ -1584,14 +1586,15 @@
     });
     document.addEventListener('click', function(ev){
       var popup = $('cw-edit-popup');
-      if(popup && !popup.classList.contains('cw-hidden') && !popup.contains(ev.target)){
+      if(popup){ if(!popup.classList.contains('cw-hidden')){ if(!popup.contains(ev.target)){
         closeEditPopup();
-      }
+      }}}
       var picker = $('cw-note-picker');
-      if(picker && !picker.classList.contains('cw-hidden') && !picker.contains(ev.target)
-         && ev.target.getAttribute && !ev.target.getAttribute('onfocus')){
-        cwHidePicker();
-      }
+      if(picker){ if(!picker.classList.contains('cw-hidden')){ if(!picker.contains(ev.target)){
+        if(ev.target.getAttribute){ if(!ev.target.getAttribute('onfocus')){
+          cwHidePicker();
+        }}
+      }}}
     });
     initCwPicker();
   }
