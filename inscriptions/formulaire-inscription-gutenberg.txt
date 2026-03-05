@@ -1663,8 +1663,10 @@ var buildSVG_PlanLite = (function () {
    *   el.style.backgroundColor = 'transparent';
    */
   function setLayerColor(el, colorMap, value) {
-    if (value && colorMap[value]) {
-      el.style.backgroundColor = colorMap[value];
+    if (value) {
+      if (colorMap[value]) {
+        el.style.backgroundColor = colorMap[value];
+      }
     }
   }
 
