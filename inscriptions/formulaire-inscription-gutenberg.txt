@@ -1544,7 +1544,7 @@ var buildSVG_PlanLite = (function () {
 
   /* ── Sélecteur visuel de grille ──────────────────────────── */
   (function () {
-    var BASE = 'https://ewendaviau.com/wp-content/uploads/2026/02/grilles/thumbs/';
+    var BASE = 'img/grilles/thumbs/';
     var TOTAL = 82;
     var grid  = document.getElementById('grilleSelectorGrid');
     var input = document.getElementById('numGrille');
