@@ -553,6 +553,53 @@
   ];
 
   /* ═══════════════════════════════════════════════════
+     REMOTE PRESETS — chargés depuis PRESETS_BASE_URL
+     Uploadez les fichiers presets/*.json via FTP et
+     configurez l'URL du dossier ci-dessous.
+     Format attendu :
+       index.json  → [{id, label, category}, …]
+       {id}.json   → données du preset (même format qu'export)
+     Laissez vide ('') pour n'utiliser que les presets inline.
+     Exemple : 'https://monsite.com/wp-content/uploads/presets'
+     ═══════════════════════════════════════════════════ */
+  var PRESETS_BASE_URL = '';
+
+  function _remotePresetUrl(path){
+    return PRESETS_BASE_URL.replace(/\/?$/, '/') + path;
+  }
+
+  async function loadRemotePresets(){
+    if(!PRESETS_BASE_URL) return;
+    try {
+      var r = await fetch(_remotePresetUrl('index.json'));
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      var list = await r.json();
+      list.forEach(function(item){
+        if(!item.id) return;
+        var exists = PRESET_CATALOG.some(function(p){ return p.id === item.id; });
+        if(!exists){
+          PRESET_CATALOG.push({id: item.id, label: item.label || item.id, category: item.category || 'Personnalisés'});
+        }
+      });
+      populatePresetSelector();
+    } catch(e){
+      console.warn('loadRemotePresets: erreur —', e.message);
+    }
+  }
+
+  async function fetchRemotePreset(id){
+    try {
+      var r = await fetch(_remotePresetUrl(id + '.json'));
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return await r.json();
+    } catch(e){
+      console.warn('fetchRemotePreset(' + id + '): erreur —', e.message);
+      return null;
+    }
+  }
+
+
+  /* ═══════════════════════════════════════════════════
      CUSTOM PRESETS — lus depuis <script id="cw-custom-presets">
      Fusionnés avec PRESET_CATALOG + PRESETS_DATA au chargement.
      ═══════════════════════════════════════════════════ */
@@ -1192,6 +1239,7 @@
      ═══════════════════════════════════════════════════ */
   function populatePresetSelector(){
     var sel = $('cw-preset-sel');
+    sel.innerHTML = ''; // efface avant reconstruction (appel multiple safe)
     var cats = {};
     PRESET_CATALOG.forEach(function(p){
       if(!cats[p.category]) cats[p.category] = [];
@@ -1213,9 +1261,13 @@
   /* ═══════════════════════════════════════════════════
      FETCH PRESET & RENDER
      ═══════════════════════════════════════════════════ */
-  function loadPreset(id){
+  async function loadPreset(id){
     if(!id){ currentPreset = null; currentData = null; renderAll(); return; }
     var raw = PRESETS_DATA[id];
+    if(!raw && PRESETS_BASE_URL){
+      raw = await fetchRemotePreset(id);
+      if(raw) PRESETS_DATA[id] = raw; // mise en cache locale
+    }
     if(!raw){ $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Preset introuvable : ' + id + '</p>'; return; }
     var json = JSON.parse(JSON.stringify(raw)); // deep clone
     var cat = PRESET_CATALOG.find(function(p){ return p.id === id; });
@@ -1735,6 +1787,7 @@
   function init(){
     mergeCustomPresets();
     populatePresetSelector();
+    loadRemotePresets();
     initCollapsible();
     refreshSavedList();
 
