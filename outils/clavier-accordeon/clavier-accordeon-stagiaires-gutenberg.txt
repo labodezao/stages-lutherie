@@ -1,0 +1,1811 @@
+<!-- wp:html -->
+<!-- ════════════════════════════════════════════════════════
+     WIDGET CLAVIER ACCORDÉON — VERSION STAGIAIRES
+     Pour WordPress : collez ce bloc sur la page accessible
+     aux stagiaires.
+     Le bloc admin (📋 Copier comme préset) est CACHÉ par défaut.
+     ════════════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════
+     PRÉSETS PERSONNALISÉS — COPIEZ ICI LES PRÉSETS CONFIGURÉS PAR L'ADMIN
+     ════════════════════════════════════════════════════════
+     Modifiez le tableau JSON ci-dessous pour ajouter ou
+     retirer des modèles de clavier proposés aux stagiaires.
+     Les stagiaires peuvent sélectionner ces modèles et les
+     personnaliser librement, mais ils ne peuvent PAS modifier
+     cette liste.
+
+     Format de chaque entrée :
+       {
+         "id":       "MonID",        ← identifiant unique (sans espaces)
+         "label":    "Nom affiché",  ← nom dans la liste déroulante
+         "category": "Mon groupe",   ← groupe dans la liste déroulante
+         "data":     { ... }         ← données du clavier (voir ci-dessous)
+       }
+
+     → Comment mettre à jour les présets des stagiaires :
+       1. Ouvrez la page admin (clavier-accordeon-admin-gutenberg.txt)
+       2. Configurez un clavier et cliquez "📋 Copier comme préset"
+       3. Collez le JSON dans le bloc <script id="cw-custom-presets"> ci-dessus
+       4. Sauvegardez cette page WordPress → les stagiaires voient les nouveaux modèles
+
+     Mode admin : le bloc admin est CACHÉ. Pour accéder en mode admin sur cette page,
+     ajoutez #cw-admin à l'URL ou utilisez la page admin dédiée (clavier-accordeon-admin-gutenberg.txt).
+
+     Laissez [] pour n'utiliser que les modèles intégrés.
+     ════════════════════════════════════════════════════════ -->
+<script id="cw-custom-presets" type="application/json">[]</script>
+<!-- WordPress Gutenberg Keyboard Plan Widget -->
+<!-- Paste this into a Custom HTML block on your WordPress page -->
+<div class="clavier-widget">
+
+  <!-- Header -->
+  <div class="cw-header">
+    <h2>🪗 Plan de clavier — Outil stagiaire</h2>
+    <button id="cw-theme-toggle" class="cw-btn cw-btn-sm" title="Mode sombre / clair">🌙</button>
+  </div>
+
+  <!-- Preset selector -->
+  <div class="cw-section cw-section-open">
+    <div class="cw-section-head" data-toggle="sec-preset">▼ Sélection du modèle</div>
+    <div class="cw-section-body" id="sec-preset">
+      <label class="cw-label">Modèle de clavier</label>
+      <select id="cw-preset-sel" class="cw-select">
+        <option value="">— Choisir un modèle —</option>
+      </select>
+      <div class="cw-row" style="margin-top:8px">
+        <label class="cw-label">Nom de l'instrument</label>
+        <input type="text" id="cw-nom-instrument" class="cw-input" placeholder="Accordéon Diatonique">
+      </div>
+      <div class="cw-row">
+        <label class="cw-label">Nom du joueur</label>
+        <input type="text" id="cw-nom-joueur" class="cw-input" placeholder="Votre nom">
+      </div>
+    </div>
+  </div>
+
+  <!-- SVG Preview -->
+  <div class="cw-section cw-section-open">
+    <div class="cw-section-head" data-toggle="sec-preview">▼ Aperçu du plan</div>
+    <div class="cw-section-body" id="sec-preview">
+      <div id="cw-svg-wrap" class="cw-svg-wrap">
+        <p class="cw-placeholder">Sélectionnez un modèle pour afficher le plan.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row configuration -->
+  <div class="cw-section">
+    <div class="cw-section-head" data-toggle="sec-rows">▶ Configuration des rangées</div>
+    <div class="cw-section-body cw-hidden" id="sec-rows">
+      <div id="cw-rows-cfg"></div>
+    </div>
+  </div>
+
+  <!-- RH Note editing -->
+  <div class="cw-section">
+    <div class="cw-section-head" data-toggle="sec-rh">▶ Main droite — Notes</div>
+    <div class="cw-section-body cw-hidden" id="sec-rh">
+      <div id="cw-rh-tables"></div>
+    </div>
+  </div>
+
+  <!-- LH Note editing -->
+  <div class="cw-section">
+    <div class="cw-section-head" data-toggle="sec-lh">▶ Main gauche — Basses &amp; Accords</div>
+    <div class="cw-section-body cw-hidden" id="sec-lh">
+      <div id="cw-lh-tables"></div>
+    </div>
+  </div>
+
+  <!-- Template management & Export -->
+  <div class="cw-section cw-section-open">
+    <div class="cw-section-head" data-toggle="sec-export">▼ Sauvegarde &amp; Export</div>
+    <div class="cw-section-body" id="sec-export">
+      <div class="cw-row">
+        <button id="cw-save-btn" class="cw-btn">💾 Sauvegarder localement</button>
+        <button id="cw-export-btn" class="cw-btn cw-btn-gold">📄 Copier (texte)</button>
+      </div>
+      <div class="cw-row" style="margin-top:6px">
+        <button id="cw-import-file-btn" class="cw-btn cw-btn-sm">📂 Charger fichier JSON</button>
+        <button id="cw-export-json-btn" class="cw-btn cw-btn-sm cw-btn-gold">⬇ Exporter JSON</button>
+        <input type="file" id="cw-file-input" accept=".json" style="display:none">
+      </div>
+      <div id="cw-admin-block" class="cw-admin-block">
+        <div class="cw-row" style="margin-top:6px">
+          <button id="cw-copy-preset-btn" class="cw-btn cw-btn-sm cw-btn-gold">📋 Copier comme préset</button>
+          <span class="cw-hint" style="font-size:0.78rem;color:var(--text2);display:block;margin-top:3px">Admin : collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
+        </div>
+        <textarea id="cw-preset-export-area" class="cw-textarea-export" placeholder="JSON du préset (copiez puis collez dans la page WordPress)…"></textarea>
+      </div>
+      <div class="cw-row" style="margin-top:8px">
+        <label class="cw-label">Plans sauvegardés</label>
+        <select id="cw-saved-sel" class="cw-select">
+          <option value="">— Aucun plan sauvegardé —</option>
+        </select>
+        <div class="cw-row" style="margin-top:4px">
+          <button id="cw-load-btn" class="cw-btn cw-btn-sm">📂 Charger</button>
+          <button id="cw-delete-btn" class="cw-btn cw-btn-sm cw-btn-danger">🗑 Supprimer</button>
+        </div>
+      </div>
+      <div id="cw-toast" class="cw-toast"></div>
+    </div>
+  </div>
+
+  <!-- Unified note picker popup (click on SVG button → push/pull tabs + note grid) -->
+  <div id="cw-note-picker" class="cw-note-picker cw-hidden">
+    <div class="cw-np-header">
+      <span id="cw-np-btn-title" class="cw-np-hd-title"></span>
+      <button id="cw-np-close" class="cw-np-close-btn" title="Fermer">✕</button>
+    </div>
+    <div class="cw-np-slot-row">
+      <button id="cw-np-tab-push" class="cw-np-slot-btn cw-np-slot-active">↓ Poussé <span id="cw-np-badge-push" class="cw-np-badge"></span></button>
+      <button id="cw-np-tab-pull" class="cw-np-slot-btn">↑ Tiré <span id="cw-np-badge-pull" class="cw-np-badge"></span></button>
+    </div>
+    <div class="cw-np-section-lbl">Naturelles</div>
+    <div class="cw-np-row" id="cw-np-naturals"></div>
+    <div class="cw-np-section-lbl">Dièses</div>
+    <div class="cw-np-row" id="cw-np-sharps"></div>
+    <div class="cw-np-section-lbl">Bémols</div>
+    <div class="cw-np-row" id="cw-np-flats"></div>
+    <div class="cw-np-octave-row">
+      <span class="cw-np-oct-lbl">Octave :</span>
+      <div id="cw-np-octaves"></div>
+    </div>
+    <div class="cw-np-preview">
+      <span id="cw-np-preview-text">— sélectionnez note + octave —</span>
+    </div>
+    <div class="cw-np-footer">
+      <button id="cw-np-clear-btn" class="cw-btn cw-btn-sm cw-btn-danger">Effacer</button>
+      <button id="cw-np-apply-btn" class="cw-btn cw-btn-sm cw-btn-gold">✓ Appliquer</button>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   Scoped CSS for WordPress Gutenberg widget
+   ═══════════════════════════════════════════════════ */
+.clavier-widget {
+  --gold: #b8860b;
+  --gold-light: #d4a82633;
+  --dark: #1a1c1a;
+  --fond: #f5f5f3;
+  --card-bg: #ffffff;
+  --text: #333;
+  --text2: #666;
+  --border: #ddd;
+  --shadow: 0 2px 8px rgba(0,0,0,.08);
+  --radius: 8px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+  background: var(--fond);
+  color: var(--text);
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.clavier-widget *, .clavier-widget *::before, .clavier-widget *::after {
+  box-sizing: border-box;
+}
+
+/* Dark mode */
+.clavier-widget.cw-dark {
+  --fond: #1a1c1a;
+  --card-bg: #232523;
+  --text: #e0ddd5;
+  --text2: #999;
+  --border: #444;
+  --shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+/* Header */
+.clavier-widget .cw-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--gold);
+}
+.clavier-widget .cw-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* Sections (collapsible) */
+.clavier-widget .cw-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.clavier-widget .cw-section-head {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: .92rem;
+  cursor: pointer;
+  user-select: none;
+  color: var(--gold);
+  background: var(--gold-light);
+  border-bottom: 1px solid var(--border);
+}
+.clavier-widget .cw-section-head:hover {
+  opacity: .85;
+}
+.clavier-widget .cw-section-body {
+  padding: 12px 14px;
+}
+.clavier-widget .cw-hidden {
+  display: none;
+}
+
+/* Form elements */
+.clavier-widget .cw-label {
+  display: block;
+  font-size: .82rem;
+  color: var(--text2);
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+.clavier-widget .cw-select,
+.clavier-widget .cw-input {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: .88rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: inherit;
+}
+.clavier-widget .cw-select:focus,
+.clavier-widget .cw-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-light);
+}
+.clavier-widget .cw-row {
+  margin-bottom: 6px;
+}
+.clavier-widget .cw-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Buttons */
+.clavier-widget .cw-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: .85rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s, border-color .15s;
+}
+.clavier-widget .cw-btn:hover {
+  border-color: var(--gold);
+  background: var(--gold-light);
+}
+.clavier-widget .cw-btn-gold {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+.clavier-widget .cw-btn-gold:hover {
+  opacity: .88;
+  background: var(--gold);
+}
+.clavier-widget .cw-btn-sm {
+  padding: 5px 10px;
+  font-size: .8rem;
+}
+.clavier-widget .cw-btn-danger {
+  color: #c0392b;
+  border-color: #c0392b;
+}
+.clavier-widget .cw-btn-danger:hover {
+  background: #fdecea;
+}
+
+/* SVG preview */
+.clavier-widget .cw-svg-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  overflow-x: auto;
+  text-align: center;
+  min-height: 100px;
+}
+.clavier-widget .cw-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+.clavier-widget .cw-placeholder {
+  color: var(--text2);
+  font-style: italic;
+  padding: 30px 0;
+  margin: 0;
+}
+
+/* Note editing tables */
+.clavier-widget .cw-note-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+  margin-bottom: 12px;
+}
+.clavier-widget .cw-note-table caption {
+  text-align: left;
+  font-weight: 600;
+  font-size: .88rem;
+  color: var(--gold);
+  padding: 4px 0;
+}
+.clavier-widget .cw-note-table th {
+  background: var(--gold-light);
+  color: var(--gold);
+  padding: 5px 8px;
+  font-weight: 600;
+  font-size: .78rem;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.clavier-widget .cw-note-table td {
+  padding: 3px 4px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.clavier-widget .cw-note-table td.cw-num {
+  width: 32px;
+  font-weight: 600;
+  color: var(--text2);
+  font-size: .78rem;
+}
+.clavier-widget .cw-note-table input {
+  width: 100%;
+  min-width: 60px;
+  padding: 4px 6px;
+  font-size: .82rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--card-bg);
+  color: var(--text);
+  text-align: center;
+  font-family: inherit;
+}
+.clavier-widget .cw-note-table input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-light);
+}
+
+/* Row config table */
+.clavier-widget .cw-cfg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+  margin-bottom: 8px;
+}
+.clavier-widget .cw-cfg-table th {
+  background: var(--gold-light);
+  color: var(--gold);
+  padding: 5px 8px;
+  font-weight: 600;
+  font-size: .78rem;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.clavier-widget .cw-cfg-table td {
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.clavier-widget .cw-cfg-table input {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: .82rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--card-bg);
+  color: var(--text);
+  text-align: center;
+  font-family: inherit;
+}
+
+/* Toast notification */
+.clavier-widget .cw-toast {
+  display: none;
+  padding: 8px 14px;
+  margin-top: 8px;
+  border-radius: 5px;
+  font-size: .82rem;
+  font-weight: 500;
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.clavier-widget.cw-dark .cw-toast {
+  background: #1e3a1e;
+  color: #8fd89f;
+  border-color: #2e5a2e;
+}
+.clavier-widget .cw-textarea-export {
+  display: none;
+  width: 100%;
+  height: 110px;
+  margin-top: 6px;
+  font-size: .75rem;
+  font-family: monospace;
+  border: 1px solid var(--gold);
+  border-radius: 5px;
+  padding: 6px;
+  background: var(--card-bg);
+  color: var(--text);
+  resize: vertical;
+}
+.clavier-widget.cw-dark .cw-btn-danger:hover {
+  background: #3a1515;
+}
+
+/* Admin block — hidden by default, shown via #cw-admin hash or data-cw-admin attr */
+.clavier-widget .cw-admin-block { display: none; }
+
+/* Edit popup — removed (merged into unified note picker) */
+
+/* ── Unified note picker ── */
+.clavier-widget .cw-note-picker{display:none;position:fixed;z-index:10000;background:var(--card-bg);border:2px solid var(--gold);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.25);padding:0;min-width:310px;font-size:.85rem;overflow:hidden}
+.clavier-widget .cw-np-header{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(184,134,11,.08)}
+.clavier-widget .cw-np-hd-title{font-weight:700;color:var(--gold);font-size:.88rem;flex:1}
+.clavier-widget .cw-np-close-btn{border:none;background:none;font-size:.85rem;color:var(--text2);cursor:pointer;padding:2px 6px;border-radius:4px;font-family:inherit;line-height:1}
+.clavier-widget .cw-np-close-btn:hover{background:rgba(0,0,0,.08)}
+.clavier-widget .cw-np-slot-row{display:flex;gap:0;border-bottom:2px solid var(--border)}
+.clavier-widget .cw-np-slot-btn{flex:1;padding:7px 8px;border:none;background:var(--card-bg);font-family:inherit;font-size:.82rem;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
+.clavier-widget .cw-np-slot-btn:hover{color:var(--gold)}
+.clavier-widget .cw-np-slot-active{color:var(--dark);border-bottom-color:var(--gold)!important}
+.clavier-widget .cw-np-badge{display:inline-block;background:var(--gold);color:#fff;border-radius:10px;padding:1px 6px;font-size:.72rem;margin-left:4px;min-width:22px;text-align:center;vertical-align:middle}
+.clavier-widget .cw-np-badge:empty{display:none}
+.clavier-widget .cw-np-section-lbl{font-size:.66rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin:8px 12px 4px}
+.clavier-widget .cw-np-row{display:flex;gap:3px;flex-wrap:wrap;padding:0 12px 2px}
+.clavier-widget .cw-np-btn{min-width:34px;padding:5px 4px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;color:var(--text);transition:background .1s,border-color .1s}
+.clavier-widget .cw-np-btn:hover{background:var(--dark);color:#fff;border-color:var(--dark)}
+.clavier-widget .cw-np-btn.cw-sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.clavier-widget .cw-np-btn.cw-sha{background:#f3f0fa;border-color:#c0b0e0;color:#5a3d8a}
+.clavier-widget .cw-np-btn.cw-sha:hover,.clavier-widget .cw-np-btn.cw-sha.cw-sel{background:#5a3d8a;color:#fff;border-color:#5a3d8a}
+.clavier-widget .cw-np-btn.cw-fla{background:#fdf0ee;border-color:#e0a898;color:#8a3020}
+.clavier-widget .cw-np-btn.cw-fla:hover,.clavier-widget .cw-np-btn.cw-fla.cw-sel{background:#b8312a;color:#fff;border-color:#b8312a}
+.clavier-widget .cw-np-octave-row{display:flex;gap:3px;align-items:center;padding:8px 12px 4px}
+.clavier-widget .cw-np-oct-lbl{font-size:.68rem;font-weight:700;color:var(--text2);margin-right:4px}
+.clavier-widget .cw-np-oct-btn{width:30px;height:26px;border:1.5px solid var(--border);border-radius:5px;background:var(--card-bg);font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--text)}
+.clavier-widget .cw-np-oct-btn:hover,.clavier-widget .cw-np-oct-btn.cw-sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.clavier-widget .cw-np-preview{margin:6px 12px 0;padding:5px 8px;background:var(--fond);border:1px solid var(--border);border-radius:5px;font-size:.84rem;font-weight:700;color:var(--dark);min-height:28px}
+.clavier-widget .cw-np-footer{display:flex;gap:6px;padding:8px 12px;border-top:1px solid var(--border);margin-top:6px;background:rgba(0,0,0,.025)}
+.clavier-widget .cw-edit-btn{cursor:pointer}
+/* ── Row offset ── */
+.clavier-widget .cw-off-wrap{display:inline-flex;align-items:center;gap:2px}
+.clavier-widget .cw-off-btn{width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:var(--card-bg);font-size:.85rem;font-weight:700;cursor:pointer;color:var(--text);padding:0;display:flex;align-items:center;justify-content:center}
+.clavier-widget .cw-off-btn:hover{border-color:var(--gold);background:rgba(184,134,11,.1)}
+.clavier-widget .cw-off-input{width:44px!important;text-align:center;font-size:.8rem!important;padding:3px 4px!important}
+</style>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════
+     PRESET CATALOG (from presets/index.json)
+     ═══════════════════════════════════════════════════ */
+  const PRESET_CATALOG = [
+    {"id":"GC21","label":"Sol/Do — 21 boutons","category":"2 rangs"},
+    {"id":"DG21","label":"Ré/Sol — 21 boutons","category":"2 rangs"},
+    {"id":"CF21","label":"Do/Fa — 21 boutons","category":"2 rangs"},
+    {"id":"AD21","label":"La/Ré — 21 boutons","category":"2 rangs"},
+    {"id":"BE21","label":"Si/Mi — 21 boutons","category":"2 rangs"},
+    {"id":"EA21","label":"Mi/La — 21 boutons","category":"2 rangs"},
+    {"id":"FBb21","label":"Fa/Sib — 21 boutons","category":"2 rangs"},
+    {"id":"EbBb21","label":"Mib/Sib — 21 boutons","category":"2 rangs"},
+    {"id":"ABb21","label":"La/Sib — 21 boutons","category":"2 rangs"},
+    {"id":"GDA21","label":"Sol/Ré/La (2 rangs en La ext.) — 21 boutons","category":"2 rangs"},
+    {"id":"FD21","label":"Fa/Ré — 21 boutons","category":"2 rangs"},
+    {"id":"CA21","label":"Do/La — 21 boutons","category":"2 rangs"},
+    {"id":"BC21","label":"Si/Do (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"CSharpD21","label":"Do#/Ré (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"DbEb21","label":"Réb/Mib (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"EbF21","label":"Mib/Fa (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"FGb21","label":"Fa/Solb (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"GAb21","label":"Sol/Lab (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"ADb21","label":"La/Réb (système irlandais) — 21 boutons","category":"Irlandais"},
+    {"id":"GCD33","label":"Sol/Do/Ré — 33 boutons","category":"3 rangs"},
+    {"id":"BbFC33","label":"Sib/Fa/Do — 33 boutons","category":"3 rangs"},
+    {"id":"ADG33","label":"La/Ré/Sol — 33 boutons","category":"3 rangs"},
+    {"id":"DGC33","label":"Ré/Sol/Do — 33 boutons","category":"3 rangs"},
+    {"id":"CFBb33","label":"Do/Fa/Sib — 33 boutons","category":"3 rangs"},
+    {"id":"EAD33","label":"Mi/La/Ré — 33 boutons","category":"3 rangs"},
+    {"id":"BbEbAb33","label":"Sib/Mib/Lab — 33 boutons","category":"3 rangs"},
+    {"id":"FCG33","label":"Fa/Do/Sol — 33 boutons","category":"3 rangs"},
+    {"id":"SolDoFa33_12","label":"Sol/Do/Fa — 33/12 (Continental)","category":"Spéciaux"},
+    {"id":"LaReSol33_12","label":"La/Ré/Sol — 33/12","category":"Spéciaux"},
+    {"id":"SibMibLab33_12","label":"Sib/Mib/Lab — 33/12","category":"Spéciaux"},
+    {"id":"SolDo_Corgeron","label":"Sol/Do Corgeron — 33/8","category":"Spéciaux"},
+    {"id":"SolDo_Heim","label":"Sol/Do Heim — 33/8","category":"Spéciaux"},
+    {"id":"SolDoAlts_Bottasso","label":"Sol/Do/Alts Bottasso — 33/18","category":"33/18"},
+    {"id":"SolDoAlts_JPL","label":"Sol/Do/Alts JPL — 33/18","category":"33/18"},
+    {"id":"SolDoAlts_LTL","label":"Sol/Do/Alts LTL — 33/18","category":"33/18"},
+    {"id":"SolDoAlts_Gaillard","label":"Sol/Do/Alts Gaillard — 33/18","category":"33/18"}
+  ];
+
+  /* ═══════════════════════════════════════════════════
+     CUSTOM PRESETS — lus depuis <script id="cw-custom-presets">
+     Fusionnés avec PRESET_CATALOG + PRESETS_DATA au chargement.
+     ═══════════════════════════════════════════════════ */
+  function readCustomPresets(){
+    try {
+      var tag = document.getElementById('cw-custom-presets');
+      if(!tag){ return []; }
+      return JSON.parse(tag.textContent) || [];
+    } catch(e){
+      console.warn('cw-custom-presets: JSON invalide —', e.message);
+      return [];
+    }
+  }
+
+  function mergeCustomPresets(){
+    var customs = readCustomPresets();
+    customs.forEach(function(c){
+      if(!c.id){ return; }
+      if(!c.data){ return; }
+      var exists = PRESET_CATALOG.some(function(p){ return p.id === c.id; });
+      if(!exists){
+        PRESET_CATALOG.push({
+          id: c.id,
+          label: c.label || c.id,
+          category: c.category || 'Personnalisés'
+        });
+      }
+      PRESETS_DATA[c.id] = c.data;
+    });
+  }
+
+  /* Génère une entrée JSON prête à coller dans cw-custom-presets */
+  function exportAsPreset(){
+    var snap = cwSnapshotPreset();
+    if(!snap){ showToast('Aucun modèle chargé.'); return; }
+    var rawId = ((snap.nom || snap.id || 'preset').replace(/\s+/g,'_').replace(/[^A-Za-z0-9_\-]/g,'').substring(0,40)) || ('preset_' + Date.now());
+    var entry = [{
+      id: rawId,
+      label: snap.nom || 'Préset personnalisé',
+      category: 'Personnalisés',
+      data: snap
+    }];
+    var json = JSON.stringify(entry, null, 2);
+    var area = $('cw-preset-export-area');
+    if(area){
+      area.value = json;
+      area.style.display = 'block';
+      area.focus();
+      area.select();
+    }
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(json).then(function(){
+        showToast('✔ JSON copié ! Collez-le dans le bloc cw-custom-presets de la page WordPress.');
+      }).catch(function(){
+        showToast('✔ JSON prêt — sélectionnez et copiez le texte ci-dessous.');
+      });
+    } else {
+      showToast('✔ JSON prêt — sélectionnez et copiez le texte ci-dessous.');
+    }
+  }
+
+  /* ════ UNIFIED NOTE PICKER (click on SVG button) ════ */
+  var _cwEdit = null;  /* { editId, slot:'push'|'pull', pushVal, pullVal, pushNote, pushOct, pullNote, pullOct } */
+  var _cwNote = '', _cwOct = '';
+  var CW_NOTES_FR = {nat:['Do','Ré','Mi','Fa','Sol','La','Si'],sha:['Do#','Ré#',null,'Fa#','Sol#','La#',null],fla:['Réb','Mib',null,'Solb','Lab','Sib',null]};
+  var CW_OCTAVES = ['2','3','4','5','6'];
+
+  function initNotePicker(){
+    function makeBtn(n, cls){
+      var b = document.createElement('button');
+      b.className = 'cw-np-btn' + (cls ? ' '+cls : '');
+      b.textContent = n;
+      b.addEventListener('click', function(){ cwPickerSetNote(n); });
+      return b;
+    }
+    function makeBlank(){
+      var s = document.createElement('span');
+      s.style.cssText = 'min-width:34px;display:inline-block';
+      return s;
+    }
+    function makeOctBtn(o){
+      var b = document.createElement('button');
+      b.className = 'cw-np-oct-btn';
+      b.textContent = o;
+      b.addEventListener('click', function(){ cwPickerSetOctave(o); });
+      return b;
+    }
+    var N = CW_NOTES_FR;
+    var natC = $('cw-np-naturals'); natC.innerHTML = '';
+    N.nat.forEach(function(n){ natC.appendChild(makeBtn(n)); });
+    var shaC = $('cw-np-sharps'); shaC.innerHTML = '';
+    N.sha.forEach(function(n){ shaC.appendChild(n ? makeBtn(n,'cw-sha') : makeBlank()); });
+    var flaC = $('cw-np-flats'); flaC.innerHTML = '';
+    N.fla.forEach(function(n){ flaC.appendChild(n ? makeBtn(n,'cw-fla') : makeBlank()); });
+    var octC = $('cw-np-octaves'); octC.innerHTML = '';
+    CW_OCTAVES.forEach(function(o){ octC.appendChild(makeOctBtn(o)); });
+  }
+
+  /* Parse "Sol4" → {note:'Sol', oct:'4'} */
+  function parseNoteOct(v){
+    if(!v) return {note:'', oct:''};
+    var m = v.trim().match(/^(.+?)([2-6])$/);
+    return m ? {note:m[1], oct:m[2]} : {note:v.trim(), oct:''};
+  }
+
+  function openNotePicker(editId, evt, initialSlot){
+    if(!currentPreset || !editId) return;
+    var parts = editId.split(':');
+    var btn = {p:'', t:''}, title = '';
+    if(parts[0] === 'rh'){
+      var ri = parseInt(parts[1]), bi = parseInt(parts[2]);
+      var row = (currentPreset.rangees || [])[ri];
+      var rowNotes = ((currentPreset.notes || {}).droite || [])[ri] || [];
+      btn = rowNotes[bi] || {p:'', t:''};
+      title = (row ? row.nom : 'Rangée '+(ri+1)) + ' — Bouton '+(bi+1);
+    } else {
+      var src = parts[0], idx = parseInt(parts[1]);
+      var arr = ((currentPreset.notes || {})[src] || []);
+      btn = arr[idx] || {p:'', t:''};
+      var lbl = src === 'basses' ? 'Basse' : src === 'accords' ? 'Accord' : 'Terzetto';
+      title = lbl + ' '+(idx+1);
+    }
+    var pParsed = parseNoteOct(btn.p || '');
+    var tParsed = parseNoteOct(btn.t || '');
+    _cwEdit = {
+      editId: editId,
+      slot: 'push',
+      pushVal: btn.p || '', pullVal: btn.t || '',
+      pushNote: pParsed.note, pushOct: pParsed.oct,
+      pullNote: tParsed.note, pullOct: tParsed.oct
+    };
+    $('cw-np-btn-title').textContent = title;
+    cwSwitchSlot(initialSlot || 'push');
+    cwPickerHL();
+    cwPickerUpdateBadges();
+
+    var pk = $('cw-note-picker');
+    pk.style.display = 'block';
+    /* Position popup near click but keep in viewport */
+    var pw = pk.offsetWidth || 320, ph = pk.offsetHeight || 340;
+    var x = evt.clientX + 12, y = evt.clientY + 12;
+    if(x + pw > window.innerWidth  - 8) x = evt.clientX - pw - 8;
+    if(y + ph > window.innerHeight - 8) y = evt.clientY - ph - 8;
+    pk.style.left = Math.max(8, x) + 'px';
+    pk.style.top  = Math.max(8, y) + 'px';
+  }
+
+  function closeNotePicker(){
+    var pk = $('cw-note-picker');
+    pk.style.display = 'none';
+    _cwEdit = null; _cwNote = ''; _cwOct = '';
+  }
+
+  function cwSwitchSlot(slot){
+    if(!_cwEdit) return;
+    _cwEdit.slot = slot;
+    if(slot === 'push'){
+      _cwNote = _cwEdit.pushNote; _cwOct = _cwEdit.pushOct;
+    } else {
+      _cwNote = _cwEdit.pullNote; _cwOct = _cwEdit.pullOct;
+    }
+    widget.querySelectorAll('.cw-np-slot-btn').forEach(function(b, i){
+      b.classList.toggle('cw-np-slot-active', (i === 0 ? 'push' : 'pull') === slot);
+    });
+    cwPickerHL();
+    cwPickerUpdatePreview();
+  }
+
+  function cwPickerSetNote(n){
+    _cwNote = n;
+    if(_cwEdit){ if(_cwEdit.slot === 'push') _cwEdit.pushNote = n; else _cwEdit.pullNote = n; }
+    cwPickerHL(); cwPickerUpdatePreview();
+    if(_cwNote && _cwOct) cwPickerAutoApplySlot();
+  }
+
+  function cwPickerSetOctave(o){
+    _cwOct = o;
+    if(_cwEdit){ if(_cwEdit.slot === 'push') _cwEdit.pushOct = o; else _cwEdit.pullOct = o; }
+    cwPickerHL(); cwPickerUpdatePreview();
+    if(_cwNote && _cwOct) cwPickerAutoApplySlot();
+  }
+
+  /* Auto-apply current slot and switch to the other slot if it is empty */
+  function cwPickerAutoApplySlot(){
+    if(!_cwEdit) return;
+    var val = _cwNote + _cwOct;
+    if(_cwEdit.slot === 'push'){
+      _cwEdit.pushVal = val;
+      _cwEdit.pushNote = _cwNote; _cwEdit.pushOct = _cwOct;
+      cwPickerUpdateBadges();
+      /* Switch to pull if pull is still empty */
+      if(!_cwEdit.pullVal){ cwSwitchSlot('pull'); return; }
+    } else {
+      _cwEdit.pullVal = val;
+      _cwEdit.pullNote = _cwNote; _cwEdit.pullOct = _cwOct;
+      cwPickerUpdateBadges();
+      /* Switch to push if push is still empty */
+      if(!_cwEdit.pushVal){ cwSwitchSlot('push'); return; }
+    }
+    /* Both slots have a value — apply and close */
+    cwPickerApply();
+  }
+
+  function cwPickerClear(){
+    if(!_cwEdit) return;
+    _cwNote = ''; _cwOct = '';
+    if(_cwEdit.slot === 'push'){
+      _cwEdit.pushNote = ''; _cwEdit.pushOct = ''; _cwEdit.pushVal = '';
+    } else {
+      _cwEdit.pullNote = ''; _cwEdit.pullOct = ''; _cwEdit.pullVal = '';
+    }
+    cwPickerHL(); cwPickerUpdatePreview(); cwPickerUpdateBadges();
+  }
+
+  function cwPickerApply(){
+    if(!_cwEdit || !currentPreset) return;
+    /* Use note+oct only when both components are present, otherwise fall back to stored value */
+    var p = (_cwEdit.pushNote && _cwEdit.pushOct) ? (_cwEdit.pushNote + _cwEdit.pushOct) : (_cwEdit.pushVal || '');
+    var t = (_cwEdit.pullNote && _cwEdit.pullOct) ? (_cwEdit.pullNote + _cwEdit.pullOct) : (_cwEdit.pullVal || '');
+    var notes = currentPreset.notes;
+    if(!notes) { notes = {}; currentPreset.notes = notes; }
+    var eid = _cwEdit.editId;
+    var parts2 = eid.split(':');
+    if(parts2[0] === 'rh'){
+      var ri2 = parseInt(parts2[1]), bi2 = parseInt(parts2[2]);
+      if(!notes.droite)          notes.droite          = [];
+      if(!notes.droite[ri2])     notes.droite[ri2]     = [];
+      if(!notes.droite[ri2][bi2])notes.droite[ri2][bi2]= {};
+      notes.droite[ri2][bi2].p = p;
+      notes.droite[ri2][bi2].t = t;
+    } else {
+      var src3 = parts2[0], idx3 = parseInt(parts2[1]);
+      if(!notes[src3])       notes[src3]       = [];
+      if(!notes[src3][idx3]) notes[src3][idx3] = {};
+      notes[src3][idx3].p = p;
+      notes[src3][idx3].t = t;
+    }
+    closeNotePicker();
+    refreshSVG();
+    renderRHTables();
+    renderLHTables();
+  }
+
+  function cwPickerHL(){
+    widget.querySelectorAll('#cw-np-naturals .cw-np-btn, #cw-np-sharps .cw-np-btn, #cw-np-flats .cw-np-btn').forEach(function(b){
+      b.classList.toggle('cw-sel', b.textContent === _cwNote);
+    });
+    widget.querySelectorAll('#cw-np-octaves .cw-np-oct-btn').forEach(function(b){
+      b.classList.toggle('cw-sel', b.textContent === _cwOct);
+    });
+  }
+
+  function cwPickerUpdatePreview(){
+    var txt = (_cwNote + _cwOct) || '— sélectionnez note + octave —';
+    $('cw-np-preview-text').textContent = txt;
+  }
+
+  function cwPickerUpdateBadges(){
+    if(!_cwEdit) return;
+    $('cw-np-badge-push').textContent = _cwEdit.pushVal || '';
+    $('cw-np-badge-pull').textContent = _cwEdit.pullVal || '';
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PRESET DATA (inline — no fetch required)
+     ═══════════════════════════════════════════════════ */
+  const PRESETS_DATA = {"ABb21":{"nbRangees":2,"rangees":[{"nom":"Rangée La (intérieure)","nb":10},{"nom":"Rangée Sib (extérieure)","nb":11}],"notes":{"droite":[[{"p":"La3","t":"Si3"},{"p":"Réb4","t":"Ré4"},{"p":"Mi4","t":"Solb4"},{"p":"La4","t":"Lab4"},{"p":"Réb5","t":"Si4"},{"p":"Mi5","t":"Ré5"},{"p":"La5","t":"Solb5"},{"p":"Réb6","t":"Lab5"},{"p":"Mi6","t":"Si5"},{"p":"La6","t":"Ré6"}],[{"p":"Ré4","t":"Réb4"},{"p":"Solb4","t":"Mi4"},{"p":"La4","t":"Sol4"},{"p":"Ré5","t":"Si4"},{"p":"Solb5","t":"Do5"},{"p":"La5","t":"Mi5"},{"p":"Ré6","t":"Solb5"},{"p":"Solb6","t":"Sol5"},{"p":"La6","t":"Si5"},{"p":"Ré7","t":"Réb6"},{"p":"Solb7","t":"Mi6"}]],"basses":[{"p":"La3","t":"Mi3"},{"p":"Ré4","t":"La3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"accords":[{"p":"La3","t":"Mi3"},{"p":"Ré4","t":"La3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"terzetto":[],"basses2":[{"p":"La3","t":"Mi3"},{"p":"Ré4","t":"La3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"basses3":[{"p":"La3","t":"Mi3"},{"p":"Ré4","t":"La3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"accords2":[{"p":"Mi4","t":"Si3"},{"p":"La4","t":"Mi4"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#5","t":"Sol#4"},{"p":"Sol#4","t":"Ré#4"},{"p":"Ré#4","t":"La#3"},{"p":"La#4","t":"Fa4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"AD21":{"nbRangees":2,"rangees":[{"nom":"Rangée La (intérieure)","nb":10},{"nom":"Rangée Ré (extérieure)","nb":11}],"notes":{"droite":[[{"p":"La3","t":"Si3"},{"p":"Do#4","t":"Ré4"},{"p":"Mi4","t":"Fa#4"},{"p":"La4","t":"Sol#4"},{"p":"Do#5","t":"Si4"},{"p":"Mi5","t":"Ré5"},{"p":"La5","t":"Fa#5"},{"p":"Do#6","t":"Sol#5"},{"p":"Mi6","t":"Si5"},{"p":"La6","t":"Ré6"}],[{"p":"Ré3","t":"Do#3"},{"p":"Fa#3","t":"Mi3"},{"p":"La3","t":"Sol3"},{"p":"Ré4","t":"Si3"},{"p":"Fa#4","t":"Do4"},{"p":"La4","t":"Mi4"},{"p":"Ré5","t":"Fa#4"},{"p":"Fa#5","t":"Sol#4"},{"p":"La5","t":"Si4"},{"p":"Ré6","t":"Do#5"},{"p":"Fa#6","t":"Mi5"}]],"basses":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Ré#3","t":"La#2"},{"p":"La#3","t":"Fa3"}],"accords":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Ré#3","t":"La#2"},{"p":"La#3","t":"Fa3"}],"terzetto":[],"basses2":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Ré#3","t":"La#2"},{"p":"La#3","t":"Fa3"}],"basses3":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Ré#3","t":"La#2"},{"p":"La#3","t":"Fa3"}],"accords2":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"La#3","t":"Fa3"},{"p":"Fa4","t":"Do4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"ADG33":{"nbRangees":3,"rangees":[{"nom":"Rangée La (intérieure)","nb":11},{"nom":"Rangée Ré (médiane)","nb":11},{"nom":"Rangée Sol (extérieure)","nb":11}],"notes":{"droite":[[{"p":"La3","t":"Si3"},{"p":"Do#4","t":"Ré4"},{"p":"Mi4","t":"Fa#4"},{"p":"La4","t":"Sol#4"},{"p":"Do#5","t":"Si4"},{"p":"Mi5","t":"Ré5"},{"p":"La5","t":"Fa#5"},{"p":"Do#6","t":"Sol#5"},{"p":"Mi6","t":"Si5"},{"p":"La6","t":"Ré6"},{"p":"Do#7","t":"Fa#6"}],[{"p":"Ré3","t":"Do#3"},{"p":"Fa#3","t":"Mi3"},{"p":"La3","t":"Sol3"},{"p":"Ré4","t":"Si3"},{"p":"Fa#4","t":"Do4"},{"p":"La4","t":"Mi4"},{"p":"Ré5","t":"Fa#4"},{"p":"Fa#5","t":"Sol#4"},{"p":"La5","t":"Si4"},{"p":"Ré6","t":"Do#5"},{"p":"Fa#6","t":"Mi5"}],[{"p":"Mi3","t":"Fa#3"},{"p":"Sol#3","t":"La3"},{"p":"Si3","t":"Do#4"},{"p":"Mi4","t":"Ré#4"},{"p":"Sol#4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Mi5","t":"Do#5"},{"p":"Sol#5","t":"Ré#5"},{"p":"Si5","t":"Fa#5"},{"p":"Mi6","t":"La5"},{"p":"Sol#6","t":"Si5"}]],"basses":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"accords":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"terzetto":[],"basses2":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"basses3":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"accords2":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"ADb21":{"nbRangees":2,"rangees":[{"nom":"Rangée La (intérieure)","nb":10},{"nom":"Rangée Réb (extérieure)","nb":11}],"notes":{"droite":[[{"p":"La3","t":"Si3"},{"p":"Réb4","t":"Ré4"},{"p":"Mi4","t":"Solb4"},{"p":"La4","t":"Lab4"},{"p":"Réb5","t":"Si4"},{"p":"Mi5","t":"Ré5"},{"p":"La5","t":"Solb5"},{"p":"Réb6","t":"Lab5"},{"p":"Mi6","t":"Si5"},{"p":"La6","t":"Ré6"}],[{"p":"Ré3","t":"Réb3"},{"p":"Solb3","t":"Mi3"},{"p":"La3","t":"Sol3"},{"p":"Ré4","t":"Si3"},{"p":"Solb4","t":"Do4"},{"p":"La4","t":"Mi4"},{"p":"Ré5","t":"Solb4"},{"p":"Solb5","t":"Lab4"},{"p":"La5","t":"Si4"},{"p":"Ré6","t":"Réb5"},{"p":"Solb6","t":"Mi5"}]],"basses":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Réb3","t":"Lab2"},{"p":"Mib3","t":"Sib2"},{"p":"Sib3","t":"Fa3"}],"accords":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Réb3","t":"Lab2"},{"p":"Mib3","t":"Sib2"},{"p":"Sib3","t":"Fa3"}],"terzetto":[],"basses2":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Réb3","t":"Lab2"},{"p":"Mib3","t":"Sib2"},{"p":"Sib3","t":"Fa3"}],"basses3":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Réb3","t":"Lab2"},{"p":"Mib3","t":"Sib2"},{"p":"Sib3","t":"Fa3"}],"accords2":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"La#3","t":"Fa3"},{"p":"Fa4","t":"Do4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"BC21":{"nbRangees":2,"rangees":[{"nom":"Rangée Si (intérieure)","nb":10},{"nom":"Rangée Do (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Si3","t":"Do#4"},{"p":"Ré#4","t":"Mi4"},{"p":"Fa#4","t":"Sol#4"},{"p":"Si4","t":"La#4"},{"p":"Ré#5","t":"Do#5"},{"p":"Fa#5","t":"Mi5"},{"p":"Si5","t":"Sol#5"},{"p":"Ré#6","t":"La#5"},{"p":"Fa#6","t":"Do#6"},{"p":"Si6","t":"Mi6"}],[{"p":"Mi3","t":"Ré#3"},{"p":"Sol#3","t":"Fa#3"},{"p":"Si3","t":"La3"},{"p":"Mi4","t":"Do#4"},{"p":"Sol#4","t":"Ré4"},{"p":"Si4","t":"Fa#4"},{"p":"Mi5","t":"Sol#4"},{"p":"Sol#5","t":"La#4"},{"p":"Si5","t":"Do#5"},{"p":"Mi6","t":"Ré#5"},{"p":"Sol#6","t":"Fa#5"}]],"basses":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"accords":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"terzetto":[],"basses2":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"basses3":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"accords2":[{"p":"Fa#3","t":"Do#3"},{"p":"Si3","t":"Fa#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#4","t":"Ré#4"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"BE21":{"nbRangees":2,"rangees":[{"nom":"Rangée Si (intérieure)","nb":10},{"nom":"Rangée Mi (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Si3","t":"Do#4"},{"p":"Ré#4","t":"Mi4"},{"p":"Fa#4","t":"Sol#4"},{"p":"Si4","t":"La#4"},{"p":"Ré#5","t":"Do#5"},{"p":"Fa#5","t":"Mi5"},{"p":"Si5","t":"Sol#5"},{"p":"Ré#6","t":"La#5"},{"p":"Fa#6","t":"Do#6"},{"p":"Si6","t":"Mi6"}],[{"p":"Mi3","t":"Ré#3"},{"p":"Sol#3","t":"Fa#3"},{"p":"Si3","t":"La3"},{"p":"Mi4","t":"Do#4"},{"p":"Sol#4","t":"Ré4"},{"p":"Si4","t":"Fa#4"},{"p":"Mi5","t":"Sol#4"},{"p":"Sol#5","t":"La#4"},{"p":"Si5","t":"Do#5"},{"p":"Mi6","t":"Ré#5"},{"p":"Sol#6","t":"Fa#5"}]],"basses":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"accords":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"terzetto":[],"basses2":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"basses3":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"}],"accords2":[{"p":"Fa#3","t":"Do#3"},{"p":"Si3","t":"Fa#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#4","t":"Ré#4"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"BbEbAb33":{"nbRangees":3,"rangees":[{"nom":"Rangée Sib (intérieure)","nb":11},{"nom":"Rangée Mib (médiane)","nb":11},{"nom":"Rangée Lab (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Sib3","t":"Do4"},{"p":"Ré4","t":"Mib4"},{"p":"Fa4","t":"Sol4"},{"p":"Sib4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Fa5","t":"Mib5"},{"p":"Sib5","t":"Sol5"},{"p":"Ré6","t":"La5"},{"p":"Fa6","t":"Do6"},{"p":"Sib6","t":"Mib6"},{"p":"Ré7","t":"Sol6"}],[{"p":"Mib3","t":"Ré3"},{"p":"Sol3","t":"Fa3"},{"p":"Sib3","t":"Lab3"},{"p":"Mib4","t":"Do4"},{"p":"Sol4","t":"Réb4"},{"p":"Sib4","t":"Fa4"},{"p":"Mib5","t":"Sol4"},{"p":"Sol5","t":"La4"},{"p":"Sib5","t":"Do5"},{"p":"Mib6","t":"Ré5"},{"p":"Sol6","t":"Fa5"}],[{"p":"Fa3","t":"Sol3"},{"p":"La3","t":"Sib3"},{"p":"Do4","t":"Ré4"},{"p":"Fa4","t":"Mi4"},{"p":"La4","t":"Sol4"},{"p":"Do5","t":"Sib4"},{"p":"Fa5","t":"Ré5"},{"p":"La5","t":"Mi5"},{"p":"Do6","t":"Sol5"},{"p":"Fa6","t":"Sib5"},{"p":"La6","t":"Do6"}]],"basses":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"accords":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"terzetto":[],"basses2":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"basses3":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"accords2":[{"p":"Fa3","t":"Do3"},{"p":"La#3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"BbFC33":{"nbRangees":3,"rangees":[{"nom":"Rangée Sib (intérieure)","nb":11},{"nom":"Rangée Fa (médiane)","nb":11},{"nom":"Rangée Do (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Sib3","t":"Do4"},{"p":"Ré4","t":"Mib4"},{"p":"Fa4","t":"Sol4"},{"p":"Sib4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Fa5","t":"Mib5"},{"p":"Sib5","t":"Sol5"},{"p":"Ré6","t":"La5"},{"p":"Fa6","t":"Do6"},{"p":"Sib6","t":"Mib6"},{"p":"Ré7","t":"Sol6"}],[{"p":"Fa3","t":"Mib3"},{"p":"La3","t":"Sol3"},{"p":"Do4","t":"Sib3"},{"p":"Fa4","t":"Ré4"},{"p":"La4","t":"Mib4"},{"p":"Do5","t":"Sol4"},{"p":"Fa5","t":"La4"},{"p":"La5","t":"Sib4"},{"p":"Do6","t":"Ré5"},{"p":"Fa6","t":"Mi5"},{"p":"La6","t":"Sol5"}],[{"p":"Do3","t":"Si2"},{"p":"Mi3","t":"Ré3"},{"p":"Sol3","t":"Fa3"},{"p":"Do4","t":"La3"},{"p":"Mi4","t":"Sib3"},{"p":"Sol4","t":"Ré4"},{"p":"Do5","t":"Mi4"},{"p":"Mi5","t":"Fa#4"},{"p":"Sol5","t":"La4"},{"p":"Do6","t":"Si4"},{"p":"Mi6","t":"Ré5"}]],"basses":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"accords":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"terzetto":[],"basses2":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"basses3":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"}],"accords2":[{"p":"Fa3","t":"Do3"},{"p":"La#3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"CA21":{"nbRangees":2,"rangees":[{"nom":"Rangée Do (intérieure)","nb":10},{"nom":"Rangée La (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Do3","t":"Ré3"},{"p":"Mi3","t":"Fa3"},{"p":"Sol3","t":"La3"},{"p":"Do4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"Sol4","t":"Fa4"},{"p":"Do5","t":"La4"},{"p":"Mi5","t":"Si4"},{"p":"Sol5","t":"Ré5"},{"p":"Do6","t":"Fa5"}],[{"p":"Fa2","t":"Sol2"},{"p":"La2","t":"La#2"},{"p":"Do3","t":"Ré3"},{"p":"Fa3","t":"Mi3"},{"p":"La3","t":"Sol3"},{"p":"Do4","t":"La#3"},{"p":"Fa4","t":"Ré4"},{"p":"La4","t":"Mi4"},{"p":"Do5","t":"Sol4"},{"p":"Fa5","t":"La#4"},{"p":"La5","t":"Ré5"}]],"basses":[{"p":"Do3","t":"Sol2"},{"p":"Fa2","t":"Do2"},{"p":"Sol3","t":"Ré3"},{"p":"La#2","t":"Fa2"},{"p":"Ré3","t":"La2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"accords":[{"p":"Do3","t":"Sol2"},{"p":"Fa2","t":"Do2"},{"p":"Sol3","t":"Ré3"},{"p":"La#2","t":"Fa2"},{"p":"Ré3","t":"La2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"terzetto":[],"basses2":[{"p":"Do3","t":"Sol2"},{"p":"Fa2","t":"Do2"},{"p":"Sol3","t":"Ré3"},{"p":"La#2","t":"Fa2"},{"p":"Ré3","t":"La2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"basses3":[{"p":"Do3","t":"Sol2"},{"p":"Fa2","t":"Do2"},{"p":"Sol3","t":"Ré3"},{"p":"La#2","t":"Fa2"},{"p":"Ré3","t":"La2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"accords2":[{"p":"Sol3","t":"Ré3"},{"p":"Do3","t":"Sol2"},{"p":"Ré4","t":"La3"},{"p":"Fa3","t":"Do3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"CF21":{"nbRangees":2,"rangees":[{"nom":"Rangée Do (intérieure)","nb":10},{"nom":"Rangée Fa (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Do3","t":"Ré3"},{"p":"Mi3","t":"Fa3"},{"p":"Sol3","t":"La3"},{"p":"Do4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"Sol4","t":"Fa4"},{"p":"Do5","t":"La4"},{"p":"Mi5","t":"Si4"},{"p":"Sol5","t":"Ré5"},{"p":"Do6","t":"Fa5"}],[{"p":"Fa3","t":"Mi3"},{"p":"La3","t":"Sol3"},{"p":"Do4","t":"Sib3"},{"p":"Fa4","t":"Ré4"},{"p":"La4","t":"Mib4"},{"p":"Do5","t":"Sol4"},{"p":"Fa5","t":"La4"},{"p":"La5","t":"Sib4"},{"p":"Do6","t":"Ré5"},{"p":"Fa6","t":"Mi5"},{"p":"La6","t":"Sol5"}]],"basses":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol2","t":"Ré2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"}],"accords":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol2","t":"Ré2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"}],"terzetto":[],"basses2":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol2","t":"Ré2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"}],"basses3":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol2","t":"Ré2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"}],"accords2":[{"p":"Sol3","t":"Ré3"},{"p":"Do4","t":"Sol3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"CFBb33":{"nbRangees":3,"rangees":[{"nom":"Rangée Do (intérieure)","nb":11},{"nom":"Rangée Fa (médiane)","nb":11},{"nom":"Rangée Sib (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Do4","t":"Ré4"},{"p":"Mi4","t":"Fa4"},{"p":"Sol4","t":"La4"},{"p":"Do5","t":"Si4"},{"p":"Mi5","t":"Ré5"},{"p":"Sol5","t":"Fa5"},{"p":"Do6","t":"La5"},{"p":"Mi6","t":"Si5"},{"p":"Sol6","t":"Ré6"},{"p":"Do7","t":"Fa6"},{"p":"Mi7","t":"La6"}],[{"p":"Sol3","t":"Fa3"},{"p":"Si3","t":"La3"},{"p":"Ré4","t":"Do4"},{"p":"Sol4","t":"Mi4"},{"p":"Si4","t":"Fa4"},{"p":"Ré5","t":"La4"},{"p":"Sol5","t":"Si4"},{"p":"Si5","t":"Do5"},{"p":"Ré6","t":"Mi5"},{"p":"Sol6","t":"Solb5"},{"p":"Si6","t":"La5"}],[{"p":"Ré3","t":"Réb3"},{"p":"Solb3","t":"Mi3"},{"p":"La3","t":"Sol3"},{"p":"Ré4","t":"Si3"},{"p":"Solb4","t":"Do4"},{"p":"La4","t":"Mi4"},{"p":"Ré5","t":"Solb4"},{"p":"Solb5","t":"Lab4"},{"p":"La5","t":"Si4"},{"p":"Ré6","t":"Réb5"},{"p":"Solb6","t":"Mi5"}]],"basses":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"accords":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"terzetto":[],"basses2":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"basses3":[{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"accords2":[{"p":"Sol3","t":"Ré3"},{"p":"Do4","t":"Sol3"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"CSharpD21":{"nbRangees":2,"rangees":[{"nom":"Rangée Do# (intérieure)","nb":10},{"nom":"Rangée Ré (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Do#4","t":"Ré#4"},{"p":"Fa4","t":"Fa#4"},{"p":"Sol#4","t":"La#4"},{"p":"Do#5","t":"Do5"},{"p":"Fa5","t":"Ré#5"},{"p":"Sol#5","t":"Fa#5"},{"p":"Do#6","t":"La#5"},{"p":"Fa6","t":"Do6"},{"p":"Sol#6","t":"Ré#6"},{"p":"Do#7","t":"Fa#6"}],[{"p":"Fa#3","t":"Fa3"},{"p":"La#3","t":"Sol#3"},{"p":"Do#4","t":"Si3"},{"p":"Fa#4","t":"Ré#4"},{"p":"La#4","t":"Mi4"},{"p":"Do#5","t":"Sol#4"},{"p":"Fa#5","t":"La#4"},{"p":"La#5","t":"Do5"},{"p":"Do#6","t":"Ré#5"},{"p":"Fa#6","t":"Fa5"},{"p":"La#6","t":"Sol#5"}]],"basses":[{"p":"Do#3","t":"Sol#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"}],"accords":[{"p":"Do#3","t":"Sol#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"}],"terzetto":[],"basses2":[{"p":"Do#3","t":"Sol#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"}],"basses3":[{"p":"Do#3","t":"Sol#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"},{"p":"Fa3","t":"Do3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"}],"accords2":[{"p":"Sol#3","t":"Ré#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Ré#4","t":"La#3"},{"p":"La#4","t":"Fa4"},{"p":"Fa4","t":"Do4"},{"p":"Do4","t":"Sol3"},{"p":"Ré4","t":"La3"},{"p":"La4","t":"Mi4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"DG21":{"nbRangees":2,"rangees":[{"nom":"Rangée Ré (intérieure)","nb":10},{"nom":"Rangée Sol (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Ré3","t":"Mi3"},{"p":"Fa#3","t":"Sol3"},{"p":"La3","t":"Si3"},{"p":"Ré4","t":"Do#4"},{"p":"Fa#4","t":"Mi4"},{"p":"La4","t":"Sol4"},{"p":"Ré5","t":"Si4"},{"p":"Fa#5","t":"Do#5"},{"p":"La5","t":"Mi5"},{"p":"Ré6","t":"Sol5"}],[{"p":"Sol2","t":"La2"},{"p":"Si2","t":"Do3"},{"p":"Ré3","t":"Mi3"},{"p":"Sol3","t":"Fa#3"},{"p":"Si3","t":"La3"},{"p":"Ré4","t":"Do4"},{"p":"Sol4","t":"Mi4"},{"p":"Si4","t":"Fa#4"},{"p":"Ré5","t":"La4"},{"p":"Sol5","t":"Do5"},{"p":"Si5","t":"Mi5"}]],"basses":[{"p":"Ré3","t":"La2"},{"p":"Sol2","t":"Ré2"},{"p":"La3","t":"Mi3"},{"p":"Do3","t":"Sol2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"accords":[{"p":"Ré3","t":"La2"},{"p":"Sol2","t":"Ré2"},{"p":"La3","t":"Mi3"},{"p":"Do3","t":"Sol2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"terzetto":[],"basses2":[{"p":"Ré3","t":"La2"},{"p":"Sol2","t":"Ré2"},{"p":"La3","t":"Mi3"},{"p":"Do3","t":"Sol2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"basses3":[{"p":"Ré3","t":"La2"},{"p":"Sol2","t":"Ré2"},{"p":"La3","t":"Mi3"},{"p":"Do3","t":"Sol2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"accords2":[{"p":"La3","t":"Mi3"},{"p":"Ré3","t":"La2"},{"p":"Mi4","t":"Si3"},{"p":"Sol3","t":"Ré3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"DGC33":{"nbRangees":3,"rangees":[{"nom":"Rangée Ré (intérieure)","nb":11},{"nom":"Rangée Sol (médiane)","nb":11},{"nom":"Rangée Do (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Ré3","t":"Mi3"},{"p":"Fa#3","t":"Sol3"},{"p":"La3","t":"Si3"},{"p":"Ré4","t":"Do#4"},{"p":"Fa#4","t":"Mi4"},{"p":"La4","t":"Sol4"},{"p":"Ré5","t":"Si4"},{"p":"Fa#5","t":"Do#5"},{"p":"La5","t":"Mi5"},{"p":"Ré6","t":"Sol5"},{"p":"Fa#6","t":"Si5"}],[{"p":"Sol2","t":"Fa#2"},{"p":"Si2","t":"La2"},{"p":"Ré3","t":"Do3"},{"p":"Sol3","t":"Mi3"},{"p":"Si3","t":"Fa3"},{"p":"Ré4","t":"La3"},{"p":"Sol4","t":"Si3"},{"p":"Si4","t":"Do#4"},{"p":"Ré5","t":"Mi4"},{"p":"Sol5","t":"Fa#4"},{"p":"Si5","t":"La4"}],[{"p":"La2","t":"Si2"},{"p":"Do#3","t":"Ré3"},{"p":"Mi3","t":"Fa#3"},{"p":"La3","t":"Sol#3"},{"p":"Do#4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"La4","t":"Fa#4"},{"p":"Do#5","t":"Sol#4"},{"p":"Mi5","t":"Si4"},{"p":"La5","t":"Ré5"},{"p":"Do#6","t":"Mi5"}]],"basses":[{"p":"Ré2","t":"La1"},{"p":"Sol2","t":"Ré2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#2","t":"Do#2"}],"accords":[{"p":"Ré2","t":"La1"},{"p":"Sol2","t":"Ré2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#2","t":"Do#2"}],"terzetto":[],"basses2":[{"p":"Ré2","t":"La1"},{"p":"Sol2","t":"Ré2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#2","t":"Do#2"}],"basses3":[{"p":"Ré2","t":"La1"},{"p":"Sol2","t":"Ré2"},{"p":"La2","t":"Mi2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#2","t":"Do#2"}],"accords2":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"DbEb21":{"nbRangees":2,"rangees":[{"nom":"Rangée Réb (intérieure)","nb":10},{"nom":"Rangée Mib (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Ré4","t":"Mi4"},{"p":"Solb4","t":"Sol4"},{"p":"La4","t":"Si4"},{"p":"Ré5","t":"Réb5"},{"p":"Solb5","t":"Mi5"},{"p":"La5","t":"Sol5"},{"p":"Ré6","t":"Si5"},{"p":"Solb6","t":"Réb6"},{"p":"La6","t":"Mi6"},{"p":"Ré7","t":"Sol6"}],[{"p":"Sol3","t":"Solb3"},{"p":"Si3","t":"La3"},{"p":"Ré4","t":"Do4"},{"p":"Sol4","t":"Mi4"},{"p":"Si4","t":"Fa4"},{"p":"Ré5","t":"La4"},{"p":"Sol5","t":"Si4"},{"p":"Si5","t":"Réb5"},{"p":"Ré6","t":"Mi5"},{"p":"Sol6","t":"Solb5"},{"p":"Si6","t":"La5"}]],"basses":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"accords":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"terzetto":[],"basses2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"basses3":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Solb3"},{"p":"Solb3","t":"Réb3"},{"p":"Lab3","t":"Mib3"},{"p":"Mib4","t":"Sib3"}],"accords2":[{"p":"La3","t":"Mi3"},{"p":"Ré4","t":"La3"},{"p":"Mi4","t":"Si3"},{"p":"Si4","t":"Fa#4"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#4","t":"Sol#3"},{"p":"Ré#4","t":"La#3"},{"p":"La#4","t":"Fa4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"EA21":{"nbRangees":2,"rangees":[{"nom":"Rangée Mi (intérieure)","nb":10},{"nom":"Rangée La (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Mi3","t":"Fa#3"},{"p":"Sol#3","t":"La3"},{"p":"Si3","t":"Do#4"},{"p":"Mi4","t":"Ré#4"},{"p":"Sol#4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Mi5","t":"Do#5"},{"p":"Sol#5","t":"Ré#5"},{"p":"Si5","t":"Fa#5"},{"p":"Mi6","t":"La5"}],[{"p":"La2","t":"Si2"},{"p":"Do#3","t":"Ré3"},{"p":"Mi3","t":"Fa#3"},{"p":"La3","t":"Sol#3"},{"p":"Do#4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"La4","t":"Fa#4"},{"p":"Do#5","t":"Sol#4"},{"p":"Mi5","t":"Si4"},{"p":"La5","t":"Ré5"},{"p":"Do#6","t":"Fa#5"}]],"basses":[{"p":"Mi3","t":"Si2"},{"p":"La2","t":"Mi2"},{"p":"Si3","t":"Fa#3"},{"p":"Ré3","t":"La2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"accords":[{"p":"Mi3","t":"Si2"},{"p":"La2","t":"Mi2"},{"p":"Si3","t":"Fa#3"},{"p":"Ré3","t":"La2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"terzetto":[],"basses2":[{"p":"Mi3","t":"Si2"},{"p":"La2","t":"Mi2"},{"p":"Si3","t":"Fa#3"},{"p":"Ré3","t":"La2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"basses3":[{"p":"Mi3","t":"Si2"},{"p":"La2","t":"Mi2"},{"p":"Si3","t":"Fa#3"},{"p":"Ré3","t":"La2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"accords2":[{"p":"Si3","t":"Fa#3"},{"p":"Mi3","t":"Si2"},{"p":"Fa#4","t":"Do#4"},{"p":"La3","t":"Mi3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"EAD33":{"nbRangees":3,"rangees":[{"nom":"Rangée Mi (intérieure)","nb":11},{"nom":"Rangée La (médiane)","nb":11},{"nom":"Rangée Ré (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Si3","t":"Do#4"},{"p":"Ré#4","t":"Mi4"},{"p":"Fa#4","t":"Sol#4"},{"p":"Si4","t":"La#4"},{"p":"Ré#5","t":"Do#5"},{"p":"Fa#5","t":"Mi5"},{"p":"Si5","t":"Sol#5"},{"p":"Ré#6","t":"La#5"},{"p":"Fa#6","t":"Do#6"},{"p":"Si6","t":"Mi6"},{"p":"Ré#7","t":"Sol#6"}],[{"p":"Mi3","t":"Ré#3"},{"p":"Sol#3","t":"Fa#3"},{"p":"Si3","t":"La3"},{"p":"Mi4","t":"Do#4"},{"p":"Sol#4","t":"Ré4"},{"p":"Si4","t":"Fa#4"},{"p":"Mi5","t":"Sol#4"},{"p":"Sol#5","t":"La#4"},{"p":"Si5","t":"Do#5"},{"p":"Mi6","t":"Ré#5"},{"p":"Sol#6","t":"Fa#5"}],[{"p":"Fa#3","t":"Sol#3"},{"p":"La#3","t":"Si3"},{"p":"Do#4","t":"Ré#4"},{"p":"Fa#4","t":"Fa4"},{"p":"La#4","t":"Sol#4"},{"p":"Do#5","t":"Si4"},{"p":"Fa#5","t":"Ré#5"},{"p":"La#5","t":"Fa5"},{"p":"Do#6","t":"Sol#5"},{"p":"Fa#6","t":"Si5"},{"p":"La#6","t":"Do#6"}]],"basses":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"accords":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"terzetto":[],"basses2":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"basses3":[{"p":"Si2","t":"Fa#2"},{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#3","t":"La#2"}],"accords2":[{"p":"Fa#3","t":"Do#3"},{"p":"Si3","t":"Fa#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#4","t":"Ré#4"},{"p":"Ré#4","t":"La#3"},{"p":"La#3","t":"Fa3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"EbBb21":{"nbRangees":2,"rangees":[{"nom":"Rangée Mib (intérieure)","nb":10},{"nom":"Rangée Sib (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Mib3","t":"Fa3"},{"p":"Sol3","t":"Lab3"},{"p":"Sib3","t":"Do4"},{"p":"Mib4","t":"Ré4"},{"p":"Sol4","t":"Fa4"},{"p":"Sib4","t":"Lab4"},{"p":"Mib5","t":"Do5"},{"p":"Sol5","t":"Ré5"},{"p":"Sib5","t":"Fa5"},{"p":"Mib6","t":"Lab5"}],[{"p":"Lab3","t":"Sol3"},{"p":"Do4","t":"Sib3"},{"p":"Mib4","t":"Réb4"},{"p":"Lab4","t":"Fa4"},{"p":"Do5","t":"Solb4"},{"p":"Mib5","t":"Sib4"},{"p":"Lab5","t":"Do5"},{"p":"Do6","t":"Réb5"},{"p":"Mib6","t":"Fa5"},{"p":"Lab6","t":"Sol5"},{"p":"Do7","t":"Sib5"}]],"basses":[{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Sib2","t":"Fa2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"accords":[{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Sib2","t":"Fa2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"terzetto":[],"basses2":[{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Sib2","t":"Fa2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"basses3":[{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Sib2","t":"Fa2"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"accords2":[{"p":"La#3","t":"Fa3"},{"p":"Ré#4","t":"La#3"},{"p":"Fa3","t":"Do3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"EbF21":{"nbRangees":2,"rangees":[{"nom":"Rangée Mib (intérieure)","nb":10},{"nom":"Rangée Fa (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Mi4","t":"Solb4"},{"p":"Lab4","t":"La4"},{"p":"Si4","t":"Réb5"},{"p":"Mi5","t":"Mib5"},{"p":"Lab5","t":"Solb5"},{"p":"Si5","t":"La5"},{"p":"Mi6","t":"Réb6"},{"p":"Lab6","t":"Mib6"},{"p":"Si6","t":"Solb6"},{"p":"Mi7","t":"La6"}],[{"p":"La3","t":"Lab3"},{"p":"Réb4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"La4","t":"Solb4"},{"p":"Réb5","t":"Sol4"},{"p":"Mi5","t":"Si4"},{"p":"La5","t":"Réb5"},{"p":"Réb6","t":"Mib5"},{"p":"Mi6","t":"Solb5"},{"p":"La6","t":"Lab5"},{"p":"Réb7","t":"Si5"}]],"basses":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Sib3","t":"Fa3"},{"p":"Fa4","t":"Do4"}],"accords":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Sib3","t":"Fa3"},{"p":"Fa4","t":"Do4"}],"terzetto":[],"basses2":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Sib3","t":"Fa3"},{"p":"Fa4","t":"Do4"}],"basses3":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"},{"p":"Réb4","t":"Lab3"},{"p":"Lab3","t":"Mib3"},{"p":"Sib3","t":"Fa3"},{"p":"Fa4","t":"Do4"}],"accords2":[{"p":"Si3","t":"Fa#3"},{"p":"Mi4","t":"Si3"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#5","t":"Sol#4"},{"p":"Sol#4","t":"Ré#4"},{"p":"Ré#4","t":"La#3"},{"p":"Fa4","t":"Do4"},{"p":"Do5","t":"Sol4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"FBb21":{"nbRangees":2,"rangees":[{"nom":"Rangée Fa (intérieure)","nb":10},{"nom":"Rangée Sib (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Fa3","t":"Sol3"},{"p":"La3","t":"Sib3"},{"p":"Do4","t":"Ré4"},{"p":"Fa4","t":"Mi4"},{"p":"La4","t":"Sol4"},{"p":"Do5","t":"Sib4"},{"p":"Fa5","t":"Ré5"},{"p":"La5","t":"Mi5"},{"p":"Do6","t":"Sol5"},{"p":"Fa6","t":"Sib5"}],[{"p":"Sib3","t":"La3"},{"p":"Ré4","t":"Do4"},{"p":"Fa4","t":"Mib4"},{"p":"Sib4","t":"Sol4"},{"p":"Ré5","t":"Lab4"},{"p":"Fa5","t":"Do5"},{"p":"Sib5","t":"Ré5"},{"p":"Ré6","t":"Mib5"},{"p":"Fa6","t":"Sol5"},{"p":"Sib6","t":"La5"},{"p":"Ré7","t":"Do6"}]],"basses":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"}],"accords":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"}],"terzetto":[],"basses2":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"}],"basses3":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Solb3"}],"accords2":[{"p":"Do4","t":"Sol3"},{"p":"Fa4","t":"Do4"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"},{"p":"La4","t":"Mi4"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#4","t":"Do#4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"FCG33":{"nbRangees":3,"rangees":[{"nom":"Rangée Fa (intérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Fa4","t":"Sol4"},{"p":"La4","t":"Sib4"},{"p":"Do5","t":"Ré5"},{"p":"Fa5","t":"Mi5"},{"p":"La5","t":"Sol5"},{"p":"Do6","t":"Sib5"},{"p":"Fa6","t":"Ré6"},{"p":"La6","t":"Mi6"},{"p":"Do7","t":"Sol6"},{"p":"Fa7","t":"Sib6"},{"p":"La7","t":"Ré7"}],[{"p":"Sib3","t":"La3"},{"p":"Ré4","t":"Do4"},{"p":"Fa4","t":"Mib4"},{"p":"Sib4","t":"Sol4"},{"p":"Ré5","t":"Lab4"},{"p":"Fa5","t":"Do5"},{"p":"Sib5","t":"Ré5"},{"p":"Ré6","t":"Mi5"},{"p":"Fa6","t":"Sol5"},{"p":"Sib6","t":"La5"},{"p":"Ré7","t":"Do6"}],[{"p":"Do4","t":"Ré4"},{"p":"Mi4","t":"Fa4"},{"p":"Sol4","t":"La4"},{"p":"Do5","t":"Si4"},{"p":"Mi5","t":"Ré5"},{"p":"Sol5","t":"Fa5"},{"p":"Do6","t":"La5"},{"p":"Mi6","t":"Si5"},{"p":"Sol6","t":"Ré6"},{"p":"Do7","t":"Fa6"},{"p":"Mi7","t":"Sol6"}]],"basses":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"}],"accords":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"}],"terzetto":[],"basses2":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"}],"basses3":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"}],"accords2":[{"p":"Do4","t":"Sol3"},{"p":"Fa4","t":"Do4"},{"p":"Sol4","t":"Ré4"},{"p":"Ré5","t":"La4"},{"p":"La4","t":"Mi4"},{"p":"Mi4","t":"Si3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"FD21":{"nbRangees":2,"rangees":[{"nom":"Rangée Fa (intérieure)","nb":10},{"nom":"Rangée Ré (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Fa3","t":"Sol3"},{"p":"La3","t":"Sib3"},{"p":"Do4","t":"Ré4"},{"p":"Fa4","t":"Mi4"},{"p":"La4","t":"Sol4"},{"p":"Do5","t":"Sib4"},{"p":"Fa5","t":"Ré5"},{"p":"La5","t":"Mi5"},{"p":"Do6","t":"Sol5"},{"p":"Fa6","t":"Sib5"}],[{"p":"Sib2","t":"Do3"},{"p":"Ré3","t":"Mib3"},{"p":"Fa3","t":"Sol3"},{"p":"Sib3","t":"La3"},{"p":"Ré4","t":"Do4"},{"p":"Fa4","t":"Mib4"},{"p":"Sib4","t":"Sol4"},{"p":"Ré5","t":"La4"},{"p":"Fa5","t":"Do5"},{"p":"Sib5","t":"Mib5"},{"p":"Ré6","t":"Sol5"}]],"basses":[{"p":"Fa3","t":"Do3"},{"p":"Sib2","t":"Fa2"},{"p":"Do4","t":"Sol3"},{"p":"Mib3","t":"Sib2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"accords":[{"p":"Fa3","t":"Do3"},{"p":"Sib2","t":"Fa2"},{"p":"Do4","t":"Sol3"},{"p":"Mib3","t":"Sib2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"terzetto":[],"basses2":[{"p":"Fa3","t":"Do3"},{"p":"Sib2","t":"Fa2"},{"p":"Do4","t":"Sol3"},{"p":"Mib3","t":"Sib2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"basses3":[{"p":"Fa3","t":"Do3"},{"p":"Sib2","t":"Fa2"},{"p":"Do4","t":"Sol3"},{"p":"Mib3","t":"Sib2"},{"p":"Sol3","t":"Ré3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"accords2":[{"p":"Do4","t":"Sol3"},{"p":"Fa3","t":"Do3"},{"p":"Sol4","t":"Ré4"},{"p":"La#3","t":"Fa3"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"FGb21":{"nbRangees":2,"rangees":[{"nom":"Rangée Fa (intérieure)","nb":10},{"nom":"Rangée Solb (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Fa4","t":"Sol4"},{"p":"La4","t":"Sib4"},{"p":"Do5","t":"Ré5"},{"p":"Fa5","t":"Mi5"},{"p":"La5","t":"Sol5"},{"p":"Do6","t":"Sib5"},{"p":"Fa6","t":"Ré6"},{"p":"La6","t":"Mi6"},{"p":"Do7","t":"Sol6"},{"p":"Fa7","t":"Sib6"}],[{"p":"Sib3","t":"La3"},{"p":"Ré4","t":"Do4"},{"p":"Fa4","t":"Mib4"},{"p":"Sib4","t":"Sol4"},{"p":"Ré5","t":"Lab4"},{"p":"Fa5","t":"Do5"},{"p":"Sib5","t":"Ré5"},{"p":"Ré6","t":"Mi5"},{"p":"Fa6","t":"Sol5"},{"p":"Sib6","t":"La5"},{"p":"Ré7","t":"Do6"}]],"basses":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"}],"accords":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"}],"terzetto":[],"basses2":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"}],"basses3":[{"p":"Fa3","t":"Do3"},{"p":"Sib3","t":"Fa3"},{"p":"Do4","t":"Sol3"},{"p":"Sol4","t":"Ré4"},{"p":"Ré4","t":"La3"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Solb3"},{"p":"Solb4","t":"Réb4"}],"accords2":[{"p":"Do4","t":"Sol3"},{"p":"Fa4","t":"Do4"},{"p":"Sol4","t":"Ré4"},{"p":"Ré5","t":"La4"},{"p":"La4","t":"Mi4"},{"p":"Mi4","t":"Si3"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#5","t":"Sol#4"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"GAb21":{"nbRangees":2,"rangees":[{"nom":"Rangée Sol (intérieure)","nb":10},{"nom":"Rangée Lab (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Solb4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Solb5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"}],[{"p":"Do3","t":"Si2"},{"p":"Mi3","t":"Ré3"},{"p":"Sol3","t":"Fa3"},{"p":"Do4","t":"La3"},{"p":"Mi4","t":"Sib3"},{"p":"Sol4","t":"Ré4"},{"p":"Do5","t":"Mi4"},{"p":"Mi5","t":"Solb4"},{"p":"Sol5","t":"La4"},{"p":"Do6","t":"Si4"},{"p":"Mi6","t":"Ré5"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Solb2"},{"p":"Réb3","t":"Lab2"},{"p":"Lab3","t":"Mib3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Solb2"},{"p":"Réb3","t":"Lab2"},{"p":"Lab3","t":"Mib3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Solb2"},{"p":"Réb3","t":"Lab2"},{"p":"Lab3","t":"Mib3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Solb2"},{"p":"Réb3","t":"Lab2"},{"p":"Lab3","t":"Mib3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"GC21":{"nbRangees":2,"rangees":[{"nom":"Rangée Sol (intérieure)","nb":10},{"nom":"Rangée Do (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"}],[{"p":"Do3","t":"Si2"},{"p":"Mi3","t":"Ré3"},{"p":"Sol3","t":"Fa3"},{"p":"Do4","t":"La3"},{"p":"Mi4","t":"Sib3"},{"p":"Sol4","t":"Ré4"},{"p":"Do5","t":"Mi4"},{"p":"Mi5","t":"Fa#4"},{"p":"Sol5","t":"La4"},{"p":"Do6","t":"Si4"},{"p":"Mi6","t":"Ré5"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"GCD33":{"nbRangees":3,"rangees":[{"nom":"Rangée Sol (intérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Ré (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"},{"p":"Si6","t":"Mi6"}],[{"p":"Do3","t":"Si2"},{"p":"Mi3","t":"Ré3"},{"p":"Sol3","t":"Fa3"},{"p":"Do4","t":"La3"},{"p":"Mi4","t":"Sib3"},{"p":"Sol4","t":"Ré4"},{"p":"Do5","t":"Mi4"},{"p":"Mi5","t":"Fa#4"},{"p":"Sol5","t":"La4"},{"p":"Do6","t":"Si4"},{"p":"Mi6","t":"Ré5"}],[{"p":"Ré3","t":"Mi3"},{"p":"Fa#3","t":"Sol3"},{"p":"La3","t":"Si3"},{"p":"Ré4","t":"Do#4"},{"p":"Fa#4","t":"Mi4"},{"p":"La4","t":"Sol4"},{"p":"Ré5","t":"Si4"},{"p":"Fa#5","t":"Do#5"},{"p":"La5","t":"Mi5"},{"p":"Ré6","t":"Sol5"},{"p":"Fa#6","t":"La5"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"GDA21":{"nbRangees":2,"rangees":[{"nom":"Rangée Sol (intérieure)","nb":10},{"nom":"Rangée La (extérieure)","nb":11}],"notes":{"droite":[[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"}],[{"p":"Do3","t":"Ré3"},{"p":"Mi3","t":"Fa3"},{"p":"Sol3","t":"La3"},{"p":"Do4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"Sol4","t":"Fa4"},{"p":"Do5","t":"La4"},{"p":"Mi5","t":"Si4"},{"p":"Sol5","t":"Ré5"},{"p":"Do6","t":"Fa5"},{"p":"Mi6","t":"La5"}]],"basses":[{"p":"Sol3","t":"Ré3"},{"p":"Do3","t":"Sol2"},{"p":"Ré4","t":"La3"},{"p":"Fa3","t":"Do3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"}],"accords":[{"p":"Sol3","t":"Ré3"},{"p":"Do3","t":"Sol2"},{"p":"Ré4","t":"La3"},{"p":"Fa3","t":"Do3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"}],"terzetto":[],"basses2":[{"p":"Sol3","t":"Ré3"},{"p":"Do3","t":"Sol2"},{"p":"Ré4","t":"La3"},{"p":"Fa3","t":"Do3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"}],"basses3":[{"p":"Sol3","t":"Ré3"},{"p":"Do3","t":"Sol2"},{"p":"Ré4","t":"La3"},{"p":"Fa3","t":"Do3"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"}],"accords2":[{"p":"Ré4","t":"La3"},{"p":"Sol3","t":"Ré3"},{"p":"La4","t":"Mi4"},{"p":"Do4","t":"Sol3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#4","t":"Do#4"},{"p":"Do#4","t":"Sol#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"LaReSol33_12":{"nbRangees":3,"rangees":[{"nom":"Rangée Sol (extérieure)","nb":10},{"nom":"Rangée Ré (médiane)","nb":11},{"nom":"Rangée La (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Fa3","t":"Mib3"},{"p":"Ré4","t":"La3"},{"p":"Sol4","t":"Do#4"},{"p":"Si4","t":"Mi4"},{"p":"Ré5","t":"La4"},{"p":"Sol5","t":"Do#5"},{"p":"Si5","t":"Mi5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do#6"},{"p":"Si6","t":"Mi6"}],[{"p":"La2","t":"Sol#2"},{"p":"Fa3","t":"Mib3"},{"p":"Si3","t":"Fa#3"},{"p":"Ré4","t":"La3"},{"p":"Fa#4","t":"Do4"},{"p":"Sol#4","t":"Mi4"},{"p":"Si4","t":"Fa#4"},{"p":"Ré5","t":"La4"},{"p":"Fa#5","t":"Do5"},{"p":"Sol#5","t":"Mi5"},{"p":"Si5","t":"Fa#5"}],[{"p":"Sib3","t":"Do#3"},{"p":"Do#4","t":"Mi3"},{"p":"Mi4","t":"Sol3"},{"p":"Sol4","t":"Sib3"},{"p":"Si4","t":"Ré4"},{"p":"Do#5","t":"Mi4"},{"p":"Mi5","t":"Sol4"},{"p":"Sol5","t":"Sib4"},{"p":"Si5","t":"Ré5"},{"p":"Do#6","t":"Mi5"}]],"basses":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"accords":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"terzetto":[],"basses2":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"basses3":[{"p":"La2","t":"Mi2"},{"p":"Ré3","t":"La2"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#3","t":"Sol#2"}],"accords2":[{"p":"Mi3","t":"Si2"},{"p":"La3","t":"Mi3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Do#4","t":"Sol#3"},{"p":"Sol#3","t":"Ré#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SibMibLab33_12":{"nbRangees":3,"rangees":[{"nom":"Rangée Lab (extérieure)","nb":10},{"nom":"Rangée Mib (médiane)","nb":11},{"nom":"Rangée Sib (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Fa#3","t":"Mi3"},{"p":"Mib4","t":"Sib3"},{"p":"Sib4","t":"Ré4"},{"p":"Do5","t":"Fa4"},{"p":"Mib5","t":"Sib4"},{"p":"Sol5","t":"Ré5"},{"p":"Do6","t":"Fa5"},{"p":"Mib6","t":"Sib5"},{"p":"Fa6","t":"Ré6"},{"p":"Do7","t":"Fa6"}],[{"p":"Sib2","t":"La2"},{"p":"Fa#3","t":"Mi3"},{"p":"Do4","t":"Sol3"},{"p":"Mib4","t":"Sib3"},{"p":"Sol4","t":"Réb4"},{"p":"La4","t":"Fa4"},{"p":"Do5","t":"Sol4"},{"p":"Mib5","t":"Réb5"},{"p":"Sol5","t":"Fa5"},{"p":"La5","t":"Sol5"},{"p":"Do6","t":"Fa6"}],[{"p":"Si3","t":"Ré3"},{"p":"Ré4","t":"Fa3"},{"p":"Fa4","t":"Lab3"},{"p":"Do5","t":"Réb4"},{"p":"Ré5","t":"Fa4"},{"p":"Fa5","t":"Lab4"},{"p":"Do6","t":"Réb5"},{"p":"Ré6","t":"Fa5"},{"p":"Fa6","t":"Lab5"},{"p":"Do7","t":"Réb6"}]],"basses":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"}],"accords":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"}],"terzetto":[],"basses2":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"}],"basses3":[{"p":"Sib2","t":"Fa2"},{"p":"Mib3","t":"Sib2"},{"p":"Lab3","t":"Mib3"},{"p":"Fa3","t":"Do3"},{"p":"Do3","t":"Sol2"},{"p":"Sol3","t":"Ré3"}],"accords2":[{"p":"Fa3","t":"Do3"},{"p":"La#3","t":"Fa3"},{"p":"Ré#4","t":"La#3"},{"p":"Do4","t":"Sol3"},{"p":"Sol3","t":"Ré3"},{"p":"Ré4","t":"La3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SolDoAlts_Bottasso":{"nbRangees":3,"rangees":[{"nom":"Rangée Alts (extérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Do#3","t":"Si2"},{"p":"Sol#3","t":"Ré3"},{"p":"Mib4","t":"Sol3"},{"p":"Fa4","t":"Si3"},{"p":"Fa#4","t":"Ré4"},{"p":"Mib5","t":"Sol4"},{"p":"Fa5","t":"Si4"},{"p":"Fa#5","t":"Ré5"},{"p":"Mib6","t":"Sol5"},{"p":"Fa6","t":"Si5"},{"p":"Fa#6","t":"Ré6"}],[{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Do#3"},{"p":"La3","t":"Mib3"},{"p":"Do4","t":"Sol3"},{"p":"Mi4","t":"Sib3"},{"p":"Fa#4","t":"Do#4"},{"p":"La4","t":"Mib4"},{"p":"Do5","t":"Sol4"},{"p":"Mi5","t":"Sib4"},{"p":"Fa#5","t":"Do#5"},{"p":"La5","t":"Mib5"}],[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"Do4","t":"Sol3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SolDoAlts_Gaillard":{"nbRangees":3,"rangees":[{"nom":"Rangée Alts (extérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Mib3","t":"Si3"},{"p":"Sol#3","t":"Ré4"},{"p":"La3","t":"Sol4"},{"p":"Mib4","t":"Si4"},{"p":"Sol#4","t":"Ré5"},{"p":"La4","t":"Sol5"},{"p":"Mib5","t":"Si5"},{"p":"Sol#5","t":"Ré6"},{"p":"La5","t":"Sol6"},{"p":"Mib6","t":"Si6"},{"p":"Sol#6","t":"Ré7"}],[{"p":"Mi3","t":"Sol#3"},{"p":"Fa#3","t":"Sib3"},{"p":"La3","t":"Do#4"},{"p":"Do4","t":"Sol4"},{"p":"Mi4","t":"Sol#4"},{"p":"Fa#4","t":"Sib4"},{"p":"La4","t":"Do#5"},{"p":"Do5","t":"Sol5"},{"p":"Mi5","t":"Sol#5"},{"p":"Fa#5","t":"Sib5"},{"p":"La5","t":"Do#6"}],[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"Do4","t":"Sol3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SolDoAlts_JPL":{"nbRangees":3,"rangees":[{"nom":"Rangée Alts (extérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Si2","t":"Si3"},{"p":"Sol#3","t":"Ré4"},{"p":"La3","t":"Sol4"},{"p":"Mib4","t":"Si4"},{"p":"Sol#4","t":"Ré5"},{"p":"La4","t":"Sol5"},{"p":"Mib5","t":"Si5"},{"p":"Sol#5","t":"Ré6"},{"p":"La5","t":"Sol6"},{"p":"Mib6","t":"Si6"},{"p":"La6","t":"Ré7"}],[{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Sol3"},{"p":"La3","t":"Sib3"},{"p":"Do4","t":"Do#4"},{"p":"Mi4","t":"Sol4"},{"p":"Fa#4","t":"Sib4"},{"p":"La4","t":"Do#5"},{"p":"Do5","t":"Sol5"},{"p":"Mi5","t":"Sib5"},{"p":"Fa#5","t":"Do6"},{"p":"La5","t":"Mi6"}],[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"Do4","t":"Sol3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SolDoAlts_LTL":{"nbRangees":3,"rangees":[{"nom":"Rangée Alts (extérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Do#3","t":"Si2"},{"p":"Sol#3","t":"Ré3"},{"p":"Sib3","t":"Sol3"},{"p":"Mib4","t":"Si3"},{"p":"Sol#4","t":"Ré4"},{"p":"Sib4","t":"Sol4"},{"p":"Mib5","t":"Si4"},{"p":"Sol#5","t":"Ré5"},{"p":"Sib5","t":"Sol5"},{"p":"Mib6","t":"Si5"},{"p":"Sol#6","t":"Ré6"}],[{"p":"Mi3","t":"Si2"},{"p":"Fa#3","t":"Sib3"},{"p":"La3","t":"Do#4"},{"p":"Do4","t":"Sol4"},{"p":"Mi4","t":"Sol#4"},{"p":"Fa#4","t":"Sib4"},{"p":"La4","t":"Do#5"},{"p":"Do5","t":"Sol5"},{"p":"Mi5","t":"Sol#5"},{"p":"Fa#5","t":"Sib5"},{"p":"La5","t":"Do#6"}],[{"p":"Sol3","t":"La3"},{"p":"Si3","t":"Do4"},{"p":"Ré4","t":"Mi4"},{"p":"Sol4","t":"Fa#4"},{"p":"Si4","t":"La4"},{"p":"Ré5","t":"Do5"},{"p":"Sol5","t":"Mi5"},{"p":"Si5","t":"Fa#5"},{"p":"Ré6","t":"La5"},{"p":"Sol6","t":"Do6"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"},{"p":"Si2","t":"Fa#2"},{"p":"Do#3","t":"Sol#2"},{"p":"Sol#3","t":"Mib3"},{"p":"Fa3","t":"Do3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"},{"p":"Fa#3","t":"Do#3"},{"p":"Sol#3","t":"Ré#3"},{"p":"Ré#4","t":"La#3"},{"p":"Do4","t":"Sol3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SolDoFa33_12":{"nbRangees":3,"rangees":[{"nom":"Rangée Fa (extérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Do3","t":"Si2"},{"p":"Mib3","t":"Do#3"},{"p":"Do4","t":"Sol3"},{"p":"Fa4","t":"Si3"},{"p":"La4","t":"Ré4"},{"p":"Do5","t":"Sol4"},{"p":"Fa5","t":"Si4"},{"p":"La5","t":"Ré5"},{"p":"Do6","t":"Sol5"},{"p":"Fa6","t":"Si5"},{"p":"La6","t":"Ré6"}],[{"p":"Do3","t":"Si2"},{"p":"Mib3","t":"Do#3"},{"p":"La3","t":"Mi3"},{"p":"Do4","t":"Sol3"},{"p":"Mi4","t":"Sib3"},{"p":"Fa#4","t":"Ré4"},{"p":"La4","t":"Mi4"},{"p":"Do5","t":"Sol4"},{"p":"Mi5","t":"Sib4"},{"p":"Fa#5","t":"Ré5"},{"p":"La5","t":"Mi5"}],[{"p":"Sol#3","t":"Do#3"},{"p":"Si3","t":"Mi3"},{"p":"Ré4","t":"Sol3"},{"p":"Fa4","t":"Sib3"},{"p":"La4","t":"Ré4"},{"p":"Si4","t":"Mi4"},{"p":"Ré5","t":"Sol4"},{"p":"Fa5","t":"Sib4"},{"p":"La5","t":"Ré5"},{"p":"Si5","t":"Mi5"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Fa3","t":"Do3"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"},{"p":"Mi3","t":"Si2"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"Do4","t":"Sol3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"},{"p":"Si3","t":"Fa#3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SolDo_Corgeron":{"nbRangees":3,"rangees":[{"nom":"Rangée Alts (extérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Sol#3","t":"Si3"},{"p":"Sib3","t":"Ré4"},{"p":"Mib4","t":"Sol4"},{"p":"Sol#4","t":"Si4"},{"p":"Sib4","t":"Ré5"},{"p":"Mib5","t":"Sol5"},{"p":"Sol#5","t":"Si5"},{"p":"Sib5","t":"Ré6"},{"p":"Mib6","t":"Sol6"},{"p":"Sol#6","t":"Si6"},{"p":"Sib6","t":"Ré7"}],[{"p":"Mi3","t":"Sol#3"},{"p":"Fa#3","t":"Sib3"},{"p":"La3","t":"Do#4"},{"p":"Do4","t":"Sol4"},{"p":"Mi4","t":"Sol#4"},{"p":"Fa#4","t":"Sib4"},{"p":"La4","t":"Do#5"},{"p":"Do5","t":"Sol5"},{"p":"Mi5","t":"Sol#5"},{"p":"Fa#5","t":"Sib5"},{"p":"La5","t":"Do#6"}],[{"p":"Sol3","t":"La3"},{"p":"Do4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"Sol4","t":"Fa#4"},{"p":"Do5","t":"La4"},{"p":"Mi5","t":"Do5"},{"p":"Sol5","t":"Ré5"},{"p":"Do6","t":"Mi5"},{"p":"Mi6","t":"La5"},{"p":"Sol6","t":"Do6"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}},"SolDo_Heim":{"nbRangees":3,"rangees":[{"nom":"Rangée Alts (extérieure)","nb":11},{"nom":"Rangée Do (médiane)","nb":11},{"nom":"Rangée Sol (intérieure)","nb":10}],"notes":{"droite":[[{"p":"Sol#3","t":"Si3"},{"p":"La3","t":"Ré4"},{"p":"Mib4","t":"Sol4"},{"p":"Sol#4","t":"Si4"},{"p":"La4","t":"Ré5"},{"p":"Mib5","t":"Sol5"},{"p":"Sol#5","t":"Si5"},{"p":"La5","t":"Ré6"},{"p":"Mib6","t":"Sol6"},{"p":"Sol#6","t":"Si6"},{"p":"La6","t":"Ré7"}],[{"p":"Mi3","t":"Sol#3"},{"p":"Fa#3","t":"Sib3"},{"p":"La3","t":"Do#4"},{"p":"Do4","t":"Sol4"},{"p":"Mi4","t":"Sol#4"},{"p":"Fa#4","t":"Sib4"},{"p":"La4","t":"Do#5"},{"p":"Do5","t":"Sol5"},{"p":"Mi5","t":"Sol#5"},{"p":"Fa#5","t":"Sib5"},{"p":"La5","t":"Do#6"}],[{"p":"Sol3","t":"La3"},{"p":"Do4","t":"Si3"},{"p":"Mi4","t":"Ré4"},{"p":"Sol4","t":"Fa#4"},{"p":"Do5","t":"La4"},{"p":"Mi5","t":"Do5"},{"p":"Sol5","t":"Ré5"},{"p":"Do6","t":"Mi5"},{"p":"Mi6","t":"La5"},{"p":"Sol6","t":"Do6"}]],"basses":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"accords":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"terzetto":[],"basses2":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"basses3":[{"p":"Sol2","t":"Ré2"},{"p":"Do3","t":"Sol2"},{"p":"Ré3","t":"La2"},{"p":"La3","t":"Mi3"}],"accords2":[{"p":"Ré3","t":"La2"},{"p":"Sol3","t":"Ré3"},{"p":"La3","t":"Mi3"},{"p":"Mi4","t":"Si3"}],"accords3":[{"p":"","t":""},{"p":"","t":""},{"p":"","t":""},{"p":"","t":""}]}}};
+
+  /* ═══════════════════════════════════════════════════
+     STATE
+     ═══════════════════════════════════════════════════ */
+  let currentPreset = null;   // raw preset JSON
+  let currentData = null;     // data object for SVG rendering
+  let darkMode = false;
+  const LS_KEY = 'clavier-widget-plans';
+
+  /* ═══════════════════════════════════════════════════
+     DOM HELPERS
+     ═══════════════════════════════════════════════════ */
+  const $ = function(id){ return document.getElementById(id); };
+  const widget = document.querySelector('.clavier-widget');
+
+  /* ═══════════════════════════════════════════════════
+     SVG HELPERS (from the main tool)
+     ═══════════════════════════════════════════════════ */
+  let _svgId = 0;
+  function svg_open(w, h, bg){
+    var id = 'cwvp' + (++_svgId);
+    return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,\'Segoe UI\',Helvetica,Arial,sans-serif" overflow="hidden"><defs><clipPath id="'+id+'"><rect width="'+w+'" height="'+h+'"/></clipPath></defs><rect width="'+w+'" height="'+h+'" fill="'+(bg||'white')+'"/><g clip-path="url(#'+id+')">';
+  }
+  function svg_close(){ return '</g></svg>'; }
+  function tx(x, y, text, size, fill, weight, anchor){
+    return '<text x="'+x+'" y="'+y+'" font-size="'+size+'" fill="'+fill+'" font-weight="'+(weight||'normal')+'" text-anchor="'+(anchor||'start')+'">'+text+'</text>';
+  }
+  function escSVG(s){
+    if(!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function fmtDate(d){
+    if(!d) return new Date().toLocaleDateString('fr-FR');
+    try{ return new Date(d).toLocaleDateString('fr-FR'); }catch(e){ return d; }
+  }
+  function displayNote(n){ return n || ''; }
+  function dn(note){ return escSVG(displayNote(note)); }
+
+  function svgBtnVal(v, cx, baseY, color){
+    if(!v) return '';
+    var disp = displayNote(v);
+    if(!disp.includes('/')){
+      var fs = disp.length > 8 ? 5.5 : disp.length > 5 ? 6.8 : 8;
+      return tx(cx, baseY, escSVG(disp), fs, color, 'bold', 'middle');
+    }
+    var parts = disp.split('/').map(function(p){ return p.trim(); }).filter(Boolean);
+    var lineH = 6.5, fs2 = 5.5;
+    var startY = baseY - ((parts.length - 1) * lineH) / 2;
+    var out = '<text font-size="'+fs2+'" fill="'+color+'" font-weight="bold" text-anchor="middle">';
+    parts.forEach(function(p, i){ out += '<tspan x="'+cx+'" y="'+(startY + i * lineH)+'">'+escSVG(p)+'</tspan>'; });
+    return out + '</text>';
+  }
+
+  /* ═══════════════════════════════════════════════════
+     buildSVG_Plan (from lines 2048-2366, t() replaced)
+     ═══════════════════════════════════════════════════ */
+  function buildSVG_Plan(data, dark){
+    var R = 18;
+    var BGAP = 46;
+    var CGAP = 52;
+    var MH = 20, MT = 14, MB = 30;
+    var TITLE_H = 76;
+    var BTWN = 50;
+
+    var gold2  = dark ? '#c9a227' : '#4338CA';
+    var bg     = dark ? '#111' : '#fff';
+    var pushBg = dark ? '#0d1f0d' : '#EEF2FF';
+    var pullBg = dark ? '#1f1000' : '#FFFBEB';
+    var pushTx = dark ? '#6fcf5a' : '#3730A3';
+    var pullTx = dark ? '#e8b840' : '#92400E';
+    var pushTx2= dark ? 'rgba(111,207,90,.55)' : 'rgba(55,48,163,.5)';
+    var pullTx2= dark ? 'rgba(232,184,64,.55)' : 'rgba(146,64,14,.5)';
+    var subtl  = dark ? '#888866' : '#94A3B8';
+    var stroke = dark ? '#c9a227' : '#6366F1';
+    var numTx  = dark ? 'rgba(200,162,39,.3)' : 'rgba(99,102,241,.2)';
+    var band1  = dark ? '#1a1a1a' : '#FAFAFA';
+    var band2  = dark ? '#161616' : '#F5F3FF';
+    var circleBorder = dark ? '#333' : '#C7D2FE';
+    var textColor    = dark ? '#ccc' : '#1E293B';
+    var ruleColor    = dark ? '#444' : '#E2E8F0';
+
+    function drawBtn(cx, cy, btn, btn2, editId){
+      var o = '';
+      if(editId) o += '<g class="cw-edit-btn" data-edit="'+editId+'">'
+      o += '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+bg+'" stroke="'+circleBorder+'" stroke-width="1"/>';
+      o += '<path d="M'+(cx-R)+','+cy+' A'+R+','+R+' 0 0,1 '+(cx+R)+','+cy+'" fill="'+pushBg+'"/>';
+      o += '<path d="M'+(cx-R)+','+cy+' A'+R+','+R+' 0 0,0 '+(cx+R)+','+cy+'" fill="'+pullBg+'"/>';
+      o += '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="'+stroke+'" stroke-width="1.2"/>';
+      o += '<line x1="'+(cx-R)+'" y1="'+cy+'" x2="'+(cx+R)+'" y2="'+cy+'" stroke="'+stroke+'" stroke-width=".5" opacity=".4"/>';
+      var b2ok = btn2 ? (btn2.p || btn2.t) : false;
+      if(b2ok){
+        if(btn.p)  o += svgBtnVal(btn.p, cx, cy-11, pushTx);
+        if(btn2.p) o += svgBtnVal(btn2.p, cx, cy-4, pushTx2);
+        if(btn.t)  o += svgBtnVal(btn.t, cx, cy+8, pullTx);
+        if(btn2.t) o += svgBtnVal(btn2.t, cx, cy+15, pullTx2);
+      } else {
+        if(btn.p) o += svgBtnVal(btn.p, cx, cy-7, pushTx);
+        if(btn.t) o += svgBtnVal(btn.t, cx, cy+15, pullTx);
+      }
+      if(editId) o += '</g>';
+      return o;
+    }
+
+    var rhRows = data.droite;
+    var nRH = rhRows.length;
+    var maxRHBtns = Math.max.apply(null, rhRows.map(function(r){ return r.boutons.length; }).concat([1]));
+
+    var isPaired = data.lhDisplayMode === 'paired';
+    var lhSecRows = [];
+
+    if(isPaired){
+      var nPairs = Math.max(data.basses.length, data.accords.length);
+      var ppRow  = Math.max(1, data.lhPairsPerRow || nPairs);
+      var vA = data.nbVoixAccords || 2, vB = data.nbVoixBasses || 2;
+      if(data.lhPairedDir === 'horizontal'){
+        var nGroups = Math.ceil(nPairs / ppRow);
+        for(var c = 0; c < ppRow; c++){
+          var intItems=[], intItems2=[], intTypes=[], intIndices=[];
+          for(var g = 0; g < nGroups; g++){
+            var ii = g * ppRow + c;
+            if(ii >= nPairs) break;
+            var seq = data.lhBassFirst
+              ? [['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
+              : [['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
+            seq.forEach(function(x){
+              var typ=x[0],src=x[1],src2=x[2],nv=x[3];
+              if(src[ii]){ intItems.push(src[ii]); intItems2.push(nv>1 ? (src2 ? src2[ii]||null : null) : null); intTypes.push(typ); intIndices.push(ii+1); }
+            });
+          }
+          if(intItems.length){
+            var lbl = ppRow===1 ? 'Basses / Accords' : 'Basses/Accords '+(c+1);
+            lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
+          }
+        }
+      } else {
+        var nGroups2 = Math.ceil(nPairs / ppRow);
+        for(var g2 = 0; g2 < nGroups2; g2++){
+          var s0 = g2*ppRow, s1 = Math.min(s0+ppRow, nPairs);
+          var intItems3=[], intItems4=[], intTypes2=[], intIndices2=[];
+          for(var i2 = s0; i2 < s1; i2++){
+            var seq2 = data.lhBassFirst
+              ? [['B',data.basses,data.basses2,vB],['A',data.accords,data.accords2,vA]]
+              : [['A',data.accords,data.accords2,vA],['B',data.basses,data.basses2,vB]];
+            seq2.forEach(function(x){
+              var typ=x[0],src=x[1],src2=x[2],nv=x[3];
+              if(src[i2]){ intItems3.push(src[i2]); intItems4.push(nv>1 ? (src2 ? src2[i2]||null : null) : null); intTypes2.push(typ); intIndices2.push(i2+1); }
+            });
+          }
+          var lbl2 = nGroups2===1 ? 'Basses / Accords' : 'Basses/Accords '+(g2+1);
+          lhSecRows.push({nom:lbl2,items:intItems3,items2:intItems4,offset:0,interleavedTypes:intTypes2,interleavedIndices:intIndices2});
+        }
+      }
+      if(data.terzetto){ if(data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0}); }
+    } else {
+      var lhRowCfg = (data.lhRows ? data.lhRows.length : 0) ? data.lhRows : [{nb:data.basses.length||1,offset:0}];
+      var accSecs=[], basSecs=[];
+      var bIdx=0, aIdx=0;
+      var vA2 = data.nbVoixAccords||2, vB2 = data.nbVoixBasses||2;
+      lhRowCfg.forEach(function(row, ri){
+        accSecs.push({nom:lhRowCfg.length===1?'Accords':(ri===0?'Accords':'\u21b3+'+aIdx),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA2>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0,src:'accords',startIdx:aIdx});
+        aIdx += row.nb;
+        basSecs.push({nom:lhRowCfg.length===1?'Basses':(ri===0?'Basses':'\u21b3+'+bIdx),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB2>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0,src:'basses',startIdx:bIdx});
+        bIdx += row.nb;
+      });
+      if(data.lhBassFirst){ basSecs.forEach(function(s2){lhSecRows.push(s2);}); accSecs.forEach(function(s2){lhSecRows.push(s2);}); }
+      else                { accSecs.forEach(function(s2){lhSecRows.push(s2);}); basSecs.forEach(function(s2){lhSecRows.push(s2);}); }
+      if(data.terzetto){ if(data.terzetto.length) lhSecRows.push({nom:'Terzetto',items:data.terzetto,items2:null,offset:0,src:'terzetto',startIdx:0}); }
+    }
+
+    var nLH = lhSecRows.length;
+    var maxLHBtns = nLH > 0 ? Math.max.apply(null, lhSecRows.map(function(sc){ return sc.items.length; }).concat([0])) : 0;
+    var maxBtns = Math.max(maxRHBtns, maxLHBtns, 1);
+
+    var rhOffsets = rhRows.map(function(r){ return r.offset||0; });
+    var rhMaxOff = Math.max.apply(null, rhOffsets.concat([0]));
+    var rhMinOff = Math.min.apply(null, rhOffsets.concat([0]));
+    var rhTopShift = -rhMinOff * (BGAP/2);
+    var rhBottomExtra = rhMaxOff * (BGAP/2);
+    var lhOffsets = lhSecRows.map(function(s2){ return s2.offset||0; });
+    var lhMaxOff = lhOffsets.length ? Math.max.apply(null, lhOffsets.concat([0])) : 0;
+    var lhMinOff = lhOffsets.length ? Math.min.apply(null, lhOffsets.concat([0])) : 0;
+    var lhTopShift = -lhMinOff * (BGAP/2);
+    var lhBottomExtra = lhMaxOff * (BGAP/2);
+    var HEADER_GAP = 120;
+
+    var lhW = nLH > 0 ? nLH * CGAP : 0;
+    var rhW = nRH * CGAP;
+    var contentW = lhW + (nLH > 0 ? BTWN : 0) + rhW;
+    var W = Math.max(contentW + 2*MH, 460);
+    var extraOff = Math.max(rhTopShift + rhBottomExtra, lhTopShift + lhBottomExtra);
+    var bodyH = maxBtns * BGAP + extraOff + HEADER_GAP + 20;
+    var H = MT + TITLE_H + bodyH + MB;
+
+    var contentTop = MT + TITLE_H;
+    var contentBot = H - MB;
+    var gridCenterY = contentTop + (contentBot - contentTop) * 0.55;
+    var gridTop = Math.round(gridCenterY - bodyH/2) + HEADER_GAP;
+
+    var rhX0 = MH + CGAP/2;
+    var lhX0 = nLH > 0 ? rhX0 + rhW + BTWN : rhX0 + rhW;
+    var sepX = nLH > 0 ? (rhX0 + (nRH-1)*CGAP + R + (lhX0 - R)) / 2 : rhX0 + rhW + BTWN/2;
+
+    var s = svg_open(W, H, bg);
+
+    // Accent bar at top
+    s += '<rect x="0" y="0" width="'+W+'" height="3" fill="'+gold2+'"/>';
+
+    // Title table
+    var tblX = MH, tblY = MT;
+    var rotW = 22;
+    var tblInfoX = tblX + rotW + 6;
+    var rowH = 16;
+    var tblRows = 4;
+    var tblH = tblRows * rowH;
+
+    s += '<rect x="'+tblX+'" y="'+tblY+'" width="'+rotW+'" height="'+tblH+'" fill="'+gold2+'" opacity=".08" rx="3"/>';
+    s += '<rect x="'+tblX+'" y="'+tblY+'" width="'+(rotW+244)+'" height="'+tblH+'" fill="none" stroke="'+ruleColor+'" stroke-width="1" rx="3"/>';
+    s += '<line x1="'+(tblX+rotW)+'" y1="'+tblY+'" x2="'+(tblX+rotW)+'" y2="'+(tblY+tblH)+'" stroke="'+ruleColor+'" stroke-width="1"/>';
+    for(var i3 = 1; i3 < tblRows; i3++)
+      s += '<line x1="'+(tblX+rotW)+'" y1="'+(tblY+i3*rowH)+'" x2="'+(tblX+rotW+244)+'" y2="'+(tblY+i3*rowH)+'" stroke="'+ruleColor+'" stroke-width=".5"/>';
+
+    var rotCx = tblX + rotW/2, rotCy = tblY + tblH/2;
+    s += '<text x="'+rotCx+'" y="'+rotCy+'" text-anchor="middle" font-size="13" fill="'+gold2+'" font-weight="bold" transform="rotate(-90,'+rotCx+','+rotCy+')">'+escSVG('Plan de clavier')+'</text>';
+
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+rowH/2+4)+'" font-size="12" fill="'+gold2+'" font-weight="bold">'+escSVG(data.nomInstrument||'Accordéon Diatonique')+'</text>';
+    var r2 = data.nomJoueur ? 'Client : '+data.nomJoueur : '';
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+rowH+rowH/2+3)+'" font-size="8.5" fill="'+textColor+'">'+escSVG(r2)+'</text>';
+    var nBtnsRH = data.droite.reduce(function(a,r){ return a + r.boutons.length; }, 0);
+    var nBasses = data.basses ? data.basses.length : 0;
+    var nAccords = data.accords ? data.accords.length : 0;
+    var r3 = nRH+' '+(nRH>1?'rangées':'rangée')+' ('+nBtnsRH+' boutons) \u00b7 '+nBasses+' basses \u00b7 '+nAccords+' accords';
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+2*rowH+rowH/2+3)+'" font-size="8" fill="'+textColor+'">'+escSVG(r3)+'</text>';
+    s += '<text x="'+tblInfoX+'" y="'+(tblY+3*rowH+rowH/2+3)+'" font-size="7.5" fill="'+subtl+'">'+escSVG(data.nomLuthier)+'  \u00b7  '+escSVG(fmtDate(data.date))+'</text>';
+
+    s += '<text x="'+(rhX0-R-6)+'" y="'+(gridTop-HEADER_GAP+4)+'" font-size="8.5" fill="'+subtl+'" font-style="italic">Haut (graves)</text>';
+
+    // Push/pull legend
+    var legR = 7, legX = W - MH - legR - 2, legY = tblY + tblH/2;
+    s += '<circle cx="'+legX+'" cy="'+legY+'" r="'+legR+'" fill="'+bg+'" stroke="'+stroke+'" stroke-width="1"/>';
+    s += '<path d="M'+(legX-legR)+','+legY+' A'+legR+','+legR+' 0 0,1 '+(legX+legR)+','+legY+'" fill="'+pushBg+'"/>';
+    s += '<path d="M'+(legX-legR)+','+legY+' A'+legR+','+legR+' 0 0,0 '+(legX+legR)+','+legY+'" fill="'+pullBg+'"/>';
+    s += '<circle cx="'+legX+'" cy="'+legY+'" r="'+legR+'" fill="none" stroke="'+stroke+'" stroke-width="1"/>';
+    s += '<line x1="'+(legX-legR)+'" y1="'+legY+'" x2="'+(legX+legR)+'" y2="'+legY+'" stroke="'+stroke+'" stroke-width=".4" opacity=".4"/>';
+    s += tx(legX-legR-3, legY-1, 'Poussé', 6, textColor, 'normal', 'end');
+    s += tx(legX-legR-3, legY+7, 'Tiré', 6, textColor, 'normal', 'end');
+
+    // RH columns
+    s += tx(rhX0 + ((nRH-1)*CGAP)/2, gridTop-HEADER_GAP+6, 'Main Droite', 8.5, gold2, 'bold', 'middle');
+    rhRows.forEach(function(row, ri){
+      var cx = rhX0 + ri * CGAP;
+      var off = rhTopShift + (row.offset||0) * (BGAP/2);
+      var lblY = gridTop - 8;
+      s += '<text x="'+cx+'" y="'+lblY+'" text-anchor="start" font-size="6.5" fill="'+gold2+'" font-weight="bold" transform="rotate(-90,'+cx+','+lblY+')">'+escSVG(row.nom)+'</text>';
+      if(row.boutons.length){
+        var cy0 = gridTop + off + BGAP/2;
+        var bandY = cy0 - R - 3;
+        var bandH = (row.boutons.length-1)*BGAP + 2*(R+3);
+        s += '<rect x="'+(cx-R-3)+'" y="'+bandY+'" width="'+((R+3)*2)+'" height="'+bandH+'" rx="3" fill="'+(ri%2===0?band1:band2)+'" opacity=".6"/>';
+      }
+      var suffix = ri===0 ? '' : ri===1 ? "'" : "''";
+      row.boutons.forEach(function(btn, bi){
+        var cy = gridTop + off + bi*BGAP + BGAP/2;
+        s += drawBtn(cx, cy, btn, null, 'rh:'+ri+':'+bi);
+        s += tx(cx-R-1, cy+R+2, (bi+1)+suffix, 5.5, numTx, 'bold', 'start');
+      });
+    });
+
+    // Bellows separator
+    if(nLH > 0){
+      var sepY1 = gridTop-2, sepY2 = gridTop + maxBtns*BGAP + extraOff + 2;
+      s += '<line x1="'+sepX+'" y1="'+sepY1+'" x2="'+sepX+'" y2="'+sepY2+'" stroke="'+(dark?'#444':'#C7D2FE')+'" stroke-width="1.5" stroke-dasharray="6,4"/>';
+      var sepMidY = (sepY1 + sepY2) / 2;
+      s += '<text x="'+sepX+'" y="'+sepMidY+'" text-anchor="middle" font-size="6.5" fill="'+subtl+'" font-weight="bold" transform="rotate(-90,'+sepX+','+sepMidY+')">'+escSVG('— SOUFFLET —')+'</text>';
+    }
+
+    // LH columns
+    if(nLH > 0){ if(maxLHBtns > 0){
+      var rhBlockH = maxRHBtns * BGAP + rhTopShift + rhBottomExtra;
+      var lhBlockH = maxLHBtns * BGAP + lhTopShift + lhBottomExtra;
+      var lhGridTop = gridTop + Math.round((rhBlockH - lhBlockH)/2);
+
+      s += tx(lhX0 + ((nLH-1)*CGAP)/2, lhGridTop - HEADER_GAP + 6, 'Main Gauche', 8.5, gold2, 'bold', 'middle');
+
+      var bassLbl = dark ? '#5aa0d0' : '#1D4ED8';
+      var accLbl  = dark ? '#d09040' : '#B45309';
+      lhSecRows.forEach(function(sec, si){
+        var cx = lhX0 + si * CGAP;
+        var off = lhTopShift + (sec.offset||0) * (BGAP/2);
+        var has2 = sec.items2 ? sec.items2.some(function(x){ return x != null; }) : false;
+        if(sec.items.length){
+          var cy0 = lhGridTop + off + BGAP/2;
+          var bandY = cy0 - R - 3;
+          var bandH = (sec.items.length-1)*BGAP + 2*(R+3);
+          s += '<rect x="'+(cx-R-3)+'" y="'+bandY+'" width="'+((R+3)*2)+'" height="'+bandH+'" rx="3" fill="'+(si%2===0?band1:band2)+'" opacity=".6"/>';
+        }
+        sec.items.forEach(function(btn, bi){
+          var cy = lhGridTop + off + bi*BGAP + BGAP/2;
+          var lhEditId = null;
+          if(sec.interleavedTypes){
+            var eTyp = sec.interleavedTypes[bi] === 'B' ? 'basses' : 'accords';
+            var eIdx = sec.interleavedIndices ? (sec.interleavedIndices[bi] - 1) : bi;
+            lhEditId = eTyp + ':' + eIdx;
+          } else if(sec.src){
+            lhEditId = sec.src + ':' + (sec.startIdx + bi);
+          }
+          s += drawBtn(cx, cy, btn, has2 ? (sec.items2[bi]||null) : null, lhEditId);
+          if(sec.interleavedTypes){
+            var typ = sec.interleavedTypes[bi];
+            var idx = sec.interleavedIndices ? sec.interleavedIndices[bi] : '';
+            s += tx(cx-R+4, cy-R-2, typ+idx, 5.5, typ==='B'?bassLbl:accLbl, 'bold', 'start');
+          }
+        });
+      });
+      var lhLastCx = lhX0 + (nLH-1)*CGAP;
+      for(var i4 = 0; i4 < maxLHBtns; i4++)
+        s += tx(lhLastCx+R+5, lhGridTop+i4*BGAP+BGAP/2+3, i4+1, 6, numTx, 'normal', 'start');
+    }}
+
+    s += '<text x="'+(W/2)+'" y="'+(H-MB+12)+'" font-size="8.5" fill="'+textColor+'" font-style="italic" text-anchor="middle">\u2191 Aigus</text>';
+    s += '<line x1="'+MH+'" y1="'+(H-MB+20)+'" x2="'+(W-MH)+'" y2="'+(H-MB+20)+'" stroke="'+ruleColor+'" stroke-width="1"/>';
+    s += tx(MH, H-MB+28, escSVG(data.nomLuthier)+' \u2014 ewendaviau.com', 7, subtl, 'normal', 'start');
+
+    s += svg_close();
+    return s;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     toData — convert preset JSON to rendering format
+     ═══════════════════════════════════════════════════ */
+  function toData(rec){
+    var nRec = rec.notes || {};
+    var droiteNotes = nRec.droite || [];
+    var droite = (rec.rangees || []).map(function(row, ri){
+      return {
+        nom: row.nom || ('Rangée '+(ri+1)),
+        register: row.register || 'N',
+        offset: row.offset || 0,
+        boutons: droiteNotes[ri] || []
+      };
+    });
+    return {
+      nomInstrument: rec.nom || rec.label || '',
+      nomJoueur: rec.joueur || '',
+      nomLuthier: rec.luthier || "Ewen d'Aviau",
+      date: rec.dateCreation || '',
+      nbVoix: rec.nbVoix || 2,
+      voixPerRow: rec.voixPerRow || [],
+      nbVoixAccords: rec.nbVoixAccords || 2,
+      nbVoixBasses: rec.nbVoixBasses || 2,
+      lhDisplayMode: rec.lhDisplayMode || 'separated',
+      lhPairedDir: rec.lhPairedDir || 'vertical',
+      lhRows: rec.lhRows || [{nb: (nRec.basses||[]).length || 1, offset: 0}],
+      lhPairsPerRow: rec.lhPairsPerRow || 2,
+      lhBassFirst: rec.lhBassFirst || false,
+      showMidi: false,
+      droite: droite,
+      basses: nRec.basses || [],
+      basses2: nRec.basses2 || [],
+      basses3: nRec.basses3 || [],
+      accords: nRec.accords || [],
+      accords2: nRec.accords2 || [],
+      accords3: nRec.accords3 || [],
+      terzetto: nRec.terzetto || [],
+      orderSpecs: rec.orderSpecs || {}
+    };
+  }
+
+  /* ═══════════════════════════════════════════════════
+     POPULATE PRESET SELECTOR (grouped by category)
+     ═══════════════════════════════════════════════════ */
+  function populatePresetSelector(){
+    var sel = $('cw-preset-sel');
+    var cats = {};
+    PRESET_CATALOG.forEach(function(p){
+      if(!cats[p.category]) cats[p.category] = [];
+      cats[p.category].push(p);
+    });
+    Object.keys(cats).forEach(function(cat){
+      var og = document.createElement('optgroup');
+      og.label = cat;
+      cats[cat].forEach(function(p){
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.label;
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     FETCH PRESET & RENDER
+     ═══════════════════════════════════════════════════ */
+  function loadPreset(id){
+    if(!id){ currentPreset = null; currentData = null; renderAll(); return; }
+    var raw = PRESETS_DATA[id];
+    if(!raw){ $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Preset introuvable : ' + id + '</p>'; return; }
+    var json = JSON.parse(JSON.stringify(raw)); // deep clone
+    var cat = PRESET_CATALOG.find(function(p){ return p.id === id; });
+    if(cat) json.label = cat.label;
+    currentPreset = json;
+    applyUIToPreset();
+    renderAll();
+  }
+
+  /* Apply UI field overrides to preset */
+  function applyUIToPreset(){
+    if(!currentPreset) return;
+    var nom = $('cw-nom-instrument').value.trim();
+    if(nom) currentPreset.nom = nom;
+    var joueur = $('cw-nom-joueur').value.trim();
+    currentPreset.joueur = joueur;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     RENDER ALL UI
+     ═══════════════════════════════════════════════════ */
+  function renderAll(){
+    applyUIToPreset();
+    if(!currentPreset){
+      $('cw-svg-wrap').innerHTML = '<p class="cw-placeholder">Sélectionnez un modèle pour afficher le plan.</p>';
+      $('cw-rh-tables').innerHTML = '';
+      $('cw-lh-tables').innerHTML = '';
+      $('cw-rows-cfg').innerHTML = '';
+      return;
+    }
+    currentData = toData(currentPreset);
+    currentData.nomJoueur = $('cw-nom-joueur').value.trim();
+    var nomI = $('cw-nom-instrument').value.trim();
+    if(nomI) currentData.nomInstrument = nomI;
+
+    // SVG preview
+    try {
+      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+      bindSVGEditing();
+    } catch(e){
+      $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+e.message+'</p>';
+    }
+
+    renderRowsCfg();
+    renderRHTables();
+    renderLHTables();
+  }
+
+  /* ═══════════════════════════════════════════════════
+     ROW CONFIGURATION TABLE
+     ═══════════════════════════════════════════════════ */
+  function refreshSVG(){
+    if(!currentPreset)return;
+    currentData=toData(currentPreset);
+    currentData.nomJoueur=$('cw-nom-joueur').value.trim();
+    var nomI=$('cw-nom-instrument').value.trim();if(nomI)currentData.nomInstrument=nomI;
+    try{$('cw-svg-wrap').innerHTML=buildSVG_Plan(currentData,darkMode);bindSVGEditing();}catch(e){}
+  }
+
+  function renderRowsCfg(){
+    if(!currentPreset) return;
+    var rows = currentPreset.rangees || [];
+    var html = '<table class="cw-cfg-table"><thead><tr><th>#</th><th>Nom</th><th>Boutons</th><th>Décalage</th></tr></thead><tbody>';
+    rows.forEach(function(row, ri){
+      html += '<tr>';
+      html += '<td>'+(ri+1)+'</td>';
+      html += '<td><input type="text" value="'+escAttr(row.nom||'')+'" data-row="'+ri+'" data-field="nom" class="cw-row-cfg-input"></td>';
+      html += '<td><input type="number" min="1" max="30" value="'+(row.nb||0)+'" data-row="'+ri+'" data-field="nb" class="cw-row-cfg-input" style="width:60px"></td>';
+      var off=row.offset||0;
+      html += '<td><div class="cw-off-wrap">'
+        +'<button type="button" class="cw-off-btn" data-row="'+ri+'" data-od="-1">−</button>'
+        +'<input type="number" class="cw-input cw-off-input cw-row-cfg-input" min="-30" max="30" value="'+off+'" data-row="'+ri+'" data-field="offset">'
+        +'<button type="button" class="cw-off-btn" data-row="'+ri+'" data-od="1">＋</button>'
+        +'</div></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $('cw-rows-cfg').innerHTML = html;
+
+    // Bind change events
+    $('cw-rows-cfg').querySelectorAll('.cw-row-cfg-input').forEach(function(inp){
+      inp.addEventListener('change', onRowCfgChange);
+    });
+    $('cw-rows-cfg').querySelectorAll('.cw-off-btn[data-od]').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var ri=parseInt(btn.getAttribute('data-row')),d=parseInt(btn.getAttribute('data-od'));
+        if(!currentPreset||!currentPreset.rangees[ri])return;
+        currentPreset.rangees[ri].offset=Math.max(-30,Math.min(30,(currentPreset.rangees[ri].offset||0)+d));
+        renderRowsCfg();refreshSVG();
+      });
+    });
+  }
+
+  function onRowCfgChange(e){
+    var inp = e.target;
+    var ri = parseInt(inp.getAttribute('data-row'));
+    var field = inp.getAttribute('data-field');
+    if(!currentPreset || !currentPreset.rangees[ri]) return;
+    if(field === 'nom'){
+      currentPreset.rangees[ri].nom = inp.value;
+    } else if(field === 'nb'){
+      var newNb = Math.max(1, parseInt(inp.value)||1);
+      var oldNb = currentPreset.rangees[ri].nb;
+      currentPreset.rangees[ri].nb = newNb;
+      // Adjust notes array
+      var notes = currentPreset.notes.droite[ri] || [];
+      if(newNb > oldNb){
+        for(var k = oldNb; k < newNb; k++) notes.push({p:'',t:''});
+      } else {
+        notes.length = newNb;
+      }
+      currentPreset.notes.droite[ri]=notes;
+    } else if(field==='offset'){
+      currentPreset.rangees[ri].offset=Math.max(-30,Math.min(30,parseInt(inp.value)||0));
+    }
+    renderAll();
+  }
+
+  /* ═══════════════════════════════════════════════════
+     RH NOTE EDITING TABLES
+     ═══════════════════════════════════════════════════ */
+  function renderRHTables(){
+    if(!currentPreset) return;
+    var notes = currentPreset.notes || {};
+    var droite = notes.droite || [];
+    var html = '';
+    (currentPreset.rangees || []).forEach(function(row, ri){
+      var btns = droite[ri] || [];
+      html += '<table class="cw-note-table"><caption>'+escHTML(row.nom || ('Rangée '+(ri+1)))+'</caption>';
+      html += '<thead><tr><th>#</th><th>\u2193 Poussé</th><th>\u2191 Tiré</th></tr></thead><tbody>';
+      for(var bi = 0; bi < (row.nb||btns.length); bi++){
+        var btn = btns[bi] || {p:'',t:''};
+        html += '<tr>';
+        html += '<td class="cw-num">'+(bi+1)+'</td>';
+        html += '<td><input type="text" value="'+escAttr(btn.p||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="p" autocomplete="off"></td>';
+        html += '<td><input type="text" value="'+escAttr(btn.t||'')+'" data-section="rh" data-row="'+ri+'" data-btn="'+bi+'" data-dir="t" autocomplete="off"></td>';
+        html += '</tr>';
+      }
+      html += '</tbody></table>';
+    });
+    $('cw-rh-tables').innerHTML = html;
+    $('cw-rh-tables').querySelectorAll('input[data-section="rh"]').forEach(function(inp){
+      inp.addEventListener('change', onNoteChange);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LH NOTE EDITING TABLES
+     ═══════════════════════════════════════════════════ */
+  function renderLHTables(){
+    if(!currentPreset) return;
+    var notes = currentPreset.notes || {};
+    var html = '';
+
+    // Basses
+    var basses = notes.basses || [];
+    html += '<table class="cw-note-table"><caption>Basses</caption>';
+    html += '<thead><tr><th>#</th><th>\u2193 Poussé</th><th>\u2191 Tiré</th></tr></thead><tbody>';
+    for(var i = 0; i < basses.length; i++){
+      var b = basses[i] || {p:'',t:''};
+      html += '<tr>';
+      html += '<td class="cw-num">'+(i+1)+'</td>';
+      html += '<td><input type="text" value="'+escAttr(b.p||'')+'" data-section="basses" data-btn="'+i+'" data-dir="p" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(b.t||'')+'" data-section="basses" data-btn="'+i+'" data-dir="t" autocomplete="off"></td>';
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+
+    // Accords
+    var accords = notes.accords || [];
+    html += '<table class="cw-note-table"><caption>Accords</caption>';
+    html += '<thead><tr><th>#</th><th>\u2193 Poussé</th><th>\u2191 Tiré</th></tr></thead><tbody>';
+    for(var j = 0; j < accords.length; j++){
+      var a = accords[j] || {p:'',t:''};
+      html += '<tr>';
+      html += '<td class="cw-num">'+(j+1)+'</td>';
+      html += '<td><input type="text" value="'+escAttr(a.p||'')+'" data-section="accords" data-btn="'+j+'" data-dir="p" autocomplete="off"></td>';
+      html += '<td><input type="text" value="'+escAttr(a.t||'')+'" data-section="accords" data-btn="'+j+'" data-dir="t" autocomplete="off"></td>';
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+
+    $('cw-lh-tables').innerHTML = html;
+    $('cw-lh-tables').querySelectorAll('input[data-section]').forEach(function(inp){
+      inp.addEventListener('change', onNoteChange);
+    });
+    if(!currentPreset.lhRows) currentPreset.lhRows=[{nb:(currentPreset.notes.basses||[]).length||6,offset:0}];
+    var _lhR=currentPreset.lhRows;
+    var lhCfg='<table class="cw-cfg-table" style="margin-top:10px"><caption style="font-size:.78rem;font-weight:700;color:var(--text2);text-align:left;padding-bottom:4px">Rangées main gauche</caption><thead><tr><th>#</th><th>Boutons</th><th>Décalage</th></tr></thead><tbody>';
+    _lhR.forEach(function(row,ri){
+      var off=row.offset||0;
+      lhCfg+='<tr><td>'+(ri+1)+'</td>'
+        +'<td><input type="number" min="1" max="30" value="'+(row.nb||6)+'" data-lhrow="'+ri+'" data-lhf="nb" class="cw-input cw-lhri" style="width:60px"></td>'
+        +'<td><div class="cw-off-wrap">'
+        +'<button type="button" class="cw-off-btn" data-lhrow="'+ri+'" data-lhd="-1">−</button>'
+        +'<input type="number" class="cw-input cw-off-input cw-lhri" min="-30" max="30" value="'+off+'" data-lhrow="'+ri+'" data-lhf="offset">'
+        +'<button type="button" class="cw-off-btn" data-lhrow="'+ri+'" data-lhd="1">＋</button>'
+        +'</div></td></tr>';
+    });
+    lhCfg+='</tbody></table>';
+    $('cw-lh-tables').insertAdjacentHTML('beforeend',lhCfg);
+    $('cw-lh-tables').querySelectorAll('.cw-lhri').forEach(function(inp){
+      inp.addEventListener('change',function(){
+        var ri=parseInt(inp.getAttribute('data-lhrow')),f=inp.getAttribute('data-lhf');
+        if(f==='nb') currentPreset.lhRows[ri].nb=Math.max(1,parseInt(inp.value)||1);
+        if(f==='offset') currentPreset.lhRows[ri].offset=Math.max(-30,Math.min(30,parseInt(inp.value)||0));
+        refreshSVG();
+      });
+    });
+    $('cw-lh-tables').querySelectorAll('.cw-off-btn[data-lhd]').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var ri=parseInt(btn.getAttribute('data-lhrow')),d=parseInt(btn.getAttribute('data-lhd'));
+        currentPreset.lhRows[ri].offset=Math.max(-30,Math.min(30,(currentPreset.lhRows[ri].offset||0)+d));
+        renderLHTables();refreshSVG();
+      });
+    });
+  }
+
+  function onNoteChange(e){
+    var inp = e.target;
+    var section = inp.getAttribute('data-section');
+    var bi = parseInt(inp.getAttribute('data-btn'));
+    var dir = inp.getAttribute('data-dir');
+    var val = inp.value.trim();
+    if(!currentPreset) return;
+    var notes = currentPreset.notes;
+    if(section === 'rh'){
+      var ri = parseInt(inp.getAttribute('data-row'));
+      if(!notes.droite[ri]) notes.droite[ri] = [];
+      if(!notes.droite[ri][bi]) notes.droite[ri][bi] = {p:'',t:''};
+      notes.droite[ri][bi][dir] = val;
+    } else if(section === 'basses'){
+      if(!notes.basses[bi]) notes.basses[bi] = {p:'',t:''};
+      notes.basses[bi][dir] = val;
+    } else if(section === 'accords'){
+      if(!notes.accords[bi]) notes.accords[bi] = {p:'',t:''};
+      notes.accords[bi][dir] = val;
+    }
+    // Re-render SVG only (not the tables, to keep focus)
+    applyUIToPreset();
+    currentData = toData(currentPreset);
+    currentData.nomJoueur = $('cw-nom-joueur').value.trim();
+    var nomI = $('cw-nom-instrument').value.trim();
+    if(nomI) currentData.nomInstrument = nomI;
+    try {
+      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+      bindSVGEditing();
+    } catch(err){
+      $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+err.message+'</p>';
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     HELPERS
+     ═══════════════════════════════════════════════════ */
+  function escAttr(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escHTML(s){
+    if(!s) return '';
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(s)));
+    return d.innerHTML;
+  }
+
+  function showToast(msg, duration){
+    var el = $('cw-toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(el._timer);
+    el._timer = setTimeout(function(){ el.style.display = 'none'; }, duration || 2500);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     EXPORT JSON (clipboard)
+     ═══════════════════════════════════════════════════ */
+
+  /* ═══════════════════════════════════════════════════
+     SNAPSHOT — format compatible outil offline
+     ═══════════════════════════════════════════════════ */
+  function cwSnapshotPreset(){
+    if(!currentPreset) return null;
+    applyUIToPreset();
+    var nom = $('cw-nom-instrument').value.trim() || 'Sans titre';
+    var joueur = $('cw-nom-joueur').value.trim();
+    return {
+      id: currentPreset.id || Date.now().toString(),
+      nom: nom,
+      joueur: joueur,
+      luthier: currentPreset.luthier || "Ewen d'Aviau",
+      dateCreation: currentPreset.dateCreation || new Date().toISOString().substring(0,10),
+      lastModified: new Date().toISOString(),
+      nbRangees: (currentPreset.rangees||[]).length,
+      rangees: JSON.parse(JSON.stringify(currentPreset.rangees||[])),
+      nbVoix: currentPreset.nbVoix || 2,
+      voixPerRow: currentPreset.voixPerRow || [],
+      nbVoixAccords: currentPreset.nbVoixAccords || 2,
+      nbVoixBasses: currentPreset.nbVoixBasses || 2,
+      lhDisplayMode: currentPreset.lhDisplayMode || 'separated',
+      lhPairedDir: currentPreset.lhPairedDir || 'vertical',
+      lhRows: JSON.parse(JSON.stringify(currentPreset.lhRows || [{nb:(currentPreset.notes ? (currentPreset.notes.basses ? currentPreset.notes.basses.length : 6) : 6),offset:0}])),
+      lhPairsPerRow: currentPreset.lhPairsPerRow || 2,
+      lhBassFirst: currentPreset.lhBassFirst || false,
+      notes: JSON.parse(JSON.stringify(currentPreset.notes||{}))
+    };
+  }
+
+  function buildExportText(){
+    if(!currentPreset) return '';
+    applyUIToPreset();
+    var pr=currentPreset;
+    var nom=($('cw-nom-instrument').value.trim()||pr.nom||pr.label||'Sans titre');
+    var joueur=$('cw-nom-joueur').value.trim();
+    var date=new Date().toLocaleDateString('fr-FR');
+    var pad=function(s,n){s=String(s);while(s.length<n)s=' '+s;return s;};
+    var lines=['══════════════════════════════════','  '+nom];
+    if(joueur)lines.push('  Joueur : '+joueur);
+    lines.push('  '+date,'══════════════════════════════════','','MAIN DROITE','──────────────────────────────────');
+    (pr.rangees||[]).forEach(function(row,ri){
+      var label=row.nom||('Rangée '+(ri+1));
+      if(row.offset) label+=' (décalage '+(row.offset>0?'+':'')+row.offset+')';
+      lines.push('  '+label);
+      var btns=((pr.notes||{}).droite||[])[ri]||[];
+      for(var bi=0;bi<(row.nb||btns.length);bi++){
+        var b=btns[bi]||{p:'',t:''};
+        lines.push('    '+pad(bi+1,2)+'.  ↓ '+pad(b.p||'–',8)+'  ↑ '+(b.t||'–'));
+      }
+    });
+    var basses=(pr.notes||{}).basses||[];
+    var accords=(pr.notes||{}).accords||[];
+    if(basses.length||accords.length){
+      lines.push('','MAIN GAUCHE','──────────────────────────────────');
+      if(basses.length){
+        var _lhR0=pr.lhRows?pr.lhRows[0]:null,_lhO=_lhR0?(_lhR0.offset||0):0;
+        var lhOff=_lhO?(' (décalage '+(_lhO>0?'+':'')+_lhO+')'):'';
+        lines.push('  Basses'+lhOff);
+        basses.forEach(function(b,i){lines.push('    '+pad(i+1,2)+'.  ↓ '+pad(b.p||'–',8)+'  ↑ '+(b.t||'–'));});
+      }
+      if(accords.length){
+        lines.push('  Accords');
+        accords.forEach(function(a,i){lines.push('    '+pad(i+1,2)+'.  ↓ '+pad(a.p||'–',8)+'  ↑ '+(a.t||'–'));});
+      }
+    }
+    lines.push('','══════════════════════════════════');
+    return lines.join('\n');
+  }
+
+  function exportText(){
+    var txt=buildExportText();
+    if(!txt){showToast('Aucun plan à exporter.');return;}
+    if(navigator.clipboard){
+      if(navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(function(){showToast('✔ Texte copié dans le presse-papiers');}).catch(function(){fallbackCopy(txt);});
+      } else {fallbackCopy(txt);}
+    } else {fallbackCopy(txt);}
+  }
+
+  function exportJSON(){
+    var snap = cwSnapshotPreset();
+    if(!snap){ showToast('Aucun plan à exporter.'); return; }
+    var blob = new Blob([JSON.stringify(snap, null, 2)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (snap.nom || 'plan-clavier').replace(/[^a-zA-Z0-9_\u00C0-\u017E\-]/g, '-') + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('\u2714 JSON téléchargé');
+  }
+
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast('JSON copié \u2714'); }
+    catch(e){ showToast('Impossible de copier. Copiez manuellement.'); }
+    document.body.removeChild(ta);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     TEMPLATE MANAGEMENT (localStorage)
+     ═══════════════════════════════════════════════════ */
+  function getSavedPlans(){
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function setSavedPlans(plans){
+    localStorage.setItem(LS_KEY, JSON.stringify(plans));
+  }
+  function refreshSavedList(){
+    var sel = $('cw-saved-sel');
+    sel.innerHTML = '<option value="">— Aucun plan sauvegardé —</option>';
+    var plans = getSavedPlans();
+    var keys = Object.keys(plans).sort();
+    if(keys.length){
+      sel.innerHTML = '<option value="">— Choisir un plan —</option>';
+      keys.forEach(function(k){
+        var opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = k;
+        sel.appendChild(opt);
+      });
+    }
+  }
+  function savePlan(){
+    var snap = cwSnapshotPreset();
+    if(!snap){ showToast('Aucun plan à sauvegarder.'); return; }
+    var suggested = prompt('Nom du plan :', snap.nom);
+    if(!suggested) return;
+    snap.nom = suggested;
+    currentPreset.id = snap.id;
+    var plans = getSavedPlans();
+    plans[suggested] = snap;
+    setSavedPlans(plans);
+    refreshSavedList();
+    showToast('Plan « '+suggested+' » sauvegardé \u2714');
+  }
+  function loadPlan(){
+    var key = $('cw-saved-sel').value;
+    if(!key){ showToast('Sélectionnez un plan.'); return; }
+    var plans = getSavedPlans();
+    if(!plans[key]){ showToast('Plan introuvable.'); return; }
+    currentPreset = JSON.parse(JSON.stringify(plans[key]));
+    // Update UI fields
+    $('cw-nom-instrument').value = currentPreset.nom || currentPreset.label || '';
+    $('cw-nom-joueur').value = currentPreset.joueur || '';
+    $('cw-preset-sel').value = '';
+    renderAll();
+    showToast('Plan « '+key+' » chargé \u2714');
+  }
+  function deletePlan(){
+    var key = $('cw-saved-sel').value;
+    if(!key){ showToast('Sélectionnez un plan.'); return; }
+    if(!confirm('Supprimer « '+key+' » ?')) return;
+    var plans = getSavedPlans();
+    delete plans[key];
+    setSavedPlans(plans);
+    refreshSavedList();
+    showToast('Plan supprimé.');
+  }
+
+  function cwNormalisePreset(json){
+    if(Array.isArray(json)) json = json[0];
+    return json || null;
+  }
+
+  function loadFromFile(event){
+    var file = event.target.files[0];
+    if(!file) return;
+    event.target.value = ''; // reset so same file can be re-loaded
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        var json = JSON.parse(e.target.result);
+        json = cwNormalisePreset(json);
+        if(!json){ showToast('Format non reconnu'); return; }
+        currentPreset = json;
+        $('cw-preset-sel').value = '';
+        $('cw-nom-instrument').value = json.nom || '';
+        $('cw-nom-joueur').value = json.joueur || '';
+        renderAll();
+        showToast('\u2714 Fichier chargé');
+      } catch(ex){ showToast('Erreur: JSON invalide'); }
+    };
+    reader.readAsText(file);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     DARK/LIGHT TOGGLE
+     ═══════════════════════════════════════════════════ */
+  function toggleTheme(){
+    darkMode = !darkMode;
+    widget.classList.toggle('cw-dark', darkMode);
+    $('cw-theme-toggle').textContent = darkMode ? '☀️' : '🌙';
+    if(currentPreset) renderAll();
+  }
+
+  /* ═══════════════════════════════════════════════════
+     COLLAPSIBLE SECTIONS
+     ═══════════════════════════════════════════════════ */
+  function initCollapsible(){
+    widget.querySelectorAll('.cw-section-head[data-toggle]').forEach(function(head){
+      head.addEventListener('click', function(){
+        var targetId = head.getAttribute('data-toggle');
+        var body = $(targetId);
+        if(!body) return;
+        var hidden = body.classList.contains('cw-hidden');
+        body.classList.toggle('cw-hidden', !hidden);
+        head.textContent = head.textContent.replace(/^[▶▼]/, hidden ? '▼' : '▶');
+      });
+    });
+  }
+
+
+  /* ═══════════════════════════════════════════════════
+     SVG CLICK-TO-EDIT — handled by openNotePicker()
+     ═══════════════════════════════════════════════════ */
+
+  function bindSVGEditing(){
+    if(!widget) return;
+    widget.querySelectorAll('.cw-edit-btn').forEach(function(g){
+      g.addEventListener('click', function(e){
+        e.stopPropagation();
+        openNotePicker(g.getAttribute('data-edit'), e);
+      });
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     INIT
+     ═══════════════════════════════════════════════════ */
+  function init(){
+    mergeCustomPresets();
+    populatePresetSelector();
+    initCollapsible();
+    refreshSavedList();
+
+    // Admin block: visible only when URL hash contains #cw-admin or widget has data-cw-admin attr
+    var widget = document.querySelector('.clavier-widget');
+    var adminBlock = $('cw-admin-block');
+    if(adminBlock){
+      var isAdmin = window.location.hash === '#cw-admin';
+      if(!isAdmin){ isAdmin = widget ? widget.hasAttribute('data-cw-admin') : false; }
+      if(isAdmin){ adminBlock.style.display = 'block'; }
+    }
+
+    // Event listeners
+    $('cw-preset-sel').addEventListener('change', function(){
+      loadPreset(this.value);
+    });
+    $('cw-nom-instrument').addEventListener('input', function(){
+      if(currentPreset) renderAll();
+    });
+    $('cw-nom-joueur').addEventListener('input', function(){
+      if(currentPreset) renderAll();
+    });
+    $('cw-theme-toggle').addEventListener('click', toggleTheme);
+    $('cw-export-btn').addEventListener('click', exportText);
+    $('cw-export-json-btn').addEventListener('click', exportJSON);
+    $('cw-import-file-btn').addEventListener('click', function(){ $('cw-file-input').click(); });
+    $('cw-file-input').addEventListener('change', loadFromFile);
+    $('cw-save-btn').addEventListener('click', savePlan);
+    $('cw-load-btn').addEventListener('click', loadPlan);
+    $('cw-delete-btn').addEventListener('click', deletePlan);
+    $('cw-copy-preset-btn').addEventListener('click', exportAsPreset);
+
+    // Edit popup events
+    $('cw-np-close').addEventListener('click', closeNotePicker);
+    $('cw-np-clear-btn').addEventListener('click', cwPickerClear);
+    $('cw-np-apply-btn').addEventListener('click', cwPickerApply);
+    $('cw-np-tab-push').addEventListener('click', function(){ if(_cwEdit) cwSwitchSlot('push'); });
+    $('cw-np-tab-pull').addEventListener('click', function(){ if(_cwEdit) cwSwitchSlot('pull'); });
+    // Click-outside: close picker (inspired by offline tool — check style.display, not class)
+    document.addEventListener('click', function(ev){
+      var picker = $('cw-note-picker');
+      if(picker && picker.style.display === 'block'){
+        if(!picker.contains(ev.target)){
+          if(!ev.target.closest('.cw-edit-btn') && !ev.target.closest('input[data-section]')){
+            closeNotePicker();
+          }
+        }
+      }
+    });
+    // Note table inputs → open picker on click (inspired by offline tool)
+    $('cw-rh-tables').addEventListener('click', function(e){
+      var inp = e.target.closest('input[data-section="rh"]');
+      if(inp && currentPreset){
+        var ri = parseInt(inp.getAttribute('data-row'), 10);
+        var bi = parseInt(inp.getAttribute('data-btn'), 10);
+        var dir = inp.getAttribute('data-dir');
+        e.stopPropagation();
+        openNotePicker('rh:'+ri+':'+bi, e, dir === 'p' ? 'push' : 'pull');
+      }
+    });
+    $('cw-lh-tables').addEventListener('click', function(e){
+      var inp = e.target.closest('input[data-section]');
+      if(inp && currentPreset){
+        var sec = inp.getAttribute('data-section');
+        var bi  = parseInt(inp.getAttribute('data-btn'), 10);
+        var dir = inp.getAttribute('data-dir');
+        e.stopPropagation();
+        openNotePicker(sec+':'+bi, e, dir === 'p' ? 'push' : 'pull');
+      }
+    });
+    initNotePicker();
+  }
+
+  // Run init when DOM is ready
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+<!-- /wp:html -->

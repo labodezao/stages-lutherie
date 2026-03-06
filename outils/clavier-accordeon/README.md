@@ -1,12 +1,30 @@
 # Outil Plan de Claviers – Guide
 
-## Deux versions disponibles
+## Fichiers disponibles
 
 | Fichier | Usage |
 |---|---|
 | `index.html` | **Outil complet** — à ouvrir en local dans le navigateur |
-| `gutenberg-widget.html` | **Widget WordPress** — à coller dans un bloc HTML personnalisé |
-| `clavier-accordeon-gutenberg.txt` | **Import Gutenberg** — coller dans l'éditeur de code WordPress |
+| `gutenberg-widget.html` | **Widget WordPress (source)** — référence HTML pour les deux versions Gutenberg |
+| `clavier-accordeon-admin-gutenberg.txt` | **Import Gutenberg — PAGE ADMIN** — bloc admin toujours visible |
+| `clavier-accordeon-stagiaires-gutenberg.txt` | **Import Gutenberg — PAGE STAGIAIRES** — bloc admin caché, présets préconfigurés |
+| `clavier-accordeon-gutenberg.txt` | **Import Gutenberg (version originale)** — conservé pour compatibilité |
+
+---
+
+## Deux pages WordPress
+
+| Page | Fichier à coller | Qui y accède ? |
+|---|---|---|
+| Page admin (privée/protégée) | `clavier-accordeon-admin-gutenberg.txt` | Admin uniquement |
+| Page stagiaires (publique) | `clavier-accordeon-stagiaires-gutenberg.txt` | Tous les stagiaires |
+
+### Workflow de configuration des présets
+
+1. **Configurer** un clavier sur la **page admin** (le bloc "📋 Copier comme préset" est toujours visible)
+2. Cliquer **📋 Copier comme préset** → copier le JSON généré
+3. **Éditer** `clavier-accordeon-stagiaires-gutenberg.txt` → coller le JSON dans le bloc `<script id="cw-custom-presets">`
+4. Recoller le fichier stagiaires dans la page WordPress des stagiaires et sauvegarder
 
 ---
 
@@ -16,7 +34,7 @@
 
 1. Dans WordPress, aller dans **Pages → Ajouter une page**
 2. Cliquer **⋮ → Éditeur de code** (`Ctrl + Shift + Alt + M`)
-3. Ouvrir `clavier-accordeon-gutenberg.txt`, sélectionner tout (`Ctrl+A`), copier, coller
+3. Ouvrir le fichier Gutenberg approprié, sélectionner tout (`Ctrl+A`), copier, coller
 4. Revenir en éditeur visuel et publier
 
 ### Aucun fichier à uploader
@@ -103,7 +121,7 @@ Pour **ajouter un preset** à l'outil offline :
 1. Créer `presets/MONPRESET.json` au format ci-dessus
 2. Ajouter une entrée dans `PRESET_CATALOG` dans `index.html`
 
-Pour le **widget WordPress**, les presets sont inline dans `PRESETS_DATA` dans `gutenberg-widget.html`. Pour en ajouter un de façon permanente, modifier ce bloc JS et re-générer `clavier-accordeon-gutenberg.txt`.
+Pour le **widget WordPress**, les présets personnalisés admin se configurent via la **page admin** (voir workflow ci-dessus). Les présets intégrés sont dans `PRESETS_DATA` dans `gutenberg-widget.html`.
 
 ---
 
