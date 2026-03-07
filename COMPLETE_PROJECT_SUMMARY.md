@@ -101,6 +101,13 @@ Created version 3 email templates in both languages with:
 | 21/8   | €2,820  | €900         | Compact model |
 | 33/12  | €4,500  | €1,500       | Versatile (Popular) |
 | 33/18  | €4,880  | €1,900       | Professional |
+| 33/24  | €6,250  | €2,500       | Advanced |
+
+> **Option Anche a mano Blue Star** – Premium handmade reeds: +15% surcharge (21/8b +€423, 33/12b +€675, 33/18b +€732, 33/24b +€938).
+
+> **2-voice RH upgrade with registers**: option to upgrade to 2 voices on the right hand with registers (requires 2 workshop sessions).
+
+> All models are delivered with **1 voice (1V) right hand** by default.
 
 #### 10-Day Program
 1. **Days 1-2**: Structure & wood (case fabrication, mechanical base)

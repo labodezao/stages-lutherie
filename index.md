@@ -22,6 +22,13 @@ Une expérience unique et accessible à tous, dès 13 ans, **sans aucune expéri
 - **21/8 basses** – 2 820 € (acompte 900 €)
 - **33/12 basses** – 4 500 € (acompte 1 500 €)
 - **33/18 basses** – 4 880 € (acompte 1 900 €)
+- **33/24 basses** – 6 250 € (acompte 2 500 €)
+
+> **Option Anche a mano Blue Star** : anches fabriquées à la main, +15 % sur le tarif du modèle (21/8b +423 €, 33/12b +675 €, 33/18b +732 €, 33/24b +938 €).
+
+> **Upgrade 2 voix MD avec registres** : possibilité de passer en 2 voix main droite avec registres (nécessite 2 stages de fabrication).
+
+> Tous les modèles sont livrés en **1 voix (1V) main droite** par défaut.
 
 ## 📖 Documentation Complète
 

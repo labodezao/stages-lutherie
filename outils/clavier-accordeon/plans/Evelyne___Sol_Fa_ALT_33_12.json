@@ -1,0 +1,354 @@
+{
+  "id": "plan_evelyne",
+  "nom": "Evelyne — Sol/Fa/ALT 33/12",
+  "joueur": "Evelyne",
+  "luthier": "Ewen d'Aviau",
+  "dateCreation": "2026-03-02",
+  "lastModified": "2026-03-02T01:45:05.924Z",
+  "nbRangees": 3,
+  "rangees": [
+    {
+      "nom": "Rangée Sol (intérieure)",
+      "nb": 12,
+      "offset": 0,
+      "register": "N"
+    },
+    {
+      "nom": "Rangée Mi (médiane)",
+      "nb": 11,
+      "offset": 1,
+      "register": "N"
+    },
+    {
+      "nom": "Rangée Fa (extérieure)",
+      "nb": 10,
+      "offset": 2,
+      "register": "N"
+    }
+  ],
+  "nbVoix": 2,
+  "voixPerRow": [
+    "B",
+    "N"
+  ],
+  "nbVoixAccords": 2,
+  "nbVoixBasses": 2,
+  "lhDisplayMode": "paired",
+  "lhPairedDir": "vertical",
+  "lhRows": [
+    {
+      "nb": 6,
+      "offset": 0
+    }
+  ],
+  "lhPairsPerRow": 3,
+  "lhBassFirst": false,
+  "notes": {
+    "droite": [
+      [
+        {
+          "p": "Do3",
+          "t": "Mi3"
+        },
+        {
+          "p": "Ré3",
+          "t": "Fa#3"
+        },
+        {
+          "p": "Sol3",
+          "t": "La3"
+        },
+        {
+          "p": "Si3",
+          "t": "Do4"
+        },
+        {
+          "p": "Ré4",
+          "t": "Mi4"
+        },
+        {
+          "p": "Sol4",
+          "t": "Fa#4"
+        },
+        {
+          "p": "Si4",
+          "t": "La4"
+        },
+        {
+          "p": "Ré5",
+          "t": "Do5"
+        },
+        {
+          "p": "Sol5",
+          "t": "Mi5"
+        },
+        {
+          "p": "Si5",
+          "t": "Fa#5"
+        },
+        {
+          "p": "Ré6",
+          "t": "La6"
+        },
+        {
+          "p": "Sol6",
+          "t": "Do6"
+        }
+      ],
+      [
+        {
+          "p": "Mi3",
+          "t": "Sol3"
+        },
+        {
+          "p": "La3",
+          "t": "Si3"
+        },
+        {
+          "p": "Do4",
+          "t": "Ré4"
+        },
+        {
+          "p": "Mi4",
+          "t": "Fa4"
+        },
+        {
+          "p": "La4",
+          "t": "Sol4"
+        },
+        {
+          "p": "Do5",
+          "t": "Si4"
+        },
+        {
+          "p": "Mi5",
+          "t": "Ré5"
+        },
+        {
+          "p": "La5",
+          "t": "Fa5"
+        },
+        {
+          "p": "Do6",
+          "t": "Sol5"
+        },
+        {
+          "p": "Mi6",
+          "t": "Si5"
+        },
+        {
+          "p": "La6",
+          "t": "Ré6"
+        }
+      ],
+      [
+        {
+          "p": "Fa3",
+          "t": "La#3"
+        },
+        {
+          "p": "La#3",
+          "t": "Do#4"
+        },
+        {
+          "p": "Ré#4",
+          "t": "Ré#4"
+        },
+        {
+          "p": "Sol#4",
+          "t": "Sol#4"
+        },
+        {
+          "p": "La#5",
+          "t": "La#5"
+        },
+        {
+          "p": "Ré#5",
+          "t": "Do#5"
+        },
+        {
+          "p": "Sol#5",
+          "t": "Ré#5"
+        },
+        {
+          "p": "La#6",
+          "t": "Sol#5"
+        },
+        {
+          "p": "Ré#6",
+          "t": "La#6"
+        },
+        {
+          "p": "Sol#6",
+          "t": "Do#6"
+        }
+      ]
+    ],
+    "basses": [
+      {
+        "p": "Ré#2",
+        "t": "La#2"
+      },
+      {
+        "p": "Mi2",
+        "t": "La2"
+      },
+      {
+        "p": "La2",
+        "t": "Fa2"
+      },
+      {
+        "p": "Si2",
+        "t": "Fa#2"
+      },
+      {
+        "p": "Sol3",
+        "t": "Ré2"
+      },
+      {
+        "p": "Do2",
+        "t": "Sol2"
+      }
+    ],
+    "accords": [
+      {
+        "p": "Ré#4",
+        "t": "La#4"
+      },
+      {
+        "p": "Mi4",
+        "t": "La4"
+      },
+      {
+        "p": "La4",
+        "t": "Fa4"
+      },
+      {
+        "p": "Si4",
+        "t": "Fa#4"
+      },
+      {
+        "p": "Sol5",
+        "t": "Ré4"
+      },
+      {
+        "p": "Do4",
+        "t": "Sol4"
+      }
+    ],
+    "terzetto": [],
+    "basses2": [
+      {
+        "p": "Ré#3",
+        "t": "La#3"
+      },
+      {
+        "p": "Mi3",
+        "t": "La3"
+      },
+      {
+        "p": "Sol4",
+        "t": "Ré3"
+      },
+      {
+        "p": "Si3",
+        "t": "Fa#3"
+      },
+      {
+        "p": "La3",
+        "t": "Fa3"
+      },
+      {
+        "p": "Do3",
+        "t": "Sol3"
+      }
+    ],
+    "basses3": [
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      }
+    ],
+    "accords2": [
+      {
+        "p": "La#4",
+        "t": "Fa5"
+      },
+      {
+        "p": "Si4",
+        "t": "Mi5"
+      },
+      {
+        "p": "Mi5",
+        "t": "Do5"
+      },
+      {
+        "p": "Fa#5",
+        "t": "Do#5"
+      },
+      {
+        "p": "Ré6",
+        "t": "La4"
+      },
+      {
+        "p": "Sol4",
+        "t": "Ré5"
+      }
+    ],
+    "accords3": [
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      },
+      {
+        "p": "",
+        "t": ""
+      }
+    ]
+  },
+  "orderSpecs": {
+    "qty": "1",
+    "reedType": "",
+    "tuning": "440",
+    "tremolo": "",
+    "harmony": "",
+    "bassType": "",
+    "bassComp": ""
+  }
+}

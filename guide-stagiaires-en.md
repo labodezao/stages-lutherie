@@ -47,28 +47,49 @@ The workshop is located in a **quiet residential area** of Saint-Nazaire, offeri
 
 ## 🎵 Accordion Models & Pricing
 
-You can choose from three models of diatonic accordions, each suited to different playing levels and musical styles.
+You can choose from four models of diatonic accordions, each suited to different playing levels and musical styles.
 
 ### Model 21/8 basses – €2,820
 
-- **Right hand**: 21 buttons on 2 rows
+- **Right hand**: 21 buttons on 2 rows, 1 voice (1V)
 - **Left hand**: 8 basses
 - **Ideal for**: Beginners, musicians wanting a compact and manageable instrument
 - **Deposit at registration (40%)**: €900
 
 ### Model 33/12 basses – €4,500
 
-- **Right hand**: 33 buttons on 3 rows
+- **Right hand**: 33 buttons on 3 rows, 1 voice (1V)
 - **Left hand**: 12 basses
 - **Ideal for**: Intermediate to advanced musicians, varied repertoire
 - **Deposit at registration (40%)**: €1,500
 
 ### Model 33/18 basses – €4,880
 
-- **Right hand**: 33 buttons on 3 rows
+- **Right hand**: 33 buttons on 3 rows, 1 voice (1V)
 - **Left hand**: 18 basses (more harmonic possibilities)
 - **Ideal for**: Advanced musicians, complex repertoire
 - **Deposit at registration (40%)**: €1,900
+
+### Model 33/24 basses – €6,250
+
+- **Right hand**: 33 buttons on 3 rows, 1 voice (1V)
+- **Left hand**: 24 basses (maximum harmonic possibilities)
+- **Ideal for**: Demanding musicians, advanced configurations
+- **Deposit at registration (40%)**: €2,500
+
+### Anche a mano Blue Star Option
+
+For the most demanding musicians, we offer the **Anche a mano Blue Star** option: reeds entirely handcrafted by a master reedmaker.
+
+- **Surcharge**: +15% of the chosen model price
+- 21/8b: +€423 (total €3,243, deposit €1,297)
+- 33/12b: +€675 (total €5,175, deposit €2,070)
+- 33/18b: +€732 (total €5,612, deposit €2,245)
+- 33/24b: +€938 (total €7,188, deposit €2,875)
+
+### 2-Voice RH Upgrade with Registers
+
+> **2-voice RH upgrade with registers**: option to upgrade to 2 voices on the right hand with registers (requires 2 workshop sessions).
 
 ### Payment Terms
 
@@ -172,6 +193,10 @@ The grills protect the reeds while letting sound pass through. They're also a ma
 - **Over 100 models** available (geometric, floral, traditional, modern patterns)
 - **Numbered**: You'll choose your grills during registration or at the start of the workshop
 - **Customization possible**: We can discuss custom patterns
+
+### Grill Pattern Choice
+
+You can choose from 6 numbered grill patterns (No. 1 to No. 6) from our catalogue of over 100 designs, or propose a custom grill design.
 
 ### 6. Bellows
 

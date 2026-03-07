@@ -13,10 +13,11 @@ Created a comprehensive commercial HTML page for the accordion building workshop
 ✅ **Hero Section** - Eye-catching banner with workshop title and tagline
 ✅ **Date Cards** - 2026 sessions (April 8-17, October 14-23)
 ✅ **About Section** - Workshop spirit, target audience, learning objectives
-✅ **Pricing Cards** - 3 models with full details:
+✅ **Pricing Cards** - 4 models with full details:
 - 21/8 model: 2,820€ (deposit 900€)
 - 33/12 model: 4,500€ (deposit 1,500€) ⭐ Featured
 - 33/18 model: 4,880€ (deposit 1,900€)
+- 33/24 model: 6,250€ (deposit 2,500€)
 
 ✅ **10-Day Program Timeline** - Detailed day-by-day breakdown:
 - Day 1: Welcome & first assemblies
