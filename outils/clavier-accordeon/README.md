@@ -6,12 +6,9 @@
 |---|---|
 | `index.html` | **Outil complet offline** — à ouvrir en local dans le navigateur |
 | `gutenberg-widget.html` | **Widget WordPress (source)** — référence HTML pour les versions Gutenberg stagiaires |
-| `clavier-accordeon-admin-gutenberg.json` | **Import Gutenberg natif — PAGE ADMIN** — à importer via WordPress (recommandé) |
-| `clavier-accordeon-stagiaires-gutenberg.json` | **Import Gutenberg natif — PAGE STAGIAIRES** — à importer via WordPress (recommandé) |
-| `clavier-accordeon-admin-gutenberg.txt` | **Contenu brut — PAGE ADMIN** — à coller dans l'éditeur de code |
-| `clavier-accordeon-stagiaires-gutenberg.txt` | **Contenu brut — PAGE STAGIAIRES** — à coller dans l'éditeur de code |
-| `clavier-accordeon-gutenberg.json` | **Import Gutenberg natif (version originale)** — conservé pour compatibilité |
-| `clavier-accordeon-gutenberg.txt` | **Contenu brut (version originale)** — conservé pour compatibilité |
+| `clavier-accordeon-admin-gutenberg.txt` | **Import Gutenberg — PAGE ADMIN** — à coller dans l'éditeur de code WordPress |
+| `clavier-accordeon-stagiaires-gutenberg.txt` | **Import Gutenberg — PAGE STAGIAIRES** — à coller dans l'éditeur de code WordPress |
+| `clavier-accordeon-gutenberg.txt` | **Import Gutenberg (version originale)** — conservé pour compatibilité |
 
 ---
 
@@ -19,8 +16,8 @@
 
 | Page | Fichier à importer | Qui y accède ? | Basé sur |
 |---|---|---|---|
-| Page admin (privée/protégée) | `clavier-accordeon-admin-gutenberg.json` | Admin uniquement | `index.html` (outil complet) |
-| Page stagiaires (publique) | `clavier-accordeon-stagiaires-gutenberg.json` | Tous les stagiaires | `gutenberg-widget.html` (widget) |
+| Page admin (privée/protégée) | `clavier-accordeon-admin-gutenberg.txt` | Admin uniquement | `index.html` (outil complet) |
+| Page stagiaires (publique) | `clavier-accordeon-stagiaires-gutenberg.txt` | Tous les stagiaires | `gutenberg-widget.html` (widget) |
 
 ### Fonctionnalités de la page admin
 
@@ -77,18 +74,7 @@ Le dossier `presets/` du dépôt contient déjà les 36 présets standards. Il s
 
 ## Utilisation sur WordPress
 
-### Importer le widget dans une page (méthode recommandée)
-
-Les fichiers `.json` permettent un import natif dans WordPress via l'outil d'import de blocs :
-
-1. Dans WordPress, aller dans **Outils → Importer → WordPress (blocs)**
-   — ou depuis l'éditeur : **⋮ → Importer des blocs** → sélectionner le fichier `.json`
-2. Sélectionner `clavier-accordeon-stagiaires-gutenberg.json` (page stagiaires) ou `clavier-accordeon-admin-gutenberg.json` (page admin)
-3. Le bloc est importé directement comme un **bloc réutilisable** WordPress, prêt à insérer dans n'importe quelle page
-
-### Coller le widget dans une page (méthode manuelle)
-
-Si vous préférez coller directement le code :
+### Importer le widget dans une page
 
 1. Dans WordPress, aller dans **Pages → Ajouter une page**
 2. Cliquer **⋮ → Éditeur de code** (`Ctrl + Shift + Alt + M`)
@@ -97,7 +83,7 @@ Si vous préférez coller directement le code :
 
 ### Présets de la page stagiaires — via FTP (Workflow A)
 
-Configurez `PRESETS_BASE_URL` dans `clavier-accordeon-stagiaires-gutenberg.txt` (ou `.json`) :
+Configurez `PRESETS_BASE_URL` dans `clavier-accordeon-stagiaires-gutenberg.txt` :
 ```javascript
 var PRESETS_BASE_URL = 'https://votre-site.com/wp-content/uploads/presets';
 ```
@@ -116,7 +102,7 @@ Les présets par défaut (GC21, AD33, etc.) sont **intégrés directement** dans
 
 ### ⚠️ Note WordPress : opérateur `&&`
 
-WordPress encode automatiquement `&&` en `&#038;&#038;` dans les blocs HTML personnalisés, ce qui casse le JavaScript. Tous les fichiers Gutenberg (`.txt` et `.json`) utilisent des ternaires et des `if` imbriqués à la place de `&&` pour éviter ce problème.
+WordPress encode automatiquement `&&` en `&#038;&#038;` dans les blocs HTML personnalisés, ce qui casse le JavaScript. Tous les fichiers Gutenberg `.txt` utilisent des ternaires et des `if` imbriqués à la place de `&&` pour éviter ce problème.
 
 ---
 
