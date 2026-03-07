@@ -1,43 +1,17 @@
+<!-- wp:heading {"level":1} -->
+<h1 class="wp-block-heading">🪗 Plan de clavier — Widget Accordéon</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Widget de plan de clavier d'accordéon diatonique. Pour ajouter des modèles de présets : activez le mode admin (<code>#cw-admin</code> dans l'URL), configurez un clavier, puis cliquez <strong>📋 Copier comme préset</strong> et collez le JSON dans le bloc ci-dessous.</p>
+<!-- /wp:paragraph -->
+
 <!-- wp:html -->
-<!-- ════════════════════════════════════════════════════════
-     WIDGET CLAVIER ACCORDÉON — Version standalone (aperçu)
-     Pour WordPress : copier de <div class="clavier-widget">
-     jusqu'à </script> et coller dans un bloc HTML personnalisé.
-     Le fichier clavier-accordeon-gutenberg.txt contient
-     le code prêt-à-coller avec les balises wp:html.
-     ════════════════════════════════════════════════════════ -->
-<!-- ════════════════════════════════════════════════════════
-     PRÉSETS PERSONNALISÉS — RÉSERVÉ À L'ADMINISTRATEUR
-     ════════════════════════════════════════════════════════
-     Modifiez le tableau JSON ci-dessous pour ajouter ou
-     retirer des modèles de clavier proposés aux stagiaires.
-     Les stagiaires peuvent sélectionner ces modèles et les
-     personnaliser librement, mais ils ne peuvent PAS modifier
-     cette liste.
-
-     Format de chaque entrée :
-       {
-         "id":       "MonID",        ← identifiant unique (sans espaces)
-         "label":    "Nom affiché",  ← nom dans la liste déroulante
-         "category": "Mon groupe",   ← groupe dans la liste déroulante
-         "data":     { ... }         ← données du clavier (voir ci-dessous)
-       }
-
-     → Pour obtenir le JSON "data" d'un nouveau préset :
-       1. Accédez au widget avec #cw-admin dans l'URL (ex: /votre-page/#cw-admin)
-       2. Chargez ou configurez un clavier dans l'outil
-       3. Cliquez "📋 Copier comme préset" (section Sauvegarde)
-       4. Collez le JSON ici (remplacez [] par le tableau obtenu)
-       5. Sauvegardez la page WordPress
-
-     Mode admin : accessible via URL#cw-admin ou attribut data-cw-admin sur <div class="clavier-widget">.
-     Le bloc admin (bouton "Copier comme préset") est invisible aux stagiaires par défaut.
-
-     Laissez [] pour n'utiliser que les modèles intégrés.
-     ════════════════════════════════════════════════════════ -->
+<!-- ════ 📋 PRÉSETS — REMPLACEZ [] PAR LE JSON COPIÉ EN MODE ADMIN ════ -->
 <script id="cw-custom-presets" type="application/json">[]</script>
-<!-- WordPress Gutenberg Keyboard Plan Widget -->
-<!-- Paste this into a Custom HTML block on your WordPress page -->
+<!-- /wp:html -->
+
+<!-- wp:html -->
 <div class="clavier-widget">
 
   <!-- Header -->

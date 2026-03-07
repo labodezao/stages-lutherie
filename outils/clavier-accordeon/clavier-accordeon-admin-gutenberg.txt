@@ -1,22 +1,21 @@
+<!-- wp:heading {"level":1} -->
+<h1 class="wp-block-heading">🪗 Clavier Accordéon Diatonique — Admin</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Outil d'administration complet : bibliothèque d'instruments, éditeur de plans de clavier et gestion des présets pour les stagiaires. Configurez l'URL de vos présets dans le bloc ci-dessous.</p>
+<!-- /wp:paragraph -->
+
 <!-- wp:html -->
-<!-- ════════════════════════════════════════════════════════
-     OUTIL CLAVIER ACCORDÉON — VERSION ADMIN COMPLÈTE
-     Pour WordPress : collez ce bloc sur une page réservée
-     à l'administration (accès restreint ou privé).
-     
-     Cette version utilise le plein outil index.html :
-     - Bibliothèque d'instruments (sauvegarde locale)
-     - Éditeur complet avec toutes les fonctionnalités
-     - Chargement des présets depuis PRESETS_BASE_URL
-     
-     ⚠️ CONFIGURATION REQUISE :
-     Modifiez PRESETS_BASE_URL ci-dessous pour pointer
-     vers l'URL du dossier "presets/" hébergé sur votre
-     serveur (ex: WordPress Media Library ou sous-dossier).
-     ════════════════════════════════════════════════════════ -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🪗 Clavier Accordéon Diatonique</title>
+<!-- ⚙️ CONFIGURATION — modifiez PRESETS_BASE_URL ci-dessous -->
+<script>/* URL du dossier presets/ hébergé sur votre serveur.
+   Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
+   Laissez '' pour le chemin relatif (mode local / développement). */
+var PRESETS_BASE_URL = '';
+</script>
+<!-- /wp:html -->
+
+<!-- wp:html -->
 <style>
 :root{
   --vert:#1d6b23;--vert-c:#eaf5ea;--or:#b8860b;--or-c:#fffbf0;
@@ -908,10 +907,9 @@ function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi
 const _presetCache={};  // id → preset data (lazy-loaded)
 let   _presetIndex=[];  // [{id,label,category}]
 
-/* ⚙️ MODIFIEZ CET URL pour pointer vers votre dossier presets/ hébergé
-   Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
-   Laissez vide ('') pour utiliser le chemin relatif (fonctionne en local) */
-const PRESETS_BASE_URL = '';  /* MODIFIEZ CET URL */
+/* PRESETS_BASE_URL est défini dans le bloc de configuration ci-dessus.
+   En mode local (sans ce bloc), on initialise à '' par défaut. */
+window.PRESETS_BASE_URL = window.PRESETS_BASE_URL || '';
 
 async function loadPresetIndex(){
   const base = PRESETS_BASE_URL || document.querySelector('base')?.href || location.href;
