@@ -74,7 +74,7 @@ Le dossier `presets/` du dépôt contient déjà les 36 présets standards. Il s
 
 ## Utilisation sur WordPress
 
-### Importer le widget dans une page
+### Importer le widget dans une page WordPress
 
 1. Dans WordPress, aller dans **Pages → Ajouter une page**
 2. Cliquer **⋮ → Éditeur de code** (`Ctrl + Shift + Alt + M`)
