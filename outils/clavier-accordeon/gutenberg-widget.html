@@ -562,7 +562,7 @@
      Laissez vide ('') pour n'utiliser que les presets inline.
      Exemple : 'https://monsite.com/wp-content/uploads/presets'
      ═══════════════════════════════════════════════════ */
-  var PRESETS_BASE_URL = '';
+  var PRESETS_BASE_URL = (window.PRESETS_BASE_URL !== undefined) ? window.PRESETS_BASE_URL : '';
 
   function _remotePresetUrl(path){
     return PRESETS_BASE_URL.replace(/\/?$/, '/') + path;

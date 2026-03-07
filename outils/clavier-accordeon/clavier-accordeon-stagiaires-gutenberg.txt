@@ -12,6 +12,15 @@
 <!-- /wp:html -->
 
 <!-- wp:html -->
+<!-- ⚙️ CONFIGURATION FTP — modifiez PRESETS_BASE_URL ci-dessous -->
+<script>/* URL du dossier presets/ uploadé sur votre serveur FTP/hébergement.
+   Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
+   Laissez '' pour n'utiliser que les présets du bloc ci-dessus. */
+window.PRESETS_BASE_URL = '';
+</script>
+<!-- /wp:html -->
+
+<!-- wp:html -->
 <div class="clavier-widget">
 
   <!-- Header -->
@@ -530,7 +539,7 @@
      Laissez vide ('') pour n'utiliser que les presets inline.
      Exemple : 'https://monsite.com/wp-content/uploads/presets'
      ═══════════════════════════════════════════════════ */
-  var PRESETS_BASE_URL = '';
+  var PRESETS_BASE_URL = (window.PRESETS_BASE_URL !== undefined) ? window.PRESETS_BASE_URL : '';
 
   function _remotePresetUrl(path){
     return PRESETS_BASE_URL.replace(/\/?$/, '/') + path;
