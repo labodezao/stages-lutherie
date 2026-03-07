@@ -22,7 +22,9 @@ var STAGE_CONFIG = {
   sessions: [
     { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Mercredi 8 – Vendredi 17 avril 2026' },
     { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Mercredi 14 – Vendredi 23 octobre 2026' }
-  ]
+  ],
+  /* URL du dossier presets/ du clavier (terminer par /). '' = chemin relatif (développement local). */
+  presetsBaseUrl: '../outils/clavier-accordeon/presets/'
 };
 </script>
 <!-- /wp:html -->
@@ -255,6 +257,15 @@ var STAGE_CONFIG = {
     /* ── Conditional visibility ── */
     .insc-conditional { display:none; }
     .insc-conditional.visible { display:block; }
+
+    /* ── Plan mode toggle ── */
+    .plan-mode-bar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+    .plan-mode-btn { padding:7px 20px; border-radius:20px; font-size:.84rem; font-weight:700;
+      font-family:inherit; cursor:pointer; transition:all .18s;
+      border:2px solid #e0d5cc; background:#fff; color:#888; line-height:1.4; }
+    .plan-mode-btn.active { background:var(--wood-dark); color:#fff; border-color:var(--wood-dark); }
+    .plan-mode-btn:hover:not(.active) { border-color:var(--gold); color:var(--wood-medium); }
+    .plan-preset-loading { font-size:.83rem; color:#999; font-style:italic; padding:6px 0; }
 
     /* ── Hints ── */
     .hint { font-size:0.8rem; color:#999; margin-top:4px; }
@@ -805,27 +816,48 @@ var STAGE_CONFIG = {
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Plan de clavier personnalisé (optionnel)</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Plan de clavier</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"20px","bottom":"8px","left":"28px","right":"28px"}}}} -->
-<p style="padding:20px 28px 8px"><strong>Vous avez un plan de clavier personnalisé ?</strong><br>Utilisez notre <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener">outil de génération de plans de clavier</a> pour créer votre disposition, puis exportez le JSON et collez-le ci-dessous.</p>
+<p style="padding:20px 28px 8px">Choisissez votre plan parmi les présets standards, ou importez un plan personnalisé créé avec <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener">l'outil de plan de clavier</a>. L'aperçu SVG s'affiche automatiquement.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
 <div class="insc-section-body">
-        <div class="insc-field" style="margin-top:14px;">
-          <label for="planClavier">Plan de clavier (JSON)</label>
-          <textarea id="planClavier" name="planClavier" rows="4" placeholder='Collez ici le JSON exporté depuis l&#39;outil de plan de clavier…' style="font-family:monospace; font-size:0.82rem;"></textarea>
-          <div class="hint">Exportez votre plan depuis l'outil clavier → bouton « Exporter JSON », puis collez le contenu ici.</div>
-        </div>
-        <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
-          <div class="insc-callout" style="border-left-color:var(--wood-medium);">
-            <strong>Aperçu du plan importé :</strong>
-            <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
-          </div>
-          <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
-        </div>
+  <div class="plan-mode-bar">
+    <button type="button" class="plan-mode-btn active" id="planModePresetBtn" onclick="setPlanMode('preset')">📋 Préset standard</button>
+    <button type="button" class="plan-mode-btn" id="planModeCustomBtn" onclick="setPlanMode('custom')">✏️ Plan personnalisé (JSON)</button>
+  </div>
+
+  <!-- Preset selector -->
+  <div id="planPresetSection">
+    <div class="insc-field">
+      <label for="planPresetSelect">Préset de clavier</label>
+      <select id="planPresetSelect" onchange="onPresetSelect(this.value)" style="max-width:100%">
+        <option value="">— Sélectionnez un plan standard —</option>
+      </select>
+      <div id="planPresetLoadState" class="plan-preset-loading">Chargement des présets…</div>
+    </div>
+  </div>
+
+  <!-- Custom JSON (hidden by default) -->
+  <div id="planCustomSection" style="display:none;">
+    <div class="insc-field" style="margin-top:8px;">
+      <label for="planClavier">Plan de clavier (JSON exporté)</label>
+      <textarea id="planClavier" name="planClavier" rows="4" placeholder="Collez ici le JSON exporté depuis l'outil de plan de clavier…" style="font-family:monospace; font-size:0.82rem;"></textarea>
+      <div class="hint">Dans l'outil clavier → bouton « Exporter JSON » → copier → coller ici.</div>
+    </div>
+  </div>
+
+  <!-- SVG Preview (common to both modes) -->
+  <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
+    <div class="insc-callout" style="border-left-color:var(--wood-medium);">
+      <strong>Aperçu du plan :</strong>
+      <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
+    </div>
+    <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
+  </div>
 </div>
 <!-- /wp:html -->
 </div>
@@ -1439,61 +1471,148 @@ var buildSVG_PlanLite = (function () {
     });
   });
 
-  /* ── Keyboard Plan Parser ── */
+  /* ── Keyboard Plan ── */
   var planData = null;
-  var planSvgData = null; /* data object for SVG rendering */
-  document.getElementById('planClavier').addEventListener('input', function () {
-    var raw = this.value.trim();
+  var planSvgData = null;
+  var planLabel = '';
+  var planMode = 'preset';
+  var PRESETS_BASE_URL = (typeof STAGE_CONFIG !== 'undefined')
+    ? (STAGE_CONFIG.presetsBaseUrl !== undefined ? STAGE_CONFIG.presetsBaseUrl : '../outils/clavier-accordeon/presets/')
+    : '../outils/clavier-accordeon/presets/';
+
+  function setPlanMode(mode) {
+    planMode = mode;
+    var presetSection = document.getElementById('planPresetSection');
+    var customSection = document.getElementById('planCustomSection');
+    var presetBtn = document.getElementById('planModePresetBtn');
+    var customBtn = document.getElementById('planModeCustomBtn');
+    if (mode === 'preset') {
+      presetSection.style.display = '';
+      customSection.style.display = 'none';
+      presetBtn.classList.add('active');
+      customBtn.classList.remove('active');
+    } else {
+      presetSection.style.display = 'none';
+      customSection.style.display = '';
+      presetBtn.classList.remove('active');
+      customBtn.classList.add('active');
+    }
+    planData = null; planSvgData = null; planLabel = '';
+    var planPreviewEl = document.getElementById('planPreview');
+    if (planPreviewEl) planPreviewEl.classList.remove('visible');
+    var planSVGEl = document.getElementById('planSVG');
+    if (planSVGEl) planSVGEl.innerHTML = '';
+    var planClavierEl = document.getElementById('planClavier');
+    if (planClavierEl) planClavierEl.value = '';
+    var presetSel = document.getElementById('planPresetSelect');
+    if (presetSel) presetSel.value = '';
+    updateSummary();
+  }
+
+  function showPlanPreview(inst, label) {
     var preview = document.getElementById('planPreview');
     var info = document.getElementById('planPreviewInfo');
     var svgContainer = document.getElementById('planSVG');
-    planData = null;
-    planSvgData = null;
+    var nbRows = inst.nbRangees || (inst.rangees ? inst.rangees.length : '?');
+    var totalBtns = 0;
+    if (inst.rangees) inst.rangees.forEach(function (r) { totalBtns += (r.nb || 0); });
+    var lhBtns = 0;
+    if (inst.lhRows) inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
+    info.innerHTML = '<strong>' + (label || inst.nom || '(sans nom)') + '</strong><br>'
+      + 'MD : ' + nbRows + ' rang\u00e9es \u00b7 ' + totalBtns + ' boutons'
+      + (lhBtns ? '<br>MG : ' + lhBtns + ' boutons' : '');
+    preview.classList.add('visible');
+    try {
+      planSvgData = buildSVG_PlanLite.presetToData(inst);
+      svgContainer.innerHTML = buildSVG_PlanLite.render(planSvgData);
+      var svgEl = svgContainer.querySelector('svg');
+      if (svgEl) { svgEl.setAttribute('width', '100%'); svgEl.setAttribute('height', 'auto'); svgEl.style.maxWidth = '100%'; }
+    } catch (svgErr) {
+      svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Aper\u00e7u visuel non disponible pour ce format.</p>';
+    }
+  }
 
+  function onPresetSelect(id) {
+    var loadState = document.getElementById('planPresetLoadState');
+    planData = null; planSvgData = null; planLabel = '';
+    var preview = document.getElementById('planPreview');
+    var svgContainer = document.getElementById('planSVG');
+    if (!id) {
+      preview.classList.remove('visible');
+      svgContainer.innerHTML = '';
+      updateSummary();
+      return;
+    }
+    if (loadState) loadState.textContent = 'Chargement\u2026';
+    fetch(PRESETS_BASE_URL + id + '.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (inst) {
+        planData = inst;
+        var sel = document.getElementById('planPresetSelect');
+        planLabel = sel ? sel.options[sel.selectedIndex].text : (inst.nom || id);
+        if (loadState) loadState.textContent = '';
+        showPlanPreview(inst, planLabel);
+        updateSummary();
+      })
+      .catch(function () {
+        if (loadState) loadState.textContent = '\u26a0 Impossible de charger le pr\u00e9set.';
+        planData = null;
+        if (preview) preview.classList.remove('visible');
+        if (svgContainer) svgContainer.innerHTML = '';
+        updateSummary();
+      });
+  }
+
+  function loadPresets() {
+    var sel = document.getElementById('planPresetSelect');
+    var loadState = document.getElementById('planPresetLoadState');
+    if (!sel) return;
+    fetch(PRESETS_BASE_URL + 'index.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (list) {
+        if (loadState) loadState.style.display = 'none';
+        var cats = {};
+        list.forEach(function (p) {
+          if (!cats[p.category]) cats[p.category] = [];
+          cats[p.category].push(p);
+        });
+        Object.keys(cats).forEach(function (cat) {
+          var og = document.createElement('optgroup');
+          og.label = cat;
+          cats[cat].forEach(function (p) {
+            var opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.label;
+            og.appendChild(opt);
+          });
+          sel.appendChild(og);
+        });
+      })
+      .catch(function () {
+        if (loadState) loadState.textContent = 'Pr\u00e9sets non disponibles \u2014 utilisez le mode Plan personnalis\u00e9.';
+      });
+  }
+
+  /* Custom JSON textarea handler */
+  document.getElementById('planClavier').addEventListener('input', function () {
+    var raw = this.value.trim();
+    planData = null; planSvgData = null; planLabel = '';
+    var preview = document.getElementById('planPreview');
+    var info = document.getElementById('planPreviewInfo');
+    var svgContainer = document.getElementById('planSVG');
     if (!raw) {
       preview.classList.remove('visible');
       svgContainer.innerHTML = '';
       updateSummary();
       return;
     }
-
     try {
       var parsed = JSON.parse(raw);
-      /* Accept both single instrument and array */
       var inst = Array.isArray(parsed) ? parsed[0] : parsed;
       if (!inst || !inst.rangees) throw new Error('Format invalide');
-
       planData = inst;
-      var nbRows = inst.nbRangees || (inst.rangees ? inst.rangees.length : '?');
-      var totalBtns = 0;
-      if (inst.rangees) {
-        inst.rangees.forEach(function (r) { totalBtns += (r.nb || 0); });
-      }
-      var lhBtns = 0;
-      if (inst.lhRows) {
-        inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
-      }
-      var name = inst.nom || '(sans nom)';
-
-      info.innerHTML = '<strong>' + name + '</strong><br>'
-        + 'MD : ' + nbRows + ' rang\u00e9es \u00b7 ' + totalBtns + ' boutons<br>'
-        + 'MG : ' + lhBtns + ' boutons';
-      preview.classList.add('visible');
-
-      /* Render visual SVG plan */
-      try {
-        planSvgData = buildSVG_PlanLite.presetToData(inst);
-        svgContainer.innerHTML = buildSVG_PlanLite.render(planSvgData);
-        /* Scale SVG to fit container */
-        var svgEl = svgContainer.querySelector('svg');
-        if (svgEl) {
-          svgEl.setAttribute('width', '100%');
-          svgEl.setAttribute('height', 'auto');
-          svgEl.style.maxWidth = '100%';
-        }
-      } catch (svgErr) {
-        svgContainer.innerHTML = '<p style="color:#999; font-size:0.85rem;">Aper\u00e7u visuel non disponible pour ce format.</p>';
-      }
+      planLabel = inst.nom || 'Plan personnalis\u00e9';
+      showPlanPreview(inst, planLabel);
     } catch (e) {
       info.innerHTML = '<span style="color:#c0392b;">\u26a0 JSON invalide \u2014 ' + e.message + '</span>';
       preview.classList.add('visible');
@@ -1607,7 +1726,7 @@ var buildSVG_PlanLite = (function () {
     document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '–';
     document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '–';
     document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '–';
-    document.getElementById('sumPlan').textContent = planData ? (planData.nom || 'Plan personnalis\u00e9') : '–';
+    document.getElementById('sumPlan').textContent = planData ? (planLabel || planData.nom || 'Plan personnalis\u00e9') : '–';
 
     /* Grille */
     /* Grille */
@@ -1728,6 +1847,9 @@ var buildSVG_PlanLite = (function () {
   form.addEventListener('input', updateSummary);
   form.addEventListener('change', updateSummary);
 
+  /* Load preset index on page ready */
+  loadPresets();
+
   /* ── PDF Generation (returns jsPDF doc) ── */
   function buildPDF() {
     var jsPDF = window.jspdf.jsPDF;
@@ -1839,8 +1961,8 @@ var buildSVG_PlanLite = (function () {
 
     /* 7. Plan de clavier */
     if (planData) {
-      sectionTitle('Plan de clavier personnalis\u00e9');
-      addLine('Nom du plan', planData.nom || '(personnalis\u00e9)');
+      sectionTitle('Plan de clavier');
+      addLine('Plan', planLabel || planData.nom || '(personnalis\u00e9)');
       if (planData.rangees) {
         planData.rangees.forEach(function (r, i) {
           addLine('Rang\u00e9e ' + (i + 1), (r.nom || '') + ' \u2013 ' + (r.nb || 0) + ' boutons');
@@ -1976,7 +2098,7 @@ var buildSVG_PlanLite = (function () {
       couleurSangles: selVal('couleurSangles'),
       remarquesMG: document.getElementById('remarquesMG').value,
       couleurSoufflet: getRadioVal('couleurSoufflet'),
-      planClavier: planData ? (planData.nom || 'Plan personnalis\u00e9') : ''
+      planClavier: planData ? (planLabel || planData.nom || 'Plan personnalis\u00e9') : ''
     };
 
     /* Try WordPress endpoint first */
