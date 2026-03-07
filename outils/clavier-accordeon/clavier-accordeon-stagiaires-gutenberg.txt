@@ -3,21 +3,21 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Widget de plan de clavier d'accordéon pour les stagiaires. Pour mettre à jour les modèles proposés : ouvrez la <strong>page admin</strong>, configurez un clavier, cliquez <strong>📋 Copier comme préset</strong>, puis collez le JSON dans le bloc ci-dessous.</p>
+<p>Widget de plan de clavier d'accordéon pour les stagiaires. Les modèles sont chargés automatiquement depuis le serveur FTP : uploadez le dossier <strong>presets/</strong> sur votre hébergement, puis renseignez l'URL dans le bloc de configuration ci-dessous.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
-<!-- ════ 📋 PRÉSETS — REMPLACEZ [] PAR LE JSON COPIÉ DEPUIS LA PAGE ADMIN ════ -->
-<script id="cw-custom-presets" type="application/json">[]</script>
+<!-- ⚙️ CONFIGURATION FTP — modifiez PRESETS_BASE_URL ci-dessous (méthode principale) -->
+<script>/* URL du dossier presets/ uploadé sur votre serveur FTP/hébergement.
+   Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
+   Laissez '' pour n'utiliser que les présets du bloc ci-dessous (méthode alternative). */
+window.PRESETS_BASE_URL = '';
+</script>
 <!-- /wp:html -->
 
 <!-- wp:html -->
-<!-- ⚙️ CONFIGURATION FTP — modifiez PRESETS_BASE_URL ci-dessous -->
-<script>/* URL du dossier presets/ uploadé sur votre serveur FTP/hébergement.
-   Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
-   Laissez '' pour n'utiliser que les présets du bloc ci-dessus. */
-window.PRESETS_BASE_URL = '';
-</script>
+<!-- ════ 📋 PRÉSETS ALTERNATIFS — à remplir uniquement si vous n'utilisez pas le FTP ════ -->
+<script id="cw-custom-presets" type="application/json">[]</script>
 <!-- /wp:html -->
 
 <!-- wp:html -->
@@ -98,7 +98,7 @@ window.PRESETS_BASE_URL = '';
       <div id="cw-admin-block" class="cw-admin-block">
         <div class="cw-row" style="margin-top:6px">
           <button id="cw-copy-preset-btn" class="cw-btn cw-btn-sm cw-btn-gold">📋 Copier comme préset</button>
-          <span class="cw-hint" style="font-size:0.78rem;color:var(--text2);display:block;margin-top:3px">Admin : collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
+          <span class="cw-hint" style="font-size:0.78rem;color:var(--text2);display:block;margin-top:3px">Admin : uploadez les présets sur votre FTP et configurez PRESETS_BASE_URL (recommandé), ou collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
         </div>
         <textarea id="cw-preset-export-area" class="cw-textarea-export" placeholder="JSON du préset (copiez puis collez dans la page WordPress)…"></textarea>
       </div>

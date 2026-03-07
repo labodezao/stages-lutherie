@@ -3,7 +3,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Outil d'administration complet : bibliothèque d'instruments, éditeur de plans de clavier et gestion des présets pour les stagiaires. Configurez l'URL de vos présets dans le bloc ci-dessous.</p>
+<p>Outil d'administration complet : bibliothèque d'instruments, éditeur de plans de clavier et gestion des présets pour les stagiaires. Uploadez le dossier <strong>presets/</strong> sur votre hébergement FTP puis configurez l'URL ci-dessous — la page stagiaires chargera automatiquement ces présets.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
@@ -11,7 +11,7 @@
 <script>/* URL du dossier presets/ hébergé sur votre serveur.
    Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
    Laissez '' pour le chemin relatif (mode local / développement). */
-var PRESETS_BASE_URL = '';
+window.PRESETS_BASE_URL = '';
 </script>
 <!-- /wp:html -->
 
