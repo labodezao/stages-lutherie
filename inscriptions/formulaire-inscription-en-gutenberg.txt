@@ -1622,7 +1622,7 @@ var buildSVG_PlanLite = (function () {
     var sel = document.getElementById('planPresetSelect');
     var hint = document.getElementById('planModelHint');
     if (!sel) return;
-    while (sel.options.length > 1) sel.remove(1);
+    var ph = sel.options[0]; sel.innerHTML = ''; sel.appendChild(ph);
     var allowedCats = MODEL_PRESET_CATEGORIES[modelVal] || null;
     var list = allowedCats
       ? allPresets.filter(function (p) { return allowedCats.indexOf(p.category) >= 0; })
