@@ -1436,6 +1436,47 @@ function renderRangeesCfg(){
       </div></div>`;
   }
   wrap.innerHTML=html;
+  initRowDragDrop();
+}
+
+/* ── Row drag-and-drop to reorder right-hand rows ── */
+let _rowDragSrc=null;
+function initRowDragDrop(){
+  const wrap=document.getElementById('rangees-cfg');
+  if(!wrap)return;
+  wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
+    el.dataset.rowIdx=idx;
+    el.addEventListener('dragstart',e=>{
+      _rowDragSrc=el;
+      e.dataTransfer.effectAllowed='move';
+      setTimeout(()=>el.classList.add('row-dragging'),0);
+    });
+    el.addEventListener('dragend',()=>{
+      el.classList.remove('row-dragging');
+      wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+      _rowDragSrc=null;
+    });
+    el.addEventListener('dragover',e=>{
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      if(_rowDragSrc&&_rowDragSrc!==el){
+        wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+        el.classList.add('row-drag-over');
+      }
+    });
+    el.addEventListener('dragleave',()=>el.classList.remove('row-drag-over'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!_rowDragSrc||_rowDragSrc===el)return;
+      const rows=[...wrap.querySelectorAll('.rangee-cfg')];
+      const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
+      if(isNaN(si)||isNaN(ti)||si===ti)return;
+      // Reorder CFG.rangees
+      const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
+      // Reorder CFG.notes.droite
+      const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
+      renderRangeesCfg();generateInputGrid();onAnyChange();
+    });
+  });
 }
 
 /* ── Generate note input grid ── */

@@ -104,6 +104,11 @@ select option{background:#fff;color:var(--txt)}
 .rangee-cfg{display:flex;flex-direction:column;gap:3px;background:#f8f8f6;border:1.5px solid var(--brd);
   border-radius:6px;padding:7px 9px;min-width:160px}
 .rangee-cfg label{font-size:.7rem;font-weight:700;color:#666}
+.row-cfg-hd{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--brd);padding-bottom:4px;margin-bottom:4px}
+.row-drag-handle{cursor:grab;font-size:1.1rem;color:var(--gris);user-select:none;line-height:1;padding:0 2px;opacity:.55;transition:opacity .12s}
+.row-drag-handle:hover{opacity:1;color:var(--gold)}
+.rangee-cfg.row-dragging{opacity:.35;outline:2px dashed var(--brd)}
+.rangee-cfg.row-drag-over{outline:2px dashed var(--gold);background:rgba(212,160,23,.09)}
 .rng-ctrl{display:flex;align-items:center;gap:5px}
 
 /* ── +/− small buttons ── */
@@ -1425,8 +1430,9 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg">
-      <label>R${r+1} — Nom</label>
+    html+=`<div class="rangee-cfg" draggable="true">
+      <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
+      <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
       <label style="margin-top:3px;">Registre <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: Registre" data-tip="B (16') : une octave plus grave.&#10;N (8') : hauteur naturelle 440 Hz.&#10;N+ (8'+) : légèrement plus haut (442 Hz).&#10;N- (8'-) : légèrement plus bas (438 Hz).&#10;A (4') : une octave plus aigu (piccolo).&#10;—&#10;B(16')=low octave · N(8')=natural 440 Hz · N+(8'+)=+2Hz · N-(8'-)=-2Hz · A(4')=high octave">ⓘ</span></label>
       <select id="rreg-${r}" style="font-size:.76rem;padding:3px 5px;" onchange="CFG.rangees[${r}].register=this.value;onAnyChange()">
@@ -1446,6 +1452,45 @@ function renderRangeesCfg(){
       </div></div>`;
   }
   wrap.innerHTML=html;
+  initRowDragDrop();
+}
+
+/* ── Row drag-and-drop to reorder right-hand rows ── */
+let _rowDragSrc=null;
+function initRowDragDrop(){
+  const wrap=document.getElementById('rangees-cfg');
+  if(!wrap)return;
+  wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
+    el.dataset.rowIdx=idx;
+    el.addEventListener('dragstart',e=>{
+      _rowDragSrc=el;
+      e.dataTransfer.effectAllowed='move';
+      setTimeout(()=>el.classList.add('row-dragging'),0);
+    });
+    el.addEventListener('dragend',()=>{
+      el.classList.remove('row-dragging');
+      wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+      _rowDragSrc=null;
+    });
+    el.addEventListener('dragover',e=>{
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      if(_rowDragSrc&&_rowDragSrc!==el){
+        wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+        el.classList.add('row-drag-over');
+      }
+    });
+    el.addEventListener('dragleave',()=>el.classList.remove('row-drag-over'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!_rowDragSrc||_rowDragSrc===el)return;
+      const rows=[...wrap.querySelectorAll('.rangee-cfg')];
+      const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
+      if(isNaN(si)||isNaN(ti)||si===ti)return;
+      const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
+      const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
+      renderRangeesCfg();generateInputGrid();onAnyChange();
+    });
+  });
 }
 
 /* ── Generate note input grid ── */
