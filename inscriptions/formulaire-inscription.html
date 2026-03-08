@@ -24,7 +24,7 @@ var STAGE_CONFIG = {
     { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Mercredi 14 – Vendredi 23 octobre 2026' }
   ],
   /* URL du dossier presets/ du clavier (terminer par /). '' = chemin relatif (développement local). */
-  presetsBaseUrl: '../outils/clavier-accordeon/presets/'
+  presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/'
 };
 </script>
 <!-- /wp:html -->
@@ -515,6 +515,59 @@ var STAGE_CONFIG = {
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Plan de clavier</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"20px","bottom":"8px","left":"28px","right":"28px"}}}} -->
+<p style="padding:20px 28px 8px">Choisissez votre plan parmi les présets standards, ou importez un plan personnalisé créé avec <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener">l'outil de plan de clavier</a>. L'aperçu SVG s'affiche automatiquement.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+  <div class="plan-mode-bar">
+    <button type="button" class="plan-mode-btn active" id="planModePresetBtn" onclick="setPlanMode('preset')">📋 Préset standard</button>
+    <button type="button" class="plan-mode-btn" id="planModeCustomBtn" onclick="setPlanMode('custom')">✏️ Plan personnalisé (JSON)</button>
+  </div>
+
+  <!-- Preset selector -->
+  <div id="planPresetSection">
+    <div id="planModelHint" class="hint" style="color:#888; margin-bottom:8px;">
+      ← Sélectionnez un modèle ci-dessus pour filtrer les présets disponibles.
+    </div>
+    <div class="insc-field">
+      <label for="planPresetSelect">Préset de clavier</label>
+      <select id="planPresetSelect" onchange="onPresetSelect(this.value)" style="max-width:100%">
+        <option value="">— Sélectionnez un plan standard —</option>
+      </select>
+      <div id="planPresetLoadState" class="plan-preset-loading">Chargement des présets…</div>
+    </div>
+  </div>
+
+  <!-- Custom JSON (hidden by default) -->
+  <div id="planCustomSection" style="display:none;">
+    <div class="insc-field" style="margin-top:8px;">
+      <label for="planClavier">Plan de clavier (JSON exporté)</label>
+      <textarea id="planClavier" name="planClavier" rows="4" placeholder="Collez ici le JSON exporté depuis l'outil de plan de clavier…" style="font-family:monospace; font-size:0.82rem;"></textarea>
+      <div class="hint">Dans l'outil clavier → bouton « Exporter JSON » → copier → coller ici.</div>
+    </div>
+  </div>
+
+  <!-- SVG Preview (common to both modes) -->
+  <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
+    <div class="insc-callout" style="border-left-color:var(--wood-medium);">
+      <strong>Aperçu du plan :</strong>
+      <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
+    </div>
+    <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
+  </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
 <h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎹 La caisse – Main Droite (MD)</h2>
 <!-- /wp:heading -->
 
@@ -811,56 +864,6 @@ var STAGE_CONFIG = {
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#888"},"spacing":{"padding":{"top":"0","bottom":"16px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.88rem"}}} -->
 <p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">L'aperçu se met à jour automatiquement selon vos choix ci-dessus.<br><em>Les photos réelles s'afficheront dès que les calques PNG sont déposés dans <code>img/apercu/</code>.</em></p>
 <!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
-<div class="wp-block-group insc-native-section">
-<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Plan de clavier</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"20px","bottom":"8px","left":"28px","right":"28px"}}}} -->
-<p style="padding:20px 28px 8px">Choisissez votre plan parmi les présets standards, ou importez un plan personnalisé créé avec <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener">l'outil de plan de clavier</a>. L'aperçu SVG s'affiche automatiquement.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:html -->
-<div class="insc-section-body">
-  <div class="plan-mode-bar">
-    <button type="button" class="plan-mode-btn active" id="planModePresetBtn" onclick="setPlanMode('preset')">📋 Préset standard</button>
-    <button type="button" class="plan-mode-btn" id="planModeCustomBtn" onclick="setPlanMode('custom')">✏️ Plan personnalisé (JSON)</button>
-  </div>
-
-  <!-- Preset selector -->
-  <div id="planPresetSection">
-    <div class="insc-field">
-      <label for="planPresetSelect">Préset de clavier</label>
-      <select id="planPresetSelect" onchange="onPresetSelect(this.value)" style="max-width:100%">
-        <option value="">— Sélectionnez un plan standard —</option>
-      </select>
-      <div id="planPresetLoadState" class="plan-preset-loading">Chargement des présets…</div>
-    </div>
-  </div>
-
-  <!-- Custom JSON (hidden by default) -->
-  <div id="planCustomSection" style="display:none;">
-    <div class="insc-field" style="margin-top:8px;">
-      <label for="planClavier">Plan de clavier (JSON exporté)</label>
-      <textarea id="planClavier" name="planClavier" rows="4" placeholder="Collez ici le JSON exporté depuis l'outil de plan de clavier…" style="font-family:monospace; font-size:0.82rem;"></textarea>
-      <div class="hint">Dans l'outil clavier → bouton « Exporter JSON » → copier → coller ici.</div>
-    </div>
-  </div>
-
-  <!-- SVG Preview (common to both modes) -->
-  <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
-    <div class="insc-callout" style="border-left-color:var(--wood-medium);">
-      <strong>Aperçu du plan :</strong>
-      <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
-    </div>
-    <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
-  </div>
-</div>
-<!-- /wp:html -->
 </div>
 <!-- /wp:group -->
 
@@ -1478,6 +1481,8 @@ var buildSVG_PlanLite = (function () {
         document.getElementById('nbBoutonsMG').value = '24b';
       }
       nbMD.dispatchEvent(new Event('change'));
+      clearPlanSelection();
+      filterPresetsByModel(val);
     });
   });
 
@@ -1626,6 +1631,43 @@ var buildSVG_PlanLite = (function () {
       });
   }
 
+  /* Mapping modèle → catégories de présets compatibles */
+  var MODEL_PRESET_CATEGORIES = {
+    '21/8b':  ['2 rangs', 'Irlandais'],
+    '33/12b': ['3 rangs', 'Spéciaux'],
+    '33/18b': ['33/18'],
+    '33/24b': ['33/24']
+  };
+  var allPresets = [];
+
+  function filterPresetsByModel(modelVal) {
+    var sel = document.getElementById('planPresetSelect');
+    var hint = document.getElementById('planModelHint');
+    if (!sel) return;
+    while (sel.options.length > 1) sel.remove(1);
+    var allowedCats = MODEL_PRESET_CATEGORIES[modelVal] || null;
+    var list = allowedCats
+      ? allPresets.filter(function (p) { return allowedCats.indexOf(p.category) >= 0; })
+      : allPresets;
+    if (hint) hint.style.display = modelVal ? 'none' : 'block';
+    var cats = {};
+    list.forEach(function (p) {
+      if (!cats[p.category]) cats[p.category] = [];
+      cats[p.category].push(p);
+    });
+    Object.keys(cats).forEach(function (cat) {
+      var og = document.createElement('optgroup');
+      og.label = cat;
+      cats[cat].forEach(function (p) {
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.label;
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
+    });
+  }
+
   function loadPresets() {
     var sel = document.getElementById('planPresetSelect');
     var loadState = document.getElementById('planPresetLoadState');
@@ -1634,25 +1676,12 @@ var buildSVG_PlanLite = (function () {
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (list) {
         if (loadState) loadState.style.display = 'none';
-        var cats = {};
-        list.forEach(function (p) {
-          if (!cats[p.category]) cats[p.category] = [];
-          cats[p.category].push(p);
-        });
-        Object.keys(cats).forEach(function (cat) {
-          var og = document.createElement('optgroup');
-          og.label = cat;
-          cats[cat].forEach(function (p) {
-            var opt = document.createElement('option');
-            opt.value = p.id;
-            opt.textContent = p.label;
-            og.appendChild(opt);
-          });
-          sel.appendChild(og);
-        });
+        allPresets = list;
+        var checkedModel = document.querySelector('input[name="modele"]:checked');
+        filterPresetsByModel(checkedModel ? checkedModel.value : '');
       })
       .catch(function () {
-        if (loadState) loadState.textContent = 'Pr\u00e9sets non disponibles \u2014 utilisez le mode Plan personnalis\u00e9.';
+        if (loadState) loadState.textContent = 'Présets non disponibles — utilisez le mode Plan personnalisé.';
       });
   }
 
