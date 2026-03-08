@@ -597,17 +597,6 @@ var STAGE_CONFIG = {
 <div class="insc-section-body">
 <input type="hidden" id="nbBoutonsMD" name="nbBoutonsMD">
         <input type="hidden" id="tonalite" name="tonalite">
-          <div class="insc-field insc-conditional" id="dispositionWrap">
-            <label for="disposition">Layout (if 3 rows)</label>
-            <select id="disposition" name="disposition">
-              <option value="">– Select –</option>
-              <option value="Heim">Heim (standard)</option>
-              <option value="Mill/Pignol">Milleret / Pignol</option>
-              <option value="Irish">Irish</option>
-              <option value="chromatique">Chromatic</option>
-            </select>
-          </div>
-
           <div class="insc-field">
             <label for="accordage">Tuning</label>
             <select id="accordage" name="accordage">
@@ -1418,7 +1407,6 @@ var buildSVG_PlanLite = (function () {
   /* ── References ── */
   var form = document.getElementById('inscriptionForm');
   var nbMD = document.getElementById('nbBoutonsMD');
-  var dispoWrap = document.getElementById('dispositionWrap');
 
   /* ── Helpers ── */
   function getRadioVal(name) {
@@ -1434,15 +1422,19 @@ var buildSVG_PlanLite = (function () {
     return el.options[el.selectedIndex].text;
   }
 
-  /* ── Show/hide disposition field when 3 rows selected ── */
+  /* ── Layout derived from selected plan ── */
+  function getDispositionFromPlan() {
+    if (!planData || !planCategory) return '–';
+    if (planCategory === '3 rangs')   return 'Heim (standard)';
+    if (planCategory === 'Irlandais') return 'Irish';
+    if (planCategory === '2 rangs')   return '–';
+    /* 33/18, 33/24, Spéciaux — label already contains disposition info */
+    return planLabel || planCategory;
+  }
+
+  /* ── nbBoutonsMD change → clear plan if mismatch ── */
   var _syncingFromPlan = false;
   nbMD.addEventListener('change', function () {
-    if (this.value === '33') {
-      dispoWrap.classList.add('visible');
-    } else {
-      dispoWrap.classList.remove('visible');
-      document.getElementById('disposition').value = '';
-    }
     /* If user manually changed rows, clear plan if it no longer matches */
     if (!_syncingFromPlan && planData) {
       var planRows = planData.nbRangees || (planData.rangees ? planData.rangees.length : 0);
@@ -1482,13 +1474,14 @@ var buildSVG_PlanLite = (function () {
   var planData = null;
   var planSvgData = null;
   var planLabel = '';
+  var planCategory = '';
   var planMode = 'preset';
   var PRESETS_BASE_URL = (typeof STAGE_CONFIG !== 'undefined' && STAGE_CONFIG.presetsBaseUrl !== undefined)
     ? STAGE_CONFIG.presetsBaseUrl : '../outils/clavier-accordeon/presets/';
 
   /* Clear plan selection and inline preview */
   function clearPlanSelection() {
-    planData = null; planSvgData = null; planLabel = '';
+    planData = null; planSvgData = null; planLabel = ''; planCategory = '';
     var planPreviewEl = document.getElementById('planPreview');
     if (planPreviewEl) planPreviewEl.classList.remove('visible');
     var planSVGEl = document.getElementById('planSVG');
@@ -1610,6 +1603,9 @@ var buildSVG_PlanLite = (function () {
         planData = inst;
         var sel = document.getElementById('planPresetSelect');
         planLabel = sel ? sel.options[sel.selectedIndex].text : (inst.nom || id);
+        /* Look up the category from the presets index */
+        var meta = allPresets.find(function (p) { return p.id === id; });
+        planCategory = meta ? meta.category : '';
         if (loadState) loadState.textContent = '';
         showPlanPreview(inst, planLabel);
         updateSummary();
@@ -1805,7 +1801,7 @@ var buildSVG_PlanLite = (function () {
     document.getElementById('sumSession').textContent = SESSION_LABELS[sess] || '–';
     document.getElementById('sumModele').textContent = getRadioVal('modele') || '–';
     document.getElementById('sumTona').textContent = selVal('tonalite') || '–';
-    document.getElementById('sumDispo').textContent = selVal('disposition') || '–';
+    document.getElementById('sumDispo').textContent = getDispositionFromPlan();
 
     var v1 = selVal('voix1');
     var v2 = document.getElementById('upgrade2V').checked ? selVal('voix2') : '';
@@ -2025,7 +2021,7 @@ var buildSVG_PlanLite = (function () {
     /* 4. Right Hand */
     sectionTitle('Right Hand Side');
     addLine('Number of buttons', selVal('nbBoutonsMD') || '\u2013');
-    addLine('Layout', selVal('disposition') || '\u2013');
+    addLine('Layout', getDispositionFromPlan());
     addLine('Key / Tonality', selVal('tonalite') || '\u2013');
     addLine('RH Voice', selVal('voix1') || '\u2013');
     var pdfUp2V = document.getElementById('upgrade2V').checked;
@@ -2179,7 +2175,7 @@ var buildSVG_PlanLite = (function () {
       ancheAMano: ancheOui ? 'Yes — Anche a mano Blue Star (+15%)' : 'No',
       acompte: deposit.toLocaleString('fr-FR'),
       tonalite: selVal('tonalite'),
-      disposition: selVal('disposition'),
+      disposition: getDispositionFromPlan(),
       voix1: selVal('voix1'),
       upgrade2V: up2VOui ? 'Yes — 2 Voices with registers (+8% — 2nd workshop required)' : 'No',
       voix2: up2VOui ? selVal('voix2') : '',
