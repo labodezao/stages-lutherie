@@ -24,7 +24,11 @@ var STAGE_CONFIG = {
     { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Wednesday 14 – Friday 23 October 2026' }
   ],
   /* URL of the presets/ folder (trailing slash). '' = relative path (local dev). */
-  presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/'
+  presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
+  /* URL of the grilles images folder (trailing slash). */
+  grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
+  /* URL of the accordion preview layers folder (trailing slash). */
+  apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
 };
 </script>
 <!-- /wp:html -->
@@ -1730,7 +1734,9 @@ var buildSVG_PlanLite = (function () {
 
   /* ── Grille visual selector ──────────────────────────────── */
   (function () {
-    var BASE = 'https://ewendaviau.com/wp-content/uploads/2026/03/';
+    var BASE = (typeof STAGE_CONFIG !== 'undefined' && STAGE_CONFIG.grillesBaseUrl)
+      ? STAGE_CONFIG.grillesBaseUrl
+      : 'img/grilles/';
     var TOTAL = 81;
     var grid  = document.getElementById('grilleSelectorGrid');
     var input = document.getElementById('numGrille');
@@ -1833,7 +1839,9 @@ var buildSVG_PlanLite = (function () {
    * Fallback : background-color visible si le PNG n'existe pas encore.
    */
 
-  var ACC_IMG_BASE = 'img/apercu/';
+  var ACC_IMG_BASE = (typeof STAGE_CONFIG !== 'undefined' && STAGE_CONFIG.apercuBaseUrl)
+    ? STAGE_CONFIG.apercuBaseUrl
+    : 'img/apercu/';
 
   /* Correspondance valeur option → slug fichier image.
    * Note : '\u00c9rable' (Érable, avec accent) = bois du clavier/grille.

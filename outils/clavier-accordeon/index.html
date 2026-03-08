@@ -94,6 +94,13 @@ select option{background:#fff;color:var(--txt)}
 .rangee-cfg label{font-size:.7rem;font-weight:700;color:#666}
 .rng-ctrl{display:flex;align-items:center;gap:5px}
 
+/* ── Row drag-and-drop (config panel) ── */
+.row-cfg-hd{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--brd);padding-bottom:4px;margin-bottom:4px}
+.row-drag-handle{cursor:grab;font-size:1.1rem;color:var(--gris);user-select:none;line-height:1;padding:0 2px;opacity:.55;transition:opacity .12s}
+.row-drag-handle:hover{opacity:1;color:var(--gold)}
+.rangee-cfg.row-dragging{opacity:.35;outline:2px dashed var(--brd)}
+.rangee-cfg.row-drag-over{outline:2px dashed var(--gold);background:rgba(212,160,23,.09)}
+
 /* ── +/− small buttons ── */
 .rng-btn{width:26px;height:26px;border:1.5px solid var(--brd);border-radius:4px;
   background:#fff;font-size:1rem;line-height:1;cursor:pointer;font-family:inherit;font-weight:700;
@@ -1407,8 +1414,9 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg">
-      <label>R${r+1} — Nom</label>
+    html+=`<div class="rangee-cfg" draggable="true">
+      <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
+      <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
       <label style="margin-top:3px;">Registre <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: Registre" data-tip="B (16') : une octave plus grave.&#10;N (8') : hauteur naturelle 440 Hz.&#10;N+ (8'+) : légèrement plus haut (442 Hz).&#10;N- (8'-) : légèrement plus bas (438 Hz).&#10;A (4') : une octave plus aigu (piccolo).&#10;—&#10;B(16')=low octave · N(8')=natural 440 Hz · N+(8'+)=+2Hz · N-(8'-)=-2Hz · A(4')=high octave">ⓘ</span></label>
       <select id="rreg-${r}" style="font-size:.76rem;padding:3px 5px;" onchange="CFG.rangees[${r}].register=this.value;onAnyChange()">
