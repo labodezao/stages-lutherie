@@ -1467,7 +1467,6 @@ function initRowDragDrop(){
     el.addEventListener('drop',e=>{
       e.preventDefault();
       if(!_rowDragSrc||_rowDragSrc===el)return;
-      const rows=[...wrap.querySelectorAll('.rangee-cfg')];
       const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
       if(isNaN(si)||isNaN(ti)||si===ti)return;
       // Reorder CFG.rangees
