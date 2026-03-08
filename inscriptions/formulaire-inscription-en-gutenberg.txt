@@ -22,7 +22,9 @@ var STAGE_CONFIG = {
   sessions: [
     { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Wednesday 8 – Friday 17 April 2026' },
     { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Wednesday 14 – Friday 23 October 2026' }
-  ]
+  ],
+  /* URL of the presets/ folder (trailing slash). '' = relative path (local dev). */
+  presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/'
 };
 </script>
 <!-- /wp:html -->
@@ -255,6 +257,15 @@ var STAGE_CONFIG = {
     /* ── Conditional visibility ── */
     .insc-conditional { display:none; }
     .insc-conditional.visible { display:block; }
+
+    /* ── Plan mode toggle ── */
+    .plan-mode-bar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+    .plan-mode-btn { padding:7px 20px; border-radius:20px; font-size:.84rem; font-weight:700;
+      font-family:inherit; cursor:pointer; transition:all .18s;
+      border:2px solid #e0d5cc; background:#fff; color:#888; line-height:1.4; }
+    .plan-mode-btn.active { background:var(--wood-dark); color:#fff; border-color:var(--wood-dark); }
+    .plan-mode-btn:hover:not(.active) { border-color:var(--gold); color:var(--wood-medium); }
+    .plan-preset-loading { font-size:.83rem; color:#999; font-style:italic; padding:6px 0; }
 
     /* ── Hints ── */
     .hint { font-size:0.8rem; color:#999; margin-top:4px; }
@@ -504,6 +515,59 @@ var STAGE_CONFIG = {
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Keyboard plan</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"20px","bottom":"8px","left":"28px","right":"28px"}}}} -->
+<p style="padding:20px 28px 8px">Choose your plan from the standard presets, or import a custom plan created with <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener">the keyboard plan tool</a>. The SVG preview is displayed automatically.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:html -->
+<div class="insc-section-body">
+  <div class="plan-mode-bar">
+    <button type="button" class="plan-mode-btn active" id="planModePresetBtn" onclick="setPlanMode('preset')">📋 Standard preset</button>
+    <button type="button" class="plan-mode-btn" id="planModeCustomBtn" onclick="setPlanMode('custom')">✏️ Custom plan (JSON)</button>
+  </div>
+
+  <!-- Preset selector -->
+  <div id="planPresetSection">
+    <div id="planModelHint" class="hint" style="color:#888; margin-bottom:8px;">
+      ← Select a model above to filter the available presets.
+    </div>
+    <div class="insc-field">
+      <label for="planPresetSelect">Keyboard preset</label>
+      <select id="planPresetSelect" onchange="onPresetSelect(this.value)" style="max-width:100%">
+        <option value="">— Select a standard plan —</option>
+      </select>
+      <div id="planPresetLoadState" class="plan-preset-loading">Loading presets…</div>
+    </div>
+  </div>
+
+  <!-- Custom JSON (hidden by default) -->
+  <div id="planCustomSection" style="display:none;">
+    <div class="insc-field" style="margin-top:8px;">
+      <label for="planClavier">Keyboard plan (exported JSON)</label>
+      <textarea id="planClavier" name="planClavier" rows="4" placeholder="Paste here the JSON exported from the keyboard plan tool…" style="font-family:monospace; font-size:0.82rem;"></textarea>
+      <div class="hint">In the keyboard tool → "Export JSON" button → copy → paste here.</div>
+    </div>
+  </div>
+
+  <!-- SVG Preview (common to both modes) -->
+  <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
+    <div class="insc-callout" style="border-left-color:var(--wood-medium);">
+      <strong>Plan preview:</strong>
+      <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
+    </div>
+    <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
+  </div>
+</div>
+<!-- /wp:html -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
+<div class="wp-block-group insc-native-section">
+<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
 <h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎹 Right Hand Side (RH)</h2>
 <!-- /wp:heading -->
 
@@ -630,6 +694,12 @@ var STAGE_CONFIG = {
           <input type="hidden" id="numGrille" name="numGrille">
           <div id="grilleSelectorGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;max-height:340px;overflow-y:auto;padding:6px;border:1px solid #e0d5cc;border-radius:8px;background:#FBF5F0;margin-top:6px;"></div>
           <small style="color:#888;margin-top:4px;display:block;">Click a grille to select it — the number is printed on each model</small>
+        </div>
+
+        <!-- Inline keyboard plan SVG preview -->
+        <div id="planPreviewRH" class="insc-conditional" style="margin-top:14px;">
+          <div style="font-size:0.84rem; color:var(--wood-medium); font-weight:600; margin-bottom:6px;">📐 Selected keyboard plan preview:</div>
+          <div id="planSVGInline" style="overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
         </div>
 
         <div class="insc-field">
@@ -792,35 +862,6 @@ var STAGE_CONFIG = {
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#888"},"spacing":{"padding":{"top":"0","bottom":"16px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.88rem"}}} -->
 <p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">The preview updates automatically based on your choices above.<br><em>Real photos will appear once the transparent PNG layers are placed in <code>img/apercu/</code>.</em></p>
 <!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
-<div class="wp-block-group insc-native-section">
-<!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Custom keyboard plan (optional)</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"20px","bottom":"8px","left":"28px","right":"28px"}}}} -->
-<p style="padding:20px 28px 8px"><strong>Do you have a custom keyboard plan?</strong><br>Use our <a href="../outils/clavier-accordeon/index.html" target="_blank" rel="noopener">keyboard plan generator tool</a> to create your layout, then export the JSON and paste it below.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:html -->
-<div class="insc-section-body">
-        <div class="insc-field" style="margin-top:14px;">
-          <label for="planClavier">Keyboard plan (JSON)</label>
-          <textarea id="planClavier" name="planClavier" rows="4" placeholder='Paste here the JSON exported from the keyboard plan tool…' style="font-family:monospace; font-size:0.82rem;"></textarea>
-          <div class="hint">Export your plan from the keyboard tool → "Export JSON" button, then paste the content here.</div>
-        </div>
-        <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
-          <div class="insc-callout" style="border-left-color:var(--wood-medium);">
-            <strong>Imported plan preview:</strong>
-            <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
-          </div>
-          <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
-        </div>
-</div>
-<!-- /wp:html -->
 </div>
 <!-- /wp:group -->
 
@@ -1400,12 +1441,21 @@ var buildSVG_PlanLite = (function () {
   }
 
   /* ── Show/hide disposition field when 3 rows selected ── */
+  var _syncingFromPlan = false;
   nbMD.addEventListener('change', function () {
     if (this.value === '33') {
       dispoWrap.classList.add('visible');
     } else {
       dispoWrap.classList.remove('visible');
       document.getElementById('disposition').value = '';
+    }
+    /* If user manually changed rows, clear plan if it no longer matches */
+    if (!_syncingFromPlan && planData) {
+      var planRows = planData.nbRangees || (planData.rangees ? planData.rangees.length : 0);
+      var expected = planRows === 2 ? '21' : (planRows === 3 ? '33' : '');
+      if (expected !== '' && this.value !== expected) {
+        clearPlanSelection();
+      }
     }
     updateSummary();
   });
@@ -1429,68 +1479,240 @@ var buildSVG_PlanLite = (function () {
         document.getElementById('nbBoutonsMG').value = '24b';
       }
       nbMD.dispatchEvent(new Event('change'));
+      clearPlanSelection();
+      filterPresetsByModel(val);
     });
   });
 
-  /* ── Keyboard Plan Parser ── */
+  /* ── Keyboard Plan ── */
   var planData = null;
-  var planSvgData = null; /* data object for SVG rendering */
-  document.getElementById('planClavier').addEventListener('input', function () {
-    var raw = this.value.trim();
+  var planSvgData = null;
+  var planLabel = '';
+  var planMode = 'preset';
+  var PRESETS_BASE_URL = (typeof STAGE_CONFIG !== 'undefined' && STAGE_CONFIG.presetsBaseUrl !== undefined)
+    ? STAGE_CONFIG.presetsBaseUrl : '../outils/clavier-accordeon/presets/';
+
+  /* Clear plan selection and inline preview */
+  function clearPlanSelection() {
+    planData = null; planSvgData = null; planLabel = '';
+    var planPreviewEl = document.getElementById('planPreview');
+    if (planPreviewEl) planPreviewEl.classList.remove('visible');
+    var planSVGEl = document.getElementById('planSVG');
+    if (planSVGEl) planSVGEl.innerHTML = '';
+    var planPreviewRHEl = document.getElementById('planPreviewRH');
+    if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
+    var planSVGInlineEl = document.getElementById('planSVGInline');
+    if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
+    var presetSel = document.getElementById('planPresetSelect');
+    if (presetSel) presetSel.value = '';
+    var planClavierEl = document.getElementById('planClavier');
+    if (planClavierEl) planClavierEl.value = '';
+  }
+
+  function setPlanMode(mode) {
+    planMode = mode;
+    var presetSection = document.getElementById('planPresetSection');
+    var customSection = document.getElementById('planCustomSection');
+    var presetBtn = document.getElementById('planModePresetBtn');
+    var customBtn = document.getElementById('planModeCustomBtn');
+    if (mode === 'preset') {
+      presetSection.style.display = '';
+      customSection.style.display = 'none';
+      presetBtn.classList.add('active');
+      customBtn.classList.remove('active');
+    } else {
+      presetSection.style.display = 'none';
+      customSection.style.display = '';
+      presetBtn.classList.remove('active');
+      customBtn.classList.add('active');
+    }
+    clearPlanSelection();
+    updateSummary();
+  }
+
+  /* Sync nbBoutonsMD and nbBoutonsMG from loaded plan data */
+  function syncPlanToForm(inst) {
+    if (!inst) return;
+    var nRows = inst.nbRangees || (inst.rangees ? inst.rangees.length : 0);
+    if (nRows === 2 || nRows === 3) {
+      var val = nRows === 2 ? '21' : '33';
+      _syncingFromPlan = true;
+      nbMD.value = val;
+      nbMD.dispatchEvent(new Event('change'));
+      _syncingFromPlan = false;
+    }
+    var mgSel = document.getElementById('nbBoutonsMG');
+    if (mgSel && inst.notes) {
+      var bl = inst.notes.basses ? inst.notes.basses.length : 0;
+      var al = inst.notes.accords ? inst.notes.accords.length : 0;
+      var lhNb = bl + al;
+      if (lhNb > 0) {
+        var best = '8b';
+        if (lhNb >= 22) best = '24b';
+        else if (lhNb >= 16) best = '18b';
+        else if (lhNb >= 10) best = '12b';
+        mgSel.value = best;
+      }
+    }
+  }
+
+  function showPlanPreview(inst, label) {
     var preview = document.getElementById('planPreview');
     var info = document.getElementById('planPreviewInfo');
     var svgContainer = document.getElementById('planSVG');
-    planData = null;
-    planSvgData = null;
+    var nbRows = inst.nbRangees || (inst.rangees ? inst.rangees.length : '?');
+    var totalBtns = 0;
+    if (inst.rangees) inst.rangees.forEach(function (r) { totalBtns += (r.nb || 0); });
+    var lhBtns = 0;
+    if (inst.lhRows && inst.lhRows.length) {
+      inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
+    }
+    if (!lhBtns && inst.notes) {
+      var bl2 = inst.notes.basses ? inst.notes.basses.length : 0;
+      var al2 = inst.notes.accords ? inst.notes.accords.length : 0;
+      lhBtns = bl2 + al2;
+    }
+    info.innerHTML = '<strong>' + (label || inst.nom || '(unnamed)') + '</strong><br>'
+      + 'RH: ' + nbRows + ' rows \u00b7 ' + totalBtns + ' buttons'
+      + (lhBtns ? '<br>LH: ' + lhBtns + ' buttons' : '');
+    preview.classList.add('visible');
+    try {
+      planSvgData = buildSVG_PlanLite.presetToData(inst);
+      var svgStr = buildSVG_PlanLite.render(planSvgData);
+      svgContainer.innerHTML = svgStr;
+      var svgEl = svgContainer.querySelector('svg');
+      if (svgEl) { svgEl.setAttribute('width', '100%'); svgEl.setAttribute('height', 'auto'); svgEl.style.maxWidth = '100%'; }
+      /* Update inline preview in RH section */
+      var inlineContainer = document.getElementById('planSVGInline');
+      var planPreviewRH = document.getElementById('planPreviewRH');
+      if (inlineContainer) {
+        inlineContainer.innerHTML = svgStr;
+        var svgEl2 = inlineContainer.querySelector('svg');
+        if (svgEl2) { svgEl2.setAttribute('width', '100%'); svgEl2.setAttribute('height', 'auto'); svgEl2.style.maxWidth = '100%'; }
+      }
+      if (planPreviewRH) planPreviewRH.classList.add('visible');
+    } catch (svgErr) {
+      svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Visual preview not available for this format.</p>';
+    }
+    /* Auto-sync nbBoutonsMD/MG from plan */
+    syncPlanToForm(inst);
+  }
 
-    if (!raw) {
+  function onPresetSelect(id) {
+    var loadState = document.getElementById('planPresetLoadState');
+    planData = null; planSvgData = null; planLabel = '';
+    var preview = document.getElementById('planPreview');
+    var svgContainer = document.getElementById('planSVG');
+    if (!id) {
       preview.classList.remove('visible');
       svgContainer.innerHTML = '';
       updateSummary();
       return;
     }
+    if (loadState) loadState.textContent = 'Loading\u2026';
+    fetch(PRESETS_BASE_URL + id + '.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (inst) {
+        planData = inst;
+        var sel = document.getElementById('planPresetSelect');
+        planLabel = sel ? sel.options[sel.selectedIndex].text : (inst.nom || id);
+        if (loadState) loadState.textContent = '';
+        showPlanPreview(inst, planLabel);
+        updateSummary();
+      })
+      .catch(function () {
+        if (loadState) loadState.textContent = '\u26a0 Unable to load preset.';
+        planData = null;
+        if (preview) preview.classList.remove('visible');
+        if (svgContainer) svgContainer.innerHTML = '';
+        updateSummary();
+      });
+  }
 
+  /* Mapping model → compatible preset categories */
+  var MODEL_PRESET_CATEGORIES = {
+    '21/8b':  ['2 rangs', 'Irlandais'],
+    '33/12b': ['3 rangs', 'Spéciaux'],
+    '33/18b': ['33/18'],
+    '33/24b': ['33/24']
+  };
+  var allPresets = [];
+
+  function filterPresetsByModel(modelVal) {
+    var sel = document.getElementById('planPresetSelect');
+    var hint = document.getElementById('planModelHint');
+    if (!sel) return;
+    while (sel.options.length > 1) sel.remove(1);
+    var allowedCats = MODEL_PRESET_CATEGORIES[modelVal] || null;
+    var list = allowedCats
+      ? allPresets.filter(function (p) { return allowedCats.indexOf(p.category) >= 0; })
+      : allPresets;
+    if (hint) hint.style.display = modelVal ? 'none' : 'block';
+    var cats = {};
+    list.forEach(function (p) {
+      if (!cats[p.category]) cats[p.category] = [];
+      cats[p.category].push(p);
+    });
+    Object.keys(cats).forEach(function (cat) {
+      var og = document.createElement('optgroup');
+      og.label = cat;
+      cats[cat].forEach(function (p) {
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.label;
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
+    });
+  }
+
+  function loadPresets() {
+    var sel = document.getElementById('planPresetSelect');
+    var loadState = document.getElementById('planPresetLoadState');
+    if (!sel) return;
+    fetch(PRESETS_BASE_URL + 'index.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (list) {
+        if (loadState) loadState.style.display = 'none';
+        allPresets = list;
+        var checkedModel = document.querySelector('input[name="modele"]:checked');
+        filterPresetsByModel(checkedModel ? checkedModel.value : '');
+      })
+      .catch(function () {
+        if (loadState) loadState.textContent = 'Presets unavailable — use the Custom plan mode.';
+      });
+  }
+
+  /* Custom JSON textarea handler */
+  document.getElementById('planClavier').addEventListener('input', function () {
+    var raw = this.value.trim();
+    planData = null; planSvgData = null; planLabel = '';
+    var preview = document.getElementById('planPreview');
+    var info = document.getElementById('planPreviewInfo');
+    var svgContainer = document.getElementById('planSVG');
+    var planPreviewRHEl = document.getElementById('planPreviewRH');
+    var planSVGInlineEl = document.getElementById('planSVGInline');
+    if (!raw) {
+      preview.classList.remove('visible');
+      svgContainer.innerHTML = '';
+      if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
+      if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
+      updateSummary();
+      return;
+    }
     try {
       var parsed = JSON.parse(raw);
-      /* Accept both single instrument and array */
       var inst = Array.isArray(parsed) ? parsed[0] : parsed;
       if (!inst || !inst.rangees) throw new Error('Invalid format');
-
       planData = inst;
-      var nbRows = inst.nbRangees || (inst.rangees ? inst.rangees.length : '?');
-      var totalBtns = 0;
-      if (inst.rangees) {
-        inst.rangees.forEach(function (r) { totalBtns += (r.nb || 0); });
-      }
-      var lhBtns = 0;
-      if (inst.lhRows) {
-        inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
-      }
-      var name = inst.nom || '(unnamed)';
-
-      info.innerHTML = '<strong>' + name + '</strong><br>'
-        + 'RH: ' + nbRows + ' rows \u00b7 ' + totalBtns + ' buttons<br>'
-        + 'LH: ' + lhBtns + ' buttons';
-      preview.classList.add('visible');
-
-      /* Render visual SVG plan */
-      try {
-        planSvgData = buildSVG_PlanLite.presetToData(inst);
-        svgContainer.innerHTML = buildSVG_PlanLite.render(planSvgData);
-        /* Scale SVG to fit container */
-        var svgEl = svgContainer.querySelector('svg');
-        if (svgEl) {
-          svgEl.setAttribute('width', '100%');
-          svgEl.setAttribute('height', 'auto');
-          svgEl.style.maxWidth = '100%';
-        }
-      } catch (svgErr) {
-        svgContainer.innerHTML = '<p style="color:#999; font-size:0.85rem;">Visual preview not available for this format.</p>';
-      }
+      planLabel = inst.nom || 'Custom plan';
+      showPlanPreview(inst, planLabel);
     } catch (e) {
       info.innerHTML = '<span style="color:#c0392b;">\u26a0 Invalid JSON \u2014 ' + e.message + '</span>';
       preview.classList.add('visible');
       svgContainer.innerHTML = '';
+      if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
+      if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
     }
     updateSummary();
   });
@@ -1718,6 +1940,13 @@ var buildSVG_PlanLite = (function () {
   /* Listen on all inputs */
   form.addEventListener('input', updateSummary);
   form.addEventListener('change', updateSummary);
+
+  /* Load preset index on page ready */
+  loadPresets();
+
+  /* Expose inline-handler functions to global scope */
+  window.setPlanMode = setPlanMode;
+  window.onPresetSelect = onPresetSelect;
 
   /* ── PDF Generation (returns jsPDF doc) ── */
   function buildPDF() {
