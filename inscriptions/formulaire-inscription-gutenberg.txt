@@ -1303,7 +1303,7 @@ var buildSVG_PlanLite = (function () {
       var sepY1 = gridTop - 2, sepY2 = gridTop + maxBtns * BGAP + extraOff + 2;
       s += '<line x1="' + sepX + '" y1="' + sepY1 + '" x2="' + sepX + '" y2="' + sepY2 + '" stroke="#C7D2FE" stroke-width="1.5" stroke-dasharray="6,4"/>';
       var sepMidY = (sepY1 + sepY2) / 2;
-      s += '<text x="' + sepX + '" y="' + sepMidY + '" text-anchor="middle" font-size="6.5" fill="' + subtl + '" font-weight="bold" transform="rotate(-90,' + sepX + ',' + sepMidY + ')">— SOUFFLET —</text>';
+      s += '<text x="' + sepX + '" y="' + sepMidY + '" text-anchor="middle" font-size="6.5" fill="' + subtl + '" font-weight="bold" transform="rotate(-90,' + sepX + ',' + sepMidY + ')">\u2014 SOUFFLET \u2014</text>';
     }
 
     /* LH columns */
@@ -1495,7 +1495,7 @@ var buildSVG_PlanLite = (function () {
 
   /* ── Disposition dérivée du plan sélectionné ── */
   function getDispositionFromPlan() {
-    if (!planData || !planCategory) return '–';
+    if (!planData || !planCategory) return '\u2013';
     if (planCategory === '3 rangs 12b') {
       /* Présets standard ("33 boutons") = Heim ; Spéciaux = label contient l'info */
       if (planLabel && planLabel.indexOf('33 boutons') >= 0) return 'Heim (standard)';
@@ -1503,7 +1503,7 @@ var buildSVG_PlanLite = (function () {
     }
     if (planCategory === '2 rangs 8b') {
       /* Irlandais vs standard 2 rangs */
-      return (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) ? 'Irish' : '–';
+      return (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) ? 'Irish' : '\u2013';
     }
     /* 3 rangs 18b, 3 rangs 24b — le label contient déjà l'info de disposition */
     return planLabel || planCategory;
@@ -1615,8 +1615,8 @@ var buildSVG_PlanLite = (function () {
   var MODEL_PRESET_CATEGORIES = {
     '21/8b':  ['2 rangs 8b'],
     '33/12b': ['3 rangs 12b'],
-    '33/18b': ['3 rangs 12b', '3 rangs 18b'],
-    '33/24b': ['3 rangs 12b', '3 rangs 24b']
+    '33/18b': ['3 rangs 18b'],
+    '33/24b': ['3 rangs 24b']
   };
   var allPresets = [];
 
@@ -1661,7 +1661,7 @@ var buildSVG_PlanLite = (function () {
         filterPresetsByModel(checkedModel ? checkedModel.value : '');
       })
       .catch(function () {
-        if (loadState) loadState.textContent = 'Présets non disponibles — utilisez le mode Plan personnalisé.';
+        if (loadState) loadState.textContent = 'Pr\u00e9sets non disponibles \u2014 utilisez le mode Plan personnalis\u00e9.';
       });
   }
 
@@ -1780,7 +1780,7 @@ var buildSVG_PlanLite = (function () {
       }
       // Select new
       input.value = n;
-      lbl.textContent = '— Grille n\u00b0' + n + ' s\u00e9lectionn\u00e9e';
+      lbl.textContent = '\u2014 Grille n\u00b0' + n + ' s\u00e9lectionn\u00e9e';
       var cell = document.getElementById('grilleCell-' + n);
       if (cell) cell.style.borderColor = 'var(--accent,#5D4037)';
       updateSummary();
@@ -1791,25 +1791,25 @@ var buildSVG_PlanLite = (function () {
   })();
 
   function updateSummary() {
-    document.getElementById('sumNom').textContent = document.getElementById('nom').value || '–';
+    document.getElementById('sumNom').textContent = document.getElementById('nom').value || '\u2013';
     var sess = getRadioVal('session');
-    document.getElementById('sumSession').textContent = SESSION_LABELS[sess] || '–';
-    document.getElementById('sumModele').textContent = getRadioVal('modele') || '–';
-    document.getElementById('sumTona').textContent = selVal('tonalite') || '–';
+    document.getElementById('sumSession').textContent = SESSION_LABELS[sess] || '\u2013';
+    document.getElementById('sumModele').textContent = getRadioVal('modele') || '\u2013';
+    document.getElementById('sumTona').textContent = selVal('tonalite') || '\u2013';
     document.getElementById('sumDispo').textContent = getDispositionFromPlan();
 
     var v1 = selVal('voix1');
     var v2 = document.getElementById('upgrade2V').checked ? selVal('voix2') : '';
-    document.getElementById('sumVoix').textContent = v2 ? (v1 || '–') + ' / ' + v2 + ' (2V registres)' : (v1 || '–') + ' (1V)';
+    document.getElementById('sumVoix').textContent = v2 ? (v1 || '\u2013') + ' / ' + v2 + ' (2V registres)' : (v1 || '\u2013') + ' (1V)';
 
-    document.getElementById('sumAccordage').textContent = selVal('accordage') || '–';
-    document.getElementById('sumBoutons').textContent = selVal('boutonsMD') || '–';
-    document.getElementById('sumBoisClavier').textContent = selVal('boisClavier') || '–';
-    document.getElementById('sumBoisGrille').textContent = selVal('boisGrille') || '–';
-    document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '–';
-    document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '–';
-    document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '–';
-    document.getElementById('sumPlan').textContent = planData ? (planLabel || planData.nom || 'Plan personnalis\u00e9') : '–';
+    document.getElementById('sumAccordage').textContent = selVal('accordage') || '\u2013';
+    document.getElementById('sumBoutons').textContent = selVal('boutonsMD') || '\u2013';
+    document.getElementById('sumBoisClavier').textContent = selVal('boisClavier') || '\u2013';
+    document.getElementById('sumBoisGrille').textContent = selVal('boisGrille') || '\u2013';
+    document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '\u2013';
+    document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '\u2013';
+    document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '\u2013';
+    document.getElementById('sumPlan').textContent = planData ? (planLabel || planData.nom || 'Plan personnalis\u00e9') : '\u2013';
 
     /* Grille */
     var grilleVal = document.getElementById('numGrille').value;
@@ -1821,7 +1821,7 @@ var buildSVG_PlanLite = (function () {
 
     /* Upgrade 2V */
     var up2V = document.getElementById('upgrade2V').checked;
-    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Oui (+8 % — 2\u1d49 stage n\u00e9cessaire)' : 'Non';
+    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Oui (+8 % \u2014 2\u1d49 stage n\u00e9cessaire)' : 'Non';
 
     /* Price with surcharges */
     var modEl = form.querySelector('input[name="modele"]:checked');
@@ -1832,8 +1832,8 @@ var buildSVG_PlanLite = (function () {
       document.getElementById('sumPrice').textContent = price.toLocaleString('fr-FR') + ' \u20ac';
       document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac';
     } else {
-      document.getElementById('sumPrice').textContent = '– \u20ac';
-      document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : – \u20ac';
+      document.getElementById('sumPrice').textContent = '\u2013 \u20ac';
+      document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : \u2013 \u20ac';
     }
 
     /* Accordion visual preview update */
@@ -2019,7 +2019,7 @@ var buildSVG_PlanLite = (function () {
     addLine('Tonalit\u00e9', selVal('tonalite') || '\u2013');
     addLine('Voix MD', selVal('voix1') || '\u2013');
     var pdfUp2V = document.getElementById('upgrade2V').checked;
-    addLine('Upgrade 2V registres', pdfUp2V ? 'Oui (+8 % — 2\u1d49 stage n\u00e9cessaire)' : 'Non');
+    addLine('Upgrade 2V registres', pdfUp2V ? 'Oui (+8 % \u2014 2\u1d49 stage n\u00e9cessaire)' : 'Non');
     if (pdfUp2V) addLine('Voix 2 MD', selVal('voix2') || '\u2013');
     addLine('Accordage', selVal('accordage') || '\u2013');
     addLine('Boutons', selVal('boutonsMD') || '\u2013');
@@ -2166,12 +2166,12 @@ var buildSVG_PlanLite = (function () {
       email: document.getElementById('email').value,
       session: SESSION_LABELS[sessVal] || sessVal,
       modele: getRadioVal('modele'),
-      ancheAMano: ancheOui ? 'Oui — Anche a mano Blue Star (+15 %)' : 'Non',
+      ancheAMano: ancheOui ? 'Oui \u2014 Anche a mano Blue Star (+15 %)' : 'Non',
       acompte: deposit.toLocaleString('fr-FR'),
       tonalite: selVal('tonalite'),
       disposition: getDispositionFromPlan(),
       voix1: selVal('voix1'),
-      upgrade2V: up2VOui ? 'Oui — 2 Voix avec registres (+8 % — 2e stage nécessaire)' : 'Non',
+      upgrade2V: up2VOui ? 'Oui \u2014 2 Voix avec registres (+8 % \u2014 2e stage n\u00e9cessaire)' : 'Non',
       voix2: up2VOui ? selVal('voix2') : '',
       accordage: selVal('accordage'),
       boutonsMD: selVal('boutonsMD'),
