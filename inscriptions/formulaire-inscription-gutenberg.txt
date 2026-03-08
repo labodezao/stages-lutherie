@@ -1496,10 +1496,16 @@ var buildSVG_PlanLite = (function () {
   /* ── Disposition dérivée du plan sélectionné ── */
   function getDispositionFromPlan() {
     if (!planData || !planCategory) return '–';
-    if (planCategory === '3 rangs')   return 'Heim (standard)';
-    if (planCategory === 'Irlandais') return 'Irish';
-    if (planCategory === '2 rangs')   return '–'; /* 2-rangées : pas de disposition spéciale */
-    /* 33/18, 33/24, Spéciaux — le label contient déjà l'info de disposition */
+    if (planCategory === '3 rangs 12b') {
+      /* Présets standard ("33 boutons") = Heim ; Spéciaux = label contient l'info */
+      if (planLabel && planLabel.indexOf('33 boutons') >= 0) return 'Heim (standard)';
+      return planLabel || planCategory;
+    }
+    if (planCategory === '2 rangs 8b') {
+      /* Irlandais vs standard 2 rangs */
+      return (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) ? 'Irish' : '–';
+    }
+    /* 3 rangs 18b, 3 rangs 24b — le label contient déjà l'info de disposition */
     return planLabel || planCategory;
   }
 
@@ -1607,10 +1613,10 @@ var buildSVG_PlanLite = (function () {
 
   /* Mapping modèle → catégories de présets compatibles */
   var MODEL_PRESET_CATEGORIES = {
-    '21/8b':  ['2 rangs', 'Irlandais'],
-    '33/12b': ['3 rangs', 'Spéciaux'],
-    '33/18b': ['3 rangs', '33/18'],
-    '33/24b': ['3 rangs', '33/24']
+    '21/8b':  ['2 rangs 8b'],
+    '33/12b': ['3 rangs 12b'],
+    '33/18b': ['3 rangs 12b', '3 rangs 18b'],
+    '33/24b': ['3 rangs 12b', '3 rangs 24b']
   };
   var allPresets = [];
 
