@@ -573,15 +573,8 @@ var STAGE_CONFIG = {
 
 <!-- wp:html -->
 <div class="insc-section-body">
-<div class="insc-inline-row">
-          <div class="insc-field">
-            <label for="nbBoutonsMD">Nb boutons</label>
-            <select id="nbBoutonsMD" name="nbBoutonsMD">
-              <option value="">– Choisir –</option>
-              <option value="21">2 rangées (21 boutons)</option>
-              <option value="33">3 rangées (33 boutons)</option>
-            </select>
-          </div>
+<input type="hidden" id="nbBoutonsMD" name="nbBoutonsMD">
+        <input type="hidden" id="tonalite" name="tonalite">
           <div class="insc-field insc-conditional" id="dispositionWrap">
             <label for="disposition">Disposition (si 3 rangées)</label>
             <select id="disposition" name="disposition">
@@ -592,18 +585,7 @@ var STAGE_CONFIG = {
               <option value="chromatique">Chromatique</option>
             </select>
           </div>
-        </div>
 
-        <div class="insc-inline-row">
-          <div class="insc-field">
-            <label for="tonalite">Tonalité</label>
-            <select id="tonalite" name="tonalite">
-              <option value="">– Choisir –</option>
-              <option value="G/C">Sol / Do (G/C)</option>
-              <option value="A/D">La / Ré (A/D)</option>
-              <option value="C#/D">Do# / Ré (C#/D)</option>
-            </select>
-          </div>
           <div class="insc-field">
             <label for="accordage">Accordage</label>
             <select id="accordage" name="accordage">
@@ -612,7 +594,6 @@ var STAGE_CONFIG = {
               <option value="demi-swing">Demi-swing</option>
             </select>
           </div>
-        </div>
 
         <div class="insc-inline-row">
           <div class="insc-field">
@@ -719,17 +700,7 @@ var STAGE_CONFIG = {
 
 <!-- wp:html -->
 <div class="insc-section-body">
-<div class="insc-inline-row">
-          <div class="insc-field">
-            <label for="nbBoutonsMG">Nb boutons basses</label>
-            <select id="nbBoutonsMG" name="nbBoutonsMG">
-              <option value="">– Choisir –</option>
-              <option value="8b">8 basses</option>
-              <option value="12b">12 basses</option>
-              <option value="18b">18 basses</option>
-              <option value="24b">24 basses</option>
-            </select>
-          </div>
+<input type="hidden" id="nbBoutonsMG" name="nbBoutonsMG">
           <div class="insc-field">
             <label for="couleurSangles">Couleur sangles MG / Bretelles MD</label>
             <select id="couleurSangles" name="couleurSangles">
@@ -740,7 +711,6 @@ var STAGE_CONFIG = {
               <option value="Noir">Noir</option>
             </select>
           </div>
-        </div>
 
         <div class="insc-field">
           <label for="remarquesMG">Remarques (main gauche)</label>
