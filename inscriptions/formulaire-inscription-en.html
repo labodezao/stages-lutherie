@@ -1536,11 +1536,12 @@ var buildSVG_PlanLite = (function () {
       nbMD.dispatchEvent(new Event('change'));
       _syncingFromPlan = false;
     }
-    if (inst.lhRows) {
-      var lhNb = 0;
-      inst.lhRows.forEach(function (r) { lhNb += (r.nb || 0); });
-      var mgSel = document.getElementById('nbBoutonsMG');
-      if (mgSel) {
+    var mgSel = document.getElementById('nbBoutonsMG');
+    if (mgSel && inst.notes) {
+      var bl = inst.notes.basses ? inst.notes.basses.length : 0;
+      var al = inst.notes.accords ? inst.notes.accords.length : 0;
+      var lhNb = bl + al;
+      if (lhNb > 0) {
         var best = '8b';
         if (lhNb >= 22) best = '24b';
         else if (lhNb >= 16) best = '18b';
@@ -1558,7 +1559,14 @@ var buildSVG_PlanLite = (function () {
     var totalBtns = 0;
     if (inst.rangees) inst.rangees.forEach(function (r) { totalBtns += (r.nb || 0); });
     var lhBtns = 0;
-    if (inst.lhRows) inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
+    if (inst.lhRows && inst.lhRows.length) {
+      inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
+    }
+    if (!lhBtns && inst.notes) {
+      var bl2 = inst.notes.basses ? inst.notes.basses.length : 0;
+      var al2 = inst.notes.accords ? inst.notes.accords.length : 0;
+      lhBtns = bl2 + al2;
+    }
     info.innerHTML = '<strong>' + (label || inst.nom || '(unnamed)') + '</strong><br>'
       + 'RH: ' + nbRows + ' rows \u00b7 ' + totalBtns + ' buttons'
       + (lhBtns ? '<br>LH: ' + lhBtns + ' buttons' : '');

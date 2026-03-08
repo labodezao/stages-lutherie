@@ -178,5 +178,15 @@
     "id": "SolDoAlts_Gaillard",
     "label": "Sol/Do/Alts Gaillard — 33/18",
     "category": "33/18"
+  },
+  {
+    "id": "SolDo_Darwin",
+    "label": "Sol/Do — Darwin 33/24 (bisonore)",
+    "category": "33/24"
+  },
+  {
+    "id": "SolDo_Lamarck",
+    "label": "Sol/Do — Lamarck 33/24 (unisonore)",
+    "category": "33/24"
   }
 ]
