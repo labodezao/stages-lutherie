@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF joint) et un email de
  *              confirmation au stagiaire.
- * Version:     1.2
+ * Version:     1.3
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -103,8 +103,9 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 	$conf_body     = get_option( 'sl_confirmation_body',    $defaults['sl_confirmation_body']    );
 
 	/* ── Decode PDF to temp file ── */
-	$attachments = array();
-	$pdf_path    = '';
+	$attachments  = array();
+	$pdf_path     = '';
+	$pdf_path_pdf = '';
 
 	if ( ! empty( $pdf_base64 ) ) {
 		$pdf_data = base64_decode( $pdf_base64, true );
@@ -172,10 +173,7 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 	wp_mail( $email, $conf_subject_filled, $conf_body_filled, $headers_conf );
 
 	/* ── Cleanup temp files ── */
-	$tmp_files = array( $pdf_path, $json_path );
-	if ( isset( $pdf_path_pdf ) ) {
-		$tmp_files[] = $pdf_path_pdf;
-	}
+	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_path );
 	foreach ( $tmp_files as $tmp ) {
 		if ( ! empty( $tmp ) && file_exists( $tmp ) ) {
 			unlink( $tmp );
@@ -197,6 +195,8 @@ endif; // function_exists sl_handle_inscription
    ADMIN SETTINGS PAGE
    ══════════════════════════════════════════════════════ */
 
+if ( ! function_exists( 'sl_add_settings_page' ) ) :
+
 add_action( 'admin_menu', 'sl_add_settings_page' );
 
 function sl_add_settings_page() {
@@ -209,6 +209,10 @@ function sl_add_settings_page() {
 	);
 }
 
+endif; // function_exists sl_add_settings_page
+
+if ( ! function_exists( 'sl_register_settings' ) ) :
+
 add_action( 'admin_init', 'sl_register_settings' );
 
 function sl_register_settings() {
@@ -217,6 +221,10 @@ function sl_register_settings() {
 	register_setting( 'sl_inscription', 'sl_confirmation_subject', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'sl_inscription', 'sl_confirmation_body',    array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 }
+
+endif; // function_exists sl_register_settings
+
+if ( ! function_exists( 'sl_render_settings_page' ) ) :
 
 function sl_render_settings_page() {
 	$defaults = array(
@@ -256,3 +264,5 @@ function sl_render_settings_page() {
 	</div>
 	<?php
 }
+
+endif; // function_exists sl_render_settings_page
