@@ -468,7 +468,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         </select>
       </div>
       <div class="btn-group" style="margin-top:13px;">
-        <button class="btn btn-primary" onclick="saveCurrentInstrument()" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
+        <button class="btn btn-primary" onclick="saveCurrentInstrument(true)" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
         <button class="btn btn-or"      onclick="saveAsJSON()" data-i-btn="saveAs">⬇️ Enregistrer sous .json</button>
       </div>
     </div>
@@ -1080,14 +1080,14 @@ function loadFromDB(rec){
   generateInputGrid();
   setSaveStatus('saved');
 }
-function saveCurrentInstrument(){
+function saveCurrentInstrument(publishToServer){
   readNoteInputsIntoCFG();
   const rec=snapshotToDB();
   if(currentId&&DB.get(currentId)){DB.update(currentId,rec);}
   else{currentId=rec.id;DB.add(rec);}
   renderLibrary();setSaveStatus('saved');
-  // Also save to server via presets-api.php
-  _savePresetToServer(rec);
+  // Publish to server only on explicit button click
+  if(publishToServer){_savePresetToServer(rec);}
 }
 
 function _savePresetToServer(rec){
