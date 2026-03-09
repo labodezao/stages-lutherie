@@ -2,9 +2,9 @@
 /**
  * Plugin Name: Stages Lutherie — Inscription REST API
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
- *              envoyer un email au luthier (avec PDF joint) et un email de
- *              confirmation au stagiaire.
- * Version:     1.5
+ *              envoyer un email au luthier (avec PDF + JSON joints) et un
+ *              email de confirmation au stagiaire (avec PDF + JSON joints).
+ * Version:     1.6
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -120,11 +120,15 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	}
 
 	/* ── Attach plan JSON if custom plan ── */
-	$json_path = '';
+	$json_path     = '';
+	$json_tmp_base = ''; /* bare file created by wp_tempnam (needs separate cleanup) */
 	if ( ! empty( $plan_json ) ) {
-		$json_path = wp_tempnam( 'plan_clavier_' . sanitize_file_name( $nom ) ) . '.json';
+		$json_tmp_base = wp_tempnam( 'plan_clavier_' . sanitize_file_name( $nom ) );
+		$json_path     = $json_tmp_base . '.json';
 		if ( file_put_contents( $json_path, $plan_json ) !== false ) {
 			$attachments[] = $json_path;
+		} else {
+			$json_path = '';
 		}
 	}
 
@@ -170,13 +174,11 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	$headers_conf = array( 'Content-Type: text/plain; charset=UTF-8' );
 
-	/* Also attach the JSON keyboard plan to the trainee confirmation if present */
-	$conf_attachments = ( ! empty( $json_path ) && file_exists( $json_path ) ) ? array( $json_path ) : array();
-
-	wp_mail( $email, $conf_subject_filled, $conf_body_filled, $headers_conf, $conf_attachments );
+	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
+	wp_mail( $email, $conf_subject_filled, $conf_body_filled, $headers_conf, $attachments );
 
 	/* ── Cleanup temp files ── */
-	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_path );
+	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_tmp_base, $json_path );
 	foreach ( $tmp_files as $tmp ) {
 		if ( ! empty( $tmp ) && file_exists( $tmp ) ) {
 			unlink( $tmp );
