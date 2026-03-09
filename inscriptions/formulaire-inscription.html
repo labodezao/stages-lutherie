@@ -1321,7 +1321,7 @@ var buildSVG_PlanLite = (function () {
       var sepY1 = gridTop - 2, sepY2 = gridTop + maxBtns * BGAP + extraOff + 2;
       s += '<line x1="' + sepX + '" y1="' + sepY1 + '" x2="' + sepX + '" y2="' + sepY2 + '" stroke="#C7D2FE" stroke-width="1.5" stroke-dasharray="6,4"/>';
       var sepMidY = (sepY1 + sepY2) / 2;
-      s += '<text x="' + sepX + '" y="' + sepMidY + '" text-anchor="middle" font-size="6.5" fill="' + subtl + '" font-weight="bold" transform="rotate(-90,' + sepX + ',' + sepMidY + ')">— SOUFFLET —</text>';
+      s += '<text x="' + sepX + '" y="' + sepMidY + '" text-anchor="middle" font-size="6.5" fill="' + subtl + '" font-weight="bold" transform="rotate(-90,' + sepX + ',' + sepMidY + ')">\u2014 SOUFFLET \u2014</text>';
     }
 
     /* LH columns */
@@ -1424,33 +1424,17 @@ var buildSVG_PlanLite = (function () {
     return el.options[el.selectedIndex].text;
   }
 
-  /* ── Disposition dérivée du plan sélectionné ── */
-  function getDispositionFromPlan() {
-    if (!planData || !planCategory) return '–';
-    if (planCategory === '3 rangs 12b') {
-      /* Présets standard ("33 boutons") = Heim ; Spéciaux = label contient l'info */
-      if (planLabel && planLabel.indexOf('33 boutons') >= 0) return 'Heim (standard)';
-      return planLabel || planCategory;
-    }
-    if (planCategory === '2 rangs 8b') {
-      /* Irlandais vs standard 2 rangs */
-      return (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) ? 'Irish' : '–';
-    }
-    /* 3 rangs 18b, 3 rangs 24b — le label contient déjà l'info de disposition */
-    return planLabel || planCategory;
-  }
-
   /* ── nbBoutonsMD change → clear plan if mismatch ── */
   var _syncingFromPlan = false;
   nbMD.addEventListener('change', function () {
     /* If user manually changed rows, clear plan if it no longer matches */
-    if (!_syncingFromPlan && planData) {
+    if (!_syncingFromPlan) { if (planData) {
       var planRows = planData.nbRangees || (planData.rangees ? planData.rangees.length : 0);
       var expected = planRows === 2 ? '21' : (planRows === 3 ? '33' : '');
-      if (expected !== '' && this.value !== expected) {
+      if (expected !== '') { if (this.value !== expected) {
         clearPlanSelection();
-      }
-    }
+      } }
+    } }
     updateSummary();
   });
 
@@ -1484,8 +1468,10 @@ var buildSVG_PlanLite = (function () {
   var planLabel = '';
   var planCategory = '';
   var planMode = 'preset';
-  var PRESETS_BASE_URL = (typeof STAGE_CONFIG !== 'undefined' && STAGE_CONFIG.presetsBaseUrl !== undefined)
-    ? STAGE_CONFIG.presetsBaseUrl : '../outils/clavier-accordeon/presets/';
+  var PRESETS_BASE_URL = '../outils/clavier-accordeon/presets/';
+  if (typeof STAGE_CONFIG !== 'undefined') {
+    if (STAGE_CONFIG.presetsBaseUrl !== undefined) { PRESETS_BASE_URL = STAGE_CONFIG.presetsBaseUrl; }
+  }
 
   /* Clear plan selection and inline preview */
   function clearPlanSelection() {
@@ -1525,6 +1511,22 @@ var buildSVG_PlanLite = (function () {
     updateSummary();
   }
 
+  /* ── Disposition dérivée du plan sélectionné ── */
+  function getDispositionFromPlan() {
+    if (!planData || !planCategory) return '\u2013';
+    if (planCategory === '3 rangs 12b') {
+      /* Présets standard ("33 boutons") = Heim ; Spéciaux = label contient l'info */
+      if (planLabel && planLabel.indexOf('33 boutons') >= 0) return 'Heim (standard)';
+      return planLabel || planCategory;
+    }
+    if (planCategory === '2 rangs 8b') {
+      /* Irlandais vs standard 2 rangs */
+      return (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) ? 'Irish' : '\u2013';
+    }
+    /* 3 rangs 18b, 3 rangs 24b — le label contient déjà l'info de disposition */
+    return planLabel || planCategory;
+  }
+
   /* Sync nbBoutonsMD and nbBoutonsMG from loaded plan data */
   function syncPlanToForm(inst) {
     if (!inst) return;
@@ -1537,7 +1539,7 @@ var buildSVG_PlanLite = (function () {
       _syncingFromPlan = false;
     }
     var mgSel = document.getElementById('nbBoutonsMG');
-    if (mgSel && inst.notes) {
+    if (mgSel) { if (inst.notes) {
       var bl = inst.notes.basses ? inst.notes.basses.length : 0;
       var al = inst.notes.accords ? inst.notes.accords.length : 0;
       var lhNb = bl + al;
@@ -1548,7 +1550,7 @@ var buildSVG_PlanLite = (function () {
         else if (lhNb >= 10) best = '12b';
         mgSel.value = best;
       }
-    }
+    } }
   }
 
   function showPlanPreview(inst, label) {
@@ -1559,14 +1561,14 @@ var buildSVG_PlanLite = (function () {
     var totalBtns = 0;
     if (inst.rangees) inst.rangees.forEach(function (r) { totalBtns += (r.nb || 0); });
     var lhBtns = 0;
-    if (inst.lhRows && inst.lhRows.length) {
+    if (inst.lhRows) { if (inst.lhRows.length) {
       inst.lhRows.forEach(function (r) { lhBtns += (r.nb || 0) * 2; });
-    }
-    if (!lhBtns && inst.notes) {
+    } }
+    if (!lhBtns) { if (inst.notes) {
       var bl2 = inst.notes.basses ? inst.notes.basses.length : 0;
       var al2 = inst.notes.accords ? inst.notes.accords.length : 0;
       lhBtns = bl2 + al2;
-    }
+    } }
     info.innerHTML = '<strong>' + (label || inst.nom || '(sans nom)') + '</strong><br>'
       + 'MD : ' + nbRows + ' rang\u00e9es \u00b7 ' + totalBtns + ' boutons'
       + (lhBtns ? '<br>MG : ' + lhBtns + ' boutons' : '');
@@ -1677,7 +1679,7 @@ var buildSVG_PlanLite = (function () {
         filterPresetsByModel(checkedModel ? checkedModel.value : '');
       })
       .catch(function () {
-        if (loadState) loadState.textContent = 'Présets non disponibles — utilisez le mode Plan personnalisé.';
+        if (loadState) loadState.textContent = 'Pr\u00e9sets non disponibles \u2014 utilisez le mode Plan personnalis\u00e9.';
       });
   }
 
@@ -1758,9 +1760,8 @@ var buildSVG_PlanLite = (function () {
 
   /* ── Sélecteur visuel de grille ──────────────────────────── */
   (function () {
-    var BASE = (typeof STAGE_CONFIG !== 'undefined' && STAGE_CONFIG.grillesBaseUrl)
-      ? STAGE_CONFIG.grillesBaseUrl
-      : 'img/grilles/';
+    var BASE = 'img/grilles/';
+    if (typeof STAGE_CONFIG !== 'undefined') { if (STAGE_CONFIG.grillesBaseUrl) { BASE = STAGE_CONFIG.grillesBaseUrl; } }
     var TOTAL = 81;
     var grid  = document.getElementById('grilleSelectorGrid');
     var input = document.getElementById('numGrille');
@@ -1797,7 +1798,7 @@ var buildSVG_PlanLite = (function () {
       }
       // Select new
       input.value = n;
-      lbl.textContent = '— Grille n\u00b0' + n + ' s\u00e9lectionn\u00e9e';
+      lbl.textContent = '\u2014 Grille n\u00b0' + n + ' s\u00e9lectionn\u00e9e';
       var cell = document.getElementById('grilleCell-' + n);
       if (cell) cell.style.borderColor = 'var(--accent,#5D4037)';
       updateSummary();
@@ -1808,25 +1809,25 @@ var buildSVG_PlanLite = (function () {
   })();
 
   function updateSummary() {
-    document.getElementById('sumNom').textContent = document.getElementById('nom').value || '–';
+    document.getElementById('sumNom').textContent = document.getElementById('nom').value || '\u2013';
     var sess = getRadioVal('session');
-    document.getElementById('sumSession').textContent = SESSION_LABELS[sess] || '–';
-    document.getElementById('sumModele').textContent = getRadioVal('modele') || '–';
-    document.getElementById('sumTona').textContent = selVal('tonalite') || '–';
+    document.getElementById('sumSession').textContent = SESSION_LABELS[sess] || '\u2013';
+    document.getElementById('sumModele').textContent = getRadioVal('modele') || '\u2013';
+    document.getElementById('sumTona').textContent = selVal('tonalite') || '\u2013';
     document.getElementById('sumDispo').textContent = getDispositionFromPlan();
 
     var v1 = selVal('voix1');
     var v2 = document.getElementById('upgrade2V').checked ? selVal('voix2') : '';
-    document.getElementById('sumVoix').textContent = v2 ? (v1 || '–') + ' / ' + v2 + ' (2V registres)' : (v1 || '–') + ' (1V)';
+    document.getElementById('sumVoix').textContent = v2 ? (v1 || '\u2013') + ' / ' + v2 + ' (2V registres)' : (v1 || '\u2013') + ' (1V)';
 
-    document.getElementById('sumAccordage').textContent = selVal('accordage') || '–';
-    document.getElementById('sumBoutons').textContent = selVal('boutonsMD') || '–';
-    document.getElementById('sumBoisClavier').textContent = selVal('boisClavier') || '–';
-    document.getElementById('sumBoisGrille').textContent = selVal('boisGrille') || '–';
-    document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '–';
-    document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '–';
-    document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '–';
-    document.getElementById('sumPlan').textContent = planData ? (planLabel || planData.nom || 'Plan personnalis\u00e9') : '–';
+    document.getElementById('sumAccordage').textContent = selVal('accordage') || '\u2013';
+    document.getElementById('sumBoutons').textContent = selVal('boutonsMD') || '\u2013';
+    document.getElementById('sumBoisClavier').textContent = selVal('boisClavier') || '\u2013';
+    document.getElementById('sumBoisGrille').textContent = selVal('boisGrille') || '\u2013';
+    document.getElementById('sumBassesMG').textContent = selVal('nbBoutonsMG') || '\u2013';
+    document.getElementById('sumSangles').textContent = selVal('couleurSangles') || '\u2013';
+    document.getElementById('sumSoufflet').textContent = getRadioVal('couleurSoufflet') || '\u2013';
+    document.getElementById('sumPlan').textContent = planData ? (planLabel || planData.nom || 'Plan personnalis\u00e9') : '\u2013';
 
     /* Grille */
     var grilleVal = document.getElementById('numGrille').value;
@@ -1866,9 +1867,8 @@ var buildSVG_PlanLite = (function () {
    * Fallback : background-color visible si le PNG n'existe pas encore.
    */
 
-  var ACC_IMG_BASE = (typeof STAGE_CONFIG !== 'undefined' && STAGE_CONFIG.apercuBaseUrl)
-    ? STAGE_CONFIG.apercuBaseUrl
-    : 'img/apercu/';
+  var ACC_IMG_BASE = 'img/apercu/';
+  if (typeof STAGE_CONFIG !== 'undefined') { if (STAGE_CONFIG.apercuBaseUrl) { ACC_IMG_BASE = STAGE_CONFIG.apercuBaseUrl; } }
 
   /* Correspondance valeur option → slug fichier image.
    * Note : '\u00c9rable' (Érable, avec accent) = bois du clavier/grille.
