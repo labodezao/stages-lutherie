@@ -81,18 +81,18 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 	$defaults = array(
 		'sl_luthier_email'        => 'contact@ewendaviau.com',
 		'sl_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-		'sl_confirmation_subject' => "Confirmation d'inscription \u2014 Stage de lutherie",
+		'sl_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie',
 		'sl_confirmation_body'    =>
 			"Bonjour {nom},\n\n" .
 			"Merci pour votre inscription au stage de lutherie !\n\n" .
 			"Voici les informations pour valider votre inscription :\n\n" .
-			"\u{1F4CB} Mod\u00e8le choisi : {modele}\n" .
-			"\u{1F4B0} Acompte \u00e0 verser (40\u00a0%) : {acompte}\u00a0\u20ac\n" .
-			"\u{1F4C5} Session : {session}\n\n" .
-			"\u{1F3E6} Coordonn\u00e9es bancaires :\n{bank_details}\n\n" .
-			"\u26a0\ufe0f Merci d'indiquer en r\u00e9f\u00e9rence de virement : STAGE-{nom}\n\n" .
-			"Votre inscription sera confirm\u00e9e d\u00e8s r\u00e9ception de l'acompte.\n\n" .
-			"\u00c0 tr\u00e8s bient\u00f4t \u00e0 l'atelier !\n\n" .
+			"📋 Modèle choisi : {modele}\n" .
+			"💰 Acompte à verser (40\xc2\xa0%) : {acompte}\xc2\xa0€\n" .
+			"📅 Session : {session}\n\n" .
+			"🏦 Coordonnées bancaires :\n{bank_details}\n\n" .
+			"⚠️ Merci d'indiquer en référence de virement : STAGE-{nom}\n\n" .
+			"Votre inscription sera confirmée dès réception de l'acompte.\n\n" .
+			"À très bientôt à l'atelier !\n\n" .
 			"Ewen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\n" .
 			"contact@ewendaviau.com\newendaviau.com",
 	);
@@ -129,19 +129,19 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 	}
 
 	/* ── Build all field lines for luthier email ── */
-	$field_lines = "Nouvelle inscription re\u00e7ue :\n\n";
+	$field_lines = "Nouvelle inscription reçue :\n\n";
 	foreach ( $fields as $key => $val ) {
 		if ( ! empty( $val ) ) {
 			$field_lines .= sanitize_text_field( $key ) . ' : ' . sanitize_text_field( (string) $val ) . "\n";
 		}
 	}
 	if ( ! empty( $plan_json ) ) {
-		$field_lines .= "\n\u{1F5C3}\ufe0f Le fichier JSON du plan de clavier personnalis\u00e9 est joint en pi\u00e8ce jointe.";
+		$field_lines .= "\n🗃️ Le fichier JSON du plan de clavier personnalisé est joint en pièce jointe.";
 	}
-	$field_lines .= "\n\nLe r\u00e9capitulatif PDF est joint.";
+	$field_lines .= "\n\nLe récapitulatif PDF est joint.";
 
 	/* ── Email to luthier ── */
-	$luthier_subject = "Nouvelle inscription stage \u2014 " . $nom;
+	$luthier_subject = 'Nouvelle inscription stage — ' . $nom;
 	$headers_luthier = array(
 		'Content-Type: text/plain; charset=UTF-8',
 		'Reply-To: ' . $email,
@@ -183,7 +183,7 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 	return new WP_REST_Response(
 		array(
 			'success' => true,
-			'message' => 'Inscription envoy\u00e9e avec succ\u00e8s !',
+			'message' => 'Inscription envoyée avec succès !',
 		),
 		200
 	);

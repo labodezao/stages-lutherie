@@ -184,3 +184,5 @@ function ca_rest_save_preset( WP_REST_Request $req ) {
 		)
 	);
 }
+
+endif; // function_exists ca_rest_save_preset
