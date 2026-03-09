@@ -3,7 +3,7 @@
  * Plugin Name: Clavier Accordéon — Presets REST API
  * Description: Endpoint REST pour créer/modifier les présets de clavier accordéon
  *              directement depuis l'outil admin (sans FTP).
- * Version:     1.1
+ * Version:     1.2
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -25,6 +25,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+if ( ! function_exists( 'ca_register_presets_routes' ) ) :
 
 add_action( 'rest_api_init', 'ca_register_presets_routes' );
 
@@ -67,9 +69,17 @@ function ca_register_presets_routes() {
 	);
 }
 
+endif; // function_exists ca_register_presets_routes
+
+if ( ! function_exists( 'ca_rest_can_save_preset' ) ) :
+
 function ca_rest_can_save_preset() {
 	return current_user_can( 'upload_files' );
 }
+
+endif; // function_exists ca_rest_can_save_preset
+
+if ( ! function_exists( 'ca_rest_save_preset' ) ) :
 
 function ca_rest_save_preset( WP_REST_Request $req ) {
 	$id       = $req->get_param( 'id' );
