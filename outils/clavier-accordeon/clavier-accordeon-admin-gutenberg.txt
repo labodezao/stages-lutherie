@@ -1142,9 +1142,13 @@ function _savePresetToServer(rec){
     nbVoixBasses:rec.nbVoixBasses||2,
     notes:rec.notes
   };
+  /* CA_SAVE_NONCE is injected by presets-api.php via wp_footer for logged-in admins */
+  var nonce='';
+  if(typeof window.CA_SAVE_NONCE!=='undefined'){nonce=window.CA_SAVE_NONCE;}
+  else if(window.wpApiSettings){nonce=window.wpApiSettings.nonce||'';}
   fetch('/wp-json/clavier-accordeon/v1/save-preset',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
     body:JSON.stringify({id:safeName,label:rec.nom||safeName,category:cat,data:presetData})
   })
   .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
@@ -1154,7 +1158,11 @@ function _savePresetToServer(rec){
       if(el){el.textContent=t('saved');el.className='saved';}
     }
   })
-  .catch(err=>console.warn('Preset server save skipped:',err));
+  .catch(err=>{
+    console.warn('Preset server save failed:',err);
+    const el=document.getElementById('save-status');
+    if(el){el.textContent='\u26a0\ufe0f Sauvegarde serveur \u00e9chou\u00e9e';el.className='dirty';}
+  });
 }
 function newInstrument(){
   currentId=null;

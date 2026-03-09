@@ -1104,7 +1104,7 @@ function _savePresetToServer(rec){
   };
   fetch('/wp-json/clavier-accordeon/v1/save-preset',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:(function(){var n='';if(typeof window.CA_SAVE_NONCE!=='undefined'){n=window.CA_SAVE_NONCE;}else if(window.wpApiSettings){n=window.wpApiSettings.nonce||'';}return{'Content-Type':'application/json','X-WP-Nonce':n};}()),
     body:JSON.stringify({id:safeName,label:rec.nom||safeName,category:cat,data:presetData})
   })
   .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
@@ -1114,7 +1114,11 @@ function _savePresetToServer(rec){
       if(el){el.textContent='Saved';el.className='saved';}
     }
   })
-  .catch(err=>console.warn('Preset server save skipped:',err));
+  .catch(err=>{
+    console.warn('Preset server save failed:',err);
+    const el=document.getElementById('save-status');
+    if(el){el.textContent='\u26a0\ufe0f Server save failed';el.className='dirty';}
+  });
 }
 function newInstrument(){
   currentId=null;

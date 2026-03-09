@@ -186,3 +186,21 @@ function ca_rest_save_preset( WP_REST_Request $req ) {
 }
 
 endif; // function_exists ca_rest_save_preset
+
+/* ══════════════════════════════════════════════════════
+   NONCE INJECTION — makes window.CA_SAVE_NONCE available
+   to the admin widget JavaScript so the REST fetch can
+   pass X-WP-Nonce and pass the permission_callback check.
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'ca_output_save_nonce' ) ) :
+
+function ca_output_save_nonce() {
+	if ( current_user_can( 'upload_files' ) ) {
+		echo '<script>window.CA_SAVE_NONCE=' . wp_json_encode( wp_create_nonce( 'wp_rest' ) ) . ';</script>' . "\n";
+	}
+}
+add_action( 'wp_footer',    'ca_output_save_nonce', 1 );
+add_action( 'admin_footer', 'ca_output_save_nonce', 1 );
+
+endif; // function_exists ca_output_save_nonce
