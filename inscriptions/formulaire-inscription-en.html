@@ -1921,6 +1921,9 @@ var buildSVG_PlanLite = (function () {
   window.setPlanMode = setPlanMode;
   window.onPresetSelect = onPresetSelect;
 
+  /* ── PDF number formatter (plain space — avoids jsPDF unicode rendering issues) ── */
+  function fmtPDF(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
   /* ── PDF Generation (returns jsPDF doc) ── */
   function buildPDF() {
     var jsPDF = window.jspdf.jsPDF;
@@ -2054,14 +2057,14 @@ var buildSVG_PlanLite = (function () {
       doc.setFillColor(255, 248, 225);
       var boxH = 28;
       var surchargeLines = [];
-      if (pdfAncheChecked) surchargeLines.push('Anche a mano Blue Star +' + Math.round(basePrice * (ANCHE_SURCHARGE - 1)).toLocaleString('fr-FR') + ' \u20ac');
-      if (pdfUp2V) surchargeLines.push('2 Voices +' + Math.round(basePrice * (UPGRADE_2V_SURCHARGE - 1)).toLocaleString('fr-FR') + ' \u20ac');
+      if (pdfAncheChecked) surchargeLines.push('Anche a mano Blue Star +' + fmtPDF(Math.round(basePrice * (ANCHE_SURCHARGE - 1))) + ' \u20ac');
+      if (pdfUp2V) surchargeLines.push('2 Voices +' + fmtPDF(Math.round(basePrice * (UPGRADE_2V_SURCHARGE - 1))) + ' \u20ac');
       if (surchargeLines.length) boxH += 8 * surchargeLines.length;
       doc.roundedRect(MARGIN, y, CW, boxH, 3, 3, 'F');
       doc.setTextColor.apply(doc, woodDark);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(14);
-      doc.text('Total Price: ' + price.toLocaleString('fr-FR') + ' \u20ac', W / 2, y + 9, { align: 'center' });
+      doc.text('Total Price: ' + fmtPDF(price) + ' \u20ac', W / 2, y + 9, { align: 'center' });
       var ySub = y + 17;
       if (surchargeLines.length) {
         doc.setFontSize(9);
@@ -2071,7 +2074,7 @@ var buildSVG_PlanLite = (function () {
       }
       doc.setFontSize(10);
       doc.setTextColor.apply(doc, gold);
-      doc.text('Deposit at registration: ' + deposit.toLocaleString('fr-FR') + ' \u20ac', W / 2, ySub, { align: 'center' });
+      doc.text('Deposit at registration: ' + fmtPDF(deposit) + ' \u20ac', W / 2, ySub, { align: 'center' });
       y += boxH + 4;
     }
 

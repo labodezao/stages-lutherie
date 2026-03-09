@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF joint) et un email de
  *              confirmation au stagiaire.
- * Version:     1.4
+ * Version:     1.5
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! function_exists( 'stluth_register_inscription_route' ) ) :
 
-add_action( 'rest_api_init', 'stluth_register_inscription_route' );
+add_action( 'rest_api_init', 'stluth_register_inscription_route', 99 );
 
 function stluth_register_inscription_route() {
 	register_rest_route(
@@ -170,7 +170,10 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	$headers_conf = array( 'Content-Type: text/plain; charset=UTF-8' );
 
-	wp_mail( $email, $conf_subject_filled, $conf_body_filled, $headers_conf );
+	/* Also attach the JSON keyboard plan to the trainee confirmation if present */
+	$conf_attachments = ( ! empty( $json_path ) && file_exists( $json_path ) ) ? array( $json_path ) : array();
+
+	wp_mail( $email, $conf_subject_filled, $conf_body_filled, $headers_conf, $conf_attachments );
 
 	/* ── Cleanup temp files ── */
 	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_path );
@@ -190,6 +193,36 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 }
 
 endif; // function_exists stluth_handle_inscription
+
+/* ══════════════════════════════════════════════════════
+   OPTIONS MIGRATION  (sl_ → stluth_)
+   Copies any settings saved under the old sl_ names so
+   that previously-configured values are not lost.
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'stluth_migrate_options' ) ) :
+
+add_action( 'admin_init', 'stluth_migrate_options', 1 );
+
+function stluth_migrate_options() {
+	$map = array(
+		'sl_luthier_email'        => 'stluth_luthier_email',
+		'sl_bank_details'         => 'stluth_bank_details',
+		'sl_confirmation_subject' => 'stluth_confirmation_subject',
+		'sl_confirmation_body'    => 'stluth_confirmation_body',
+	);
+	foreach ( $map as $old_key => $new_key ) {
+		/* Only migrate if the new key has never been saved */
+		if ( get_option( $new_key ) === false ) {
+			$old_val = get_option( $old_key );
+			if ( $old_val !== false ) {
+				update_option( $new_key, $old_val );
+			}
+		}
+	}
+}
+
+endif; // function_exists stluth_migrate_options
 
 /* ══════════════════════════════════════════════════════
    ADMIN SETTINGS PAGE
