@@ -429,7 +429,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <option value="442">442 Hz</option>
             <option value="443">443 Hz</option>
           </select></div>
-        <div class="form-group"><label data-i="orderTremolo">Tremolo (± centièmes de Hz) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Tremolo" data-tip="Écart de fréquence entre le rang naturel et le rang tremolo (en centièmes d'un demi-ton). Ex: ±7 Cents = vibrato lent doux. ±15 Cents = vibrato plus prononcé.&#10;—&#10;Frequency offset between natural and tremolo reed rows (in cents = 1/100 of a semitone). E.g. ±7 cents = gentle slow vibrato.">ⓘ</span></label>
+        <div class="form-group" id="order-tremolo-group"><label data-i="orderTremolo">Tremolo (± centièmes de Hz) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Tremolo" data-tip="Écart de fréquence entre le rang naturel et le rang tremolo (en centièmes d'un demi-ton). Ex: ±7 Cents = vibrato lent doux. ±15 Cents = vibrato plus prononcé.&#10;—&#10;Frequency offset between natural and tremolo reed rows (in cents = 1/100 of a semitone). E.g. ±7 cents = gentle slow vibrato.">ⓘ</span></label>
           <input type="text" id="order-tremolo" placeholder="Ex : ± 7 Cents" oninput="onAnyChange()"></div>
         <div class="form-group"><label data-i="orderHarmony">Harmonie / Harmony</label>
           <input type="text" id="order-harmony" placeholder="Ex : —" oninput="onAnyChange()"></div>
@@ -2637,6 +2637,8 @@ function renderVoixPerRow(){
         ${opts.map(o=>`<option value="${o}"${o===val?' selected':''}>${lbl[o]}</option>`).join('')}
       </select></div>`;
   }).join('');
+  const tg=document.getElementById('order-tremolo-group');
+  if(tg){tg.style.display=nb===2?'':'none';}
 }
 function shiftOctave(noteStr,octaves){
   if(!noteStr||!octaves)return noteStr;
