@@ -30,6 +30,15 @@ var STAGE_CONFIG = {
   /* URL of the accordion preview layers folder (trailing slash). */
   apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
 };
+/* Load ca-svg.js if presets-api.php mu-plugin did not already enqueue it.
+   window.CA_SVG_URL is injected by presets-api.php in wp_footer.
+   Fallback: use presetsBaseUrl defined above (same domain, no cross-origin). */
+(function(){
+  if(typeof buildSVG_Plan==='undefined'){
+    var u=window.CA_SVG_URL||(STAGE_CONFIG.presetsBaseUrl?STAGE_CONFIG.presetsBaseUrl+'ca-svg.js':'');
+    if(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
+  }
+})();
 </script>
 <!-- /wp:html -->
 

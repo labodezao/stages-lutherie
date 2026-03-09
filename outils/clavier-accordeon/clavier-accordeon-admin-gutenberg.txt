@@ -966,12 +966,16 @@ let   _presetIndex=[];  // [{id,label,category}]
    En mode local (sans ce bloc), on initialise à '' par défaut. */
 window.PRESETS_BASE_URL = window.PRESETS_BASE_URL || '';
 
+/* CA_REST_ROOT est injecté par presets-api.php (window.CA_REST_ROOT = rest_url()).
+   Fallback sur '/wp-json/' pour compatibilité. */
+const _caRestRoot = window.CA_REST_ROOT || '/wp-json/';
+
 async function loadPresetIndex(){
   const base = PRESETS_BASE_URL || document.querySelector('base')?.href || location.href;
   const url = PRESETS_BASE_URL
     ? new URL('index.json', PRESETS_BASE_URL.replace(/\/?$/, '/')).href
     : new URL('presets/index.json', base).href;
-  const r=await fetch(url);
+  const r=await fetch(url, {cache:'no-store'});
   _presetIndex=await r.json();
   renderPresetOptions();
   renderPresetManager();
@@ -1033,7 +1037,7 @@ async function pmSaveMeta(id){
   var st=document.getElementById('pm-status');
   st.textContent='Enregistrement\u2026';
   try{
-    var r=await fetch('/wp-json/clavier-accordeon/v1/update-preset-meta',{
+    var r=await fetch(_caRestRoot+'clavier-accordeon/v1/update-preset-meta',{
       method:'POST',
       headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
       body:JSON.stringify({id:id,label:label,category:category})
@@ -1056,7 +1060,7 @@ async function pmDelete(id){
   var st=document.getElementById('pm-status');
   st.textContent='Suppression\u2026';
   try{
-    var r=await fetch('/wp-json/clavier-accordeon/v1/delete-preset',{
+    var r=await fetch(_caRestRoot+'clavier-accordeon/v1/delete-preset',{
       method:'DELETE',
       headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
       body:JSON.stringify({id:id})
@@ -1100,7 +1104,7 @@ async function fetchPresetData(id){
   const url = PRESETS_BASE_URL
     ? new URL(`${id}.json`, PRESETS_BASE_URL.replace(/\/?$/, '/')).href
     : new URL(`presets/${id}.json`, base).href;
-  const r=await fetch(url);
+  const r=await fetch(url, {cache:'no-store'});
   if(!r.ok)throw new Error(`Preset not found: ${id}`);
   const data=await r.json();
   _presetCache[id]=data;
@@ -1272,7 +1276,7 @@ function _savePresetToServer(rec){
   if(typeof window.CA_SAVE_NONCE!=='undefined'){nonce=window.CA_SAVE_NONCE;}
   else if(window.wpApiSettings){nonce=window.wpApiSettings.nonce||'';}
   setSaveStatus('serverSaving');
-  fetch('/wp-json/clavier-accordeon/v1/save-preset',{
+  fetch(_caRestRoot+'clavier-accordeon/v1/save-preset',{
     method:'POST',
     headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
     body:JSON.stringify({id:serverId,label:serverLabel,category:serverCat,data:presetData})

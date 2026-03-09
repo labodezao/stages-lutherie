@@ -374,22 +374,46 @@ function ca_rest_update_preset_meta( WP_REST_Request $req ) {
 endif; // function_exists ca_rest_update_preset_meta
 
 /* ══════════════════════════════════════════════════════
-   NONCE INJECTION — makes window.CA_SAVE_NONCE available
-   to the admin widget JavaScript so the REST fetch can
-   pass X-WP-Nonce and pass the permission_callback check.
+   NONCE + REST ROOT INJECTION (admin/editor only)
+   Injects into footer:
+     window.CA_SAVE_NONCE  – wp_rest nonce for X-WP-Nonce header
+     window.CA_REST_ROOT   – REST API root URL (e.g. https://site.com/wp-json/)
+   Required by the admin widget to call the preset REST endpoints.
    ══════════════════════════════════════════════════════ */
 
 if ( ! function_exists( 'ca_output_save_nonce' ) ) :
 
 function ca_output_save_nonce() {
 	if ( current_user_can( 'upload_files' ) ) {
-		echo '<script>window.CA_SAVE_NONCE=' . wp_json_encode( wp_create_nonce( 'wp_rest' ) ) . ';</script>' . "\n";
+		echo '<script>'
+			. 'window.CA_SAVE_NONCE=' . wp_json_encode( wp_create_nonce( 'wp_rest' ) ) . ';'
+			. 'window.CA_REST_ROOT='  . wp_json_encode( trailingslashit( rest_url() ) ) . ';'
+			. '</script>' . "\n";
 	}
 }
 add_action( 'wp_footer',    'ca_output_save_nonce', 1 );
 add_action( 'admin_footer', 'ca_output_save_nonce', 1 );
 
 endif; // function_exists ca_output_save_nonce
+
+/* ══════════════════════════════════════════════════════
+   PUBLIC GLOBALS — injects window.CA_SVG_URL on every page
+   so inscription forms can load ca-svg.js as a fallback
+   even when the mu-plugin enqueue fails (file not yet
+   deployed to uploads/presets/).
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'ca_output_public_globals' ) ) :
+
+function ca_output_public_globals() {
+	$upload  = wp_upload_dir();
+	$svg_url = trailingslashit( $upload['baseurl'] ) . 'presets/ca-svg.js';
+	echo '<script>window.CA_SVG_URL=' . wp_json_encode( $svg_url ) . ';</script>' . "\n";
+}
+add_action( 'wp_footer',    'ca_output_public_globals', 1 );
+add_action( 'admin_footer', 'ca_output_public_globals', 1 );
+
+endif; // function_exists ca_output_public_globals
 
 /* ══════════════════════════════════════════════════════
    SHARED SVG LIBRARY — enqueue ca-svg.js on all pages
@@ -402,7 +426,7 @@ function ca_enqueue_svg_lib() {
 	$upload   = wp_upload_dir();
 	$svg_path = trailingslashit( $upload['basedir'] ) . 'presets/ca-svg.js';
 	if ( ! file_exists( $svg_path ) ) {
-		return; // not deployed yet — graceful no-op
+		return; // not deployed yet — graceful no-op; CA_SVG_URL still injected for dynamic fallback
 	}
 	$ver = (string) filemtime( $svg_path );
 	wp_enqueue_script(
