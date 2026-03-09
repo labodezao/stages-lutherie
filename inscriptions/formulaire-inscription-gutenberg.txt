@@ -946,46 +946,46 @@ add_action('admin_menu', function () {
         'Inscription Stage',
         'manage_options',
         'inscription-stage',
-        'sl_inscription_settings_page'
+        'stluth_inscription_settings_page'
     );
 });
 
 add_action('admin_init', function () {
-    register_setting('sl_inscription', 'sl_luthier_email');
-    register_setting('sl_inscription', 'sl_bank_details');
-    register_setting('sl_inscription', 'sl_confirmation_subject');
-    register_setting('sl_inscription', 'sl_confirmation_body');
+    register_setting('stluth_inscription', 'stluth_luthier_email');
+    register_setting('stluth_inscription', 'stluth_bank_details');
+    register_setting('stluth_inscription', 'stluth_confirmation_subject');
+    register_setting('stluth_inscription', 'stluth_confirmation_body');
 });
 
-function sl_inscription_settings_page() {
+function stluth_inscription_settings_page() {
     $defaults = array(
-        'sl_luthier_email'       => 'contact@ewendaviau.com',
-        'sl_bank_details'        => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-        'sl_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
-        'sl_confirmation_body'   => "Bonjour {nom},\n\nMerci pour votre inscription au stage de lutherie !\n\nVoici les informations pour valider votre inscription :\n\n📋 Modèle choisi : {modele}\n💰 Acompte à verser (40 %) : {acompte} €\n📅 Session : {session}\n\n🏦 Coordonnées bancaires :\n{bank_details}\n\n⚠️ Merci d'indiquer en référence de virement : STAGE-{nom}\n\nVotre inscription sera confirmée dès réception de l'acompte.\n\nÀ très bientôt à l'atelier !\n\nEwen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\ncontact@ewendaviau.com\newendaviau.com",
+        'stluth_luthier_email'       => 'contact@ewendaviau.com',
+        'stluth_bank_details'        => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
+        'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
+        'stluth_confirmation_body'   => "Bonjour {nom},\n\nMerci pour votre inscription au stage de lutherie !\n\nVoici les informations pour valider votre inscription :\n\n📋 Modèle choisi : {modele}\n💰 Acompte à verser (40 %) : {acompte} €\n📅 Session : {session}\n\n🏦 Coordonnées bancaires :\n{bank_details}\n\n⚠️ Merci d'indiquer en référence de virement : STAGE-{nom}\n\nVotre inscription sera confirmée dès réception de l'acompte.\n\nÀ très bientôt à l'atelier !\n\nEwen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\ncontact@ewendaviau.com\newendaviau.com",
     );
     ?>
     <div class="wrap">
         <h1>Inscription Stage — Paramètres</h1>
         <form method="post" action="options.php">
-            <?php settings_fields('sl_inscription'); ?>
+            <?php settings_fields('stluth_inscription'); ?>
             <table class="form-table">
                 <tr>
                     <th>Email du luthier</th>
-                    <td><input type="email" name="sl_luthier_email" value="<?php echo esc_attr(get_option('sl_luthier_email', $defaults['sl_luthier_email'])); ?>" class="regular-text"></td>
+                    <td><input type="email" name="stluth_luthier_email" value="<?php echo esc_attr(get_option('stluth_luthier_email', $defaults['stluth_luthier_email'])); ?>" class="regular-text"></td>
                 </tr>
                 <tr>
                     <th>Coordonnées bancaires</th>
-                    <td><textarea name="sl_bank_details" rows="4" class="large-text"><?php echo esc_textarea(get_option('sl_bank_details', $defaults['sl_bank_details'])); ?></textarea></td>
+                    <td><textarea name="stluth_bank_details" rows="4" class="large-text"><?php echo esc_textarea(get_option('stluth_bank_details', $defaults['stluth_bank_details'])); ?></textarea></td>
                 </tr>
                 <tr>
                     <th>Objet du mail de confirmation</th>
-                    <td><input type="text" name="sl_confirmation_subject" value="<?php echo esc_attr(get_option('sl_confirmation_subject', $defaults['sl_confirmation_subject'])); ?>" class="large-text"></td>
+                    <td><input type="text" name="stluth_confirmation_subject" value="<?php echo esc_attr(get_option('stluth_confirmation_subject', $defaults['stluth_confirmation_subject'])); ?>" class="large-text"></td>
                 </tr>
                 <tr>
                     <th>Corps du mail de confirmation</th>
                     <td>
-                        <textarea name="sl_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea(get_option('sl_confirmation_body', $defaults['sl_confirmation_body'])); ?></textarea>
+                        <textarea name="stluth_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea(get_option('stluth_confirmation_body', $defaults['stluth_confirmation_body'])); ?></textarea>
                         <p class="description">Variables : {nom}, {modele}, {acompte}, {session}, {bank_details}, {email}, {telephone}</p>
                     </td>
                 </tr>
@@ -1000,12 +1000,12 @@ function sl_inscription_settings_page() {
 add_action('rest_api_init', function () {
     register_rest_route('stages-lutherie/v1', '/inscription', array(
         'methods'  => 'POST',
-        'callback' => 'sl_handle_inscription',
+        'callback' => 'stluth_handle_inscription',
         'permission_callback' => '__return_true',
     ));
 });
 
-function sl_handle_inscription(WP_REST_Request $request) {
+function stluth_handle_inscription(WP_REST_Request $request) {
     $data       = $request->get_json_params();
     $fields     = isset($data['fields']) ? $data['fields'] : array();
     $pdf_base64 = isset($data['pdfBase64']) ? $data['pdfBase64'] : '';
@@ -1030,16 +1030,16 @@ function sl_handle_inscription(WP_REST_Request $request) {
     }
 
     $defaults = array(
-        'sl_luthier_email'        => 'contact@ewendaviau.com',
-        'sl_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-        'sl_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
-        'sl_confirmation_body'    => "Bonjour {nom},\n\nMerci pour votre inscription !",
+        'stluth_luthier_email'        => 'contact@ewendaviau.com',
+        'stluth_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
+        'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
+        'stluth_confirmation_body'    => "Bonjour {nom},\n\nMerci pour votre inscription !",
     );
 
-    $luthier_email = get_option('sl_luthier_email', $defaults['sl_luthier_email']);
-    $bank_details  = get_option('sl_bank_details', $defaults['sl_bank_details']);
-    $conf_subject  = get_option('sl_confirmation_subject', $defaults['sl_confirmation_subject']);
-    $conf_body     = get_option('sl_confirmation_body', $defaults['sl_confirmation_body']);
+    $luthier_email = get_option('stluth_luthier_email', $defaults['stluth_luthier_email']);
+    $bank_details  = get_option('stluth_bank_details', $defaults['stluth_bank_details']);
+    $conf_subject  = get_option('stluth_confirmation_subject', $defaults['stluth_confirmation_subject']);
+    $conf_body     = get_option('stluth_confirmation_body', $defaults['stluth_confirmation_body']);
 
     // 1) Email to luthier with PDF
     $luthier_subject = 'Nouvelle inscription stage — ' . $nom;

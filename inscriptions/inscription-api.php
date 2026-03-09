@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF joint) et un email de
  *              confirmation au stagiaire.
- * Version:     1.3
+ * Version:     1.4
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -17,10 +17,10 @@
  *     planJson     (string)  JSON du plan de clavier (optionnel, si plan custom)
  *
  * Configuration (Réglages WordPress → Inscription Stage) :
- *   sl_luthier_email        email de destination (luthier)
- *   sl_bank_details         coordonnées bancaires
- *   sl_confirmation_subject objet de l'email de confirmation
- *   sl_confirmation_body    corps de l'email de confirmation
+ *   stluth_luthier_email        email de destination (luthier)
+ *   stluth_bank_details         coordonnées bancaires
+ *   stluth_confirmation_subject objet de l'email de confirmation
+ *   stluth_confirmation_body    corps de l'email de confirmation
  *                           Variables : {nom}, {modele}, {acompte},
  *                                       {session}, {bank_details},
  *                                       {email}, {telephone}
@@ -34,26 +34,26 @@ if ( ! defined( 'ABSPATH' ) ) {
    REST ENDPOINT
    ══════════════════════════════════════════════════════ */
 
-if ( ! function_exists( 'sl_register_inscription_route' ) ) :
+if ( ! function_exists( 'stluth_register_inscription_route' ) ) :
 
-add_action( 'rest_api_init', 'sl_register_inscription_route' );
+add_action( 'rest_api_init', 'stluth_register_inscription_route' );
 
-function sl_register_inscription_route() {
+function stluth_register_inscription_route() {
 	register_rest_route(
 		'stages-lutherie/v1',
 		'/inscription',
 		array(
 			'methods'             => 'POST',
-			'callback'            => 'sl_handle_inscription',
+			'callback'            => 'stluth_handle_inscription',
 			'permission_callback' => '__return_true',
 		)
 	);
 }
 
-endif; // function_exists sl_register_inscription_route
+endif; // function_exists stluth_register_inscription_route
 
-if ( ! function_exists( 'sl_handle_inscription' ) ) :
-function sl_handle_inscription( WP_REST_Request $request ) {
+if ( ! function_exists( 'stluth_handle_inscription' ) ) :
+function stluth_handle_inscription( WP_REST_Request $request ) {
 	$data       = $request->get_json_params();
 	$fields     = isset( $data['fields'] )   ? (array) $data['fields']  : array();
 	$pdf_base64 = isset( $data['pdfBase64'] ) ? (string) $data['pdfBase64'] : '';
@@ -79,10 +79,10 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 
 	/* ── WordPress option defaults ── */
 	$defaults = array(
-		'sl_luthier_email'        => 'contact@ewendaviau.com',
-		'sl_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-		'sl_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie',
-		'sl_confirmation_body'    =>
+		'stluth_luthier_email'        => 'contact@ewendaviau.com',
+		'stluth_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
+		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie',
+		'stluth_confirmation_body'    =>
 			"Bonjour {nom},\n\n" .
 			"Merci pour votre inscription au stage de lutherie !\n\n" .
 			"Voici les informations pour valider votre inscription :\n\n" .
@@ -97,10 +97,10 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 			"contact@ewendaviau.com\newendaviau.com",
 	);
 
-	$luthier_email = get_option( 'sl_luthier_email', $defaults['sl_luthier_email'] );
-	$bank_details  = get_option( 'sl_bank_details',  $defaults['sl_bank_details']  );
-	$conf_subject  = get_option( 'sl_confirmation_subject', $defaults['sl_confirmation_subject'] );
-	$conf_body     = get_option( 'sl_confirmation_body',    $defaults['sl_confirmation_body']    );
+	$luthier_email = get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] );
+	$bank_details  = get_option( 'stluth_bank_details',  $defaults['stluth_bank_details']  );
+	$conf_subject  = get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] );
+	$conf_body     = get_option( 'stluth_confirmation_body',    $defaults['stluth_confirmation_body']    );
 
 	/* ── Decode PDF to temp file ── */
 	$attachments  = array();
@@ -189,72 +189,72 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 	);
 }
 
-endif; // function_exists sl_handle_inscription
+endif; // function_exists stluth_handle_inscription
 
 /* ══════════════════════════════════════════════════════
    ADMIN SETTINGS PAGE
    ══════════════════════════════════════════════════════ */
 
-if ( ! function_exists( 'sl_add_settings_page' ) ) :
+if ( ! function_exists( 'stluth_add_settings_page' ) ) :
 
-add_action( 'admin_menu', 'sl_add_settings_page' );
+add_action( 'admin_menu', 'stluth_add_settings_page' );
 
-function sl_add_settings_page() {
+function stluth_add_settings_page() {
 	add_options_page(
 		'Inscription Stage',
 		'Inscription Stage',
 		'manage_options',
-		'sl_inscription',
-		'sl_render_settings_page'
+		'stluth_inscription',
+		'stluth_render_settings_page'
 	);
 }
 
-endif; // function_exists sl_add_settings_page
+endif; // function_exists stluth_add_settings_page
 
-if ( ! function_exists( 'sl_register_settings' ) ) :
+if ( ! function_exists( 'stluth_register_settings' ) ) :
 
-add_action( 'admin_init', 'sl_register_settings' );
+add_action( 'admin_init', 'stluth_register_settings' );
 
-function sl_register_settings() {
-	register_setting( 'sl_inscription', 'sl_luthier_email',        array( 'sanitize_callback' => 'sanitize_email' ) );
-	register_setting( 'sl_inscription', 'sl_bank_details',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
-	register_setting( 'sl_inscription', 'sl_confirmation_subject', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-	register_setting( 'sl_inscription', 'sl_confirmation_body',    array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
+function stluth_register_settings() {
+	register_setting( 'stluth_inscription', 'stluth_luthier_email',        array( 'sanitize_callback' => 'sanitize_email' ) );
+	register_setting( 'stluth_inscription', 'stluth_bank_details',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_confirmation_subject', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_confirmation_body',    array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 }
 
-endif; // function_exists sl_register_settings
+endif; // function_exists stluth_register_settings
 
-if ( ! function_exists( 'sl_render_settings_page' ) ) :
+if ( ! function_exists( 'stluth_render_settings_page' ) ) :
 
-function sl_render_settings_page() {
+function stluth_render_settings_page() {
 	$defaults = array(
-		'sl_luthier_email'        => 'contact@ewendaviau.com',
-		'sl_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-		'sl_confirmation_subject' => "Confirmation d'inscription — Stage de lutherie",
-		'sl_confirmation_body'    => "Bonjour {nom},\n\nMerci pour votre inscription !",
+		'stluth_luthier_email'        => 'contact@ewendaviau.com',
+		'stluth_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
+		'stluth_confirmation_subject' => "Confirmation d'inscription — Stage de lutherie",
+		'stluth_confirmation_body'    => "Bonjour {nom},\n\nMerci pour votre inscription !",
 	);
 	?>
 	<div class="wrap">
 		<h1>Réglages inscription stage</h1>
 		<form method="post" action="options.php">
-			<?php settings_fields( 'sl_inscription' ); ?>
+			<?php settings_fields( 'stluth_inscription' ); ?>
 			<table class="form-table">
 				<tr>
 					<th>Email luthier (destinataire)</th>
-					<td><input type="email" name="sl_luthier_email" value="<?php echo esc_attr( get_option( 'sl_luthier_email', $defaults['sl_luthier_email'] ) ); ?>" class="regular-text"></td>
+					<td><input type="email" name="stluth_luthier_email" value="<?php echo esc_attr( get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] ) ); ?>" class="regular-text"></td>
 				</tr>
 				<tr>
 					<th>Coordonnées bancaires</th>
-					<td><textarea name="sl_bank_details" rows="4" class="large-text"><?php echo esc_textarea( get_option( 'sl_bank_details', $defaults['sl_bank_details'] ) ); ?></textarea></td>
+					<td><textarea name="stluth_bank_details" rows="4" class="large-text"><?php echo esc_textarea( get_option( 'stluth_bank_details', $defaults['stluth_bank_details'] ) ); ?></textarea></td>
 				</tr>
 				<tr>
 					<th>Objet du mail de confirmation</th>
-					<td><input type="text" name="sl_confirmation_subject" value="<?php echo esc_attr( get_option( 'sl_confirmation_subject', $defaults['sl_confirmation_subject'] ) ); ?>" class="large-text"></td>
+					<td><input type="text" name="stluth_confirmation_subject" value="<?php echo esc_attr( get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] ) ); ?>" class="large-text"></td>
 				</tr>
 				<tr>
 					<th>Corps du mail de confirmation</th>
 					<td>
-						<textarea name="sl_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea( get_option( 'sl_confirmation_body', $defaults['sl_confirmation_body'] ) ); ?></textarea>
+						<textarea name="stluth_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea( get_option( 'stluth_confirmation_body', $defaults['stluth_confirmation_body'] ) ); ?></textarea>
 						<p class="description">Variables : {nom}, {modele}, {acompte}, {session}, {bank_details}, {email}, {telephone}</p>
 					</td>
 				</tr>
@@ -265,4 +265,4 @@ function sl_render_settings_page() {
 	<?php
 }
 
-endif; // function_exists sl_render_settings_page
+endif; // function_exists stluth_render_settings_page
