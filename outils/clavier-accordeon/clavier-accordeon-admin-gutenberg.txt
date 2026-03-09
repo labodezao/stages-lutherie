@@ -461,16 +461,16 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       </div>
       <div id="note-grid"></div>
       <div style="margin-top:11px;padding:9px 10px;background:var(--fond);border:1.5px solid var(--border);border-radius:7px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
-        <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Nom pr\u00e9set :</label>
-        <input id="preset-export-label" type="text" placeholder="Nom affich\u00e9 dans la liste" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
+        <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Nom préset :</label>
+        <input id="preset-export-label" type="text" placeholder="Nom affiché dans la liste" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
         <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Famille :</label>
         <select id="preset-export-category" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
           <option value="2 rangs 8b">2 rangs 8b</option>
           <option value="3 rangs 12b">3 rangs 12b</option>
           <option value="3 rangs 18b">3 rangs 18b</option>
           <option value="3 rangs 24b">3 rangs 24b</option>
-          <option value="Sp\u00e9ciaux">Sp\u00e9ciaux</option>
-          <option value="Personnalis\u00e9s" selected>Personnalis\u00e9s</option>
+          <option value="Spéciaux">Spéciaux</option>
+          <option value="Personnalisés" selected>Personnalisés</option>
         </select>
       </div>
       <div class="btn-group" style="margin-top:13px;">
