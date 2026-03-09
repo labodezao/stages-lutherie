@@ -688,12 +688,6 @@ var STAGE_CONFIG = {
           <small style="color:#888;margin-top:4px;display:block;">Click a grille to select it — the number is printed on each model</small>
         </div>
 
-        <!-- Inline keyboard plan SVG preview -->
-        <div id="planPreviewRH" class="insc-conditional" style="margin-top:14px;">
-          <div style="font-size:0.84rem; color:var(--wood-medium); font-weight:600; margin-bottom:6px;">📐 Selected keyboard plan preview:</div>
-          <div id="planSVGInline" style="overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
-        </div>
-
         <div class="insc-field">
           <label for="remarquesMD">Notes (right hand)</label>
           <textarea id="remarquesMD" name="remarquesMD" rows="3" placeholder="Any additional details about the right hand keyboard…"></textarea>
@@ -1478,10 +1472,6 @@ var buildSVG_PlanLite = (function () {
     if (planPreviewEl) planPreviewEl.classList.remove('visible');
     var planSVGEl = document.getElementById('planSVG');
     if (planSVGEl) planSVGEl.innerHTML = '';
-    var planPreviewRHEl = document.getElementById('planPreviewRH');
-    if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
-    var planSVGInlineEl = document.getElementById('planSVGInline');
-    if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
     var presetSel = document.getElementById('planPresetSelect');
     if (presetSel) presetSel.value = '';
     var planClavierEl = document.getElementById('planClavier');
@@ -1578,15 +1568,6 @@ var buildSVG_PlanLite = (function () {
       svgContainer.innerHTML = svgStr;
       var svgEl = svgContainer.querySelector('svg');
       if (svgEl) { svgEl.setAttribute('width', '100%'); svgEl.setAttribute('height', 'auto'); svgEl.style.maxWidth = '100%'; }
-      /* Update inline preview in RH section */
-      var inlineContainer = document.getElementById('planSVGInline');
-      var planPreviewRH = document.getElementById('planPreviewRH');
-      if (inlineContainer) {
-        inlineContainer.innerHTML = svgStr;
-        var svgEl2 = inlineContainer.querySelector('svg');
-        if (svgEl2) { svgEl2.setAttribute('width', '100%'); svgEl2.setAttribute('height', 'auto'); svgEl2.style.maxWidth = '100%'; }
-      }
-      if (planPreviewRH) planPreviewRH.classList.add('visible');
     } catch (svgErr) {
       svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Visual preview not available for this format.</p>';
     }
@@ -1689,13 +1670,9 @@ var buildSVG_PlanLite = (function () {
     var preview = document.getElementById('planPreview');
     var info = document.getElementById('planPreviewInfo');
     var svgContainer = document.getElementById('planSVG');
-    var planPreviewRHEl = document.getElementById('planPreviewRH');
-    var planSVGInlineEl = document.getElementById('planSVGInline');
     if (!raw) {
       preview.classList.remove('visible');
       svgContainer.innerHTML = '';
-      if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
-      if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
       updateSummary();
       return;
     }
@@ -1710,8 +1687,6 @@ var buildSVG_PlanLite = (function () {
       info.innerHTML = '<span style="color:#c0392b;">\u26a0 Invalid JSON \u2014 ' + e.message + '</span>';
       preview.classList.add('visible');
       svgContainer.innerHTML = '';
-      if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
-      if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
     }
     updateSummary();
   });
