@@ -1073,6 +1073,48 @@ function saveCurrentInstrument(){
   if(currentId&&DB.get(currentId)){DB.update(currentId,rec);}
   else{currentId=rec.id;DB.add(rec);}
   renderLibrary();setSaveStatus('saved');
+  // Also save to server via presets-api.php
+  _savePresetToServer(rec);
+}
+
+function _savePresetToServer(rec){
+  const nRangs=rec.nbRangees||2;
+  let cat='';
+  if(nRangs<=2){cat='2 rangs 8b';}
+  else if(nRangs===3){
+    const nb=rec.notes?(rec.notes.basses?rec.notes.basses.length:0):0;
+    if(nb>=20){cat='3 rangs 24b';}
+    else if(nb>=14){cat='3 rangs 18b';}
+    else{cat='3 rangs 12b';}
+  }else{cat=nRangs+' rangs';}
+  const safeName=(rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_').replace(/_+/g,'_').slice(0,60);
+  const presetData={
+    nbRangees:rec.nbRangees,
+    rangees:rec.rangees,
+    lhDisplayMode:rec.lhDisplayMode||'separated',
+    lhSeparatedDir:rec.lhSeparatedDir||'vertical',
+    lhPairedDir:rec.lhPairedDir||'vertical',
+    lhRows:rec.lhRows,
+    lhPairsPerRow:rec.lhPairsPerRow||2,
+    lhBassFirst:rec.lhBassFirst||false,
+    nbVoix:rec.nbVoix||2,
+    nbVoixAccords:rec.nbVoixAccords||2,
+    nbVoixBasses:rec.nbVoixBasses||2,
+    notes:rec.notes
+  };
+  fetch('/wp-json/clavier-accordeon/v1/save-preset',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({id:safeName,label:rec.nom||safeName,category:cat,data:presetData})
+  })
+  .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
+  .then(json=>{
+    if(json.success){
+      const el=document.getElementById('save-status');
+      if(el){el.textContent='Saved';el.className='saved';}
+    }
+  })
+  .catch(err=>console.warn('Preset server save skipped:',err));
 }
 function newInstrument(){
   currentId=null;

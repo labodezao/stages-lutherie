@@ -382,8 +382,6 @@ var STAGE_CONFIG = {
 <!-- /wp:html -->
 
 <!-- wp:html -->
-<!-- jsPDF for PDF generation -->
-<script defer src="https://cdn.jsdelivr.net/npm/jspdf@4.2.0/dist/jspdf.umd.min.js"></script>
 <!-- /wp:html -->
 
 <!-- wp:html -->
@@ -1462,8 +1460,6 @@ var buildSVG_PlanLite = (function () {
   /* ── Keyboard Plan ── */
   var planData = null;
   var planSvgData = null;
-  var planSvgImg = null;
-  var planSvgGeneration = 0;
   var planLabel = '';
   var planCategory = '';
   var planMode = 'preset';
@@ -1483,8 +1479,6 @@ var buildSVG_PlanLite = (function () {
     if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
     var planSVGInlineEl = document.getElementById('planSVGInline');
     if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
-    planSvgImg = null;
-    planSvgGeneration++;
     var presetSel = document.getElementById('planPresetSelect');
     if (presetSel) presetSel.value = '';
     var planClavierEl = document.getElementById('planClavier');
@@ -1590,32 +1584,6 @@ var buildSVG_PlanLite = (function () {
         if (svgEl2) { svgEl2.setAttribute('width', '100%'); svgEl2.setAttribute('height', 'auto'); svgEl2.style.maxWidth = '100%'; }
       }
       if (planPreviewRH) planPreviewRH.classList.add('visible');
-      /* Conversion SVG → PNG pour intégration dans le PDF */
-      planSvgImg = null;
-      planSvgGeneration++;
-      var svgDom = document.createElement('div');
-      svgDom.innerHTML = svgStr;
-      var svgRoot = svgDom.querySelector('svg');
-      var svgW = svgRoot ? parseFloat(svgRoot.getAttribute('width') || 800) : 800;
-      var svgH = svgRoot ? parseFloat(svgRoot.getAttribute('height') || 600) : 600;
-      var svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
-      var svgUrl = URL.createObjectURL(svgBlob);
-      var svgImg = new Image();
-      (function (captW, captH, captUrl, captGen) {
-        svgImg.onload = function () {
-          var cvs = document.createElement('canvas');
-          cvs.width = captW * 2; cvs.height = captH * 2;
-          var ctx = cvs.getContext('2d');
-          ctx.scale(2, 2);
-          ctx.drawImage(svgImg, 0, 0, captW, captH);
-          URL.revokeObjectURL(captUrl);
-          if (captGen === planSvgGeneration) {
-            planSvgImg = { png: cvs.toDataURL('image/png'), w: captW, h: captH };
-          }
-        };
-        svgImg.onerror = function () { URL.revokeObjectURL(captUrl); };
-      }(svgW, svgH, svgUrl, planSvgGeneration));
-      svgImg.src = svgUrl;
     } catch (svgErr) {
       svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Aper\u00e7u visuel non disponible pour ce format.</p>';
     }
@@ -1657,8 +1625,6 @@ var buildSVG_PlanLite = (function () {
         if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
         var planSVGInlineEl = document.getElementById('planSVGInline');
         if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
-        planSvgImg = null;
-        planSvgGeneration++;
         updateSummary();
       });
   }
@@ -1731,8 +1697,6 @@ var buildSVG_PlanLite = (function () {
       if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
       var planSVGInlineEl = document.getElementById('planSVGInline');
       if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
-      planSvgImg = null;
-      planSvgGeneration++;
       updateSummary();
       return;
     }
@@ -1988,11 +1952,43 @@ var buildSVG_PlanLite = (function () {
   window.setPlanMode = setPlanMode;
   window.onPresetSelect = onPresetSelect;
 
+  /* ── PDF: load jsPDF 2.5.1 on demand (same version as admin tool) ── */
+  function loadScript(url) {
+    return new Promise(function (res, rej) {
+      if (document.querySelector('script[src="' + url + '"]')) { res(); return; }
+      var s = document.createElement('script');
+      s.src = url; s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  function svgToPngDataUrl(svgStr) {
+    return new Promise(function (res, rej) {
+      var mw = svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/);  
+      var mh = svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);  
+      var sw = mw ? +mw[1] : 800, sh = mh ? +mh[1] : 600;
+      var SCALE = 2;
+      var c = document.createElement('canvas'); c.width = sw * SCALE; c.height = sh * SCALE;
+      var ctx = c.getContext('2d'); ctx.scale(SCALE, SCALE);
+      var img = new Image();
+      img.onload = function () {
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, sw, sh);
+        ctx.drawImage(img, 0, 0, sw, sh);
+        res({ dataUrl: c.toDataURL('image/jpeg', 0.90), w: sw, h: sh });
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = function (e) { URL.revokeObjectURL(img.src); rej(e); };
+      var blob = new Blob([svgStr], { type: 'image/svg+xml' });
+      img.src = URL.createObjectURL(blob);
+    });
+  }
+  var JSPDF_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+
   /* ── PDF number formatter (plain space — avoids jsPDF unicode rendering issues) ── */
   function fmtPDF(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
-  /* ── PDF Generation (returns jsPDF doc) ── */
-  function buildPDF() {
+  /* ── PDF Generation — async, loads jsPDF 2.5.1 on demand ── */
+  async function buildPDF() {
+    await loadScript(JSPDF_CDN);
     var jsPDF = window.jspdf.jsPDF;
     var doc = new jsPDF({ unit: 'mm', format: 'a4' });
     var W = 210;
@@ -2019,6 +2015,20 @@ var buildSVG_PlanLite = (function () {
     doc.text('Stage de lutherie \u2013 Accord\u00e9on diatonique ' + ANNEE, W / 2, 26, { align: 'center' });
     y = 44;
 
+    /* Strip characters outside jsPDF WinAnsi range (emojis, smart dashes, etc.) */
+    function safePDF(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/\u2014|\u2013/g, '-')
+        .replace(/\u2019|\u2018/g, "'")
+        .replace(/\u201C|\u201D/g, '"')
+        .replace(/\u2026/g, '...')
+        .replace(/\u00A0|\u202F/g, ' ')
+        .replace(/[^\x00-\xFF]/g, '')
+        .replace(/  +/g, ' ')
+        .trim();
+    }
+
     /* Helper: section title */
     function sectionTitle(title) {
       if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
@@ -2027,7 +2037,7 @@ var buildSVG_PlanLite = (function () {
       doc.setTextColor.apply(doc, woodDark);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
-      doc.text(title, MARGIN + 4, y + 5.5);
+      doc.text(safePDF(title), MARGIN + 4, y + 5.5);
       y += 12;
     }
 
@@ -2037,10 +2047,10 @@ var buildSVG_PlanLite = (function () {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9.5);
       doc.setTextColor.apply(doc, grey);
-      doc.text(label, MARGIN, y);
+      doc.text(safePDF(label), MARGIN, y);
       doc.setTextColor.apply(doc, woodDark);
       doc.setFont('helvetica', 'bold');
-      doc.text(String(value || '\u2013'), MARGIN + 60, y);
+      doc.text(safePDF(String(value || '-')), MARGIN + 60, y);
       y += 6.5;
     }
 
@@ -2109,15 +2119,19 @@ var buildSVG_PlanLite = (function () {
           addLine('Rang\u00e9e ' + (i + 1), (r.nom || '') + ' \u2013 ' + (r.nb || 0) + ' boutons');
         });
       }
-      if (planSvgImg) {
-        y += 2;
-        if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
-        var svgAspect = planSvgImg.w / planSvgImg.h;
-        var svgImgW = CW;
-        var svgImgH = Math.round(svgImgW / svgAspect);
-        if (svgImgH > PAGE_LIMIT - y) { svgImgH = PAGE_LIMIT - y; svgImgW = Math.round(svgImgH * svgAspect); }
-        doc.addImage(planSvgImg.png, 'PNG', MARGIN, y, svgImgW, svgImgH);
-        y += svgImgH + 4;
+      if (planSvgData) {
+        try {
+          var planSvgStr2 = buildSVG_PlanLite.render(planSvgData);
+          var planImg = await svgToPngDataUrl(planSvgStr2);
+          y += 2;
+          if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+          var svgAspect = planImg.w / planImg.h;
+          var svgImgW = CW;
+          var svgImgH = Math.round(svgImgW / svgAspect);
+          if (svgImgH > PAGE_LIMIT - y) { svgImgH = PAGE_LIMIT - y; svgImgW = Math.round(svgImgH * svgAspect); }
+          doc.addImage(planImg.dataUrl, 'JPEG', MARGIN, y, svgImgW, svgImgH);
+          y += svgImgH + 4;
+        } catch (planImgErr) { /* skip SVG if canvas render fails */ }
       }
       y += 4;
     }
@@ -2181,18 +2195,14 @@ var buildSVG_PlanLite = (function () {
   }
 
   /* ── Download PDF button ── */
-  document.getElementById('btnPDF').addEventListener('click', function () {
-    if (typeof window.jspdf === 'undefined') {
-      alert('La biblioth\u00e8que PDF n\'est pas encore charg\u00e9e. Veuillez r\u00e9essayer dans quelques secondes.');
-      return;
-    }
-    var doc = buildPDF();
+  document.getElementById('btnPDF').addEventListener('click', async function () {
+    var doc = await buildPDF();
     var safeName = (document.getElementById('nom').value || 'inscription').replace(/[^a-zA-Z\u00C0-\u00FF0-9]/g, '_');
     doc.save('inscription_' + safeName + '.pdf');
   });
 
   /* ── Form Submission ── */
-  form.addEventListener('submit', function (e) {
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     /* ── Validation des champs requis ── */
@@ -2251,17 +2261,12 @@ var buildSVG_PlanLite = (function () {
       return;
     }
 
-    if (typeof window.jspdf === 'undefined') {
-      alert('La biblioth\u00e8que PDF n\'est pas encore charg\u00e9e. Veuillez r\u00e9essayer dans quelques secondes.');
-      return;
-    }
-
     var statusEl = document.getElementById('sendStatus');
     statusEl.classList.add('visible');
     statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:var(--gold);"><strong>\u23f3 Envoi en cours\u2026</strong></div>';
 
     /* Build PDF as base64 */
-    var doc = buildPDF();
+    var doc = await buildPDF();
     var pdfBase64 = doc.output('datauristring').split(',')[1];
 
     /* Collect form fields */
