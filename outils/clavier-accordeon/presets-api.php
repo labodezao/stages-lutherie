@@ -6,7 +6,11 @@
  * Version:     1.3
  * Author:      Labodezao
  *
- * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
+ * INSTALLATION :
+ *   1. Copier ce fichier dans wp-content/mu-plugins/
+ *   2. Uploader ca-svg.js dans wp-content/uploads/presets/ca-svg.js
+ *      (source : outils/clavier-accordeon/ca-svg.js dans le dépôt)
+ *   3. Uploader le dossier presets/ (index.json + *.json) dans wp-content/uploads/presets/
  *
  * Endpoints exposés :
  *   POST   /wp-json/clavier-accordeon/v1/save-preset
