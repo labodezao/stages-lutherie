@@ -580,7 +580,7 @@ var STAGE_CONFIG = {
 <div class="insc-section-body">
 <input type="hidden" id="nbBoutonsMD" name="nbBoutonsMD">
         <input type="hidden" id="tonalite" name="tonalite">
-          <div class="insc-field">
+          <div class="insc-field insc-conditional" id="accordageWrap">
             <label for="accordage">Accordage</label>
             <select id="accordage" name="accordage">
               <option value="">– Choisir –</option>
@@ -1729,11 +1729,18 @@ var buildSVG_PlanLite = (function () {
     updateSummary();
   });
 
-  /* Show/hide voix 2 field when upgrade2V is checked */
+  /* Show/hide voix 2 field and accordage when upgrade2V is checked */
   document.getElementById('upgrade2V').addEventListener('change', function () {
     var wrap = document.getElementById('voix2Wrap');
-    if (this.checked) { wrap.classList.add('visible'); }
-    else { wrap.classList.remove('visible'); document.getElementById('voix2').value = ''; }
+    var awrap = document.getElementById('accordageWrap');
+    if (this.checked) {
+      wrap.classList.add('visible');
+      if (awrap) { awrap.classList.add('visible'); }
+    } else {
+      wrap.classList.remove('visible');
+      document.getElementById('voix2').value = '';
+      if (awrap) { awrap.classList.remove('visible'); document.getElementById('accordage').value = ''; }
+    }
     updateModelCardPrices();
     updateSummary();
   });
