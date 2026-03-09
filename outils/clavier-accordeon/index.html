@@ -1102,9 +1102,13 @@ function _savePresetToServer(rec){
     nbVoixBasses:rec.nbVoixBasses||2,
     notes:rec.notes
   };
+  /* CA_SAVE_NONCE is injected by presets-api.php via wp_footer for logged-in admins */
+  var nonce='';
+  if(typeof window.CA_SAVE_NONCE!=='undefined'){nonce=window.CA_SAVE_NONCE;}
+  else if(window.wpApiSettings){nonce=window.wpApiSettings.nonce||'';}
   fetch('/wp-json/clavier-accordeon/v1/save-preset',{
     method:'POST',
-    headers:(function(){var n='';if(typeof window.CA_SAVE_NONCE!=='undefined'){n=window.CA_SAVE_NONCE;}else if(window.wpApiSettings){n=window.wpApiSettings.nonce||'';}return{'Content-Type':'application/json','X-WP-Nonce':n};}()),
+    headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
     body:JSON.stringify({id:safeName,label:rec.nom||safeName,category:cat,data:presetData})
   })
   .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
