@@ -1957,8 +1957,8 @@ var buildSVG_PlanLite = (function () {
   }
   function svgToPngDataUrl(svgStr) {
     return new Promise(function (res, rej) {
-      var mw = svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/);  
-      var mh = svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);  
+      var mw = svgStr.match(/\bwidth="(\d+(?:\.\d+)?)"/);
+      var mh = svgStr.match(/\bheight="(\d+(?:\.\d+)?)"/);
       var sw = mw ? +mw[1] : 800, sh = mh ? +mh[1] : 600;
       var SCALE = 2;
       var c = document.createElement('canvas'); c.width = sw * SCALE; c.height = sh * SCALE;
