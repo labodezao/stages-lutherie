@@ -574,13 +574,10 @@ var STAGE_CONFIG = {
     </div>
   </div>
 
-  <!-- SVG Preview (common to both modes) -->
-  <div id="planPreview" class="insc-conditional" style="margin-top:14px;">
-    <div class="insc-callout" style="border-left-color:var(--wood-medium);">
-      <strong>Plan preview:</strong>
-      <div id="planPreviewInfo" style="margin-top:6px; font-size:0.88rem;"></div>
-    </div>
-    <div id="planSVG" style="margin-top:14px; overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
+  <!-- SVG preview inline (hidden wrapper kept for JS compatibility) -->
+  <div id="planPreview" style="display:none;" aria-hidden="true">
+    <div id="planPreviewInfo"></div>
+    <div id="planSVG"></div>
   </div>
 </div>
 <!-- /wp:html -->
@@ -2117,8 +2114,57 @@ var buildSVG_PlanLite = (function () {
   /* ── Form Submission ── */
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+
+    /* ── Required field validation ── */
+    var errors = [];
+    var requiredIds = ['nom','dateNaissance','adresse','cp','ville','telephone','email'];
+    requiredIds.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        if (!el.value.trim()) {
+          el.style.outline = '2px solid #e74c3c';
+          errors.push(id);
+        } else {
+          el.style.outline = '';
+        }
+      }
+    });
+    var sessVal = getRadioVal('session');
+    var sessOpts = document.querySelectorAll('input[name="session"]');
+    if (!sessVal) {
+      errors.push('session');
+      sessOpts.forEach(function(r){ r.parentElement.style.outline='2px solid #e74c3c'; });
+    } else {
+      sessOpts.forEach(function(r){ r.parentElement.style.outline=''; });
+    }
+    var modRadios = document.querySelectorAll('input[name="modele"]');
+    if (!getRadioVal('modele')) {
+      errors.push('modele');
+      modRadios.forEach(function(r){ r.parentElement.style.outline='2px solid #e74c3c'; });
+    } else {
+      modRadios.forEach(function(r){ r.parentElement.style.outline=''; });
+    }
+    if (planMode === 'custom') {
+      var pcEl = document.getElementById('planClavier');
+      if (!pcEl || !pcEl.value.trim()) {
+        if (pcEl) pcEl.style.outline = '2px solid #e74c3c';
+        errors.push('planClavier');
+      } else {
+        if (pcEl) pcEl.style.outline = '';
+      }
+    }
     if (!document.getElementById('acceptTerms').checked) {
-      alert('Please accept the terms before submitting your registration.');
+      errors.push('acceptTerms');
+      document.getElementById('acceptTerms').parentElement.style.outline = '2px solid #e74c3c';
+    } else {
+      document.getElementById('acceptTerms').parentElement.style.outline = '';
+    }
+    if (errors.length > 0) {
+      var firstErr = document.getElementById(errors[0]) || document.querySelector('input[name="' + errors[0] + '"]');
+      if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
+      var statusEl2 = document.getElementById('sendStatus');
+      statusEl2.classList.add('visible');
+      statusEl2.innerHTML = '<div class="insc-callout" style="border-left-color:#e74c3c;"><strong>\u26a0\ufe0f Please fill in all required fields.</strong></div>';
       return;
     }
 
@@ -2175,11 +2221,18 @@ var buildSVG_PlanLite = (function () {
       planClavier: planData ? (planData.nom || 'Custom plan') : ''
     };
 
+    /* Custom plan JSON (if custom mode) */
+    var planJson = '';
+    if (planMode === 'custom') {
+      var pcEl2 = document.getElementById('planClavier');
+      if (pcEl2) planJson = pcEl2.value.trim();
+    }
+
     /* Try WordPress endpoint first */
     fetch(WP_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: fields, pdfBase64: pdfBase64 })
+      body: JSON.stringify({ fields: fields, pdfBase64: pdfBase64, planJson: planJson })
     })
     .then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);

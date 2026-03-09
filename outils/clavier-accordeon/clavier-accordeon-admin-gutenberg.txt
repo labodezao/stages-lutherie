@@ -380,6 +380,15 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
             <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;">
               <input type="radio" name="lh-mode" id="lh-separated" value="separated" checked onchange="onLhModeChange()">
               <span data-i="lhSeparated">Rangées séparées</span></label>
+            <!-- direction sub-option: only visible when separated is selected -->
+            <div id="lh-separated-dir-wrap" style="display:block;margin-top:3px;padding-left:12px;">
+              <label style="font-size:.78rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;">
+                <input type="radio" name="lh-separated-dir" id="lh-separated-dir-v" value="vertical" checked onchange="onAnyChange()">
+                <span data-i="lhSeparatedVertical">↕ Vertical</span></label>
+              <label style="font-size:.78rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
+                <input type="radio" name="lh-separated-dir" id="lh-separated-dir-h" value="horizontal" onchange="onAnyChange()">
+                <span data-i="lhSeparatedHorizontal">↔ Horizontal (A|B)</span></label>
+            </div>
             <label style="font-size:.82rem;cursor:pointer;font-weight:normal;display:flex;align-items:center;gap:5px;margin-top:2px;">
               <input type="radio" name="lh-mode" id="lh-paired" value="paired" onchange="onLhModeChange()">
               <span data-i="lhPaired">Alternés (B-A-B-A…)</span></label>
@@ -690,6 +699,7 @@ fr:{
   voicesLH:'Voix main gauche (anches)',
   lhDisplayMode:'Affichage main gauche',lhSeparated:'Rangées séparées',lhPaired:'Alternés (B-A-B-A…)',
   lhNbRows:'Lignes',lhOffset:'Décalage ligne',lhDuosPerRow:'Duos (B-A) par rangée',lhNbDuosTotal:'Nb duos total',
+  lhSeparatedVertical:'↕ Vertical',lhSeparatedHorizontal:'↔ Horizontal (A|B)',
   lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
   compareKbd:'🔀 Comparer',compareKbdTitle:'Comparaison de 2 claviers',
   compareKbdA:'Clavier A',compareKbdB:'Clavier B',compareKbdBtn:'🔀 Comparer',
@@ -777,6 +787,7 @@ en:{
   voicesLH:'Left hand voices (reeds)',
   lhDisplayMode:'Left hand display',lhSeparated:'Separate rows',lhPaired:'Paired (B-A-B-A…)',
   lhNbRows:'Rows',lhOffset:'Row offset',lhDuosPerRow:'Duos (B-A) per row',lhNbDuosTotal:'Total duos',
+  lhSeparatedVertical:'↕ Vertical',lhSeparatedHorizontal:'↔ Horizontal (A|B)',
   lhPairedVertical:'↕ Vertical',lhPairedHorizontal:'↔ Horizontal (B|A)',
   compareKbd:'🔀 Compare',compareKbdTitle:'Compare 2 keyboards',
   compareKbdA:'Keyboard A',compareKbdB:'Keyboard B',compareKbdBtn:'🔀 Compare',
@@ -1016,6 +1027,7 @@ function snapshotToDB(){
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhSeparatedDir:document.querySelector('input[name="lh-separated-dir"]:checked')?.value||'vertical',
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
@@ -1045,6 +1057,12 @@ function loadFromDB(rec){
   const lhm=rec.lhDisplayMode||'separated';
   const lhmEl=document.getElementById('lh-'+lhm);
   if(lhmEl)lhmEl.checked=true;
+  // Restore separated direction + show/hide sub-option
+  const lhsd=rec.lhSeparatedDir||'vertical';
+  const lhsdEl=document.getElementById('lh-separated-dir-'+(lhsd==='horizontal'?'h':'v'));
+  if(lhsdEl)lhsdEl.checked=true;
+  const sdw=document.getElementById('lh-separated-dir-wrap');
+  if(sdw)sdw.style.display=lhm==='separated'?'block':'none';
   // Restore paired direction + show/hide sub-option
   const lhpd=rec.lhPairedDir||'vertical';
   const lhpdEl=document.getElementById('lh-paired-dir-'+(lhpd==='horizontal'?'h':'v'));
@@ -1095,6 +1113,48 @@ function saveCurrentInstrument(){
   if(currentId?DB.get(currentId):false){DB.update(currentId,rec);}
   else{currentId=rec.id;DB.add(rec);}
   renderLibrary();setSaveStatus('saved');
+  // Sauvegarde aussi sur le serveur via presets-api.php
+  _savePresetToServer(rec);
+}
+
+function _savePresetToServer(rec){
+  const nRangs=rec.nbRangees||2;
+  let cat='';
+  if(nRangs<=2){cat='2 rangs 8b';}
+  else if(nRangs===3){
+    const nb=rec.notes?(rec.notes.basses?rec.notes.basses.length:0):0;
+    if(nb>=20){cat='3 rangs 24b';}
+    else if(nb>=14){cat='3 rangs 18b';}
+    else{cat='3 rangs 12b';}
+  }else{cat=nRangs+' rangs';}
+  const safeName=(rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_').replace(/_+/g,'_').slice(0,60);
+  const presetData={
+    nbRangees:rec.nbRangees,
+    rangees:rec.rangees,
+    lhDisplayMode:rec.lhDisplayMode||'separated',
+    lhSeparatedDir:rec.lhSeparatedDir||'vertical',
+    lhPairedDir:rec.lhPairedDir||'vertical',
+    lhRows:rec.lhRows,
+    lhPairsPerRow:rec.lhPairsPerRow||2,
+    lhBassFirst:rec.lhBassFirst||false,
+    nbVoix:rec.nbVoix||2,
+    nbVoixAccords:rec.nbVoixAccords||2,
+    nbVoixBasses:rec.nbVoixBasses||2,
+    notes:rec.notes
+  };
+  fetch('/wp-json/clavier-accordeon/v1/save-preset',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({id:safeName,label:rec.nom||safeName,category:cat,data:presetData})
+  })
+  .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
+  .then(json=>{
+    if(json.success){
+      const el=document.getElementById('save-status');
+      if(el){el.textContent=t('saved');el.className='saved';}
+    }
+  })
+  .catch(err=>console.warn('Preset server save skipped:',err));
 }
 function newInstrument(){
   currentId=null;
@@ -1282,6 +1342,8 @@ function onLhModeChange(){
   const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
   const dw=document.getElementById('lh-paired-dir-wrap');
   if(dw)dw.style.display=isPaired?'block':'none';
+  const sdw=document.getElementById('lh-separated-dir-wrap');
+  if(sdw)sdw.style.display=isPaired?'none':'block';
   renderLhRowsCfg();onAnyChange();
 }
 function toggleLhBassFirst(){
@@ -1328,15 +1390,19 @@ function renderLhRowsCfg(){
     <button type="button" class="rng-btn" onclick="lhRowsSetN(${nRows}+1)">＋</button>
   </div>`;
   CFG.lhRows.forEach((row,ri)=>{
-    html+=`<div style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:.78rem;padding:2px 0;">
-      <span style="min-width:42px;color:var(--gris);">L${ri+1} :</span>
-      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',Math.max(1,(CFG.lhRows[${ri}].nb||1)-1))">−</button>
-      <input type="number" value="${row.nb}" min="1" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'nb',Math.max(1,parseInt(this.value)||1))">
-      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',(CFG.lhRows[${ri}].nb||1)+1)">＋</button>
-      <span style="color:var(--gris);margin-left:4px;">${t('rowOffset')} :</span>
-      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)-1)">−</button>
-      <input type="number" value="${row.offset||0}" min="-30" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'offset',parseInt(this.value)||0)">
-      <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)+1)">＋</button>
+    html+=`<div style="font-size:.78rem;padding:2px 0 4px;">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;">
+        <span style="min-width:42px;color:var(--gris);">L${ri+1} :</span>
+        <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',Math.max(1,(CFG.lhRows[${ri}].nb||1)-1))">−</button>
+        <input type="number" value="${row.nb}" min="1" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'nb',Math.max(1,parseInt(this.value)||1))">
+        <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',(CFG.lhRows[${ri}].nb||1)+1)">＋</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;padding-left:48px;">
+        <span style="color:var(--gris);">${t('lhOffset')} :</span>
+        <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)-1)">−</button>
+        <input type="number" value="${row.offset||0}" min="-30" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'offset',parseInt(this.value)||0)">
+        <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'offset',(CFG.lhRows[${ri}].offset||0)+1)">＋</button>
+      </div>
     </div>`;
   });
   wrap.innerHTML=html;
@@ -1796,6 +1862,7 @@ function readInputs(){
     nbVoixAccords:parseInt(document.getElementById('nb-voix-accords')?.value||'2'),
     nbVoixBasses:parseInt(document.getElementById('nb-voix-basses')?.value||'2'),
     lhDisplayMode:document.querySelector('input[name="lh-mode"]:checked')?.value||'separated',
+    lhSeparatedDir:document.querySelector('input[name="lh-separated-dir"]:checked')?.value||'vertical',
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
@@ -2034,6 +2101,65 @@ function buildSVG_Gauche(data,dark){
     basseSecs.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bassIdx,bassIdx+row.nb):null,offset:row.offset||0,type:'B',voix:vB});
     bassIdx+=row.nb;
   });
+
+  // ── Horizontal layout: A-rows and B-rows side by side ──
+  if((data.lhSeparatedDir||'vertical')==='horizontal'){
+    const terzRows=(data.terzetto?data.terzetto.length:false)?[{nom:t('terzetto'),items:data.terzetto,items2:null,offset:0,type:'T',voix:null}]:[];
+    const nDispRows=Math.max(accordSecs.length,basseSecs.length);
+    const maxA=Math.max(...accordSecs.map(s=>s.items.length),1);
+    const maxB=Math.max(...basseSecs.map(s=>s.items.length),1);
+    const GSEP=HGAP;
+    const leftStart=LPAD;
+    const rightStart=LPAD+maxA*HGAP+GSEP;
+    const W=rightStart+maxB*HGAP+MARG;
+    const H=MARG+HEAD+nDispRows*VGAP+(terzRows.length?VGAP:0)+FOOT;
+    let s=svg_open(W,H,bg);
+    s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
+    function drawSecH(sec,si,xStart){
+      const off=(sec.offset||0)*(HGAP/2);
+      const cy=MARG+HEAD+si*VGAP+VGAP/2;
+      if(sec.items.length)
+        s+=`<rect x="${xStart-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
+      s+=tx(xStart-R-8,cy,escSVG(sec.nom),10,gold,'bold','end');
+      if(sec.voix!==null?sec.voix!==undefined:false)s+=tx(xStart-R-8,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
+      const has2=(sec.items2?sec.items2.length>0:false);
+      sec.items.forEach((btn,bi)=>{
+        const cx=xStart+bi*HGAP+off;
+        const btn2=has2?(sec.items2[bi]||null):null;
+        s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="${bg}" stroke="${bg==='#fff'?'#bbb':'#333'}" stroke-width="1.2"/>`;
+        s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="${pushBg}"/>`;
+        s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
+        s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
+        s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
+        s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
+        const b2ok=(has2?(btn2?(btn2.p||btn2.t):false):false);
+        if(b2ok){
+          if(btn.p)s+=svgBtnVal(btn.p,cx,cy-17,pushTx);
+          if(btn2.p)s+=svgBtnVal(btn2.p,cx,cy-7,pushTx2);
+          if(btn.t)s+=svgBtnVal(btn.t,cx,cy+9,pullTx);
+          if(btn2.t)s+=svgBtnVal(btn2.t,cx,cy+19,pullTx2);
+        }else{
+          if(btn.p)s+=svgBtnVal(btn.p,cx,cy-9,pushTx);
+          if(btn.t)s+=svgBtnVal(btn.t,cx,cy+19,pullTx);
+        }
+      });
+    }
+    const leftSecs=bassFirst?basseSecs:accordSecs;
+    const rightSecs=bassFirst?accordSecs:basseSecs;
+    for(let ri=0;ri<nDispRows;ri++){
+      if(leftSecs[ri])drawSecH(leftSecs[ri],ri,leftStart);
+      if(rightSecs[ri])drawSecH(rightSecs[ri],ri,rightStart);
+    }
+    // divider line between A and B groups
+    const gTop=MARG+HEAD,gBot=MARG+HEAD+nDispRows*VGAP;
+    const divX=leftStart+maxA*HGAP+GSEP/2;
+    s+=`<line x1="${divX}" y1="${gTop}" x2="${divX}" y2="${gBot}" stroke="${dark?'#555':'#C7D2FE'}" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    // terzetto below
+    terzRows.forEach((sec,ti)=>{drawSecH(sec,nDispRows+ti,leftStart);});
+    s+=svg_close();return s;
+  }
+
+  // ── Vertical layout (default): stack all sections ──
   // Order: bassFirst → basses then accords, else accords then basses
   if(bassFirst){basseSecs.forEach(s=>secRows.push(s));accordSecs.forEach(s=>secRows.push(s));}
   else{accordSecs.forEach(s=>secRows.push(s));basseSecs.forEach(s=>secRows.push(s));}
