@@ -34,6 +34,8 @@ if ( ! defined( 'ABSPATH' ) ) {
    REST ENDPOINT
    ══════════════════════════════════════════════════════ */
 
+if ( ! function_exists( 'sl_register_inscription_route' ) ) :
+
 add_action( 'rest_api_init', 'sl_register_inscription_route' );
 
 function sl_register_inscription_route() {
@@ -48,6 +50,9 @@ function sl_register_inscription_route() {
 	);
 }
 
+endif; // function_exists sl_register_inscription_route
+
+if ( ! function_exists( 'sl_handle_inscription' ) ) :
 function sl_handle_inscription( WP_REST_Request $request ) {
 	$data       = $request->get_json_params();
 	$fields     = isset( $data['fields'] )   ? (array) $data['fields']  : array();
@@ -167,7 +172,11 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 	wp_mail( $email, $conf_subject_filled, $conf_body_filled, $headers_conf );
 
 	/* ── Cleanup temp files ── */
-	foreach ( array( $pdf_path, $pdf_path_pdf ?? '', $json_path ) as $tmp ) {
+	$tmp_files = array( $pdf_path, $json_path );
+	if ( isset( $pdf_path_pdf ) ) {
+		$tmp_files[] = $pdf_path_pdf;
+	}
+	foreach ( $tmp_files as $tmp ) {
 		if ( ! empty( $tmp ) && file_exists( $tmp ) ) {
 			unlink( $tmp );
 		}
@@ -181,6 +190,8 @@ function sl_handle_inscription( WP_REST_Request $request ) {
 		200
 	);
 }
+
+endif; // function_exists sl_handle_inscription
 
 /* ══════════════════════════════════════════════════════
    ADMIN SETTINGS PAGE
