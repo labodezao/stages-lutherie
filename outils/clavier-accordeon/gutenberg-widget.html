@@ -120,9 +120,26 @@
         <input type="file" id="cw-file-input" accept=".json" style="display:none">
       </div>
       <div id="cw-admin-block" class="cw-admin-block">
-        <div class="cw-row" style="margin-top:6px">
-          <button id="cw-copy-preset-btn" class="cw-btn cw-btn-sm cw-btn-gold">📋 Copier comme préset</button>
-          <span class="cw-hint" style="font-size:0.78rem;color:var(--text2);display:block;margin-top:3px">Admin : uploadez les présets sur votre FTP et configurez PRESETS_BASE_URL (recommandé), ou collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;gap:6px;align-items:center">
+            <label class="cw-label" style="min-width:80px;margin:0">Nom&nbsp;préset</label>
+            <input id="cw-preset-label-input" type="text" class="cw-input" placeholder="Nom affiché dans la liste" style="flex:1;min-width:0">
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <label class="cw-label" style="min-width:80px;margin:0">Famille</label>
+            <select id="cw-preset-category-sel" class="cw-select" style="flex:1">
+              <option value="2 rangs 8b">2 rangs 8b</option>
+              <option value="3 rangs 12b">3 rangs 12b</option>
+              <option value="3 rangs 18b">3 rangs 18b</option>
+              <option value="3 rangs 24b">3 rangs 24b</option>
+              <option value="Spéciaux">Spéciaux</option>
+              <option value="Personnalisés" selected>Personnalisés</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button id="cw-copy-preset-btn" class="cw-btn cw-btn-sm cw-btn-gold">📋 Copier comme préset</button>
+          </div>
+          <span class="cw-hint" style="font-size:0.78rem;color:var(--text2)">Admin : uploadez les présets sur votre FTP et configurez PRESETS_BASE_URL (recommandé), ou collez le JSON dans le bloc <code style="font-size:0.75rem">&lt;script id="cw-custom-presets"&gt;</code> de la page WordPress.</span>
         </div>
         <textarea id="cw-preset-export-area" class="cw-textarea-export" placeholder="JSON du préset (copiez puis collez dans la page WordPress)…"></textarea>
       </div>
@@ -635,11 +652,15 @@
   function exportAsPreset(){
     var snap = cwSnapshotPreset();
     if(!snap){ showToast('Aucun modèle chargé.'); return; }
-    var rawId = ((snap.nom || snap.id || 'preset').replace(/\s+/g,'_').replace(/[^A-Za-z0-9_\-]/g,'').substring(0,40)) || ('preset_' + Date.now());
+    var labelInput = $('cw-preset-label-input');
+    var catSel = $('cw-preset-category-sel');
+    var userLabel = (labelInput && labelInput.value.trim()) || snap.nom || 'Préset personnalisé';
+    var userCategory = (catSel && catSel.value) || 'Personnalisés';
+    var rawId = (userLabel.replace(/\s+/g,'_').replace(/[^A-Za-z0-9_\-]/g,'').substring(0,40)) || ('preset_' + Date.now());
     var entry = [{
       id: rawId,
-      label: snap.nom || 'Préset personnalisé',
-      category: 'Personnalisés',
+      label: userLabel,
+      category: userCategory,
       data: snap
     }];
     var json = JSON.stringify(entry, null, 2);

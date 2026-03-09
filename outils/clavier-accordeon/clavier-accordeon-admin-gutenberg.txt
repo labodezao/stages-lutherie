@@ -460,6 +460,19 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <button class="btn btn-outline" style="font-size:.76rem;padding:4px 9px;" onclick="openTransposeModal()" title="Transposer par intervalle" data-i-btn="transposeCustom">⊞</button>
       </div>
       <div id="note-grid"></div>
+      <div style="margin-top:11px;padding:9px 10px;background:var(--fond);border:1.5px solid var(--border);border-radius:7px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Nom pr\u00e9set :</label>
+        <input id="preset-export-label" type="text" placeholder="Nom affich\u00e9 dans la liste" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
+        <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Famille :</label>
+        <select id="preset-export-category" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
+          <option value="2 rangs 8b">2 rangs 8b</option>
+          <option value="3 rangs 12b">3 rangs 12b</option>
+          <option value="3 rangs 18b">3 rangs 18b</option>
+          <option value="3 rangs 24b">3 rangs 24b</option>
+          <option value="Sp\u00e9ciaux">Sp\u00e9ciaux</option>
+          <option value="Personnalis\u00e9s" selected>Personnalis\u00e9s</option>
+        </select>
+      </div>
       <div class="btn-group" style="margin-top:13px;">
         <button class="btn btn-primary" onclick="saveCurrentInstrument()" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
         <button class="btn btn-or"      onclick="saveAsJSON()" data-i-btn="saveAs">⬇️ Enregistrer sous .json</button>
@@ -1154,6 +1167,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     const p=document.getElementById('note-picker');
     if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?!e.target.closest('.note-input'):false):false)hidePicker();
   });
+  // Sync preset-export-label from preset selector and nom-instrument
+  const presetSel=document.getElementById('preset-select');
+  const nomInstr=document.getElementById('nom-instrument');
+  const exportLbl=document.getElementById('preset-export-label');
+  if(presetSel&&exportLbl){
+    presetSel.addEventListener('change',()=>{
+      if(!exportLbl.value.trim()&&presetSel.selectedOptions[0]){
+        exportLbl.value=presetSel.selectedOptions[0].textContent;
+      }
+    });
+  }
+  if(nomInstr&&exportLbl){
+    nomInstr.addEventListener('input',()=>{if(!exportLbl.dataset.userEdited)exportLbl.value=nomInstr.value;});
+    exportLbl.addEventListener('input',()=>{exportLbl.dataset.userEdited='1';});
+  }
 });
 
 /* ── Preset ── */
@@ -3442,7 +3470,11 @@ function doImport(){
 function saveAsJSON(){
   readNoteInputsIntoCFG();
   const rec=snapshotToDB();
-  const name=(rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_');
+  const labelEl=document.getElementById('preset-export-label');
+  const catEl=document.getElementById('preset-export-category');
+  if(labelEl&&labelEl.value.trim())rec.presetLabel=labelEl.value.trim();
+  if(catEl&&catEl.value)rec.presetCategory=catEl.value;
+  const name=(rec.presetLabel||rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_');
   triggerDownload(JSON.stringify(rec,null,2),name+'.json','application/json');
 }
 function downloadAllJSON(){
