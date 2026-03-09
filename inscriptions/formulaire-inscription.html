@@ -574,6 +574,12 @@ var STAGE_CONFIG = {
     </div>
   </div>
 
+  <!-- Aperçu SVG inline du plan de clavier sélectionné -->
+  <div id="planPreviewRH" class="insc-conditional" style="margin-top:14px;">
+    <div style="font-size:0.84rem; color:var(--wood-medium); font-weight:600; margin-bottom:6px;">📐 Aperçu du plan de clavier sélectionné :</div>
+    <div id="planSVGInline" style="overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
+  </div>
+
   <!-- SVG preview inline (hidden wrapper kept for JS compatibility) -->
   <div id="planPreview" style="display:none;" aria-hidden="true">
     <div id="planPreviewInfo"></div>
@@ -1456,6 +1462,8 @@ var buildSVG_PlanLite = (function () {
   /* ── Keyboard Plan ── */
   var planData = null;
   var planSvgData = null;
+  var planSvgImg = null;
+  var planSvgGeneration = 0;
   var planLabel = '';
   var planCategory = '';
   var planMode = 'preset';
@@ -1471,6 +1479,12 @@ var buildSVG_PlanLite = (function () {
     if (planPreviewEl) planPreviewEl.classList.remove('visible');
     var planSVGEl = document.getElementById('planSVG');
     if (planSVGEl) planSVGEl.innerHTML = '';
+    var planPreviewRHEl = document.getElementById('planPreviewRH');
+    if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
+    var planSVGInlineEl = document.getElementById('planSVGInline');
+    if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
+    planSvgImg = null;
+    planSvgGeneration++;
     var presetSel = document.getElementById('planPresetSelect');
     if (presetSel) presetSel.value = '';
     var planClavierEl = document.getElementById('planClavier');
@@ -1567,6 +1581,41 @@ var buildSVG_PlanLite = (function () {
       svgContainer.innerHTML = svgStr;
       var svgEl = svgContainer.querySelector('svg');
       if (svgEl) { svgEl.setAttribute('width', '100%'); svgEl.setAttribute('height', 'auto'); svgEl.style.maxWidth = '100%'; }
+      /* Aperçu visible dans le formulaire */
+      var inlineContainer = document.getElementById('planSVGInline');
+      var planPreviewRH = document.getElementById('planPreviewRH');
+      if (inlineContainer) {
+        inlineContainer.innerHTML = svgStr;
+        var svgEl2 = inlineContainer.querySelector('svg');
+        if (svgEl2) { svgEl2.setAttribute('width', '100%'); svgEl2.setAttribute('height', 'auto'); svgEl2.style.maxWidth = '100%'; }
+      }
+      if (planPreviewRH) planPreviewRH.classList.add('visible');
+      /* Conversion SVG → PNG pour intégration dans le PDF */
+      planSvgImg = null;
+      planSvgGeneration++;
+      var svgDom = document.createElement('div');
+      svgDom.innerHTML = svgStr;
+      var svgRoot = svgDom.querySelector('svg');
+      var svgW = svgRoot ? parseFloat(svgRoot.getAttribute('width') || 800) : 800;
+      var svgH = svgRoot ? parseFloat(svgRoot.getAttribute('height') || 600) : 600;
+      var svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+      var svgUrl = URL.createObjectURL(svgBlob);
+      var svgImg = new Image();
+      (function (captW, captH, captUrl, captGen) {
+        svgImg.onload = function () {
+          var cvs = document.createElement('canvas');
+          cvs.width = captW * 2; cvs.height = captH * 2;
+          var ctx = cvs.getContext('2d');
+          ctx.scale(2, 2);
+          ctx.drawImage(svgImg, 0, 0, captW, captH);
+          URL.revokeObjectURL(captUrl);
+          if (captGen === planSvgGeneration) {
+            planSvgImg = { png: cvs.toDataURL('image/png'), w: captW, h: captH };
+          }
+        };
+        svgImg.onerror = function () { URL.revokeObjectURL(captUrl); };
+      }(svgW, svgH, svgUrl, planSvgGeneration));
+      svgImg.src = svgUrl;
     } catch (svgErr) {
       svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Aper\u00e7u visuel non disponible pour ce format.</p>';
     }
@@ -1604,6 +1653,12 @@ var buildSVG_PlanLite = (function () {
         planData = null;
         if (preview) preview.classList.remove('visible');
         if (svgContainer) svgContainer.innerHTML = '';
+        var planPreviewRHEl = document.getElementById('planPreviewRH');
+        if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
+        var planSVGInlineEl = document.getElementById('planSVGInline');
+        if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
+        planSvgImg = null;
+        planSvgGeneration++;
         updateSummary();
       });
   }
@@ -1672,6 +1727,12 @@ var buildSVG_PlanLite = (function () {
     if (!raw) {
       preview.classList.remove('visible');
       svgContainer.innerHTML = '';
+      var planPreviewRHEl = document.getElementById('planPreviewRH');
+      if (planPreviewRHEl) planPreviewRHEl.classList.remove('visible');
+      var planSVGInlineEl = document.getElementById('planSVGInline');
+      if (planSVGInlineEl) planSVGInlineEl.innerHTML = '';
+      planSvgImg = null;
+      planSvgGeneration++;
       updateSummary();
       return;
     }
@@ -2047,6 +2108,16 @@ var buildSVG_PlanLite = (function () {
         planData.rangees.forEach(function (r, i) {
           addLine('Rang\u00e9e ' + (i + 1), (r.nom || '') + ' \u2013 ' + (r.nb || 0) + ' boutons');
         });
+      }
+      if (planSvgImg) {
+        y += 2;
+        if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        var svgAspect = planSvgImg.w / planSvgImg.h;
+        var svgImgW = CW;
+        var svgImgH = Math.round(svgImgW / svgAspect);
+        if (svgImgH > PAGE_LIMIT - y) { svgImgH = PAGE_LIMIT - y; svgImgW = Math.round(svgImgH * svgAspect); }
+        doc.addImage(planSvgImg.png, 'PNG', MARGIN, y, svgImgW, svgImgH);
+        y += svgImgH + 4;
       }
       y += 4;
     }
