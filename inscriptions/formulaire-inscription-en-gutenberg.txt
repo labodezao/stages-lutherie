@@ -1489,7 +1489,7 @@ var buildSVG_PlanLite = (function () {
   /* ── Layout derived from selected plan ── */
   function getDispositionFromPlan() {
     if (!planData || !planCategory) return '\u2013';
-    if (planCategory === '3 rangs 12b') {
+    if (planCategory === '3 rangs 12b' || planCategory === '3 rangs 12 basses') {
       /* Standard presets ("33 boutons") = Heim; special layouts = label contains info */
       if (planLabel?.indexOf('33 boutons') >= 0) return 'Heim (standard)';
       return planLabel || planCategory;
@@ -1612,7 +1612,7 @@ var buildSVG_PlanLite = (function () {
   /* Mapping model → compatible preset categories */
   var MODEL_PRESET_CATEGORIES = {
     '21/8b':  ['2 rangs 8b'],
-    '33/12b': ['3 rangs 12b'],
+    '33/12b': ['3 rangs 12b', '3 rangs 12 basses'],
     '33/18b': ['3 rangs 18b'],
     '33/24b': ['3 rangs 24b']
   };

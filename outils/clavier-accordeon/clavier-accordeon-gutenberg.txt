@@ -97,6 +97,7 @@
             <select id="cw-preset-category-sel" class="cw-select" style="flex:1">
               <option value="2 rangs 8b">2 rangs 8b</option>
               <option value="3 rangs 12b">3 rangs 12b</option>
+              <option value="3 rangs 12 basses">3 rangs 12 basses</option>
               <option value="3 rangs 18b">3 rangs 18b</option>
               <option value="3 rangs 24b">3 rangs 24b</option>
               <option value="Spéciaux">Spéciaux</option>
