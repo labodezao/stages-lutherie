@@ -1106,6 +1106,7 @@ function _savePresetToServer(rec){
   var nonce='';
   if(typeof window.CA_SAVE_NONCE!=='undefined'){nonce=window.CA_SAVE_NONCE;}
   else if(window.wpApiSettings){nonce=window.wpApiSettings.nonce||'';}
+  setSaveStatus('serverSaving');
   fetch('/wp-json/clavier-accordeon/v1/save-preset',{
     method:'POST',
     headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
@@ -1113,9 +1114,12 @@ function _savePresetToServer(rec){
   })
   .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
   .then(json=>{
+    const el=document.getElementById('save-status');
     if(json.success){
-      const el=document.getElementById('save-status');
-      if(el){el.textContent='Saved';el.className='saved';}
+      if(el){el.textContent=t('serverSaved');el.className='saved';}
+    }else{
+      if(el){el.textContent='\u26a0\ufe0f Server error';el.className='dirty';}
+      console.warn('Preset server save error:',json);
     }
   })
   .catch(err=>{
