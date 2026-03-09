@@ -47,28 +47,49 @@ L'atelier est situé dans un **quartier calme et résidentiel** de Saint-Nazaire
 
 ## 🎵 Modèles d'accordéons & tarifs
 
-Vous avez le choix entre trois modèles d'accordéons diatoniques, chacun adapté à différents niveaux de jeu et styles musicaux.
+Vous avez le choix entre quatre modèles d'accordéons diatoniques, chacun adapté à différents niveaux de jeu et styles musicaux.
 
 ### Modèle 21/8 basses – 2 820 €
 
-- **Main droite** : 21 boutons sur 2 rangées
+- **Main droite** : 21 boutons sur 2 rangées, 1 voix (1V)
 - **Main gauche** : 8 basses
 - **Idéal pour** : Débutants, musiciens souhaitant un instrument compact et maniable
 - **Acompte à l'inscription (40%)** : 900 €
 
 ### Modèle 33/12 basses – 4 500 €
 
-- **Main droite** : 33 boutons sur 3 rangées
+- **Main droite** : 33 boutons sur 3 rangées, 1 voix (1V)
 - **Main gauche** : 12 basses
 - **Idéal pour** : Musiciens intermédiaires à confirmés, répertoire varié
 - **Acompte à l'inscription (40%)** : 1 500 €
 
 ### Modèle 33/18 basses – 4 880 €
 
-- **Main droite** : 33 boutons sur 3 rangées
+- **Main droite** : 33 boutons sur 3 rangées, 1 voix (1V)
 - **Main gauche** : 18 basses (plus de possibilités harmoniques)
 - **Idéal pour** : Musiciens confirmés, répertoire complexe
 - **Acompte à l'inscription (40%)** : 1 900 €
+
+### Modèle 33/24 basses – 6 250 €
+
+- **Main droite** : 33 boutons sur 3 rangées, 1 voix (1V)
+- **Main gauche** : 24 basses (maximum de possibilités harmoniques)
+- **Idéal pour** : Musiciens exigeants, configurations avancées
+- **Acompte à l'inscription (40%)** : 2 500 €
+
+### Option Anche a mano Blue Star
+
+Pour les musiciens les plus exigeants, nous proposons l'option **Anche a mano Blue Star** : des anches entièrement fabriquées à la main par un maître-anche.
+
+- **Surcoût** : +15 % du tarif du modèle choisi
+- 21/8b : +423 € (total 3 243 €, acompte 1 297 €)
+- 33/12b : +675 € (total 5 175 €, acompte 2 070 €)
+- 33/18b : +732 € (total 5 612 €, acompte 2 245 €)
+- 33/24b : +938 € (total 7 188 €, acompte 2 875 €)
+
+### Upgrade 2 voix MD avec registres
+
+> **Upgrade 2 voix MD avec registres** : possibilité de passer en 2 voix main droite avec registres (nécessite 2 stages de fabrication).
 
 ### Modalités de paiement
 
@@ -172,6 +193,10 @@ Les grilles protègent les anches tout en laissant passer le son. Elles sont aus
 - **Plus de 100 modèles** disponibles (motifs géométriques, floraux, traditionnels, modernes)
 - **Numérotés** : Vous choisirez vos grilles lors de l'inscription ou au début du stage
 - **Personnalisation possible** : Nous pouvons discuter de motifs sur mesure
+
+### Choix de la grille
+
+Vous pouvez choisir parmi 6 modèles de grilles numérotés (n°1 à n°6) parmi notre catalogue de plus de 100 motifs, ou proposer un motif de grille personnalisé.
 
 ### 6. Soufflets
 

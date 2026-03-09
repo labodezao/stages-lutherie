@@ -94,6 +94,13 @@ select option{background:#fff;color:var(--txt)}
 .rangee-cfg label{font-size:.7rem;font-weight:700;color:#666}
 .rng-ctrl{display:flex;align-items:center;gap:5px}
 
+/* ── Row drag-and-drop (config panel) ── */
+.row-cfg-hd{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--brd);padding-bottom:4px;margin-bottom:4px}
+.row-drag-handle{cursor:grab;font-size:1.1rem;color:var(--gris);user-select:none;line-height:1;padding:0 2px;opacity:.55;transition:opacity .12s}
+.row-drag-handle:hover{opacity:1;color:var(--gold)}
+.rangee-cfg.row-dragging{opacity:.35;outline:2px dashed var(--brd)}
+.rangee-cfg.row-drag-over{outline:2px dashed var(--gold);background:rgba(212,160,23,.09)}
+
 /* ── +/− small buttons ── */
 .rng-btn{width:26px;height:26px;border:1.5px solid var(--brd);border-radius:4px;
   background:#fff;font-size:1rem;line-height:1;cursor:pointer;font-family:inherit;font-weight:700;
@@ -445,6 +452,19 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <button class="btn btn-outline" style="font-size:.76rem;padding:4px 9px;" onclick="openTransposeModal()" title="Transposer par intervalle" data-i-btn="transposeCustom">⊞</button>
       </div>
       <div id="note-grid"></div>
+      <div style="margin-top:11px;padding:9px 10px;background:var(--fond);border:1.5px solid var(--border);border-radius:7px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Nom préset :</label>
+        <input id="preset-export-label" type="text" placeholder="Nom affiché dans la liste" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
+        <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Famille :</label>
+        <select id="preset-export-category" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
+          <option value="2 rangs 8b">2 rangs 8b</option>
+          <option value="3 rangs 12b">3 rangs 12b</option>
+          <option value="3 rangs 18b">3 rangs 18b</option>
+          <option value="3 rangs 24b">3 rangs 24b</option>
+          <option value="Spéciaux">Spéciaux</option>
+          <option value="Personnalisés" selected>Personnalisés</option>
+        </select>
+      </div>
       <div class="btn-group" style="margin-top:13px;">
         <button class="btn btn-primary" onclick="saveCurrentInstrument()" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
         <button class="btn btn-or"      onclick="saveAsJSON()" data-i-btn="saveAs">⬇️ Enregistrer sous .json</button>
@@ -1131,6 +1151,23 @@ document.addEventListener('DOMContentLoaded',()=>{
     const p=document.getElementById('note-picker');
     if(getComputedStyle(p).display!=='none'&&!p.contains(e.target)&&!e.target.closest('.note-input'))hidePicker();
   });
+  // Sync preset-export-label from preset selector and nom-instrument
+  const presetSel=document.getElementById('preset-select');
+  const nomInstr=document.getElementById('nom-instrument');
+  const exportLbl=document.getElementById('preset-export-label');
+  if(presetSel&&exportLbl){
+    presetSel.addEventListener('change',()=>{
+      if(!exportLbl.value.trim()&&presetSel.selectedOptions[0]){
+        exportLbl.value=presetSel.selectedOptions[0].textContent;
+      }
+    });
+  }
+  if(nomInstr&&exportLbl){
+    nomInstr.addEventListener('input',()=>{
+      if(!exportLbl.dataset.userEdited) exportLbl.value=nomInstr.value;
+    });
+    exportLbl.addEventListener('input',()=>{ exportLbl.dataset.userEdited='1'; });
+  }
 });
 
 /* ── Preset ── */
@@ -1407,8 +1444,9 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg">
-      <label>R${r+1} — Nom</label>
+    html+=`<div class="rangee-cfg" draggable="true">
+      <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
+      <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
       <label style="margin-top:3px;">Registre <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: Registre" data-tip="B (16') : une octave plus grave.&#10;N (8') : hauteur naturelle 440 Hz.&#10;N+ (8'+) : légèrement plus haut (442 Hz).&#10;N- (8'-) : légèrement plus bas (438 Hz).&#10;A (4') : une octave plus aigu (piccolo).&#10;—&#10;B(16')=low octave · N(8')=natural 440 Hz · N+(8'+)=+2Hz · N-(8'-)=-2Hz · A(4')=high octave">ⓘ</span></label>
       <select id="rreg-${r}" style="font-size:.76rem;padding:3px 5px;" onchange="CFG.rangees[${r}].register=this.value;onAnyChange()">
@@ -1428,6 +1466,46 @@ function renderRangeesCfg(){
       </div></div>`;
   }
   wrap.innerHTML=html;
+  initRowDragDrop();
+}
+
+/* ── Row drag-and-drop to reorder right-hand rows ── */
+let _rowDragSrc=null;
+function initRowDragDrop(){
+  const wrap=document.getElementById('rangees-cfg');
+  if(!wrap)return;
+  wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
+    el.dataset.rowIdx=idx;
+    el.addEventListener('dragstart',e=>{
+      _rowDragSrc=el;
+      e.dataTransfer.effectAllowed='move';
+      setTimeout(()=>el.classList.add('row-dragging'),0);
+    });
+    el.addEventListener('dragend',()=>{
+      el.classList.remove('row-dragging');
+      wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+      _rowDragSrc=null;
+    });
+    el.addEventListener('dragover',e=>{
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      if(_rowDragSrc&&_rowDragSrc!==el){
+        wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+        el.classList.add('row-drag-over');
+      }
+    });
+    el.addEventListener('dragleave',()=>el.classList.remove('row-drag-over'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!_rowDragSrc||_rowDragSrc===el)return;
+      const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
+      if(isNaN(si)||isNaN(ti)||si===ti)return;
+      // Reorder CFG.rangees
+      const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
+      // Reorder CFG.notes.droite
+      const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
+      renderRangeesCfg();generateInputGrid();onAnyChange();
+    });
+  });
 }
 
 /* ── Generate note input grid ── */
@@ -3380,7 +3458,11 @@ function doImport(){
 function saveAsJSON(){
   readNoteInputsIntoCFG();
   const rec=snapshotToDB();
-  const name=(rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_');
+  const labelEl=document.getElementById('preset-export-label');
+  const catEl=document.getElementById('preset-export-category');
+  if(labelEl&&labelEl.value.trim()) rec.presetLabel=labelEl.value.trim();
+  if(catEl&&catEl.value) rec.presetCategory=catEl.value;
+  const name=(rec.presetLabel||rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_');
   triggerDownload(JSON.stringify(rec,null,2),name+'.json','application/json');
 }
 function downloadAllJSON(){

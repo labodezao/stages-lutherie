@@ -21,6 +21,7 @@ date: "2026"
 - 21/8 basses – €2820 – deposit €900
 - 33/12 basses – €4500 – deposit €1500
 - 33/18 basses – €4880 – deposit €1900
+- 33/24 basses – €6250 – deposit €2500
 - If the instrument is not finished within 10 days: you may return in a later session (€80/day for workshop + guidance)
 
 ## Options (with visuals)
