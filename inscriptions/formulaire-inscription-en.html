@@ -1514,12 +1514,13 @@ var buildSVG_PlanLite = (function () {
     if (!planData || !planCategory) return '\u2013';
     if (planCategory === '3 rangs 12b') {
       /* Standard presets ("33 boutons") = Heim; special layouts = label contains info */
-      if (planLabel && planLabel.indexOf('33 boutons') >= 0) return 'Heim (standard)';
+      if (planLabel?.indexOf('33 boutons') >= 0) return 'Heim (standard)';
       return planLabel || planCategory;
     }
     if (planCategory === '2 rangs 8b') {
       /* Irish vs standard 2-row */
-      return (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) ? 'Irish' : '\u2013';
+      if (planLabel?.toLowerCase().indexOf('irlandais') >= 0) return 'Irish';
+      return '\u2013';
     }
     /* 3 rangs 18b, 3 rangs 24b — label already contains disposition info */
     return planLabel || planCategory;
