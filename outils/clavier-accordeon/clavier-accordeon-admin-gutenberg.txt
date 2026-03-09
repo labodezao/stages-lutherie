@@ -1019,6 +1019,7 @@ function snapshotToDB(){
     if(sel)CFG.rangees[r].register=sel.value;
   }
   return{id:currentId||Date.now().toString(),nom:val('nom-instrument')||'Sans titre',
+    presetKey:document.getElementById('preset-select')?.value||'',
     joueur:val('nom-joueur'),luthier:val('nom-luthier')||"Ewen d'Aviau",
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
@@ -1046,6 +1047,8 @@ function snapshotToDB(){
 function loadFromDB(rec){
   currentId=rec.id;
   document.getElementById('nom-instrument').value=rec.nom||'';
+  const psel=document.getElementById('preset-select');
+  if(psel){psel.value=rec.presetKey||'';}
   document.getElementById('nom-joueur').value=rec.joueur||'';
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
@@ -1128,6 +1131,7 @@ function _savePresetToServer(rec){
     else{cat='3 rangs 12b';}
   }else{cat=nRangs+' rangs';}
   const safeName=(rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_').replace(/_+/g,'_').slice(0,60);
+  const serverId=rec.presetKey||safeName;
   const presetData={
     nbRangees:rec.nbRangees,
     rangees:rec.rangees,
@@ -1150,7 +1154,7 @@ function _savePresetToServer(rec){
   fetch('/wp-json/clavier-accordeon/v1/save-preset',{
     method:'POST',
     headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
-    body:JSON.stringify({id:safeName,label:rec.nom||safeName,category:cat,data:presetData})
+    body:JSON.stringify({id:serverId,label:rec.nom||serverId,category:cat,data:presetData})
   })
   .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
   .then(json=>{
