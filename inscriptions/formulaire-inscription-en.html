@@ -1834,7 +1834,7 @@ var buildSVG_PlanLite = (function () {
 
     /* Upgrade 2V */
     var up2V = document.getElementById('upgrade2V').checked;
-    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Yes (+8% — 2nd workshop required)' : 'No';
+    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Yes (+8% \u2014 2nd workshop required)' : 'No';
 
     /* Price with surcharges */
     var modEl = form.querySelector('input[name="modele"]:checked');
@@ -1845,7 +1845,7 @@ var buildSVG_PlanLite = (function () {
       document.getElementById('sumPrice').textContent = price.toLocaleString('fr-FR') + ' \u20ac';
       document.getElementById('sumDeposit').textContent = 'Deposit at registration: ' + deposit.toLocaleString('fr-FR') + ' \u20ac';
     } else {
-      document.getElementById('sumPrice').textContent = '– \u20ac';
+      document.getElementById('sumPrice').textContent = '\u2013 \u20ac';
       document.getElementById('sumDeposit').textContent = 'Deposit at registration: \u2013 \u20ac';
     }
 
@@ -2031,7 +2031,7 @@ var buildSVG_PlanLite = (function () {
     addLine('Key / Tonality', selVal('tonalite') || '\u2013');
     addLine('RH Voice', selVal('voix1') || '\u2013');
     var pdfUp2V = document.getElementById('upgrade2V').checked;
-    addLine('2V registers upgrade', pdfUp2V ? 'Yes (+8% — 2nd workshop required)' : 'No');
+    addLine('2V registers upgrade', pdfUp2V ? 'Yes (+8% \u2014 2nd workshop required)' : 'No');
     if (pdfUp2V) addLine('RH Voice 2', selVal('voix2') || '\u2013');
     addLine('Tuning', selVal('accordage') || '\u2013');
     addLine('Buttons', selVal('boutonsMD') || '\u2013');
@@ -2178,12 +2178,12 @@ var buildSVG_PlanLite = (function () {
       email: document.getElementById('email').value,
       session: SESSION_LABELS[sessVal] || sessVal,
       modele: getRadioVal('modele'),
-      ancheAMano: ancheOui ? 'Yes — Anche a mano Blue Star (+15%)' : 'No',
+      ancheAMano: ancheOui ? 'Yes \u2014 Anche a mano Blue Star (+15%)' : 'No',
       acompte: deposit.toLocaleString('fr-FR'),
       tonalite: selVal('tonalite'),
       disposition: getDispositionFromPlan(),
       voix1: selVal('voix1'),
-      upgrade2V: up2VOui ? 'Yes — 2 Voices with registers (+8% — 2nd workshop required)' : 'No',
+      upgrade2V: up2VOui ? 'Yes \u2014 2 Voices with registers (+8% \u2014 2nd workshop required)' : 'No',
       voix2: up2VOui ? selVal('voix2') : '',
       accordage: selVal('accordage'),
       boutonsMD: selVal('boutonsMD'),

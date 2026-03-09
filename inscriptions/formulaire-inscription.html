@@ -1839,7 +1839,7 @@ var buildSVG_PlanLite = (function () {
 
     /* Upgrade 2V */
     var up2V = document.getElementById('upgrade2V').checked;
-    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Oui (+8 % — 2\u1d49 stage n\u00e9cessaire)' : 'Non';
+    document.getElementById('sumUpgrade2V').textContent = up2V ? 'Oui (+8 % \u2014 2\u1d49 stage n\u00e9cessaire)' : 'Non';
 
     /* Price with surcharges */
     var modEl = form.querySelector('input[name="modele"]:checked');
@@ -1850,8 +1850,8 @@ var buildSVG_PlanLite = (function () {
       document.getElementById('sumPrice').textContent = price.toLocaleString('fr-FR') + ' \u20ac';
       document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : ' + deposit.toLocaleString('fr-FR') + ' \u20ac';
     } else {
-      document.getElementById('sumPrice').textContent = '– \u20ac';
-      document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : – \u20ac';
+      document.getElementById('sumPrice').textContent = '\u2013 \u20ac';
+      document.getElementById('sumDeposit').textContent = 'Acompte \u00e0 l\'inscription : \u2013 \u20ac';
     }
 
     /* Accordion visual preview update */
@@ -2037,7 +2037,7 @@ var buildSVG_PlanLite = (function () {
     addLine('Tonalit\u00e9', selVal('tonalite') || '\u2013');
     addLine('Voix MD', selVal('voix1') || '\u2013');
     var pdfUp2V = document.getElementById('upgrade2V').checked;
-    addLine('Upgrade 2V registres', pdfUp2V ? 'Oui (+8 % — 2\u1d49 stage n\u00e9cessaire)' : 'Non');
+    addLine('Upgrade 2V registres', pdfUp2V ? 'Oui (+8 % \u2014 2\u1d49 stage n\u00e9cessaire)' : 'Non');
     if (pdfUp2V) addLine('Voix 2 MD', selVal('voix2') || '\u2013');
     addLine('Accordage', selVal('accordage') || '\u2013');
     addLine('Boutons', selVal('boutonsMD') || '\u2013');
@@ -2184,12 +2184,12 @@ var buildSVG_PlanLite = (function () {
       email: document.getElementById('email').value,
       session: SESSION_LABELS[sessVal] || sessVal,
       modele: getRadioVal('modele'),
-      ancheAMano: ancheOui ? 'Oui — Anche a mano Blue Star (+15 %)' : 'Non',
+      ancheAMano: ancheOui ? 'Oui \u2014 Anche a mano Blue Star (+15 %)' : 'Non',
       acompte: deposit.toLocaleString('fr-FR'),
       tonalite: selVal('tonalite'),
       disposition: getDispositionFromPlan(),
       voix1: selVal('voix1'),
-      upgrade2V: up2VOui ? 'Oui — 2 Voix avec registres (+8 % — 2e stage nécessaire)' : 'Non',
+      upgrade2V: up2VOui ? 'Oui \u2014 2 Voix avec registres (+8 % \u2014 2e stage n\u00e9cessaire)' : 'Non',
       voix2: up2VOui ? selVal('voix2') : '',
       accordage: selVal('accordage'),
       boutonsMD: selVal('boutonsMD'),
