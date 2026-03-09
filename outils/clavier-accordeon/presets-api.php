@@ -91,8 +91,20 @@ function ca_rest_save_preset( WP_REST_Request $req ) {
 		}
 	}
 
+	// Validate that the constructed paths stay within the uploads directory.
+	$presets_dir_real = realpath( $presets_dir );
+	if ( $presets_dir_real === false ) {
+		return new WP_Error( 'dir_error', 'Répertoire presets/ introuvable.', array( 'status' => 500 ) );
+	}
+	$preset_path = $presets_dir_real . DIRECTORY_SEPARATOR . $id . '.json';
+	$index_path  = $presets_dir_real . DIRECTORY_SEPARATOR . 'index.json';
+
+	// Guard against directory traversal: ensure paths stay inside presets_dir.
+	if ( strpos( $preset_path, $presets_dir_real . DIRECTORY_SEPARATOR ) !== 0 ) {
+		return new WP_Error( 'invalid_path', 'Chemin de fichier non autorisé.', array( 'status' => 400 ) );
+	}
+
 	/* ── Écriture du fichier {id}.json (création ou écrasement) ── */
-	$preset_path = $presets_dir . $id . '.json';
 	$encoded     = wp_json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 
 	if ( $encoded === false ) {
@@ -112,11 +124,13 @@ function ca_rest_save_preset( WP_REST_Request $req ) {
 	}
 
 	/* ── Mise à jour de index.json ── */
-	$index_path = $presets_dir . 'index.json';
-	$index      = array();
+	$index = array();
 
 	if ( file_exists( $index_path ) ) {
-		$raw     = file_get_contents( $index_path );
+		$raw = file_get_contents( $index_path );
+		if ( $raw === false ) {
+			return new WP_Error( 'read_error', 'Impossible de lire index.json.', array( 'status' => 500 ) );
+		}
 		$decoded = json_decode( $raw, true );
 		if ( is_array( $decoded ) ) {
 			$index = $decoded;
@@ -124,15 +138,14 @@ function ca_rest_save_preset( WP_REST_Request $req ) {
 	}
 
 	$found = false;
-	foreach ( $index as &$entry ) {
-		if ( isset( $entry['id'] ) && $entry['id'] === $id ) {
-			$entry['label']    = $label;
-			$entry['category'] = $category;
-			$found             = true;
+	for ( $i = 0; $i < count( $index ); $i++ ) {
+		if ( isset( $index[ $i ]['id'] ) && $index[ $i ]['id'] === $id ) {
+			$index[ $i ]['label']    = $label;
+			$index[ $i ]['category'] = $category;
+			$found                   = true;
 			break;
 		}
 	}
-	unset( $entry );
 
 	if ( ! $found ) {
 		$index[] = array(
