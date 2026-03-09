@@ -11,7 +11,7 @@
 <script>/* URL du dossier presets/ uploadé sur votre serveur FTP/hébergement.
    Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
    Laissez '' pour n'utiliser que les présets du bloc ci-dessous (méthode alternative). */
-window.PRESETS_BASE_URL = '';
+window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
 </script>
 <!-- /wp:html -->
 

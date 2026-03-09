@@ -11,7 +11,7 @@
 <script>/* URL du dossier presets/ hébergé sur votre serveur.
    Exemple : 'https://example.com/wp-content/uploads/clavier-accordeon/presets/'
    Laissez '' pour le chemin relatif (mode local / développement). */
-window.PRESETS_BASE_URL = '';
+window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
 </script>
 <!-- /wp:html -->
 
