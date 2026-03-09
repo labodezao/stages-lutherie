@@ -460,11 +460,11 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <button class="btn btn-outline" style="font-size:.76rem;padding:4px 9px;" onclick="openTransposeModal()" title="Transposer par intervalle" data-i-btn="transposeCustom">⊞</button>
       </div>
       <div id="note-grid"></div>
-      <div style="margin-top:11px;padding:9px 10px;background:var(--fond);border:1.5px solid var(--border);border-radius:7px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <div style="margin-top:11px;padding:9px 10px;background:var(--fond);border:1.5px solid var(--brd);border-radius:7px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
         <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Nom préset :</label>
-        <input id="preset-export-label" type="text" placeholder="Nom affiché dans la liste" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
+        <input id="preset-export-label" type="text" placeholder="Nom affiché dans la liste" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--brd);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
         <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Famille :</label>
-        <select id="preset-export-category" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
+        <select id="preset-export-category" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--brd);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
           <option value="2 rangs 8b">2 rangs 8b</option>
           <option value="3 rangs 12b">3 rangs 12b</option>
           <option value="3 rangs 18b">3 rangs 18b</option>
@@ -1322,7 +1322,7 @@ function renderLhRowsCfg(){
     <button type="button" class="rng-btn" onclick="lhRowsSetN(${nRows}+1)">＋</button>
   </div>`;
   CFG.lhRows.forEach((row,ri)=>{
-    html+=`<div style="display:flex;align-items:center;gap:5px;font-size:.78rem;padding:2px 0;">
+    html+=`<div style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:.78rem;padding:2px 0;">
       <span style="min-width:42px;color:var(--gris);">L${ri+1} :</span>
       <button type="button" class="rng-btn" onclick="lhRowChange(${ri},'nb',Math.max(1,(CFG.lhRows[${ri}].nb||1)-1))">−</button>
       <input type="number" value="${row.nb}" min="1" max="30" style="width:46px;text-align:center;font-size:.78rem;padding:2px;" oninput="lhRowChange(${ri},'nb',Math.max(1,parseInt(this.value)||1))">
