@@ -453,6 +453,8 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       </div>
       <div id="note-grid"></div>
       <div style="margin-top:11px;padding:9px 10px;background:var(--fond);border:1.5px solid var(--border);border-radius:7px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Clé serveur :</label>
+        <input id="preset-export-id" type="text" placeholder="Ex : GCD33" title="Identifiant du fichier sur le serveur (ex : GCD33 → GCD33.json)" style="width:90px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
         <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Nom préset :</label>
         <input id="preset-export-label" type="text" placeholder="Nom affiché dans la liste" style="flex:1;min-width:120px;padding:4px 7px;border:1.5px solid var(--border);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)">
         <label style="font-size:.78rem;font-weight:700;color:var(--gris);white-space:nowrap">Famille :</label>
@@ -986,7 +988,9 @@ function snapshotToDB(){
     if(sel)CFG.rangees[r].register=sel.value;
   }
   return{id:currentId||Date.now().toString(),nom:val('nom-instrument')||'Sans titre',
-    presetKey:document.getElementById('preset-select')?.value||'',
+    presetKey:(document.getElementById('preset-export-id')?.value.trim())||document.getElementById('preset-select')?.value||'',
+    presetLabel:document.getElementById('preset-export-label')?.value.trim()||'',
+    presetCategory:document.getElementById('preset-export-category')?.value||'',
     joueur:val('nom-joueur'),luthier:val('nom-luthier')||"Ewen d'Aviau",
     dateCreation:val('date-creation'),lastModified:new Date().toISOString(),
     nbRangees:CFG.nbRangees,rangees:JSON.parse(JSON.stringify(CFG.rangees)),
@@ -1015,6 +1019,12 @@ function loadFromDB(rec){
   document.getElementById('nom-instrument').value=rec.nom||'';
   const psel=document.getElementById('preset-select');
   if(psel){psel.value=rec.presetKey||'';}
+  const eid=document.getElementById('preset-export-id');
+  if(eid){eid.value=rec.presetKey||'';}
+  const elbl=document.getElementById('preset-export-label');
+  if(elbl){elbl.value=rec.presetLabel||rec.nom||'';if(rec.presetLabel){elbl.dataset.userEdited='1';}else{delete elbl.dataset.userEdited;}}
+  const ecat=document.getElementById('preset-export-category');
+  if(ecat){if(rec.presetCategory){ecat.value=rec.presetCategory;}}
   document.getElementById('nom-joueur').value=rec.joueur||'';
   document.getElementById('nom-luthier').value=rec.luthier||"Ewen d'Aviau";
   document.getElementById('date-creation').value=rec.dateCreation||'';
@@ -1081,17 +1091,18 @@ function saveCurrentInstrument(){
 }
 
 function _savePresetToServer(rec){
-  const nRangs=rec.nbRangees||2;
-  let cat='';
-  if(nRangs<=2){cat='2 rangs 8b';}
-  else if(nRangs===3){
-    const nb=rec.notes?(rec.notes.basses?rec.notes.basses.length:0):0;
-    if(nb>=20){cat='3 rangs 24b';}
-    else if(nb>=14){cat='3 rangs 18b';}
-    else{cat='3 rangs 12b';}
-  }else{cat=nRangs+' rangs';}
+  const idEl=document.getElementById('preset-export-id');
+  const labelEl=document.getElementById('preset-export-label');
+  const catEl=document.getElementById('preset-export-category');
   const safeName=(rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_').replace(/_+/g,'_').slice(0,60);
-  const serverId=rec.presetKey||safeName;
+  const serverId=(idEl?idEl.value.trim():'')||rec.presetKey||safeName;
+  const serverLabel=(labelEl?labelEl.value.trim():'')||rec.nom||serverId;
+  const serverCat=(catEl?catEl.value:'')||(function(){
+    const nRangs=rec.nbRangees||2;
+    if(nRangs<=2){return '2 rangs 8b';}
+    if(nRangs===3){const nb=rec.notes?(rec.notes.basses?rec.notes.basses.length:0):0;if(nb>=20){return '3 rangs 24b';}if(nb>=14){return '3 rangs 18b';}return '3 rangs 12b';}
+    return nRangs+' rangs';
+  })();
   const presetData={
     nbRangees:rec.nbRangees,
     rangees:rec.rangees,
@@ -1114,13 +1125,14 @@ function _savePresetToServer(rec){
   fetch('/wp-json/clavier-accordeon/v1/save-preset',{
     method:'POST',
     headers:{'Content-Type':'application/json','X-WP-Nonce':nonce},
-    body:JSON.stringify({id:serverId,label:rec.nom||serverId,category:cat,data:presetData})
+    body:JSON.stringify({id:serverId,label:serverLabel,category:serverCat,data:presetData})
   })
   .then(r=>r.ok?r.json():Promise.reject('HTTP '+r.status))
   .then(json=>{
     const el=document.getElementById('save-status');
     if(json.success){
       if(el){el.textContent=t('serverSaved');el.className='saved';}
+      reloadPresets();
     }else{
       if(el){el.textContent='\u26a0\ufe0f Server error';el.className='dirty';}
       console.warn('Preset server save error:',json);
@@ -1135,6 +1147,10 @@ function _savePresetToServer(rec){
 function newInstrument(){
   currentId=null;
   document.getElementById('preset-select').value='';
+  const eid=document.getElementById('preset-export-id');
+  if(eid){eid.value='';}
+  const elbl=document.getElementById('preset-export-label');
+  if(elbl){elbl.value='';delete elbl.dataset.userEdited;}
   document.getElementById('nom-instrument').value='';
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
@@ -1209,28 +1225,32 @@ document.addEventListener('DOMContentLoaded',()=>{
     const p=document.getElementById('note-picker');
     if(getComputedStyle(p).display!=='none'&&!p.contains(e.target)&&!e.target.closest('.note-input'))hidePicker();
   });
-  // Sync preset-export-label from preset selector and nom-instrument
-  const presetSel=document.getElementById('preset-select');
+  // Sync preset-export-label from nom-instrument (presetSel handled by loadPreset)
   const nomInstr=document.getElementById('nom-instrument');
   const exportLbl=document.getElementById('preset-export-label');
-  if(presetSel&&exportLbl){
-    presetSel.addEventListener('change',()=>{
-      if(!exportLbl.value.trim()&&presetSel.selectedOptions[0]){
-        exportLbl.value=presetSel.selectedOptions[0].textContent;
-      }
-    });
-  }
-  if(nomInstr&&exportLbl){
-    nomInstr.addEventListener('input',()=>{
-      if(!exportLbl.dataset.userEdited) exportLbl.value=nomInstr.value;
-    });
-    exportLbl.addEventListener('input',()=>{ exportLbl.dataset.userEdited='1'; });
+  if(nomInstr){
+    if(exportLbl){
+      nomInstr.addEventListener('input',()=>{
+        if(!exportLbl.dataset.userEdited) exportLbl.value=nomInstr.value;
+      });
+      exportLbl.addEventListener('input',()=>{ exportLbl.dataset.userEdited='1'; });
+    }
   }
 });
 
 /* ── Preset ── */
 async function loadPreset(key){
   if(!key||key==='custom'){renderRangeesCfg();generateInputGrid();onAnyChange();return;}
+  // Update export fields immediately from in-memory index (before network fetch)
+  const eid=document.getElementById('preset-export-id');
+  if(eid){eid.value=key;}
+  const entry=_presetIndex.find(e=>e.id===key);
+  if(entry){
+    const elbl=document.getElementById('preset-export-label');
+    if(elbl){elbl.value=entry.label||'';elbl.dataset.userEdited='1';}
+    const ecat=document.getElementById('preset-export-category');
+    if(ecat){ecat.value=entry.category||'Personnalis\u00e9s';}
+  }
   let p;
   try{p=await fetchPresetData(key);}catch(e){console.warn('Preset not found:',key);return;}
   CFG.nbRangees=p.nbRangees;CFG.rangees=p.rangees.map(r=>({nom:r.nom,nb:r.nb,offset:r.offset||0}));
