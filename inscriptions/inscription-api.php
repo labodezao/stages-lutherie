@@ -213,9 +213,9 @@ function stluth_migrate_options() {
 	);
 	foreach ( $map as $old_key => $new_key ) {
 		/* Only migrate if the new key has never been saved */
-		if ( get_option( $new_key ) === false ) {
-			$old_val = get_option( $old_key );
-			if ( $old_val !== false ) {
+		if ( get_option( $new_key, null ) === null ) {
+			$old_val = get_option( $old_key, null );
+			if ( $old_val !== null ) {
 				update_option( $new_key, $old_val );
 			}
 		}
