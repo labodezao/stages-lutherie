@@ -159,7 +159,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		$attachments
 	);
 
-	/* ── Confirmation email to trainee ── */
+	/* ── Confirmation email to trainee (HTML) ── */
 	$replacements = array(
 		'{nom}'          => $nom,
 		'{modele}'       => $modele,
@@ -169,13 +169,32 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		'{email}'        => $email,
 		'{telephone}'    => $tel,
 	);
-	$conf_body_filled    = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_body );
 	$conf_subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_subject );
 
-	$headers_conf = array( 'Content-Type: text/plain; charset=UTF-8' );
+	/* Build HTML email from template */
+	$tpl_path = __DIR__ . '/email-confirmation-stagiaire.html';
+	if ( file_exists( $tpl_path ) ) {
+		$html_tpl = file_get_contents( $tpl_path );
+		/* Escape HTML special chars for field values before inserting */
+		$html_replacements = array();
+		foreach ( $replacements as $key => $val ) {
+			/* bank_details may contain newlines — convert to <br> in HTML template */
+			if ( $key === '{bank_details}' ) {
+				$html_replacements[ $key ] = nl2br( esc_html( $val ) );
+			} else {
+				$html_replacements[ $key ] = esc_html( $val );
+			}
+		}
+		$conf_body_html = str_replace( array_keys( $html_replacements ), array_values( $html_replacements ), $html_tpl );
+		$headers_conf   = array( 'Content-Type: text/html; charset=UTF-8' );
+	} else {
+		/* Fallback: plain text if template file is missing */
+		$conf_body_html = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_body );
+		$headers_conf   = array( 'Content-Type: text/plain; charset=UTF-8' );
+	}
 
 	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
-	wp_mail( $email, $conf_subject_filled, $conf_body_filled, $headers_conf, $attachments );
+	wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $attachments );
 
 	/* ── Cleanup temp files ── */
 	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_tmp_base, $json_path );
