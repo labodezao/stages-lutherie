@@ -68,7 +68,7 @@ Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<inp
 | `formulaire-inscription-gutenberg.txt` | Import texte Gutenberg (FR) — coller dans l'éditeur de code |
 | `formulaire-inscription-en-gutenberg.txt` | Gutenberg plain text import (EN) — paste into code editor |
 | `inscription-api.php` | ⭐ Mu-plugin WordPress — **déposer via FTP dans `wp-content/mu-plugins/`** |
-| `email-confirmation-stagiaire.html` | ⭐ Template email HTML — **déposer via FTP dans `wp-content/mu-plugins/`** (même dossier que `inscription-api.php`) |
+| `email-confirmation-stagiaire.html` | Template de référence (optionnel) — le contenu est géré depuis l'admin WP |
 
 ---
 
@@ -77,34 +77,36 @@ Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<inp
 Le formulaire envoie les inscriptions via un endpoint REST WordPress fourni par `inscription-api.php`.
 Ce fichier est un **mu-plugin** (must-use plugin) : il est chargé automatiquement par WordPress sans activation manuelle.
 
-### Fichiers à déposer via FTP
+### Fichier à déposer via FTP
 
-Les **deux fichiers** doivent être dans le **même dossier** sur le serveur :
+**Un seul fichier** suffit :
 
 ```
 wp-content/
   mu-plugins/
-    inscription-api.php           ← mu-plugin REST endpoint
-    email-confirmation-stagiaire.html  ← template email HTML de confirmation
+    inscription-api.php           ← mu-plugin REST endpoint (seul fichier nécessaire)
 ```
 
 ### Étapes
 
 1. Connectez-vous au FTP de votre hébergement WordPress
 2. Naviguez vers `wp-content/mu-plugins/` (créez le dossier s'il n'existe pas)
-3. Déposez `inscription-api.php` et `email-confirmation-stagiaire.html`
+3. Déposez `inscription-api.php`
 4. Vérifiez dans WordPress → **Outils → Plugins obligatoires** que le plugin apparaît bien
-5. Configurez les réglages dans WordPress → **Réglages → Inscription stage** :
+5. Configurez tout dans WordPress → **Réglages → Inscription stage** :
    - **Email du luthier** (destinataire des nouvelles inscriptions)
-   - **Coordonnées bancaires** (affichées dans l'email de confirmation au stagiaire)
-   - **Objet** et **corps** de l'email de confirmation (variables : `{nom}`, `{modele}`, `{acompte}`, `{session}`)
+   - **Coordonnées bancaires** (injectées automatiquement via `{bank_details}`)
+   - **Objet** de l'email de confirmation
+   - **Corps HTML** de l'email de confirmation — éditable directement, bouton "Réinitialiser au modèle par défaut" disponible
 
 ### Fonctionnement de l'email de confirmation
 
 Quand un stagiaire soumet le formulaire :
-1. `inscription-api.php` lit `email-confirmation-stagiaire.html` (via `__DIR__`)
-2. Les variables `{nom}`, `{modele}`, `{session}`, `{acompte}`, `{bank_details}` sont remplacées
-3. Un email **HTML** est envoyé au stagiaire avec le PDF en pièce jointe
-4. Un email plain-text avec tous les champs est envoyé au luthier
+1. `inscription-api.php` lit l'option `stluth_confirmation_body` depuis la base WordPress
+2. Si l'option est vide → utilise le modèle HTML intégré (beau design aux couleurs du site)
+3. Les variables `{nom}`, `{modele}`, `{session}`, `{acompte}`, `{bank_details}` sont remplacées
+4. Un email **HTML** est envoyé au stagiaire avec le PDF en pièce jointe
+5. Un email plain-text avec tous les champs est envoyé au luthier
 
-> ⚠️ Si `email-confirmation-stagiaire.html` est absent du dossier `mu-plugins/`, l'email de confirmation au stagiaire bascule automatiquement en plain-text (fallback).
+> 💡 Le fichier `email-confirmation-stagiaire.html` n'est **plus nécessaire** sur le serveur.
+> Il peut servir de référence locale mais le contenu est entièrement géré depuis l'admin WordPress.
