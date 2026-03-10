@@ -5,6 +5,31 @@
    ║  Exports (globals): buildSVG_Plan, buildSVG_Droite,         ║
    ║    buildSVG_Gauche, buildSVG_Combined, presetToSVGData      ║
    ╚══════════════════════════════════════════════════════════════╝ */
+/* ── i18n shim ─────────────────────────────────────────────────────────────
+   ca-svg.js uses t(key) for labels (provided by the admin tool's LANGS
+   object).  When loaded standalone (inscription form, WP Optimize bundle)
+   the global t() does not exist, causing ReferenceError inside buildSVG_*
+   and an empty SVG preview.  This shim sets window.t to French defaults
+   when no t() is available, without touching the admin tool's own t().
+   Using window.t avoids var-hoisting ambiguity inside IIFE bundles.
+   ────────────────────────────────────────────────────────────────────────── */
+if (typeof window.t !== 'function') {
+  window.t = function(k) {
+    var _L = {
+      basses:'Basses', accords:'Accords', terzetto:'Terzetto',
+      svgClient:'Client', svgLuthier:'Luthier',
+      svgPush:'\u2193 Pouss\u00e9', svgPull:'\u2191 Tir\u00e9',
+      svgHigh:'AIGU \u25b6', svgLow:'\u25c4 GRAVE',
+      svgRH:'Main Droite', svgLH:'Main Gauche',
+      svgPlan:'Plan de clavier', svgBellows:'SOUFFLET',
+      svgSommierRH:'SOMMIER \u2014 Main Droite',
+      svgSommierLH:'SOMMIER \u2014 Main Gauche',
+      svgMidi:'MIDI', svgGeneratedBy:'G\u00e9n\u00e9r\u00e9 le',
+      svgBellowsPush:'POUSS\u00c9', svgBellowsPull:'TIR\u00c9'
+    };
+    return _L[k] !== undefined ? _L[k] : k;
+  };
+}
 /* ╔══════════════════════════════════════════════════════╗
    ║  SVG HELPERS                                         ║
    ╚══════════════════════════════════════════════════════╝ */
