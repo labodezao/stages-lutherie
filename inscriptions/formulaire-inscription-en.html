@@ -2054,11 +2054,13 @@ function stluth_handle_inscription(WP_REST_Request $request) {
       planClavier: planData ? (planData.nom || 'Custom plan') : ''
     };
 
-    /* Custom plan JSON (if custom mode) */
+    /* JSON keyboard plan (preset or custom) */
     var planJson = '';
     if (planMode === 'custom') {
       var pcEl2 = document.getElementById('planClavier');
       if (pcEl2) planJson = pcEl2.value.trim();
+    } else if (planData) {
+      planJson = JSON.stringify(planData, null, 2);
     }
 
     /* Try WordPress endpoint first */
