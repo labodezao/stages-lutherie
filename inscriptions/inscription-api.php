@@ -81,26 +81,25 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$defaults = array(
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
 		'stluth_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie',
-		'stluth_confirmation_body'    =>
-			"Bonjour {nom},\n\n" .
-			"Merci pour votre inscription au stage de lutherie !\n\n" .
-			"Voici les informations pour valider votre inscription :\n\n" .
-			"📋 Modèle choisi : {modele}\n" .
-			"💰 Acompte à verser (40\xc2\xa0%) : {acompte}\xc2\xa0€\n" .
-			"📅 Session : {session}\n\n" .
-			"🏦 Coordonnées bancaires :\n{bank_details}\n\n" .
-			"⚠️ Merci d'indiquer en référence de virement : STAGE-{nom}\n\n" .
-			"Votre inscription sera confirmée dès réception de l'acompte.\n\n" .
-			"À très bientôt à l'atelier !\n\n" .
-			"Ewen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\n" .
-			"contact@ewendaviau.com\newendaviau.com",
+		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de fabrication d\'accordéon',
 	);
 
 	$luthier_email = get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] );
 	$bank_details  = get_option( 'stluth_bank_details',  $defaults['stluth_bank_details']  );
 	$conf_subject  = get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] );
-	$conf_body     = get_option( 'stluth_confirmation_body',    $defaults['stluth_confirmation_body']    );
+
+	/* Fallback plain-text used only when email-confirmation-stagiaire.html is missing */
+	$conf_body_fallback =
+		"Bonjour {nom},\n\n" .
+		"Merci pour votre inscription au stage de fabrication d'accordéon !\n\n" .
+		"📋 Modèle choisi : {modele}\n" .
+		"📅 Session : {session}\n" .
+		"💰 Acompte à verser (40 %) : {acompte} €\n\n" .
+		"🏦 Coordonnées bancaires :\n{bank_details}\n\n" .
+		"⚠️ Référence de virement : STAGE-{nom}\n\n" .
+		"Votre inscription sera confirmée dès réception de l'acompte.\n\n" .
+		"À très bientôt à l'atelier !\n\nEwen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\n" .
+		"contact@ewendaviau.com — ewendaviau.com";
 
 	/* ── Decode PDF to temp file ── */
 	$attachments  = array();
@@ -189,7 +188,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		$headers_conf   = array( 'Content-Type: text/html; charset=UTF-8' );
 	} else {
 		/* Fallback: plain text if template file is missing */
-		$conf_body_html = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_body );
+		$conf_body_html = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_body_fallback );
 		$headers_conf   = array( 'Content-Type: text/plain; charset=UTF-8' );
 	}
 
@@ -273,7 +272,6 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_luthier_email',        array( 'sanitize_callback' => 'sanitize_email' ) );
 	register_setting( 'stluth_inscription', 'stluth_bank_details',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_subject', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-	register_setting( 'stluth_inscription', 'stluth_confirmation_body',    array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 }
 
 endif; // function_exists stluth_register_settings
@@ -284,12 +282,36 @@ function stluth_render_settings_page() {
 	$defaults = array(
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
 		'stluth_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-		'stluth_confirmation_subject' => "Confirmation d'inscription — Stage de lutherie",
-		'stluth_confirmation_body'    => "Bonjour {nom},\n\nMerci pour votre inscription !",
+		'stluth_confirmation_subject' => "Confirmation d'inscription — Stage de fabrication d'accordéon",
 	);
+	$tpl_path   = __DIR__ . '/email-confirmation-stagiaire.html';
+	$tpl_exists = file_exists( $tpl_path );
 	?>
 	<div class="wrap">
 		<h1>Réglages inscription stage</h1>
+
+		<?php if ( $tpl_exists ) : ?>
+		<div class="notice notice-success" style="padding:12px 16px;margin:16px 0;">
+			<strong>✅ Template email HTML actif</strong><br>
+			L'email de confirmation envoyé au stagiaire est généré depuis le fichier
+			<code>email-confirmation-stagiaire.html</code> (dans <code>wp-content/mu-plugins/</code>).<br>
+			Pour modifier la <strong>mise en page ou le texte</strong> de l'email,
+			éditez ce fichier directement et redéposez-le via FTP.<br>
+			<small style="color:#555;">Variables disponibles dans le template :
+			<code>{nom}</code>, <code>{modele}</code>, <code>{session}</code>,
+			<code>{acompte}</code>, <code>{bank_details}</code>,
+			<code>{email}</code>, <code>{telephone}</code></small>
+		</div>
+		<?php else : ?>
+		<div class="notice notice-warning" style="padding:12px 16px;margin:16px 0;">
+			<strong>⚠️ Template email HTML introuvable</strong><br>
+			Le fichier <code>email-confirmation-stagiaire.html</code> est absent de
+			<code>wp-content/mu-plugins/</code>.<br>
+			L'email de confirmation au stagiaire sera envoyé en texte brut (fallback).<br>
+			Déposez le fichier via FTP pour activer l'email HTML.
+		</div>
+		<?php endif; ?>
+
 		<form method="post" action="options.php">
 			<?php settings_fields( 'stluth_inscription' ); ?>
 			<table class="form-table">
@@ -299,18 +321,14 @@ function stluth_render_settings_page() {
 				</tr>
 				<tr>
 					<th>Coordonnées bancaires</th>
-					<td><textarea name="stluth_bank_details" rows="4" class="large-text"><?php echo esc_textarea( get_option( 'stluth_bank_details', $defaults['stluth_bank_details'] ) ); ?></textarea></td>
+					<td>
+						<textarea name="stluth_bank_details" rows="4" class="large-text"><?php echo esc_textarea( get_option( 'stluth_bank_details', $defaults['stluth_bank_details'] ) ); ?></textarea>
+						<p class="description">Affichées dans l'email HTML de confirmation (variable <code>{bank_details}</code>). Chaque ligne est préservée.</p>
+					</td>
 				</tr>
 				<tr>
 					<th>Objet du mail de confirmation</th>
 					<td><input type="text" name="stluth_confirmation_subject" value="<?php echo esc_attr( get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] ) ); ?>" class="large-text"></td>
-				</tr>
-				<tr>
-					<th>Corps du mail de confirmation</th>
-					<td>
-						<textarea name="stluth_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea( get_option( 'stluth_confirmation_body', $defaults['stluth_confirmation_body'] ) ); ?></textarea>
-						<p class="description">Variables : {nom}, {modele}, {acompte}, {session}, {bank_details}, {email}, {telephone}</p>
-					</td>
 				</tr>
 			</table>
 			<?php submit_button(); ?>
