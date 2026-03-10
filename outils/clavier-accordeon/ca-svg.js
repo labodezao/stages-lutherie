@@ -687,3 +687,14 @@ function presetToSVGData(rec){
     orderSpecs:rec.orderSpecs||{}
   };
 }
+
+/* ── Explicit window exports ──────────────────────────────────────────────
+   Required because WP Optimize (and other minifiers/bundlers) may wrap
+   this file in an IIFE, turning function declarations into local variables.
+   Assigning to window guarantees global availability regardless of context.
+   ──────────────────────────────────────────────────────────────────────── */
+window.buildSVG_Droite  = buildSVG_Droite;
+window.buildSVG_Gauche  = buildSVG_Gauche;
+window.buildSVG_Combined = buildSVG_Combined;
+window.buildSVG_Plan    = buildSVG_Plan;
+window.presetToSVGData  = presetToSVGData;

@@ -1302,24 +1302,38 @@ function stluth_handle_inscription(WP_REST_Request $request) {
       + 'MD : ' + nbRows + ' rang\u00e9es \u00b7 ' + totalBtns + ' boutons'
       + (lhBtns ? '<br>MG : ' + lhBtns + ' boutons' : '');
     preview.classList.add('visible');
-    try {
-      planSvgData = presetToSVGData(inst);
-      var svgStr = buildSVG_Plan(planSvgData, false);
-      svgContainer.innerHTML = svgStr;
-      var svgEl = svgContainer.querySelector('svg');
-      if (svgEl) { svgEl.setAttribute('width', '100%'); svgEl.setAttribute('height', 'auto'); svgEl.style.maxWidth = '100%'; }
-      /* Aperçu visible dans le formulaire */
-      var inlineContainer = document.getElementById('planSVGInline');
-      var planPreviewRH = document.getElementById('planPreviewRH');
-      if (inlineContainer) {
-        inlineContainer.innerHTML = svgStr;
-        var svgEl2 = inlineContainer.querySelector('svg');
-        if (svgEl2) { svgEl2.setAttribute('width', '100%'); svgEl2.setAttribute('height', 'auto'); svgEl2.style.maxWidth = '100%'; }
+    /* _renderSVG: called immediately, retried up to 5× (×500 ms) if ca-svg.js not yet ready.
+       Uses window.buildSVG_Plan explicitly to reach the global scope even from inside an IIFE. */
+    var _svgTries = 0;
+    function _renderSVG() {
+      if (typeof window.buildSVG_Plan !== 'function') {
+        _svgTries++;
+        if (_svgTries < 6) { setTimeout(_renderSVG, 500); return; }
+        console.warn('[inscription] ca-svg.js not loaded after 2.5 s — SVG preview unavailable.');
+        svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Aper\u00e7u visuel non disponible (biblioth\u00e8que SVG introuvable).</p>';
+        return;
       }
-      if (planPreviewRH) planPreviewRH.classList.add('visible');
-    } catch (svgErr) {
-      svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Aper\u00e7u visuel non disponible pour ce format.</p>';
+      try {
+        planSvgData = window.presetToSVGData(inst);
+        var svgStr = window.buildSVG_Plan(planSvgData, false);
+        svgContainer.innerHTML = svgStr;
+        var svgEl = svgContainer.querySelector('svg');
+        if (svgEl) { svgEl.setAttribute('width', '100%'); svgEl.setAttribute('height', 'auto'); svgEl.style.maxWidth = '100%'; }
+        /* Aperçu visible dans le formulaire */
+        var inlineContainer = document.getElementById('planSVGInline');
+        var planPreviewRH = document.getElementById('planPreviewRH');
+        if (inlineContainer) {
+          inlineContainer.innerHTML = svgStr;
+          var svgEl2 = inlineContainer.querySelector('svg');
+          if (svgEl2) { svgEl2.setAttribute('width', '100%'); svgEl2.setAttribute('height', 'auto'); svgEl2.style.maxWidth = '100%'; }
+        }
+        if (planPreviewRH) planPreviewRH.classList.add('visible');
+      } catch (svgErr) {
+        console.error('[inscription] showPlanPreview SVG error:', svgErr);
+        svgContainer.innerHTML = '<p style="color:#999;font-size:.85rem;">Aper\u00e7u visuel non disponible pour ce format.</p>';
+      }
     }
+    _renderSVG();
     /* Auto-synchro nbBoutonsMD/MG depuis le plan */
     syncPlanToForm(inst);
   }
@@ -1861,7 +1875,7 @@ function stluth_handle_inscription(WP_REST_Request $request) {
       }
       if (planSvgData) {
         try {
-          var planSvgStr2 = buildSVG_Plan(planSvgData, false);
+          var planSvgStr2 = window.buildSVG_Plan(planSvgData, false);
           var planImg = await svgToPngDataUrl(planSvgStr2);
           y += 2;
           if (y > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
