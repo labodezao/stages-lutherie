@@ -3,16 +3,16 @@
   "nbRangees": 3,
   "rangees": [
     {
-      "nom": "Rangée Sol (intérieure)",
-      "nb": 11
+      "nom": "Rangée Fa (intérieure)",
+      "nb": 10
     },
     {
       "nom": "Rangée Do (médiane)",
       "nb": 11
     },
     {
-      "nom": "Rangée Fa (extérieure)",
-      "nb": 10
+      "nom": "Rangée Sol (extérieure)",
+      "nb": 11
     }
   ],
   "lhRows": [
@@ -25,48 +25,44 @@
     "droite": [
       [
         {
-          "p": "Sol3",
-          "t": "La3"
+          "p": "Fa3",
+          "t": "Sol3"
         },
         {
-          "p": "Si3",
-          "t": "Do4"
+          "p": "La3",
+          "t": "Sib3"
         },
         {
-          "p": "Ré4",
+          "p": "Do4",
+          "t": "Ré4"
+        },
+        {
+          "p": "Fa4",
           "t": "Mi4"
         },
         {
-          "p": "Sol4",
-          "t": "Fa#4"
+          "p": "La4",
+          "t": "Sol4"
         },
         {
-          "p": "Si4",
-          "t": "La4"
+          "p": "Do5",
+          "t": "Sib4"
         },
         {
-          "p": "Ré5",
-          "t": "Do5"
+          "p": "Fa5",
+          "t": "Ré5"
         },
         {
-          "p": "Sol5",
+          "p": "La5",
           "t": "Mi5"
         },
         {
-          "p": "Si5",
-          "t": "Fa#5"
+          "p": "Do6",
+          "t": "Sol5"
         },
         {
-          "p": "Ré6",
-          "t": "La5"
-        },
-        {
-          "p": "Sol6",
-          "t": "Do6"
-        },
-        {
-          "p": "Si6",
-          "t": "Mi6"
+          "p": "Fa6",
+          "t": "Sib5"
         }
       ],
       [
@@ -117,44 +113,48 @@
       ],
       [
         {
-          "p": "Fa3",
-          "t": "Sol3"
+          "p": "Sol3",
+          "t": "La3"
         },
         {
-          "p": "La3",
-          "t": "Sib3"
+          "p": "Si3",
+          "t": "Do4"
         },
         {
-          "p": "Do4",
-          "t": "Ré4"
-        },
-        {
-          "p": "Fa4",
+          "p": "Ré4",
           "t": "Mi4"
         },
         {
-          "p": "La4",
-          "t": "Sol4"
+          "p": "Sol4",
+          "t": "Fa#4"
         },
         {
-          "p": "Do5",
-          "t": "Sib4"
+          "p": "Si4",
+          "t": "La4"
         },
         {
-          "p": "Fa5",
-          "t": "Ré5"
+          "p": "Ré5",
+          "t": "Do5"
         },
         {
-          "p": "La5",
+          "p": "Sol5",
           "t": "Mi5"
         },
         {
-          "p": "Do6",
-          "t": "Sol5"
+          "p": "Si5",
+          "t": "Fa#5"
         },
         {
-          "p": "Fa6",
-          "t": "Sib5"
+          "p": "Ré6",
+          "t": "La5"
+        },
+        {
+          "p": "Sol6",
+          "t": "Do6"
+        },
+        {
+          "p": "Si6",
+          "t": "Mi6"
         }
       ]
     ],

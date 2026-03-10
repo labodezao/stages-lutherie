@@ -2,7 +2,7 @@
   "nbRangees": 3,
   "rangees": [
     {
-      "nom": "Rangée Sib (intérieure)",
+      "nom": "Rangée Lab (intérieure)",
       "nb": 10
     },
     {
@@ -10,7 +10,7 @@
       "nb": 11
     },
     {
-      "nom": "Rangée Lab (extérieure)",
+      "nom": "Rangée Sib (extérieure)",
       "nb": 10
     }
   ],
@@ -18,44 +18,44 @@
     "droite": [
       [
         {
-          "p": "Sib3",
-          "t": "Do4"
+          "p": "Sol#3",
+          "t": "Sib3"
         },
         {
-          "p": "Ré4",
-          "t": "Mib4"
+          "p": "Do4",
+          "t": "Do#4"
         },
         {
-          "p": "Fa4",
+          "p": "Mib4",
+          "t": "Fa4"
+        },
+        {
+          "p": "Sol#4",
           "t": "Sol4"
         },
         {
-          "p": "Sib4",
-          "t": "La4"
+          "p": "Do5",
+          "t": "Sib4"
         },
         {
-          "p": "Ré5",
-          "t": "Do5"
+          "p": "Mib5",
+          "t": "Do#5"
         },
         {
-          "p": "Fa5",
-          "t": "Mib5"
+          "p": "Sol#5",
+          "t": "Fa5"
         },
         {
-          "p": "Sib5",
+          "p": "Do6",
           "t": "Sol5"
         },
         {
-          "p": "Ré6",
-          "t": "La5"
+          "p": "Mib6",
+          "t": "Sib5"
         },
         {
-          "p": "Fa6",
-          "t": "Do6"
-        },
-        {
-          "p": "Sib6",
-          "t": "Mib6"
+          "p": "Sol#6",
+          "t": "Do#6"
         }
       ],
       [
@@ -106,44 +106,44 @@
       ],
       [
         {
-          "p": "Sol#3",
-          "t": "Sib3"
+          "p": "Sib3",
+          "t": "Do4"
         },
         {
-          "p": "Do4",
-          "t": "Do#4"
+          "p": "Ré4",
+          "t": "Mib4"
         },
         {
-          "p": "Mib4",
-          "t": "Fa4"
-        },
-        {
-          "p": "Sol#4",
+          "p": "Fa4",
           "t": "Sol4"
         },
         {
-          "p": "Do5",
-          "t": "Sib4"
+          "p": "Sib4",
+          "t": "La4"
         },
         {
-          "p": "Mib5",
-          "t": "Do#5"
+          "p": "Ré5",
+          "t": "Do5"
         },
         {
-          "p": "Sol#5",
-          "t": "Fa5"
+          "p": "Fa5",
+          "t": "Mib5"
         },
         {
-          "p": "Do6",
+          "p": "Sib5",
           "t": "Sol5"
         },
         {
-          "p": "Mib6",
-          "t": "Sib5"
+          "p": "Ré6",
+          "t": "La5"
         },
         {
-          "p": "Sol#6",
-          "t": "Do#6"
+          "p": "Fa6",
+          "t": "Do6"
+        },
+        {
+          "p": "Sib6",
+          "t": "Mib6"
         }
       ]
     ],
