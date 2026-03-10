@@ -67,3 +67,44 @@ Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<inp
 | `formulaire-inscription-en.html` | ⭐ Complete form (EN) — 45 Gutenberg blocks (29 native) |
 | `formulaire-inscription-gutenberg.txt` | Import texte Gutenberg (FR) — coller dans l'éditeur de code |
 | `formulaire-inscription-en-gutenberg.txt` | Gutenberg plain text import (EN) — paste into code editor |
+| `inscription-api.php` | ⭐ Mu-plugin WordPress — **déposer via FTP dans `wp-content/mu-plugins/`** |
+| `email-confirmation-stagiaire.html` | ⭐ Template email HTML — **déposer via FTP dans `wp-content/mu-plugins/`** (même dossier que `inscription-api.php`) |
+
+---
+
+## 🔌 Déploiement du mu-plugin (backend REST)
+
+Le formulaire envoie les inscriptions via un endpoint REST WordPress fourni par `inscription-api.php`.
+Ce fichier est un **mu-plugin** (must-use plugin) : il est chargé automatiquement par WordPress sans activation manuelle.
+
+### Fichiers à déposer via FTP
+
+Les **deux fichiers** doivent être dans le **même dossier** sur le serveur :
+
+```
+wp-content/
+  mu-plugins/
+    inscription-api.php           ← mu-plugin REST endpoint
+    email-confirmation-stagiaire.html  ← template email HTML de confirmation
+```
+
+### Étapes
+
+1. Connectez-vous au FTP de votre hébergement WordPress
+2. Naviguez vers `wp-content/mu-plugins/` (créez le dossier s'il n'existe pas)
+3. Déposez `inscription-api.php` et `email-confirmation-stagiaire.html`
+4. Vérifiez dans WordPress → **Outils → Plugins obligatoires** que le plugin apparaît bien
+5. Configurez les réglages dans WordPress → **Réglages → Inscription stage** :
+   - **Email du luthier** (destinataire des nouvelles inscriptions)
+   - **Coordonnées bancaires** (affichées dans l'email de confirmation au stagiaire)
+   - **Objet** et **corps** de l'email de confirmation (variables : `{nom}`, `{modele}`, `{acompte}`, `{session}`)
+
+### Fonctionnement de l'email de confirmation
+
+Quand un stagiaire soumet le formulaire :
+1. `inscription-api.php` lit `email-confirmation-stagiaire.html` (via `__DIR__`)
+2. Les variables `{nom}`, `{modele}`, `{session}`, `{acompte}`, `{bank_details}` sont remplacées
+3. Un email **HTML** est envoyé au stagiaire avec le PDF en pièce jointe
+4. Un email plain-text avec tous les champs est envoyé au luthier
+
+> ⚠️ Si `email-confirmation-stagiaire.html` est absent du dossier `mu-plugins/`, l'email de confirmation au stagiaire bascule automatiquement en plain-text (fallback).
