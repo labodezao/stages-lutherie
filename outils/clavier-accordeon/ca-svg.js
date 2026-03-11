@@ -203,7 +203,7 @@ function buildSVG_Gauche(data,dark){
           s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
           s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
           s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-          s+=tx(cx-R+5,cy+R-4,lbl+(pi+1),6.5,lblCol,'bold','start');
+          s+=tx(cx,cy+3.5,lbl+(pi+1),7.5,lblCol,'normal','middle');
           const btn2HasNotes=btn2&&(btn2.p||btn2.t);
           if(btn2HasNotes){
             if(btn.p)s+=svgBtnVal(btn.p,cx,cy-17,pushTx);
@@ -292,7 +292,7 @@ function buildSVG_Gauche(data,dark){
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
       const btnLblCol=sec.type==='B'?bassLbl:sec.type==='A'?accLbl:gold;
-      s+=tx(cx-R+5,cy+R-4,sec.type+(bi+1),6.5,btnLblCol,'bold','start');
+      s+=tx(cx,cy+3.5,sec.type+(bi+1),7.5,btnLblCol,'normal','middle');
       const btn2HasNotes=has2&&btn2&&(btn2.p||btn2.t);
       if(btn2HasNotes){
         // 2-voice layout: V1 outer, V2 inner (closer to center divider)
@@ -662,10 +662,10 @@ function buildSVG_Plan(data,dark){
         if(sec.interleavedTypes){
           const typ=sec.interleavedTypes[bi];
           const idx=sec.interleavedIndices?sec.interleavedIndices[bi]:'';
-          s+=tx(cx-R+3,cy+R-3,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
+          s+=tx(cx-R-1,cy+R+2,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
         }else if(sec.type){
           const lblC=sec.type==='B'?bassLbl:sec.type==='A'?accLbl:gold;
-          s+=tx(cx-R+3,cy+R-3,sec.type+(bi+1),5.5,lblC,'bold','start');
+          s+=tx(cx-R-1,cy+R+2,sec.type+(bi+1),5.5,lblC,'bold','start');
         }
       });
     });
