@@ -145,11 +145,30 @@ function stluth_default_email_html() {
                 <td style="padding:16px 20px;">
                   <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
                     Pendant ces 10 jours, vous fabriquerez votre accordéon diatonique de A à Z&nbsp;:
-                    taille et assemblage de la table d\'harmonie, montage du mécanisme, pose des anches,
-                    réglage des claviers et finitions. Vous repartez avec <strong>votre propre instrument</strong>.
+                    découpe et assemblage de la caisse, montage du sommier et du mécanisme,
+                    pose et réglage des anches, fabrication du soufflet, et finitions.
+                    Vous repartez avec <strong>votre propre instrument</strong>.
                   </p>
                   <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
                     Aucun prérequis en menuiserie n\'est nécessaire — juste de la curiosité et de la motivation&nbsp;!
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- PIÈCES JOINTES -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#fdf8ee;border:1px solid #e0d4c4;border-radius:4px;">
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#7a6a55;font-family:Georgia,serif;">📎 Pièces jointes</p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.8;">
+                    📄 <strong>PDF récapitulatif</strong> — le détail complet de votre inscription<br>
+                    🎹 <strong>Plan de clavier</strong> (JSON) — la disposition des notes de votre accordéon
                   </p>
                 </td>
               </tr>
@@ -162,7 +181,6 @@ function stluth_default_email_html() {
           <td style="padding:0 40px 32px 40px;">
             <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
               Votre inscription sera définitivement confirmée dès réception de l\'acompte.
-              Vous trouverez le récapitulatif complet en pièce jointe (PDF).
             </p>
             <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
               Pour toute question, n\'hésitez pas à me contacter&nbsp;:
@@ -257,6 +275,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$defaults = array(
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
 		'stluth_bank_details'         => "IBAN : FR76 1380 7008 7907 0218 7398 930\nBIC : CCBPFRPPNAN\nTitulaire : Ewen Daviau",
+		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de fabrication d\'accordéon',
 	);
 
 	$luthier_email = get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] );
@@ -319,10 +338,11 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$luthier_subject = 'Nouvelle inscription stage — ' . $nom;
 	$headers_luthier = array(
 		'Content-Type: text/plain; charset=UTF-8',
+		'From: ' . $luthier_email,
 		'Reply-To: ' . $email,
 	);
 
-	wp_mail(
+	$luthier_sent = wp_mail(
 		$luthier_email,
 		$luthier_subject,
 		$field_lines,
@@ -352,10 +372,26 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		}
 	}
 	$conf_body_html = str_replace( array_keys( $html_replacements ), array_values( $html_replacements ), $html_tpl );
-	$headers_conf   = array( 'Content-Type: text/html; charset=UTF-8' );
+	$headers_conf   = array(
+		'Content-Type: text/html; charset=UTF-8',
+		'From: Ewen Daviau <' . $luthier_email . '>',
+		'Reply-To: ' . $luthier_email,
+	);
+
+	/* Verify temp files still exist before sending trainee email */
+	$trainee_attachments = array();
+	foreach ( $attachments as $att_path ) {
+		if ( file_exists( $att_path ) ) {
+			$trainee_attachments[] = $att_path;
+		}
+	}
 
 	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
-	wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $attachments );
+	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
+
+	if ( ! $trainee_sent ) {
+		error_log( '[Stages Lutherie] Échec envoi email confirmation à ' . $email . ' — pièces jointes : ' . implode( ', ', $trainee_attachments ) );
+	}
 
 	/* ── Cleanup temp files ── */
 	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_tmp_base, $json_path );
@@ -434,10 +470,23 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_luthier_email',        array( 'sanitize_callback' => 'sanitize_email' ) );
 	register_setting( 'stluth_inscription', 'stluth_bank_details',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_subject', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-	register_setting( 'stluth_inscription', 'stluth_confirmation_body',    array( 'sanitize_callback' => 'wp_kses_post' ) );
+	register_setting( 'stluth_inscription', 'stluth_confirmation_body',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
 }
 
 endif; // function_exists stluth_register_settings
+
+/* Sanitize full HTML email body — wp_kses_post strips html/head/body/meta/title
+   which are required for a complete email document. We use a permissive kses list. */
+if ( ! function_exists( 'stluth_sanitize_email_html' ) ) :
+function stluth_sanitize_email_html( $value ) {
+	/* Only admins can edit this setting (manage_options), so we just strip
+	   potentially dangerous tags (script, iframe, object, embed) while
+	   preserving the full HTML document structure needed for emails. */
+	$value = preg_replace( '#<(script|iframe|object|embed|applet|form|input|button)[\s>].*?</\1>#is', '', $value );
+	$value = preg_replace( '#<(script|iframe|object|embed|applet|form|input|button)\s*/?\s*>#is', '', $value );
+	return $value;
+}
+endif; // function_exists stluth_sanitize_email_html
 
 if ( ! function_exists( 'stluth_render_settings_page' ) ) :
 
@@ -445,6 +494,7 @@ function stluth_render_settings_page() {
 	$defaults = array(
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
 		'stluth_bank_details'         => "IBAN : FR76 1380 7008 7907 0218 7398 930\nBIC : CCBPFRPPNAN\nTitulaire : Ewen Daviau",
+		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de fabrication d\'accordéon',
 	);
 
 	/* Valeur courante du corps HTML — si vide, on propose le modèle par défaut */
