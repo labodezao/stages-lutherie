@@ -1226,7 +1226,7 @@ function stluth_download_json() {
 	}
 	/* Validate that stored value is valid JSON before outputting */
 	$decoded = json_decode( $json );
-	if ( null === $decoded && JSON_ERROR_NONE !== json_last_error() ) {
+	if ( json_last_error() !== JSON_ERROR_NONE ) {
 		wp_die( 'Données JSON invalides.', 500 );
 	}
 	$nom = get_post_meta( $post_id, '_stluth_nom', true );
@@ -1323,7 +1323,7 @@ if ( ! function_exists( 'stluth_admin_notices' ) ) :
 add_action( 'admin_notices', 'stluth_admin_notices' );
 
 function stluth_admin_notices() {
-	if ( isset( $_GET['stluth_updated'] ) ) {
+	if ( isset( $_GET['stluth_updated'] ) && '1' === $_GET['stluth_updated'] ) {
 		echo '<div class="notice notice-success is-dismissible"><p>✅ Statut de l\'inscription mis à jour.</p></div>';
 	}
 }
