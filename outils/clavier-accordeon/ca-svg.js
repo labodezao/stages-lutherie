@@ -91,7 +91,7 @@ function buildSVG_Droite(data,dark){
   const pushTx=dark?'#6fcf5a':'#3730A3',pullTx=dark?'#e8b840':'#92400E';
   const subtl=dark?'#888866':'#94A3B8',stroke=dark?'#c9a227':'#6366F1';
   const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
-  const numTx=dark?'rgba(200,162,39,.55)':'rgba(99,102,241,.45)';
+  const numTx=dark?'rgba(200,162,39,.55)':'rgba(99,102,241,.55)';
 
   const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
   const allOffs=data.droite.map(r=>r.offset||0);
@@ -169,7 +169,7 @@ function buildSVG_Gauche(data,dark){
   const pushTx=dark?'#6fcf5a':'#3730A3',pullTx=dark?'#e8b840':'#92400E';
   const stroke=dark?'#c9a227':'#6366F1';
   const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
-  const numTx=dark?'rgba(200,162,39,.55)':'rgba(99,102,241,.45)';
+  const numTx=dark?'rgba(200,162,39,.55)':'rgba(99,102,241,.55)';
   const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(55,48,163,.5)';
   const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(146,64,14,.5)';
 
