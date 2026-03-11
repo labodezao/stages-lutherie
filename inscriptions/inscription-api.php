@@ -556,6 +556,27 @@ function stluth_register_settings() {
 
 endif; // function_exists stluth_register_settings
 
+/**
+ * Strip all MSO / IE conditional comment blocks from HTML.
+ *
+ * Handles the three common patterns:
+ *   1) <!--[if mso]>…<![endif]-->           (Outlook-only content → removed entirely)
+ *   2) <!--[if !mso]><!--> … <!--<![endif]--> (non-Outlook content → keep inner HTML)
+ *   3) <!--[if gte mso 9]>…<![endif]-->     (version variants → removed entirely)
+ */
+if ( ! function_exists( 'stluth_strip_mso_conditionals' ) ) :
+function stluth_strip_mso_conditionals( $html ) {
+	/* Pattern 2 first: <!--[if !mso]><!--> KEEP THIS <!--<![endif]--> */
+	$html = preg_replace( '#<!--\[if\s+!mso\]><!-->\s*(.*?)\s*<!--<!\[endif\]-->#si', '$1', $html );
+	/* Pattern 1 & 3: <!--[if (anything)]>…<![endif]--> → remove entirely */
+	$html = preg_replace( '#<!--\[if\s[^\]]*\]>.*?<!\[endif\]-->#si', '', $html );
+	/* Stray conditional leftovers (malformed) */
+	$html = preg_replace( '#<!--\[if\s[^\]]*\]>#i', '', $html );
+	$html = preg_replace( '#<!\[endif\]-->#i', '', $html );
+	return $html;
+}
+endif; // function_exists stluth_strip_mso_conditionals
+
 /* Sanitize full HTML email body — wp_kses_post strips html/head/body/meta/title
    which are required for a complete email document. Only admins (manage_options)
    can edit this setting, so we strip dangerous tags and event-handler attributes. */
@@ -578,27 +599,6 @@ function stluth_sanitize_email_html( $value ) {
 	return $value;
 }
 endif; // function_exists stluth_sanitize_email_html
-
-/**
- * Strip all MSO / IE conditional comment blocks from HTML.
- *
- * Handles the three common patterns:
- *   1) <!--[if mso]>…<![endif]-->           (Outlook-only content → removed entirely)
- *   2) <!--[if !mso]><!--> … <!--<![endif]--> (non-Outlook content → keep inner HTML)
- *   3) <!--[if gte mso 9]>…<![endif]-->     (version variants → removed entirely)
- */
-if ( ! function_exists( 'stluth_strip_mso_conditionals' ) ) :
-function stluth_strip_mso_conditionals( $html ) {
-	/* Pattern 2 first: <!--[if !mso]><!--> KEEP THIS <!--<![endif]--> */
-	$html = preg_replace( '#<!--\[if\s+!mso\]><!-->\s*(.*?)\s*<!--<!\[endif\]-->#si', '$1', $html );
-	/* Pattern 1 & 3: <!--[if (anything)]>…<![endif]--> → remove entirely */
-	$html = preg_replace( '#<!--\[if\s[^\]]*\]>.*?<!\[endif\]-->#si', '', $html );
-	/* Stray conditional leftovers (malformed) */
-	$html = preg_replace( '#<!--\[if\s[^\]]*\]>#i', '', $html );
-	$html = preg_replace( '#<!\[endif\]-->#i', '', $html );
-	return $html;
-}
-endif; // function_exists stluth_strip_mso_conditionals
 
 if ( ! function_exists( 'stluth_render_settings_page' ) ) :
 
