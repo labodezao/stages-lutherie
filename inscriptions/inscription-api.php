@@ -789,7 +789,7 @@ function stluth_save_registration( $fields, $pdf_path = '', $plan_json = '' ) {
 	/* Persist PDF in uploads/inscriptions/YYYY/ */
 	if ( ! empty( $pdf_path ) && file_exists( $pdf_path ) ) {
 		$upload_dir = wp_upload_dir();
-		$year       = gmdate( 'Y' );
+		$year       = wp_date( 'Y' );
 		$dest_dir   = $upload_dir['basedir'] . '/inscriptions/' . $year;
 		if ( ! file_exists( $dest_dir ) ) {
 			wp_mkdir_p( $dest_dir );
@@ -1224,11 +1224,16 @@ function stluth_download_json() {
 	if ( empty( $json ) ) {
 		wp_die( 'Aucun plan JSON.', 404 );
 	}
+	/* Validate that stored value is valid JSON before outputting */
+	$decoded = json_decode( $json );
+	if ( null === $decoded && JSON_ERROR_NONE !== json_last_error() ) {
+		wp_die( 'Données JSON invalides.', 500 );
+	}
 	$nom = get_post_meta( $post_id, '_stluth_nom', true );
 	$filename = 'plan_clavier_' . sanitize_file_name( $nom ? $nom : 'inscription' ) . '.json';
 	header( 'Content-Type: application/json' );
 	header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
-	echo $json; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- raw JSON download
+	echo wp_json_encode( $decoded );
 	exit;
 }
 
@@ -1389,7 +1394,10 @@ function stluth_render_dashboard_widget() {
 		'stluth_cancelled' => 0,
 	);
 	$results = $wpdb->get_results(
-		"SELECT post_status, COUNT(*) as cnt FROM {$wpdb->posts} WHERE post_type = 'stluth_inscription' GROUP BY post_status"
+		$wpdb->prepare(
+			"SELECT post_status, COUNT(*) as cnt FROM {$wpdb->posts} WHERE post_type = %s GROUP BY post_status",
+			'stluth_inscription'
+		)
 	);
 	if ( $results ) {
 		foreach ( $results as $row ) {
