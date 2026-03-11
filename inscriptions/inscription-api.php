@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF + JSON joints) et un
  *              email de confirmation au stagiaire (avec PDF + JSON joints).
- * Version:     1.8
+ * Version:     1.9
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '1.8' );
+define( 'STLUTH_API_VERSION', '1.9' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -314,6 +314,14 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		$html_tpl = stluth_default_email_html();
 	}
 
+	/* Runtime corruption check: if the loaded template has no inline styles,
+	   it was corrupted by wp_kses or similar processing.  Fall back to the
+	   clean built-in default so the trainee receives a properly styled email. */
+	if ( stripos( $html_tpl, 'style=' ) === false ) {
+		error_log( '[Stages Lutherie] WARNING: email template has no style= attributes (corrupted). Using built-in default.' );
+		$html_tpl = stluth_default_email_html();
+	}
+
 	/* ── Decode PDF to temp file ── */
 	$attachments  = array();
 	$pdf_path     = '';
@@ -564,6 +572,40 @@ function stluth_version_migration() {
 		}
 	}
 
+	/* v1.9 — Detect and fix corrupted email templates.
+	   WordPress or a security plugin may have run wp_kses on the stored HTML,
+	   stripping all style="" attributes and HTML-encoding MSO comments as
+	   &lt;!--[if mso]&gt;.  If the stored template contains NO style= attrs,
+	   it is corrupted beyond repair → replace with the clean default. */
+	if ( version_compare( $db_version, '1.9', '<' ) ) {
+		$stored = get_option( 'stluth_confirmation_body', '' );
+		if ( ! empty( $stored ) ) {
+			/* Strip entity-encoded MSO first (the v1.8 regex only matched raw MSO) */
+			if ( function_exists( 'stluth_strip_mso_conditionals' ) ) {
+				$stored = stluth_strip_mso_conditionals( $stored );
+			}
+
+			/* If the template has no inline styles, it was corrupted by wp_kses
+			   or similar processing.  Replace with the clean built-in default. */
+			if ( stripos( $stored, 'style=' ) === false ) {
+				$default = function_exists( 'stluth_default_email_html' )
+					? stluth_default_email_html()
+					: '';
+				if ( ! empty( $default ) ) {
+					update_option( 'stluth_confirmation_body', $default );
+					error_log( '[Stages Lutherie] v1.9 migration: stored email template was corrupted (no style= attributes). Replaced with default.' );
+				}
+			} else {
+				/* Template has styles but may have had entity-encoded MSO — save cleaned version */
+				$current = get_option( 'stluth_confirmation_body', '' );
+				if ( $stored !== $current ) {
+					update_option( 'stluth_confirmation_body', $stored );
+					error_log( '[Stages Lutherie] v1.9 migration: stripped entity-encoded MSO conditionals from stored template.' );
+				}
+			}
+		}
+	}
+
 	update_option( 'stluth_api_version', STLUTH_API_VERSION );
 	error_log( '[Stages Lutherie] Migrated to v' . STLUTH_API_VERSION );
 }
@@ -609,13 +651,18 @@ endif; // function_exists stluth_register_settings
 /**
  * Strip all MSO / IE conditional comment blocks from HTML.
  *
- * Handles the three common patterns:
+ * Handles the three common patterns in both raw AND HTML-entity-encoded forms:
  *   1) <!--[if mso]>…<![endif]-->           (Outlook-only content → removed entirely)
  *   2) <!--[if !mso]><!--> … <!--<![endif]--> (non-Outlook content → keep inner HTML)
  *   3) <!--[if gte mso 9]>…<![endif]-->     (version variants → removed entirely)
+ *
+ * The entity-encoded forms (&lt;!--[if mso]&gt; etc.) appear when WordPress
+ * or a security plugin runs the HTML through wp_kses / esc_html before storage.
+ * They render as visible text in ALL email clients and must be removed.
  */
 if ( ! function_exists( 'stluth_strip_mso_conditionals' ) ) :
 function stluth_strip_mso_conditionals( $html ) {
+	/* ── Raw patterns (proper HTML comments) ── */
 	/* Pattern 2 first: <!--[if !mso]><!--> KEEP THIS <!--<![endif]--> */
 	$html = preg_replace( '#<!--\[if\s+!mso\]><!-->\s*(.*?)\s*<!--<!\[endif\]-->#si', '$1', $html );
 	/* Pattern 1 & 3: <!--[if (anything)]>…<![endif]--> → remove entirely */
@@ -623,6 +670,16 @@ function stluth_strip_mso_conditionals( $html ) {
 	/* Stray conditional leftovers (malformed) */
 	$html = preg_replace( '#<!--\[if\s[^\]]*\]>#i', '', $html );
 	$html = preg_replace( '#<!\[endif\]-->#i', '', $html );
+
+	/* ── Entity-encoded patterns (&lt;!-- instead of <!--) ── */
+	/* These appear when WordPress encodes the HTML before storage.
+	   &lt;!--[if mso]&gt; ... &lt;![endif]--&gt;  → remove entirely */
+	$html = preg_replace( '#&lt;!--\[if\s+!mso\]&gt;&lt;!--&gt;\s*(.*?)\s*&lt;!--&lt;!\[endif\]--&gt;#si', '$1', $html );
+	$html = preg_replace( '#&lt;!--\[if\s[^\]]*\]&gt;.*?&lt;!\[endif\]--&gt;#si', '', $html );
+	/* Stray entity-encoded leftovers */
+	$html = preg_replace( '#&lt;!--\[if\s[^\]]*\]&gt;#i', '', $html );
+	$html = preg_replace( '#&lt;!\[endif\]--&gt;#i', '', $html );
+
 	return $html;
 }
 endif; // function_exists stluth_strip_mso_conditionals
