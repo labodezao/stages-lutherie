@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF + JSON joints) et un
  *              email de confirmation au stagiaire (avec PDF + JSON joints).
- * Version:     1.6
+ * Version:     1.8
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -30,6 +30,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/* Plugin version — displayed on the settings page so the admin can verify
+   they are running the latest version after an FTP upload. */
+define( 'STLUTH_API_VERSION', '1.8' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -443,15 +447,25 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		$stluth_trainee_atts = $attachments;
 		$stluth_force_atts   = null;
 		$stluth_force_atts   = function ( $phpmailer ) use ( $stluth_trainee_atts, &$stluth_force_atts ) {
+			/* Diagnostic: log what PHPMailer has before we touch it */
 			$existing = array();
 			foreach ( $phpmailer->getAttachments() as $a ) {
 				$existing[] = $a[0];
 			}
+			error_log( '[Stages Lutherie] phpmailer_init hook fired — ContentType=' . $phpmailer->ContentType
+				. ', existing attachments=' . count( $existing )
+				. ', our files=' . count( $stluth_trainee_atts ) );
+
 			foreach ( $stluth_trainee_atts as $att ) {
 				if ( file_exists( $att ) && ! in_array( $att, $existing, true ) ) {
 					$phpmailer->addAttachment( $att );
+					error_log( '[Stages Lutherie] phpmailer_init: force-added ' . basename( $att ) );
 				}
 			}
+
+			/* Final count */
+			error_log( '[Stages Lutherie] phpmailer_init: final attachment count = ' . count( $phpmailer->getAttachments() ) );
+
 			/* Self-remove — this hook is for the trainee email only */
 			remove_action( 'phpmailer_init', $stluth_force_atts, 99999 );
 		};
@@ -519,6 +533,42 @@ function stluth_migrate_options() {
 }
 
 endif; // function_exists stluth_migrate_options
+
+/* ══════════════════════════════════════════════════════
+   VERSION MIGRATION — runs once per version upgrade.
+   Cleans up stored data that was saved by older versions
+   before certain sanitizers existed.
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'stluth_version_migration' ) ) :
+
+add_action( 'admin_init', 'stluth_version_migration', 2 );
+
+function stluth_version_migration() {
+	$db_version = get_option( 'stluth_api_version', '0' );
+	if ( version_compare( $db_version, STLUTH_API_VERSION, '>=' ) ) {
+		return; /* already up to date */
+	}
+
+	/* v1.8 — Re-sanitize stored HTML email body to strip MSO conditionals
+	   that were saved before stluth_sanitize_email_html included MSO stripping.
+	   This is the root cause of <!--[if mso]> appearing in trainee emails. */
+	if ( version_compare( $db_version, '1.8', '<' ) ) {
+		$stored = get_option( 'stluth_confirmation_body', '' );
+		if ( ! empty( $stored ) && function_exists( 'stluth_strip_mso_conditionals' ) ) {
+			$cleaned = stluth_strip_mso_conditionals( $stored );
+			if ( $cleaned !== $stored ) {
+				update_option( 'stluth_confirmation_body', $cleaned );
+				error_log( '[Stages Lutherie] v1.8 migration: stripped MSO conditionals from stored email template.' );
+			}
+		}
+	}
+
+	update_option( 'stluth_api_version', STLUTH_API_VERSION );
+	error_log( '[Stages Lutherie] Migrated to v' . STLUTH_API_VERSION );
+}
+
+endif; // function_exists stluth_version_migration
 
 /* ══════════════════════════════════════════════════════
    ADMIN SETTINGS PAGE
@@ -622,9 +672,79 @@ function stluth_render_settings_page() {
 		$body_for_display = stluth_default_email_html();
 		echo '<div class="notice notice-success is-dismissible"><p>✅ Corps de l\'email réinitialisé au modèle par défaut.</p></div>';
 	}
+
+	/* ── Send test email ── */
+	if ( isset( $_POST['stluth_send_test'] ) && check_admin_referer( 'stluth_test_email_nonce' ) ) {
+		$test_to = sanitize_email( get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] ) );
+		$test_nom = 'Test Stagiaire';
+
+		/* Build a small test PDF (just a text file with .pdf extension for testing) */
+		$test_pdf_path = wp_tempnam( 'test_inscription.pdf' ) . '.pdf';
+		file_put_contents( $test_pdf_path, '%PDF-1.4 test — ce fichier confirme que les pièces jointes fonctionnent.' );
+
+		$test_attachments = array();
+		if ( file_exists( $test_pdf_path ) ) {
+			$test_attachments[] = $test_pdf_path;
+		}
+
+		/* Prepare HTML body from the stored/default template */
+		$test_replacements = array(
+			'{nom}'          => $test_nom,
+			'{email}'        => $test_to,
+			'{telephone}'    => '00 00 00 00 00',
+			'{modele}'       => 'GC 2 rangs — Test',
+			'{session}'      => 'Session test',
+			'{acompte}'      => '1 200',
+			'{bank_details}' => nl2br( esc_html( get_option( 'stluth_bank_details', $defaults['stluth_bank_details'] ) ) ),
+		);
+		$test_html = $body_for_display;
+		foreach ( $test_replacements as $k => $v ) {
+			$test_html = str_replace( $k, $v, $test_html );
+		}
+		if ( function_exists( 'stluth_strip_mso_conditionals' ) ) {
+			$test_html = stluth_strip_mso_conditionals( $test_html );
+		}
+
+		$luthier_name = sanitize_text_field( get_option( 'stluth_luthier_name', $defaults['stluth_luthier_name'] ) );
+
+		/* Send HTML test email (like trainee) */
+		$test_headers_html = array(
+			'Content-Type: text/html; charset=UTF-8',
+			'From: ' . $luthier_name . ' <' . $test_to . '>',
+		);
+
+		$html_sent = wp_mail( $test_to, '[TEST HTML] Confirmation inscription — v' . STLUTH_API_VERSION, $test_html, $test_headers_html, $test_attachments );
+
+		/* Send plain text test email (like luthier) */
+		$test_headers_plain = array(
+			'Content-Type: text/plain; charset=UTF-8',
+			'From: ' . $luthier_name . ' <' . $test_to . '>',
+		);
+		$plain_body = "TEST inscription-api.php v" . STLUTH_API_VERSION . "\n\n"
+			. "Si vous recevez ce mail avec la pièce jointe PDF,\n"
+			. "le mail luthier (texte brut) fonctionne correctement.\n\n"
+			. "Nom : " . $test_nom . "\nModèle : GC 2 rangs — Test\n";
+
+		$plain_sent = wp_mail( $test_to, '[TEST PLAIN] Nouvelle inscription — v' . STLUTH_API_VERSION, $plain_body, $test_headers_plain, $test_attachments );
+
+		/* Cleanup */
+		@unlink( $test_pdf_path );
+
+		if ( $html_sent && $plain_sent ) {
+			echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>2 emails de test envoyés à ' . esc_html( $test_to ) . '</strong><br>'
+				. '📧 [TEST HTML] = simule le mail stagiaire (HTML + pièce jointe)<br>'
+				. '📩 [TEST PLAIN] = simule le mail luthier (texte brut + pièce jointe)<br>'
+				. 'Vérifiez votre boîte de réception et comparez les deux !</p></div>';
+		} else {
+			$msg = '';
+			if ( ! $html_sent ) { $msg .= '❌ Email HTML (stagiaire) a ÉCHOUÉ. '; }
+			if ( ! $plain_sent ) { $msg .= '❌ Email texte (luthier) a ÉCHOUÉ. '; }
+			echo '<div class="notice notice-error is-dismissible"><p>' . $msg . 'Consultez le debug.log WordPress pour plus de détails.</p></div>';
+		}
+	}
 	?>
 	<div class="wrap">
-		<h1>Réglages inscription stage</h1>
+		<h1>Réglages inscription stage <small style="font-size:12px;color:#888;font-weight:normal;">— inscription-api.php v<?php echo esc_html( STLUTH_API_VERSION ); ?></small></h1>
 
 		<form method="post" action="options.php">
 			<?php settings_fields( 'stluth_inscription' ); ?>
@@ -701,6 +821,20 @@ function stluth_render_settings_page() {
 			<?php wp_nonce_field( 'stluth_reset_body_nonce' ); ?>
 			<input type="hidden" name="stluth_reset_body" value="1">
 			<?php submit_button( 'Réinitialiser au modèle par défaut', 'secondary', 'submit_reset', false ); ?>
+		</form>
+
+		<hr style="margin:32px 0 24px;">
+		<h2 style="font-size:1rem;">🧪 Envoyer un email de test</h2>
+		<p>Envoie <strong>2 emails de test</strong> à l'adresse luthier ci-dessus :</p>
+		<ul style="list-style:disc;margin-left:20px;">
+			<li><strong>[TEST HTML]</strong> — simule le mail de confirmation stagiaire (HTML + pièce jointe PDF)</li>
+			<li><strong>[TEST PLAIN]</strong> — simule le mail luthier (texte brut + pièce jointe PDF)</li>
+		</ul>
+		<p>Comparez les deux dans votre boîte de réception pour vérifier que les pièces jointes et le formatage fonctionnent.</p>
+		<form method="post">
+			<?php wp_nonce_field( 'stluth_test_email_nonce' ); ?>
+			<input type="hidden" name="stluth_send_test" value="1">
+			<?php submit_button( 'Envoyer les emails de test', 'secondary', 'submit_test', false ); ?>
 		</form>
 	</div>
 	<?php
