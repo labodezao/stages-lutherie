@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF + JSON joints) et un
  *              email de confirmation au stagiaire (avec PDF + JSON joints).
- * Version:     1.9
+ * Version:     2.0
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '1.9' );
+define( 'STLUTH_API_VERSION', '2.0' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -242,6 +242,194 @@ function stluth_default_email_html() {
 }
 endif; // function_exists stluth_default_email_html
 
+/* ── English default email template ── */
+if ( ! function_exists( 'stluth_default_email_html_en' ) ) :
+function stluth_default_email_html_en() {
+	return '<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration confirmation — Diatonic accordion building workshop</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f0eb;font-family:Georgia,\'Times New Roman\',serif;">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0eb;padding:30px 10px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+
+        <!-- HEADER -->
+        <tr>
+          <td style="background-color:#3E2723;padding:32px 40px;text-align:center;">
+            <p style="margin:0 0 4px 0;font-family:Georgia,serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D4A017;">✦ Lutherie workshop · 2026 ✦</p>
+            <h1 style="margin:8px 0 6px 0;font-family:Georgia,serif;font-size:26px;font-weight:normal;color:#ffffff;letter-spacing:1px;">Ewen Daviau</h1>
+            <p style="margin:0;font-family:Georgia,serif;font-size:13px;color:#F5D061;font-style:italic;">Diatonic accordion building</p>
+          </td>
+        </tr>
+
+        <!-- TITLE BANNER -->
+        <tr>
+          <td style="background-color:#D4A017;padding:12px 40px;text-align:center;">
+            <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#3E2723;font-weight:bold;">Registration confirmation</p>
+          </td>
+        </tr>
+
+        <!-- GREETING -->
+        <tr>
+          <td style="padding:36px 40px 20px 40px;">
+            <p style="margin:0 0 16px 0;font-size:16px;color:#2c2c2c;line-height:1.6;">Hello <strong>{nom}</strong>,</p>
+            <p style="margin:0;font-size:15px;color:#2c2c2c;line-height:1.7;">
+              Thank you for registering for the diatonic accordion building workshop!
+              Your registration has been received. Here is a summary of your registration
+              along with the information needed to confirm it.
+            </p>
+          </td>
+        </tr>
+
+        <!-- SUMMARY -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">Summary</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:20px;">
+                  <table role="presentation" width="100%" cellpadding="6" cellspacing="0">
+                    <tr>
+                      <td style="width:46%;font-size:13px;color:#7a6a55;font-family:Georgia,serif;vertical-align:top;">Chosen&nbsp;model</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;vertical-align:top;">{modele}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Session</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{session}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Deposit&nbsp;(40&nbsp;%)</td>
+                      <td style="font-size:16px;color:#3E2723;font-weight:bold;padding-top:10px;vertical-align:top;">{acompte}&nbsp;€</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- BANK DETAILS -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#fdf8ee;border-left:4px solid #D4A017;border-radius:0 4px 4px 0;">
+              <tr>
+                <td style="padding:18px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#7a6a55;font-family:Georgia,serif;">Bank details</p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.8;">{bank_details}</p>
+                  <p style="margin:14px 0 0 0;font-size:13px;color:#5a4a35;line-height:1.6;">
+                    ⚠️ Please include as transfer reference&nbsp;:
+                    <strong style="color:#3E2723;">STAGE-{nom}</strong>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- YOUR ACCORDION -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#f0ece6;border-radius:4px;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;border-radius:4px 4px 0 0;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🎵 Your accordion</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    During these 10 days, you will build your diatonic accordion from A to Z&nbsp;:
+                    cutting and assembling the case, mounting the reed block and mechanism,
+                    installing and tuning the reeds, making the bellows, and finishing touches.
+                    You leave with <strong>your own instrument</strong>.
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    No woodworking experience is required — just curiosity and motivation&nbsp;!
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ATTACHMENTS -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#fdf8ee;border:1px solid #e0d4c4;border-radius:4px;">
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#7a6a55;font-family:Georgia,serif;">📎 Attachments</p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.8;">
+                    📄 <strong>PDF summary</strong> — the full details of your registration<br>
+                    🎹 <strong>Keyboard layout</strong> (JSON) — the note layout of your accordion
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- INFO TEXT -->
+        <tr>
+          <td style="padding:0 40px 32px 40px;">
+            <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+              Your registration will be definitively confirmed upon receipt of the deposit.
+            </p>
+            <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+              For any questions, feel free to contact me&nbsp;:
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- SIGNATURE -->
+        <tr>
+          <td style="padding:0 40px 36px 40px;border-top:1px solid #e0d4c4;">
+            <p style="margin:24px 0 4px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">See you soon at the workshop&nbsp;!</p>
+            <p style="margin:0 0 4px 0;font-size:15px;color:#3E2723;font-family:Georgia,serif;font-weight:bold;">Ewen Daviau</p>
+            <p style="margin:0;font-size:13px;color:#7a6a55;line-height:1.7;">
+              9 rue Fernand de Magellan — 44600 Saint-Nazaire<br>
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a> —
+              <a href="https://ewendaviau.com" style="color:#D4A017;text-decoration:none;">ewendaviau.com</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- FOOTER -->
+        <tr>
+          <td style="background-color:#f0e8dc;padding:16px 40px;text-align:center;border-top:1px solid #e0d4c4;">
+            <p style="margin:0;font-size:11px;color:#a09080;line-height:1.6;">
+              This email was sent following your registration on
+              <a href="https://ewendaviau.com" style="color:#a09080;">ewendaviau.com</a>.
+              You can contact the workshop at any time to modify or cancel your registration.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>';
+}
+endif; // function_exists stluth_default_email_html_en
+
 /* ══════════════════════════════════════════════════════
    REST ENDPOINT
    ══════════════════════════════════════════════════════ */
@@ -288,6 +476,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$session  = sanitize_text_field( isset( $fields['session'] )      ? $fields['session']      : '' );
 	$acompte  = sanitize_text_field( isset( $fields['acompte'] )      ? $fields['acompte']      : '' );
 	$plan_lbl = sanitize_text_field( isset( $fields['planClavier'] )  ? $fields['planClavier']  : '' );
+	$lang     = sanitize_text_field( isset( $fields['lang'] )         ? $fields['lang']         : 'fr' );
 
 	/* ── WordPress option defaults ── */
 	$defaults = array(
@@ -302,16 +491,26 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$luthier_email = get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] );
 	$luthier_name  = get_option( 'stluth_luthier_name',  $defaults['stluth_luthier_name']  );
 	$bank_details  = get_option( 'stluth_bank_details',  $defaults['stluth_bank_details']  );
-	$conf_subject  = get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] );
 
-	/* HTML body : WP option (primary) → FTP file (legacy fallback) → built-in default */
-	$stored_body = get_option( 'stluth_confirmation_body', '' );
-	if ( ! empty( $stored_body ) ) {
-		$html_tpl = $stored_body;
-	} elseif ( file_exists( __DIR__ . '/email-confirmation-stagiaire.html' ) ) {
-		$html_tpl = file_get_contents( __DIR__ . '/email-confirmation-stagiaire.html' );
+	if ( $lang === 'en' ) {
+		$conf_subject = get_option( 'stluth_confirmation_subject_en', 'Registration confirmation — Diatonic accordion building workshop' );
+		$stored_body  = get_option( 'stluth_confirmation_body_en', '' );
+		if ( ! empty( $stored_body ) ) {
+			$html_tpl = $stored_body;
+		} else {
+			$html_tpl = function_exists( 'stluth_default_email_html_en' ) ? stluth_default_email_html_en() : stluth_default_email_html();
+		}
 	} else {
-		$html_tpl = stluth_default_email_html();
+		$conf_subject = get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] );
+		/* HTML body : WP option (primary) → FTP file (legacy fallback) → built-in default */
+		$stored_body = get_option( 'stluth_confirmation_body', '' );
+		if ( ! empty( $stored_body ) ) {
+			$html_tpl = $stored_body;
+		} elseif ( file_exists( __DIR__ . '/email-confirmation-stagiaire.html' ) ) {
+			$html_tpl = file_get_contents( __DIR__ . '/email-confirmation-stagiaire.html' );
+		} else {
+			$html_tpl = stluth_default_email_html();
+		}
 	}
 
 	/* Runtime corruption check: if the loaded template has no inline styles,
@@ -319,13 +518,17 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	   clean built-in default so the trainee receives a properly styled email. */
 	if ( stripos( $html_tpl, 'style=' ) === false ) {
 		error_log( '[Stages Lutherie] WARNING: email template has no style= attributes (corrupted). Using built-in default.' );
-		$html_tpl = stluth_default_email_html();
+		$html_tpl = ( $lang === 'en' && function_exists( 'stluth_default_email_html_en' ) )
+			? stluth_default_email_html_en()
+			: stluth_default_email_html();
 	}
 
 	/* ── Decode PDF to temp file ── */
 	$attachments  = array();
 	$pdf_path     = '';
 	$pdf_path_pdf = '';
+
+	error_log( '[Stages Lutherie] Received inscription: lang=' . $lang . ', pdfBase64 length=' . strlen( $pdf_base64 ) . ', planJson length=' . strlen( $plan_json ) );
 
 	if ( ! empty( $pdf_base64 ) ) {
 		$pdf_data = base64_decode( $pdf_base64, true );
@@ -337,6 +540,8 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 				$attachments[] = $pdf_path_pdf;
 			}
 		}
+	} else {
+		error_log( '[Stages Lutherie] WARNING: pdfBase64 is empty — no PDF attachment will be included. Check frontend buildPDF() and PHP post_max_size (current: ' . ini_get( 'post_max_size' ) . ').' );
 	}
 
 	/* ── Attach plan JSON if custom plan ── */
@@ -606,6 +811,25 @@ function stluth_version_migration() {
 		}
 	}
 
+	/* v2.0 — Force-reset corrupted French template (belt-and-suspenders for v1.9)
+	   and initialize English email template with built-in default. */
+	if ( version_compare( $db_version, '2.0', '<' ) ) {
+		/* French: force-reset if corrupted */
+		$stored_fr = get_option( 'stluth_confirmation_body', '' );
+		if ( ! empty( $stored_fr ) && stripos( $stored_fr, 'style=' ) === false ) {
+			if ( function_exists( 'stluth_default_email_html' ) ) {
+				update_option( 'stluth_confirmation_body', stluth_default_email_html() );
+				error_log( '[Stages Lutherie] v2.0 migration: French email template corrupted — replaced with default.' );
+			}
+		}
+		/* English: initialize with default if not yet set */
+		$stored_en = get_option( 'stluth_confirmation_body_en', '' );
+		if ( empty( $stored_en ) && function_exists( 'stluth_default_email_html_en' ) ) {
+			update_option( 'stluth_confirmation_body_en', stluth_default_email_html_en() );
+			error_log( '[Stages Lutherie] v2.0 migration: initialized English email template with default.' );
+		}
+	}
+
 	update_option( 'stluth_api_version', STLUTH_API_VERSION );
 	error_log( '[Stages Lutherie] Migrated to v' . STLUTH_API_VERSION );
 }
@@ -644,6 +868,8 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_confirmation_body',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
 	register_setting( 'stluth_inscription', 'stluth_luthier_subject',      array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_luthier_body',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_confirmation_subject_en', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_confirmation_body_en',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
 }
 
 endif; // function_exists stluth_register_settings
@@ -730,6 +956,13 @@ function stluth_render_settings_page() {
 		echo '<div class="notice notice-success is-dismissible"><p>✅ Corps de l\'email réinitialisé au modèle par défaut.</p></div>';
 	}
 
+	/* English template reset */
+	if ( isset( $_POST['stluth_reset_body_en'] ) && check_admin_referer( 'stluth_reset_body_en_nonce' ) ) {
+		$default_en = function_exists( 'stluth_default_email_html_en' ) ? stluth_default_email_html_en() : '';
+		update_option( 'stluth_confirmation_body_en', $default_en );
+		echo '<div class="notice notice-success is-dismissible"><p>✅ English email body reset to default template.</p></div>';
+	}
+
 	/* ── Send test email ── */
 	if ( isset( $_POST['stluth_send_test'] ) && check_admin_referer( 'stluth_test_email_nonce' ) ) {
 		$test_to = sanitize_email( get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] ) );
@@ -784,18 +1017,30 @@ function stluth_render_settings_page() {
 
 		$plain_sent = wp_mail( $test_to, '[TEST PLAIN] Nouvelle inscription — v' . STLUTH_API_VERSION, $plain_body, $test_headers_plain, $test_attachments );
 
+		/* Send English HTML test email */
+		$test_html_en = function_exists( 'stluth_default_email_html_en' ) ? stluth_default_email_html_en() : $test_html;
+		foreach ( $test_replacements as $k => $v ) {
+			$test_html_en = str_replace( $k, $v, $test_html_en );
+		}
+		if ( function_exists( 'stluth_strip_mso_conditionals' ) ) {
+			$test_html_en = stluth_strip_mso_conditionals( $test_html_en );
+		}
+		$en_sent = wp_mail( $test_to, '[TEST EN] Registration confirmation — v' . STLUTH_API_VERSION, $test_html_en, $test_headers_html, $test_attachments );
+
 		/* Cleanup */
 		@unlink( $test_pdf_path );
 
-		if ( $html_sent && $plain_sent ) {
-			echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>2 emails de test envoyés à ' . esc_html( $test_to ) . '</strong><br>'
-				. '📧 [TEST HTML] = simule le mail stagiaire (HTML + pièce jointe)<br>'
+		if ( $html_sent && $plain_sent && $en_sent ) {
+			echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>3 emails de test envoyés à ' . esc_html( $test_to ) . '</strong><br>'
+				. '📧 [TEST HTML] = simule le mail stagiaire FR (HTML + pièce jointe)<br>'
 				. '📩 [TEST PLAIN] = simule le mail luthier (texte brut + pièce jointe)<br>'
-				. 'Vérifiez votre boîte de réception et comparez les deux !</p></div>';
+				. '🇬🇧 [TEST EN] = simule le mail stagiaire EN (HTML + pièce jointe)<br>'
+				. 'Vérifiez votre boîte de réception et comparez les trois !</p></div>';
 		} else {
 			$msg = '';
-			if ( ! $html_sent ) { $msg .= '❌ Email HTML (stagiaire) a ÉCHOUÉ. '; }
+			if ( ! $html_sent ) { $msg .= '❌ Email HTML FR (stagiaire) a ÉCHOUÉ. '; }
 			if ( ! $plain_sent ) { $msg .= '❌ Email texte (luthier) a ÉCHOUÉ. '; }
+			if ( ! $en_sent ) { $msg .= '❌ Email HTML EN (stagiaire) a ÉCHOUÉ. '; }
 			echo '<div class="notice notice-error is-dismissible"><p>' . $msg . 'Consultez le debug.log WordPress pour plus de détails.</p></div>';
 		}
 	}
@@ -868,6 +1113,35 @@ function stluth_render_settings_page() {
 					</td>
 				</tr>
 			</table>
+
+			<hr style="margin:32px 0 24px;">
+			<h2 style="font-size:1.1rem;">🇬🇧 Email de confirmation stagiaire (English)</h2>
+			<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
+				<small style="color:#555;">Same variables available:
+				<code>{nom}</code>, <code>{modele}</code>, <code>{session}</code>,
+				<code>{acompte}</code>, <code>{bank_details}</code>,
+				<code>{email}</code>, <code>{telephone}</code><br>
+				This template is used when the English inscription form sends <code>lang=en</code>.</small>
+			</div>
+			<table class="form-table">
+				<tr>
+					<th scope="row">Subject (English)</th>
+					<td><input type="text" name="stluth_confirmation_subject_en" value="<?php echo esc_attr( get_option( 'stluth_confirmation_subject_en', 'Registration confirmation — Diatonic accordion building workshop' ) ); ?>" class="large-text"></td>
+				</tr>
+				<tr>
+					<th scope="row">Email body (English)<br><small style="font-weight:normal;">(full HTML)</small></th>
+					<td>
+						<?php
+						$current_body_en = get_option( 'stluth_confirmation_body_en', '' );
+						$body_en_for_display = ! empty( $current_body_en ) ? $current_body_en : ( function_exists( 'stluth_default_email_html_en' ) ? stluth_default_email_html_en() : '' );
+						?>
+						<textarea name="stluth_confirmation_body_en" rows="30" class="large-text code" style="font-family:monospace;font-size:12px;"><?php echo esc_textarea( $body_en_for_display ); ?></textarea>
+						<p class="description">
+							Full HTML email sent to English-speaking trainees. Uses the same variables as the French version.
+						</p>
+					</td>
+				</tr>
+			</table>
 			<?php submit_button( 'Enregistrer les réglages' ); ?>
 		</form>
 
@@ -879,13 +1153,19 @@ function stluth_render_settings_page() {
 			<input type="hidden" name="stluth_reset_body" value="1">
 			<?php submit_button( 'Réinitialiser au modèle par défaut', 'secondary', 'submit_reset', false ); ?>
 		</form>
+		<form method="post" style="margin-top:8px;">
+			<?php wp_nonce_field( 'stluth_reset_body_en_nonce' ); ?>
+			<input type="hidden" name="stluth_reset_body_en" value="1">
+			<?php submit_button( 'Reset English template to default', 'secondary', 'submit_reset_en', false ); ?>
+		</form>
 
 		<hr style="margin:32px 0 24px;">
 		<h2 style="font-size:1rem;">🧪 Envoyer un email de test</h2>
-		<p>Envoie <strong>2 emails de test</strong> à l'adresse luthier ci-dessus :</p>
+		<p>Envoie <strong>3 emails de test</strong> à l'adresse luthier ci-dessus :</p>
 		<ul style="list-style:disc;margin-left:20px;">
-			<li><strong>[TEST HTML]</strong> — simule le mail de confirmation stagiaire (HTML + pièce jointe PDF)</li>
+			<li><strong>[TEST HTML]</strong> — simule le mail de confirmation stagiaire FR (HTML + pièce jointe PDF)</li>
 			<li><strong>[TEST PLAIN]</strong> — simule le mail luthier (texte brut + pièce jointe PDF)</li>
+			<li><strong>[TEST EN]</strong> — simule le mail de confirmation stagiaire EN (HTML + pièce jointe PDF)</li>
 		</ul>
 		<p>Comparez les deux dans votre boîte de réception pour vérifier que les pièces jointes et le formatage fonctionnent.</p>
 		<form method="post">
