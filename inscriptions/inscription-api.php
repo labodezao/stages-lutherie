@@ -340,7 +340,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		}
 	}
 
-	error_log( '[Stages Lutherie] Attachments built: ' . count( $attachments ) . ' file(s) — ' . implode( ', ', $attachments ) );
+	error_log( '[Stages Lutherie] Attachments built: ' . count( $attachments ) . ' file(s) — ' . implode( ', ', array_map( 'basename', $attachments ) ) );
 
 	/* ── Variable replacements (used in both emails) ── */
 	$replacements = array(
@@ -396,7 +396,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	);
 
 	/* Log attachment details for debugging */
-	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $attachments ) . ' attachment(s): ' . implode( ', ', $attachments ) );
+	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $attachments ) ) );
 
 	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
 	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $attachments );
