@@ -62,7 +62,6 @@ function stluth_default_email_html() {
 </head>
 <body style="margin:0;padding:0;background-color:#f5f0eb;font-family:Georgia,\'Times New Roman\',serif;">
 
-<!--[if mso]><table width="600" align="center" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0eb;padding:30px 10px;">
   <tr>
     <td align="center">
@@ -233,7 +232,6 @@ function stluth_default_email_html() {
     </td>
   </tr>
 </table>
-<!--[if mso]></td></tr></table><![endif]-->
 
 </body>
 </html>';
@@ -400,6 +398,26 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	/* Log attachment details for debugging */
 	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $attachments ) ) );
+
+	/* Belt-and-suspenders: force-add attachments via phpmailer_init
+	   in case a plugin or wp_mail filter strips them from HTML emails.
+	   This ensures the trainee always receives the PDF + JSON. */
+	if ( ! empty( $attachments ) ) {
+		$stluth_trainee_atts = $attachments;
+		add_action( 'phpmailer_init', $stluth_force_atts = function ( $phpmailer ) use ( $stluth_trainee_atts, &$stluth_force_atts ) {
+			$existing = array();
+			foreach ( $phpmailer->getAttachments() as $a ) {
+				$existing[] = $a[0];
+			}
+			foreach ( $stluth_trainee_atts as $att ) {
+				if ( file_exists( $att ) && ! in_array( $att, $existing, true ) ) {
+					$phpmailer->addAttachment( $att );
+				}
+			}
+			/* Self-remove — this hook is for the trainee email only */
+			remove_action( 'phpmailer_init', $stluth_force_atts, 99999 );
+		}, 99999 );
+	}
 
 	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
 	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $attachments );

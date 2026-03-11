@@ -1382,6 +1382,13 @@ async function loadPreset(key){
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
   // Reset lhRows to 1 row matching bass count
   CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
+  // Auto-set display mode: paired (alterné) for ≤18 basses, separated for 24+
+  const _nBas=CFG.notes.basses?CFG.notes.basses.length:0;
+  const _autoMode=_nBas<=18?'paired':'separated';
+  const _autoEl=document.getElementById('lh-'+_autoMode);
+  if(_autoEl)_autoEl.checked=true;
+  const _dw=document.getElementById('lh-paired-dir-wrap');
+  if(_dw)_dw.style.display=_autoMode==='paired'?'block':'none';
   document.getElementById('nb-rangees').value=p.nbRangees;
   syncGaucheInputs();
   renderRangeesCfg();renderLhRowsCfg();generateInputGrid();onAnyChange();

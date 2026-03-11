@@ -172,6 +172,8 @@ function buildSVG_Gauche(data,dark){
   const numTx=dark?'rgba(200,162,39,.55)':'rgba(99,102,241,.55)';
   const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(55,48,163,.5)';
   const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(146,64,14,.5)';
+  const bassLbl=dark?'#5aa0d0':'#1D4ED8';
+  const accLbl=dark?'#d09040':'#B45309';
 
   // Paired mode: B1 A1 B2 A2 / B3 A3 B4 A4 / … (PPROW pairs per display row)
   if(data.lhDisplayMode==='paired'){
@@ -179,8 +181,6 @@ function buildSVG_Gauche(data,dark){
     const nPairs=Math.max(data.basses.length,data.accords.length);
     const nDispRows=Math.ceil(nPairs/PPROW);
     const nCols=PPROW*2;
-    const bassLbl=dark?'#5aa0d0':'#1D4ED8';
-    const accLbl=dark?'#d09040':'#B45309';
     const gridCol=dark?'#3a3a3a':'#DDD6FE';
     const W=LPAD+nCols*HGAP+MARG;
     const H=MARG+HEAD+nDispRows*VGAP+FOOT;
@@ -203,8 +203,7 @@ function buildSVG_Gauche(data,dark){
           s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
           s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
           s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-          s+=tx(cx,cy+3.5,pi+1,7.5,numTx,'normal','middle');
-          s+=tx(cx-R+5,cy-R+8,lbl,7,lblCol,'bold','start');
+          s+=tx(cx-R+5,cy+R-4,lbl+(pi+1),6.5,lblCol,'bold','start');
           const btn2HasNotes=btn2&&(btn2.p||btn2.t);
           if(btn2HasNotes){
             if(btn.p)s+=svgBtnVal(btn.p,cx,cy-17,pushTx);
@@ -288,7 +287,8 @@ function buildSVG_Gauche(data,dark){
       s+=`<path d="M${cx-R},${cy} A${R},${R} 0 0,0 ${cx+R},${cy}" fill="${pullBg}"/>`;
       s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${stroke}" stroke-width="1.4"/>`;
       s+=`<line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="${stroke}" stroke-width=".5" opacity=".4"/>`;
-      s+=tx(cx,cy+3.5,bi+1,7.5,numTx,'normal','middle');
+      const btnLblCol=sec.type==='B'?bassLbl:sec.type==='A'?accLbl:gold;
+      s+=tx(cx-R+5,cy+R-4,sec.type+(bi+1),6.5,btnLblCol,'bold','start');
       const btn2HasNotes=has2&&btn2&&(btn2.p||btn2.t);
       if(btn2HasNotes){
         // 2-voice layout: V1 outer, V2 inner (closer to center divider)
@@ -465,14 +465,14 @@ function buildSVG_Plan(data,dark){
     let bIdx=0,aIdx=0;
     const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
     lhRowCfg.forEach((row,ri)=>{
-      accSecs.push({nom:lhRowCfg.length===1?t('accords'):(ri===0?t('accords'):`↳+${aIdx}`),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0});
+      accSecs.push({nom:lhRowCfg.length===1?t('accords'):(ri===0?t('accords'):`↳+${aIdx}`),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0,type:'A'});
       aIdx+=row.nb;
-      basSecs.push({nom:lhRowCfg.length===1?t('basses'):(ri===0?t('basses'):`↳+${bIdx}`),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0});
+      basSecs.push({nom:lhRowCfg.length===1?t('basses'):(ri===0?t('basses'):`↳+${bIdx}`),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0,type:'B'});
       bIdx+=row.nb;
     });
     if(data.lhBassFirst){ basSecs.forEach(s=>lhSecRows.push(s)); accSecs.forEach(s=>lhSecRows.push(s)); }
     else                { accSecs.forEach(s=>lhSecRows.push(s)); basSecs.forEach(s=>lhSecRows.push(s)); }
-    if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
+    if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0,type:'T'});
   }
 
   const nLH=lhSecRows.length;
@@ -646,18 +646,18 @@ function buildSVG_Plan(data,dark){
         const bandH=(sec.items.length-1)*BGAP+2*(R+3);
         s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
       }
-      // buttons + B/A markers
+      // buttons + B/A labels in bottom-left corner
       sec.items.forEach((btn,bi)=>{
         const cy=lhGridTop+off+bi*BGAP+BGAP/2;
         s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
         if(sec.interleavedTypes){
-          // interleaved mode: show B1/A1 markers
           const typ=sec.interleavedTypes[bi];
           const idx=sec.interleavedIndices?sec.interleavedIndices[bi]:'';
-          s+=tx(cx-R+4,cy-R-2,typ+idx,6,typ==='B'?bassLbl:accLbl,'bold','start');
+          s+=tx(cx-R+3,cy+R-3,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
+        }else if(sec.type){
+          const lblC=sec.type==='B'?bassLbl:sec.type==='A'?accLbl:gold;
+          s+=tx(cx-R+3,cy+R-3,sec.type+(bi+1),5.5,lblC,'bold','start');
         }
-        // button number inside each button (faint, centred)
-        s+=tx(cx,cy+3.5,bi+1,7,numTx,'normal','middle');
       });
     });
     // button numbers on the far right
