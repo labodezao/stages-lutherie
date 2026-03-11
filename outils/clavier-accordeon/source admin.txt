@@ -862,12 +862,18 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <div class="form-group"><label data-i="orderReedType">Type d&rsquo;anches</label>
           <input type="text" id="order-reed-type" placeholder="Ex : Tipo a mano" oninput="onAnyChange()"></div>
         <div class="form-group"><label data-i="orderTuning">La de référence (A4)</label>
-          <input type="text" id="order-tuning" list="tuning-list" value="440" placeholder="Ex : 440" oninput="onAnyChange()" style="width:100px;">
+          <input type="number" id="order-tuning" list="tuning-list" value="440" min="392" max="466" step="1" placeholder="Ex : 440" oninput="onAnyChange()" style="width:100px;">
           <datalist id="tuning-list">
-            <option value="440">440 Hz</option>
+            <option value="415">415 Hz (baroque)</option>
+            <option value="432">432 Hz (Verdi)</option>
+            <option value="435">435 Hz</option>
+            <option value="438">438 Hz</option>
+            <option value="440">440 Hz (standard)</option>
             <option value="441">441 Hz</option>
             <option value="442">442 Hz</option>
             <option value="443">443 Hz</option>
+            <option value="444">444 Hz</option>
+            <option value="446">446 Hz</option>
           </datalist> Hz</div>
         <div class="form-group"><label data-i="orderTremolo">Tremolo (± centièmes de Hz) <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Tremolo" data-tip="Écart de fréquence entre le rang naturel et le rang tremolo (en centièmes d'un demi-ton). Ex: ±7 Cents = vibrato lent doux. ±15 Cents = vibrato plus prononcé.&#10;—&#10;Frequency offset between natural and tremolo reed rows (in cents = 1/100 of a semitone). E.g. ±7 cents = gentle slow vibrato.">ⓘ</span></label>
           <input type="text" id="order-tremolo" placeholder="Ex : ± 7 Cents" oninput="onAnyChange()"></div>

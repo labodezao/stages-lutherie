@@ -1042,11 +1042,26 @@ function stluth_handle_inscription(WP_REST_Request $request) {
     }
 
     // Save PDF to temp file
+    $plan_json  = isset($data['planJson'])  ? (string) $data['planJson']  : '';
+
     $pdf_path = '';
     if (!empty($pdf_base64)) {
         $pdf_data = base64_decode($pdf_base64);
         $pdf_path = wp_tempnam('inscription_' . sanitize_file_name($nom) . '.pdf');
         file_put_contents($pdf_path, $pdf_data);
+    }
+
+    $attachments = array();
+    if (!empty($pdf_path)) { $attachments[] = $pdf_path; }
+
+    $json_path = '';
+    if (!empty($plan_json)) {
+        $json_path = wp_tempnam('plan_clavier_' . sanitize_file_name($nom)) . '.json';
+        if (file_put_contents($json_path, $plan_json) !== false) {
+            $attachments[] = $json_path;
+        } else {
+            $json_path = '';
+        }
     }
 
     $defaults = array(
@@ -1061,13 +1076,12 @@ function stluth_handle_inscription(WP_REST_Request $request) {
     $conf_subject  = get_option('stluth_confirmation_subject', $defaults['stluth_confirmation_subject']);
     $conf_body     = get_option('stluth_confirmation_body', $defaults['stluth_confirmation_body']);
 
-    // 1) Email to luthier with PDF
+    // 1) Email to luthier with PDF + JSON
     $luthier_subject = 'New workshop registration — ' . $nom;
     $luthier_body    = "New registration received:\n\nName: $nom\nEmail: $email\nPhone: $tel\nModel: $modele\nSession: $session\nDeposit: $acompte €\n\nThe PDF summary is attached.";
-    $attachments     = !empty($pdf_path) ? array($pdf_path) : array();
     wp_mail($luthier_email, $luthier_subject, $luthier_body, array(), $attachments);
 
-    // 2) Confirmation email to participant
+    // 2) Confirmation email to participant (with same attachments: PDF + JSON)
     $replacements = array(
         '{nom}'          => $nom,
         '{modele}'       => $modele,
@@ -1079,11 +1093,14 @@ function stluth_handle_inscription(WP_REST_Request $request) {
     );
     $conf_body    = str_replace(array_keys($replacements), array_values($replacements), $conf_body);
     $conf_subject = str_replace(array_keys($replacements), array_values($replacements), $conf_subject);
-    wp_mail($email, $conf_subject, $conf_body);
+    wp_mail($email, $conf_subject, $conf_body, array(), $attachments);
 
     // Cleanup
     if (!empty($pdf_path) && file_exists($pdf_path)) {
         unlink($pdf_path);
+    }
+    if (!empty($json_path) && file_exists($json_path)) {
+        unlink($json_path);
     }
 
     return new WP_REST_Response(array('success' => true, 'message' => 'Registration sent successfully!'), 200);

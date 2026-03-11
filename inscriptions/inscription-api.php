@@ -31,6 +31,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/* ── Log wp_mail failures for debugging ── */
+if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
+	add_action( 'wp_mail_failed', 'stluth_log_mail_error' );
+	function stluth_log_mail_error( $wp_error ) {
+		error_log( '[Stages Lutherie] wp_mail FAILED: ' . $wp_error->get_error_message() );
+		$data = $wp_error->get_error_data();
+		if ( ! empty( $data['to'] ) ) {
+			$to = is_array( $data['to'] ) ? implode( ', ', $data['to'] ) : $data['to'];
+			error_log( '[Stages Lutherie]   → To: ' . $to );
+		}
+		if ( ! empty( $data['subject'] ) ) {
+			error_log( '[Stages Lutherie]   → Subject: ' . $data['subject'] );
+		}
+	}
+endif;
+
 /* ══════════════════════════════════════════════════════
    HELPER — Default HTML email template
    ══════════════════════════════════════════════════════ */
@@ -276,6 +292,8 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
 		'stluth_bank_details'         => "IBAN : FR76 1380 7008 7907 0218 7398 930\nBIC : CCBPFRPPNAN\nTitulaire : Ewen Daviau",
 		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de fabrication d\'accordéon',
+		'stluth_luthier_subject'      => 'Nouvelle inscription stage — {nom}',
+		'stluth_luthier_body'         => "Nouvelle inscription reçue :\n\nNom : {nom}\nEmail : {email}\nTéléphone : {telephone}\nModèle : {modele}\nSession : {session}\nAcompte : {acompte} €\n\nLe récapitulatif PDF et le plan de clavier JSON sont joints.",
 	);
 
 	$luthier_email = get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] );
@@ -322,20 +340,25 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		}
 	}
 
-	/* ── Build all field lines for luthier email ── */
-	$field_lines = "Nouvelle inscription reçue :\n\n";
-	foreach ( $fields as $key => $val ) {
-		if ( ! empty( $val ) ) {
-			$field_lines .= sanitize_text_field( $key ) . ' : ' . sanitize_text_field( (string) $val ) . "\n";
-		}
-	}
-	if ( ! empty( $plan_json ) ) {
-		$field_lines .= "\n🗃️ Le fichier JSON du plan de clavier personnalisé est joint en pièce jointe.";
-	}
-	$field_lines .= "\n\nLe récapitulatif PDF est joint.";
+	error_log( '[Stages Lutherie] Attachments built: ' . count( $attachments ) . ' file(s) — ' . implode( ', ', $attachments ) );
+
+	/* ── Variable replacements (used in both emails) ── */
+	$replacements = array(
+		'{nom}'          => $nom,
+		'{email}'        => $email,
+		'{telephone}'    => $tel,
+		'{modele}'       => $modele,
+		'{session}'      => $session,
+		'{acompte}'      => $acompte,
+		'{bank_details}' => $bank_details,
+	);
 
 	/* ── Email to luthier ── */
-	$luthier_subject = 'Nouvelle inscription stage — ' . $nom;
+	$luthier_subj_tpl = get_option( 'stluth_luthier_subject', $defaults['stluth_luthier_subject'] );
+	$luthier_body_tpl = get_option( 'stluth_luthier_body',    $defaults['stluth_luthier_body'] );
+	$luthier_subject  = str_replace( array_keys( $replacements ), array_values( $replacements ), $luthier_subj_tpl );
+	$luthier_body     = str_replace( array_keys( $replacements ), array_values( $replacements ), $luthier_body_tpl );
+
 	$safe_luthier    = sanitize_email( $luthier_email );
 	$headers_luthier = array(
 		'Content-Type: text/plain; charset=UTF-8',
@@ -346,21 +369,14 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$luthier_sent = wp_mail(
 		$safe_luthier,
 		$luthier_subject,
-		$field_lines,
+		$luthier_body,
 		$headers_luthier,
 		$attachments
 	);
 
+	error_log( '[Stages Lutherie] Luthier email ' . ( $luthier_sent ? 'sent' : 'FAILED' ) . ' to ' . $safe_luthier );
+
 	/* ── Confirmation email to trainee (HTML) ── */
-	$replacements = array(
-		'{nom}'          => $nom,
-		'{modele}'       => $modele,
-		'{acompte}'      => $acompte,
-		'{session}'      => $session,
-		'{bank_details}' => $bank_details,
-		'{email}'        => $email,
-		'{telephone}'    => $tel,
-	);
 	$conf_subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_subject );
 
 	/* Replace variables — escape HTML values, bank_details newlines → <br> */
@@ -379,19 +395,16 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		'Reply-To: ' . $safe_luthier,
 	);
 
-	/* Verify temp files still exist before sending trainee email */
-	$trainee_attachments = array();
-	foreach ( $attachments as $att_path ) {
-		if ( file_exists( $att_path ) ) {
-			$trainee_attachments[] = $att_path;
-		}
-	}
+	/* Log attachment details for debugging */
+	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $attachments ) . ' attachment(s): ' . implode( ', ', $attachments ) );
 
 	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
-	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
+	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $attachments );
 
 	if ( ! $trainee_sent ) {
-		error_log( '[Stages Lutherie] Failed to send trainee confirmation email — ' . count( $trainee_attachments ) . ' attachment(s)' );
+		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );
+	} else {
+		error_log( '[Stages Lutherie] Trainee confirmation email sent successfully to ' . $email );
 	}
 
 	/* ── Cleanup temp files ── */
@@ -472,6 +485,8 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_bank_details',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_subject', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_body',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
+	register_setting( 'stluth_inscription', 'stluth_luthier_subject',      array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_luthier_body',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 }
 
 endif; // function_exists stluth_register_settings
@@ -501,6 +516,8 @@ function stluth_render_settings_page() {
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
 		'stluth_bank_details'         => "IBAN : FR76 1380 7008 7907 0218 7398 930\nBIC : CCBPFRPPNAN\nTitulaire : Ewen Daviau",
 		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de fabrication d\'accordéon',
+		'stluth_luthier_subject'      => 'Nouvelle inscription stage — {nom}',
+		'stluth_luthier_body'         => "Nouvelle inscription reçue :\n\nNom : {nom}\nEmail : {email}\nTéléphone : {telephone}\nModèle : {modele}\nSession : {session}\nAcompte : {acompte} €\n\nLe récapitulatif PDF et le plan de clavier JSON sont joints.",
 	);
 
 	/* Valeur courante du corps HTML — si vide, on propose le modèle par défaut */
@@ -517,16 +534,6 @@ function stluth_render_settings_page() {
 	<div class="wrap">
 		<h1>Réglages inscription stage</h1>
 
-		<div class="notice notice-info" style="padding:10px 16px;margin:16px 0 20px 0;">
-			<p style="margin:4px 0;">
-				<strong>📧 Email de confirmation stagiaire</strong> — tout est modifiable ici, aucun FTP nécessaire.<br>
-				<small style="color:#555;">Variables disponibles dans le corps de l'email :
-				<code>{nom}</code>, <code>{modele}</code>, <code>{session}</code>,
-				<code>{acompte}</code>, <code>{bank_details}</code>,
-				<code>{email}</code>, <code>{telephone}</code></small>
-			</p>
-		</div>
-
 		<form method="post" action="options.php">
 			<?php settings_fields( 'stluth_inscription' ); ?>
 			<table class="form-table">
@@ -541,6 +548,38 @@ function stluth_render_settings_page() {
 						<p class="description">Insérées dans l'email via la variable <code>{bank_details}</code>. Chaque retour à la ligne est conservé.</p>
 					</td>
 				</tr>
+			</table>
+
+			<hr style="margin:32px 0 24px;">
+			<h2 style="font-size:1.1rem;">📩 Email envoyé au luthier</h2>
+			<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
+				<small style="color:#555;">Variables disponibles :
+				<code>{nom}</code>, <code>{email}</code>, <code>{telephone}</code>,
+				<code>{modele}</code>, <code>{session}</code>, <code>{acompte}</code></small>
+			</div>
+			<table class="form-table">
+				<tr>
+					<th scope="row">Objet du mail luthier</th>
+					<td><input type="text" name="stluth_luthier_subject" value="<?php echo esc_attr( get_option( 'stluth_luthier_subject', $defaults['stluth_luthier_subject'] ) ); ?>" class="large-text"></td>
+				</tr>
+				<tr>
+					<th scope="row">Corps du mail luthier<br><small style="font-weight:normal;">(texte brut)</small></th>
+					<td>
+						<textarea name="stluth_luthier_body" rows="10" class="large-text code" style="font-family:monospace;font-size:13px;"><?php echo esc_textarea( get_option( 'stluth_luthier_body', $defaults['stluth_luthier_body'] ) ); ?></textarea>
+						<p class="description">Texte brut envoyé au luthier avec le PDF et JSON en pièces jointes. Utilisez les variables ci-dessus.</p>
+					</td>
+				</tr>
+			</table>
+
+			<hr style="margin:32px 0 24px;">
+			<h2 style="font-size:1.1rem;">📧 Email de confirmation stagiaire</h2>
+			<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
+				<small style="color:#555;">Variables disponibles :
+				<code>{nom}</code>, <code>{modele}</code>, <code>{session}</code>,
+				<code>{acompte}</code>, <code>{bank_details}</code>,
+				<code>{email}</code>, <code>{telephone}</code></small>
+			</div>
+			<table class="form-table">
 				<tr>
 					<th scope="row">Objet du mail de confirmation</th>
 					<td><input type="text" name="stluth_confirmation_subject" value="<?php echo esc_attr( get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] ) ); ?>" class="large-text"></td>
