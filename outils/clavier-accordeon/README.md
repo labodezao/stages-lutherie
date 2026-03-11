@@ -12,7 +12,49 @@
 
 ---
 
-## Deux pages WordPress
+## ⭐ Déploiement WordPress — fichiers à uploader sur le serveur
+
+Le système utilise **trois types de fichiers** côté serveur, tous dans le même dossier :
+
+```
+wp-content/
+  mu-plugins/
+    presets-api.php          ← à copier UNE SEULE FOIS (mu-plugin)
+  uploads/
+    presets/
+      ca-svg.js              ← bibliothèque SVG partagée (copie de outils/clavier-accordeon/ca-svg.js)
+      index.json             ← liste des présets
+      GCD33.json             ← preset Sol/Do 33 boutons
+      … autres présets …
+```
+
+### Étape 1 — Installer le mu-plugin (une seule fois)
+
+Copier `presets-api.php` dans `wp-content/mu-plugins/` via FTP.  
+Il se chargera automatiquement à chaque page WordPress.
+
+### Étape 2 — Uploader `ca-svg.js` dans le dossier presets (une seule fois)
+
+`ca-svg.js` est la **bibliothèque SVG partagée** utilisée par toutes les pages :
+- la page outil admin
+- la page stagiaires
+- les formulaires d'inscription
+
+**Où ?** → `wp-content/uploads/presets/ca-svg.js`  
+**Source ?** → copie du fichier `outils/clavier-accordeon/ca-svg.js` de ce dépôt  
+
+> Le mu-plugin détecte automatiquement ce fichier et le charge sur toutes les pages.  
+> Si le fichier est absent, le rendu SVG des présets sera désactivé silencieusement.
+
+### Étape 3 — Uploader les présets
+
+Copier le dossier `presets/` de ce dépôt dans `wp-content/uploads/presets/` :
+- `index.json` (liste) + tous les fichiers `*.json` (données)
+- Quand vous créez un nouveau préset depuis l'outil admin, il est sauvegardé automatiquement via l'API (pas besoin de FTP)
+
+---
+
+
 
 | Page | Fichier à importer | Qui y accède ? | Basé sur |
 |---|---|---|---|
@@ -47,6 +89,7 @@ C'est la méthode la plus simple : les présets vivent en dehors du code WordPre
 **Structure du dossier FTP :**
 ```
 presets/
+  ca-svg.js           ← ⭐ bibliothèque SVG partagée — OBLIGATOIRE (copie de outils/clavier-accordeon/ca-svg.js)
   index.json          ← liste des présets [{id, label, category}, …]
   GC21.json           ← données du preset Sol/Do 21 boutons
   MonPreset.json      ← vos présets personnalisés
