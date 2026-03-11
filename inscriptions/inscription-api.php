@@ -805,15 +805,57 @@ function stluth_save_registration( $fields, $pdf_path = '', $plan_json = '' ) {
 		}
 	}
 
-	/* Persist keyboard plan JSON */
+	/* Persist keyboard plan JSON — both in meta AND as a file on disk */
 	if ( ! empty( $plan_json ) ) {
 		update_post_meta( $post_id, '_stluth_plan_json', $plan_json );
+
+		/* Save .json file next to the PDF for backup / security */
+		$upload_dir_j = wp_upload_dir();
+		$year_j       = wp_date( 'Y' );
+		$dest_dir_j   = $upload_dir_j['basedir'] . '/inscriptions/' . $year_j;
+		if ( ! file_exists( $dest_dir_j ) ) {
+			wp_mkdir_p( $dest_dir_j );
+		}
+		$safe_name_j  = sanitize_file_name( $nom );
+		$json_filename = 'plan_clavier_' . $safe_name_j . '_' . $post_id . '.json';
+		$json_dest     = $dest_dir_j . '/' . $json_filename;
+
+		if ( file_put_contents( $json_dest, $plan_json ) !== false ) {
+			$json_url = $upload_dir_j['baseurl'] . '/inscriptions/' . $year_j . '/' . $json_filename;
+			update_post_meta( $post_id, '_stluth_json_path', $json_dest );
+			update_post_meta( $post_id, '_stluth_json_url',  $json_url );
+		}
 	}
 
 	return $post_id;
 }
 
 endif; // function_exists stluth_save_registration
+
+/* ── Delete associated files when an inscription is permanently deleted ── */
+
+if ( ! function_exists( 'stluth_delete_inscription_files' ) ) :
+
+add_action( 'before_delete_post', 'stluth_delete_inscription_files', 10, 1 );
+
+function stluth_delete_inscription_files( $post_id ) {
+	if ( 'stluth_inscription' !== get_post_type( $post_id ) ) {
+		return;
+	}
+
+	$files = array(
+		get_post_meta( $post_id, '_stluth_pdf_path',  true ),
+		get_post_meta( $post_id, '_stluth_json_path', true ),
+	);
+
+	foreach ( $files as $file ) {
+		if ( ! empty( $file ) && file_exists( $file ) ) {
+			@unlink( $file );
+		}
+	}
+}
+
+endif; // function_exists stluth_delete_inscription_files
 
 /* ── Admin columns for the inscription list ── */
 

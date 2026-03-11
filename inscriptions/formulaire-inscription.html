@@ -945,170 +945,21 @@ var STAGE_CONFIG = {
 <!-- wp:html -->
 <!--
   ┌──────────────────────────────────────────────────────────────┐
-  │  WordPress functions.php snippet — COPY THIS BLOCK          │
-  │  (or paste it in the "Code Snippets" plugin)                │
+  │  SERVEUR : copier inscription-api.php                       │
+  │  dans wp-content/mu-plugins/inscription-api.php             │
+  │                                                              │
+  │  Ce fichier contient :                                       │
+  │    • endpoint REST POST /stages-lutherie/v1/inscription      │
+  │    • envoi email luthier (PDF+JSON joints)                   │
+  │    • envoi email HTML stagiaire (PDF+JSON joints)            │
+  │    • sauvegarde inscription en base (CPT stluth_inscription) │
+  │    • stockage permanent PDF + JSON sur disque                │
+  │    • suppression des fichiers à la suppression du post       │
+  │    • page de réglages (Réglages → Inscription Stage)         │
+  │    • admin columns, detail view, statuts personnalisés       │
+  │                                                              │
+  │  NE PAS copier de code PHP ici — tout est dans le mu-plugin │
   └──────────────────────────────────────────────────────────────┘
-
-<?php
-/**
- * Stages Lutherie — Inscription REST endpoint
- * Handles form submission with PDF attachment.
- *
- * Sends:
- *   1) Email to luthier with PDF recap attached
- *   2) Confirmation email to trainee with bank details
- *
- * Editable settings in WordPress: Settings → Inscription Stage
- */
-
-// ── Settings page ──
-add_action('admin_menu', function () {
-    add_options_page(
-        'Inscription Stage',
-        'Inscription Stage',
-        'manage_options',
-        'inscription-stage',
-        'stluth_inscription_settings_page'
-    );
-});
-
-add_action('admin_init', function () {
-    register_setting('stluth_inscription', 'stluth_luthier_email');
-    register_setting('stluth_inscription', 'stluth_bank_details');
-    register_setting('stluth_inscription', 'stluth_confirmation_subject');
-    register_setting('stluth_inscription', 'stluth_confirmation_body');
-});
-
-function stluth_inscription_settings_page() {
-    $defaults = array(
-        'stluth_luthier_email'       => 'contact@ewendaviau.com',
-        'stluth_bank_details'        => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-        'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
-        'stluth_confirmation_body'   => "Bonjour {nom},\n\nMerci pour votre inscription au stage de lutherie !\n\nVoici les informations pour valider votre inscription :\n\n📋 Modèle choisi : {modele}\n💰 Acompte à verser (40 %) : {acompte} €\n📅 Session : {session}\n\n🏦 Coordonnées bancaires :\n{bank_details}\n\n⚠️ Merci d'indiquer en référence de virement : STAGE-{nom}\n\nVotre inscription sera confirmée dès réception de l'acompte.\n\nÀ très bientôt à l'atelier !\n\nEwen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\ncontact@ewendaviau.com\newendaviau.com",
-    );
-    ?>
-    <div class="wrap">
-        <h1>Inscription Stage — Paramètres</h1>
-        <form method="post" action="options.php">
-            <?php settings_fields('stluth_inscription'); ?>
-            <table class="form-table">
-                <tr>
-                    <th>Email du luthier</th>
-                    <td><input type="email" name="stluth_luthier_email" value="<?php echo esc_attr(get_option('stluth_luthier_email', $defaults['stluth_luthier_email'])); ?>" class="regular-text"></td>
-                </tr>
-                <tr>
-                    <th>Coordonnées bancaires</th>
-                    <td><textarea name="stluth_bank_details" rows="4" class="large-text"><?php echo esc_textarea(get_option('stluth_bank_details', $defaults['stluth_bank_details'])); ?></textarea></td>
-                </tr>
-                <tr>
-                    <th>Objet du mail de confirmation</th>
-                    <td><input type="text" name="stluth_confirmation_subject" value="<?php echo esc_attr(get_option('stluth_confirmation_subject', $defaults['stluth_confirmation_subject'])); ?>" class="large-text"></td>
-                </tr>
-                <tr>
-                    <th>Corps du mail de confirmation</th>
-                    <td>
-                        <textarea name="stluth_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea(get_option('stluth_confirmation_body', $defaults['stluth_confirmation_body'])); ?></textarea>
-                        <p class="description">Variables : {nom}, {modele}, {acompte}, {session}, {bank_details}, {email}, {telephone}</p>
-                    </td>
-                </tr>
-            </table>
-            <?php submit_button(); ?>
-        </form>
-    </div>
-    <?php
-}
-
-// ── REST endpoint ──
-add_action('rest_api_init', function () {
-    register_rest_route('stages-lutherie/v1', '/inscription', array(
-        'methods'  => 'POST',
-        'callback' => 'stluth_handle_inscription',
-        'permission_callback' => '__return_true',
-    ));
-});
-
-function stluth_handle_inscription(WP_REST_Request $request) {
-    $data       = $request->get_json_params();
-    $fields     = isset($data['fields']) ? $data['fields'] : array();
-    $pdf_base64 = isset($data['pdfBase64']) ? $data['pdfBase64'] : '';
-
-    $nom     = sanitize_text_field(isset($fields['nom']) ? $fields['nom'] : '');
-    $email   = sanitize_email(isset($fields['email']) ? $fields['email'] : '');
-    $modele  = sanitize_text_field(isset($fields['modele']) ? $fields['modele'] : '');
-    $acompte = sanitize_text_field(isset($fields['acompte']) ? $fields['acompte'] : '');
-    $session = sanitize_text_field(isset($fields['session']) ? $fields['session'] : '');
-    $tel     = sanitize_text_field(isset($fields['telephone']) ? $fields['telephone'] : '');
-
-    if (empty($nom) || empty($email)) {
-        return new WP_REST_Response(array('success' => false, 'message' => 'Nom et email requis.'), 400);
-    }
-
-    // Save PDF to temp file
-    $plan_json  = isset($data['planJson'])  ? (string) $data['planJson']  : '';
-
-    $pdf_path = '';
-    if (!empty($pdf_base64)) {
-        $pdf_data = base64_decode($pdf_base64);
-        $pdf_path = wp_tempnam('inscription_' . sanitize_file_name($nom) . '.pdf');
-        file_put_contents($pdf_path, $pdf_data);
-    }
-
-    $attachments = array();
-    if (!empty($pdf_path)) { $attachments[] = $pdf_path; }
-
-    $json_path = '';
-    if (!empty($plan_json)) {
-        $json_path = wp_tempnam('plan_clavier_' . sanitize_file_name($nom)) . '.json';
-        if (file_put_contents($json_path, $plan_json) !== false) {
-            $attachments[] = $json_path;
-        } else {
-            $json_path = '';
-        }
-    }
-
-    $defaults = array(
-        'stluth_luthier_email'        => 'contact@ewendaviau.com',
-        'stluth_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-        'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de lutherie 2026',
-        'stluth_confirmation_body'    => "Bonjour {nom},\n\nMerci pour votre inscription !",
-    );
-
-    $luthier_email = get_option('stluth_luthier_email', $defaults['stluth_luthier_email']);
-    $bank_details  = get_option('stluth_bank_details', $defaults['stluth_bank_details']);
-    $conf_subject  = get_option('stluth_confirmation_subject', $defaults['stluth_confirmation_subject']);
-    $conf_body     = get_option('stluth_confirmation_body', $defaults['stluth_confirmation_body']);
-
-    // 1) Email to luthier with PDF + JSON
-    $luthier_subject = 'Nouvelle inscription stage — ' . $nom;
-    $luthier_body    = "Nouvelle inscription reçue :\n\nNom : $nom\nEmail : $email\nTéléphone : $tel\nModèle : $modele\nSession : $session\nAcompte : $acompte €\n\nLe récapitulatif PDF est joint.";
-    wp_mail($luthier_email, $luthier_subject, $luthier_body, array(), $attachments);
-
-    // 2) Confirmation email to trainee (with same attachments: PDF + JSON)
-    $replacements = array(
-        '{nom}'          => $nom,
-        '{modele}'       => $modele,
-        '{acompte}'      => $acompte,
-        '{session}'      => $session,
-        '{bank_details}' => $bank_details,
-        '{email}'        => $email,
-        '{telephone}'    => $tel,
-    );
-    $conf_body    = str_replace(array_keys($replacements), array_values($replacements), $conf_body);
-    $conf_subject = str_replace(array_keys($replacements), array_values($replacements), $conf_subject);
-    wp_mail($email, $conf_subject, $conf_body, array(), $attachments);
-
-    // Cleanup
-    if (!empty($pdf_path) && file_exists($pdf_path)) {
-        unlink($pdf_path);
-    }
-    if (!empty($json_path) && file_exists($json_path)) {
-        unlink($json_path);
-    }
-
-    return new WP_REST_Response(array('success' => true, 'message' => 'Inscription envoyée avec succès !'), 200);
-}
-?>
-
 -->
 
 <script src="../outils/clavier-accordeon/ca-svg.js"></script>
