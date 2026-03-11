@@ -861,7 +861,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <input type="number" id="order-qty" min="1" value="1" oninput="onAnyChange()" style="width:80px;"></div>
         <div class="form-group"><label data-i="orderReedType">Type d&rsquo;anches</label>
           <input type="text" id="order-reed-type" placeholder="Ex : Tipo a mano" oninput="onAnyChange()"></div>
-        <div class="form-group"><label data-i="orderTuning">Accord de base</label>
+        <div class="form-group"><label data-i="orderTuning">La de référence (A4)</label>
           <select id="order-tuning" onchange="onAnyChange()">
             <option value="440">440 Hz</option>
             <option value="441">441 Hz</option>
@@ -1123,7 +1123,7 @@ fr:{
   downloadAll:'⬇️ Télécharger tout (.json)',loadedFrom:(n)=>`✓ ${n} instrument(s) chargé(s).`,
   // Order spec section
   orderSpecTitle:'📋 Spécifications commande fabricant (checklist Voci Armoniche)',
-  orderQty:'Quantité',orderReedType:'Type d\'anches',orderTuning:'Accord de base',
+  orderQty:'Quantité',orderReedType:'Type d\'anches',orderTuning:'La de r\u00e9f\u00e9rence (A4)',
   orderTremolo:'Tremolo (± centièmes Hz)',orderHarmony:'Harmonie',
   orderBassType:'Type de basses',orderBassComp:'Composition basses',
   orderSpecHelp:'Ces champs apparaissent dans l\'en-tête du bon de commande fabricant.',
@@ -1132,7 +1132,7 @@ fr:{
   clQty:'Quantité',clReedType:'Type d\'anches',
   clDesc:'Description générale (touches/accords)',clDescHint:'touches mélodie / nb basses',
   clTonality:'Tonalité (clé)',clRowSpec:'Spécification rangées',
-  clTuning:'Accord de base',clTremolo:'Tremolo',
+  clTuning:'La de r\u00e9f\u00e9rence (A4)',clTremolo:'Tremolo',
   clHarmony:'Harmonie',clBassType:'Type de basses',
   clBassComp:'Composition basses',clVoices:'Nombre de voix (main droite)',clVoicesLH:'Nombre de voix (main gauche)',clLuthier:'Luthier / Date',
   voicesLH:'Voix main gauche (anches)',
@@ -1211,7 +1211,7 @@ en:{
   downloadAll:'⬇️ Download all (.json)',loadedFrom:(n)=>`✓ ${n} instrument(s) loaded.`,
   // Order spec section
   orderSpecTitle:'📋 Manufacturer order specifications (Voci Armoniche checklist)',
-  orderQty:'Quantity',orderReedType:'Reed type',orderTuning:'Base tuning',
+  orderQty:'Quantity',orderReedType:'Reed type',orderTuning:'Reference A (A4)',
   orderTremolo:'Tremolo (± cents)',orderHarmony:'Harmony',
   orderBassType:'Bass type',orderBassComp:'Bass composition',
   orderSpecHelp:'These fields appear in the manufacturer order form header.',
@@ -1220,7 +1220,7 @@ en:{
   clQty:'Quantity',clReedType:'Reed type',
   clDesc:'General description (keys/chords)',clDescHint:'melody keys / nb basses',
   clTonality:'Key tonality',clRowSpec:'Row specification',
-  clTuning:'Base tuning',clTremolo:'Tremolo',
+  clTuning:'Reference A (A4)',clTremolo:'Tremolo',
   clHarmony:'Harmony',clBassType:'Bass type',
   clBassComp:'Bass composition',clVoices:'Number of voices (right hand)',clVoicesLH:'Number of voices (left hand)',clLuthier:'Luthier / Date',
   voicesLH:'Left hand voices (reeds)',
