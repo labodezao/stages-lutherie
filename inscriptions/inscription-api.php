@@ -404,7 +404,8 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	   This ensures the trainee always receives the PDF + JSON. */
 	if ( ! empty( $attachments ) ) {
 		$stluth_trainee_atts = $attachments;
-		add_action( 'phpmailer_init', $stluth_force_atts = function ( $phpmailer ) use ( $stluth_trainee_atts, &$stluth_force_atts ) {
+		$stluth_force_atts   = null;
+		$stluth_force_atts   = function ( $phpmailer ) use ( $stluth_trainee_atts, &$stluth_force_atts ) {
 			$existing = array();
 			foreach ( $phpmailer->getAttachments() as $a ) {
 				$existing[] = $a[0];
@@ -416,7 +417,8 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 			}
 			/* Self-remove — this hook is for the trainee email only */
 			remove_action( 'phpmailer_init', $stluth_force_atts, 99999 );
-		}, 99999 );
+		};
+		add_action( 'phpmailer_init', $stluth_force_atts, 99999 );
 	}
 
 	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
