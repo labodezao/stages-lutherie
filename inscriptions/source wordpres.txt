@@ -1690,7 +1690,7 @@ function stluth_handle_inscription(WP_REST_Request $request) {
     if (planCategory === '2 rangs 8b') {
       /* Irlandais vs standard 2 rangs */
       if (planLabel?.toLowerCase().indexOf('irlandais') >= 0) return 'Irish';
-      return '\u2013';
+      return planLabel || planCategory;
     }
     /* 3 rangs 18b, 3 rangs 24b — le label contient déjà l'info de disposition */
     return planLabel || planCategory;
