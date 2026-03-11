@@ -342,6 +342,27 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	error_log( '[Stages Lutherie] Attachments built: ' . count( $attachments ) . ' file(s) — ' . implode( ', ', array_map( 'basename', $attachments ) ) );
 
+	/* ── Persist registration in database ── */
+	if ( function_exists( 'stluth_save_registration' ) ) {
+		$reg_id = stluth_save_registration( $fields, $pdf_path_pdf, $plan_json );
+		if ( is_wp_error( $reg_id ) ) {
+			error_log( '[Stages Lutherie] Failed to save registration: ' . $reg_id->get_error_message() );
+		} else {
+			error_log( '[Stages Lutherie] Registration saved as post #' . $reg_id );
+			/* If the PDF was permanently saved, use that copy for attachments
+			   so the email attachment survives any temp-file cleanup race. */
+			$perm_pdf = get_post_meta( $reg_id, '_stluth_pdf_path', true );
+			if ( ! empty( $perm_pdf ) && file_exists( $perm_pdf ) ) {
+				/* Replace the temp PDF with the permanent copy in attachments */
+				$idx = array_search( $pdf_path_pdf, $attachments, true );
+				if ( false !== $idx ) {
+					$attachments[ $idx ] = $perm_pdf;
+				}
+				error_log( '[Stages Lutherie] Using permanent PDF for attachments: ' . $perm_pdf );
+			}
+		}
+	}
+
 	/* ── Variable replacements (used in both emails) ── */
 	$replacements = array(
 		'{nom}'          => $nom,
@@ -644,3 +665,804 @@ function stluth_render_settings_page() {
 }
 
 endif; // function_exists stluth_render_settings_page
+
+/* ══════════════════════════════════════════════════════
+   CUSTOM POST TYPE — stluth_inscription
+   Stores every registration in the database for the
+   admin to review, validate, edit, and download PDFs.
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'stluth_register_cpt' ) ) :
+
+add_action( 'init', 'stluth_register_cpt' );
+
+function stluth_register_cpt() {
+	register_post_type( 'stluth_inscription', array(
+		'labels' => array(
+			'name'               => 'Inscriptions',
+			'singular_name'      => 'Inscription',
+			'menu_name'          => 'Inscriptions',
+			'all_items'          => 'Toutes les inscriptions',
+			'add_new'            => 'Ajouter',
+			'add_new_item'       => 'Nouvelle inscription',
+			'edit_item'          => 'Modifier l\'inscription',
+			'view_item'          => 'Voir l\'inscription',
+			'search_items'       => 'Rechercher',
+			'not_found'          => 'Aucune inscription trouvée.',
+			'not_found_in_trash' => 'Aucune inscription dans la corbeille.',
+		),
+		'public'             => false,
+		'show_ui'            => true,
+		'show_in_menu'       => true,
+		'menu_position'      => 25,
+		'menu_icon'          => 'dashicons-clipboard',
+		'capability_type'    => 'post',
+		'map_meta_cap'       => true,
+		'supports'           => array( 'title' ),
+		'has_archive'        => false,
+		'rewrite'            => false,
+		'query_var'          => false,
+	) );
+
+	/* Registration statuses */
+	register_post_status( 'stluth_pending', array(
+		'label'                     => 'En attente de paiement',
+		'public'                    => false,
+		'internal'                  => true,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		/* translators: %s: number */
+		'label_count'               => _n_noop(
+			'En attente <span class="count">(%s)</span>',
+			'En attente <span class="count">(%s)</span>'
+		),
+	) );
+	register_post_status( 'stluth_paid', array(
+		'label'                     => 'Payée / Validée',
+		'public'                    => false,
+		'internal'                  => true,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop(
+			'Validée <span class="count">(%s)</span>',
+			'Validées <span class="count">(%s)</span>'
+		),
+	) );
+	register_post_status( 'stluth_cancelled', array(
+		'label'                     => 'Annulée',
+		'public'                    => false,
+		'internal'                  => true,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop(
+			'Annulée <span class="count">(%s)</span>',
+			'Annulées <span class="count">(%s)</span>'
+		),
+	) );
+}
+
+endif; // function_exists stluth_register_cpt
+
+/* ── Save registration to CPT from the REST handler ── */
+
+if ( ! function_exists( 'stluth_save_registration' ) ) :
+/**
+ * Persist a registration as a stluth_inscription post.
+ *
+ * @param array  $fields     Sanitized form fields.
+ * @param string $pdf_path   Absolute path to the temp PDF (or empty).
+ * @param string $plan_json  Raw JSON string of the keyboard plan (or empty).
+ * @return int|WP_Error  Post ID on success, WP_Error on failure.
+ */
+function stluth_save_registration( $fields, $pdf_path = '', $plan_json = '' ) {
+	$nom     = isset( $fields['nom'] )     ? $fields['nom']     : '';
+	$email   = isset( $fields['email'] )   ? $fields['email']   : '';
+	$modele  = isset( $fields['modele'] )  ? $fields['modele']  : '';
+	$session = isset( $fields['session'] ) ? $fields['session'] : '';
+
+	$post_id = wp_insert_post( array(
+		'post_type'   => 'stluth_inscription',
+		'post_title'  => $nom . ' — ' . $modele . ' — ' . $session,
+		'post_status' => 'stluth_pending',
+		'post_date'   => current_time( 'mysql' ),
+	) );
+
+	if ( is_wp_error( $post_id ) ) {
+		return $post_id;
+	}
+
+	/* Store every form field as post-meta */
+	$meta_fields = array(
+		'nom', 'email', 'telephone', 'dateNaissance', 'adresse', 'cp', 'ville',
+		'session', 'modele', 'acompte', 'ancheAMano', 'upgrade2V',
+		'tonalite', 'disposition', 'voix1', 'voix2', 'accordage',
+		'boutonsMD', 'boisClavier', 'boisGrille', 'numGrille', 'marquageMD',
+		'remarquesMD', 'nbBoutonsMG', 'couleurSangles', 'remarquesMG',
+		'couleurSoufflet', 'planClavier',
+	);
+	foreach ( $meta_fields as $key ) {
+		if ( isset( $fields[ $key ] ) ) {
+			update_post_meta( $post_id, '_stluth_' . $key, sanitize_text_field( $fields[ $key ] ) );
+		}
+	}
+
+	/* Persist PDF in uploads/inscriptions/YYYY/ */
+	if ( ! empty( $pdf_path ) && file_exists( $pdf_path ) ) {
+		$upload_dir = wp_upload_dir();
+		$year       = gmdate( 'Y' );
+		$dest_dir   = $upload_dir['basedir'] . '/inscriptions/' . $year;
+		if ( ! file_exists( $dest_dir ) ) {
+			wp_mkdir_p( $dest_dir );
+		}
+		$safe_name = sanitize_file_name( $nom );
+		$filename  = 'inscription_' . $safe_name . '_' . $post_id . '.pdf';
+		$dest_path = $dest_dir . '/' . $filename;
+
+		if ( copy( $pdf_path, $dest_path ) ) {
+			$rel_url = $upload_dir['baseurl'] . '/inscriptions/' . $year . '/' . $filename;
+			update_post_meta( $post_id, '_stluth_pdf_path', $dest_path );
+			update_post_meta( $post_id, '_stluth_pdf_url',  $rel_url );
+		}
+	}
+
+	/* Persist keyboard plan JSON */
+	if ( ! empty( $plan_json ) ) {
+		update_post_meta( $post_id, '_stluth_plan_json', $plan_json );
+	}
+
+	return $post_id;
+}
+
+endif; // function_exists stluth_save_registration
+
+/* ── Admin columns for the inscription list ── */
+
+if ( ! function_exists( 'stluth_inscription_columns' ) ) :
+
+add_filter( 'manage_stluth_inscription_posts_columns', 'stluth_inscription_columns' );
+
+function stluth_inscription_columns( $columns ) {
+	$new = array();
+	$new['cb']               = $columns['cb'];
+	$new['title']            = 'Inscription';
+	$new['stluth_email']     = 'Email';
+	$new['stluth_modele']    = 'Modèle';
+	$new['stluth_session']   = 'Session';
+	$new['stluth_acompte']   = 'Acompte';
+	$new['stluth_status']    = 'Statut';
+	$new['stluth_pdf']       = 'PDF';
+	$new['date']             = 'Date';
+	return $new;
+}
+
+endif; // function_exists stluth_inscription_columns
+
+if ( ! function_exists( 'stluth_inscription_column_content' ) ) :
+
+add_action( 'manage_stluth_inscription_posts_custom_column', 'stluth_inscription_column_content', 10, 2 );
+
+function stluth_inscription_column_content( $column, $post_id ) {
+	switch ( $column ) {
+		case 'stluth_email':
+			$email = get_post_meta( $post_id, '_stluth_email', true );
+			echo '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a>';
+			break;
+		case 'stluth_modele':
+			echo esc_html( get_post_meta( $post_id, '_stluth_modele', true ) );
+			break;
+		case 'stluth_session':
+			echo esc_html( get_post_meta( $post_id, '_stluth_session', true ) );
+			break;
+		case 'stluth_acompte':
+			$acompte = get_post_meta( $post_id, '_stluth_acompte', true );
+			if ( $acompte ) {
+				echo esc_html( $acompte ) . '&nbsp;€';
+			}
+			break;
+		case 'stluth_status':
+			$status = get_post_status( $post_id );
+			$labels = array(
+				'stluth_pending'   => '<span style="color:#b26a00;font-weight:600;">⏳ En attente</span>',
+				'stluth_paid'      => '<span style="color:#1a7a1a;font-weight:600;">✅ Validée</span>',
+				'stluth_cancelled' => '<span style="color:#a00;font-weight:600;">❌ Annulée</span>',
+			);
+			echo isset( $labels[ $status ] ) ? $labels[ $status ] : esc_html( $status );
+			break;
+		case 'stluth_pdf':
+			$pdf_url = get_post_meta( $post_id, '_stluth_pdf_url', true );
+			if ( $pdf_url ) {
+				echo '<a href="' . esc_url( $pdf_url ) . '" target="_blank" style="text-decoration:none;" title="Télécharger le PDF">📄 PDF</a>';
+			} else {
+				echo '<span style="color:#999;">—</span>';
+			}
+			break;
+	}
+}
+
+endif; // function_exists stluth_inscription_column_content
+
+/* ── Make columns sortable ── */
+
+if ( ! function_exists( 'stluth_inscription_sortable_columns' ) ) :
+
+add_filter( 'manage_edit-stluth_inscription_sortable_columns', 'stluth_inscription_sortable_columns' );
+
+function stluth_inscription_sortable_columns( $columns ) {
+	$columns['stluth_session'] = 'stluth_session';
+	$columns['stluth_modele']  = 'stluth_modele';
+	return $columns;
+}
+
+endif; // function_exists stluth_inscription_sortable_columns
+
+if ( ! function_exists( 'stluth_inscription_orderby' ) ) :
+
+add_action( 'pre_get_posts', 'stluth_inscription_orderby' );
+
+function stluth_inscription_orderby( $query ) {
+	if ( ! is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+	if ( 'stluth_inscription' !== $query->get( 'post_type' ) ) {
+		return;
+	}
+	$ob = $query->get( 'orderby' );
+	if ( 'stluth_session' === $ob ) {
+		$query->set( 'meta_key', '_stluth_session' );
+		$query->set( 'orderby', 'meta_value' );
+	} elseif ( 'stluth_modele' === $ob ) {
+		$query->set( 'meta_key', '_stluth_modele' );
+		$query->set( 'orderby', 'meta_value' );
+	}
+}
+
+endif; // function_exists stluth_inscription_orderby
+
+/* ── Status filter dropdown in list ── */
+
+if ( ! function_exists( 'stluth_inscription_status_filter' ) ) :
+
+add_action( 'restrict_manage_posts', 'stluth_inscription_status_filter' );
+
+function stluth_inscription_status_filter( $post_type ) {
+	if ( 'stluth_inscription' !== $post_type ) {
+		return;
+	}
+	$current = isset( $_GET['post_status'] ) ? sanitize_text_field( wp_unslash( $_GET['post_status'] ) ) : '';
+	$statuses = array(
+		''                  => 'Tous les statuts',
+		'stluth_pending'    => '⏳ En attente',
+		'stluth_paid'       => '✅ Validée',
+		'stluth_cancelled'  => '❌ Annulée',
+	);
+	echo '<select name="post_status" id="filter-stluth-status">';
+	foreach ( $statuses as $val => $label ) {
+		$sel = selected( $current, $val, false );
+		echo '<option value="' . esc_attr( $val ) . '"' . $sel . '>' . esc_html( $label ) . '</option>';
+	}
+	echo '</select>';
+}
+
+endif; // function_exists stluth_inscription_status_filter
+
+/* ── Custom status display in admin list (override WP default "published" etc.) ── */
+
+if ( ! function_exists( 'stluth_display_post_states' ) ) :
+
+add_filter( 'display_post_states', 'stluth_display_post_states', 10, 2 );
+
+function stluth_display_post_states( $states, $post ) {
+	if ( 'stluth_inscription' !== get_post_type( $post ) ) {
+		return $states;
+	}
+	$status = get_post_status( $post );
+	$map = array(
+		'stluth_pending'   => 'En attente',
+		'stluth_paid'      => 'Validée',
+		'stluth_cancelled' => 'Annulée',
+	);
+	if ( isset( $map[ $status ] ) ) {
+		return array( $map[ $status ] );
+	}
+	return $states;
+}
+
+endif; // function_exists stluth_display_post_states
+
+/* ══════════════════════════════════════════════════════
+   META BOXES — Edit screen for a single registration
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'stluth_add_meta_boxes' ) ) :
+
+add_action( 'add_meta_boxes', 'stluth_add_meta_boxes' );
+
+function stluth_add_meta_boxes() {
+	add_meta_box(
+		'stluth_status_box',
+		'Statut de l\'inscription',
+		'stluth_render_status_box',
+		'stluth_inscription',
+		'side',
+		'high'
+	);
+	add_meta_box(
+		'stluth_identity_box',
+		'👤 Identité du stagiaire',
+		'stluth_render_identity_box',
+		'stluth_inscription',
+		'normal',
+		'high'
+	);
+	add_meta_box(
+		'stluth_stage_box',
+		'🎵 Choix du stage',
+		'stluth_render_stage_box',
+		'stluth_inscription',
+		'normal',
+		'high'
+	);
+	add_meta_box(
+		'stluth_specs_box',
+		'🔧 Spécifications de l\'accordéon',
+		'stluth_render_specs_box',
+		'stluth_inscription',
+		'normal',
+		'default'
+	);
+	add_meta_box(
+		'stluth_files_box',
+		'📎 Fichiers',
+		'stluth_render_files_box',
+		'stluth_inscription',
+		'side',
+		'default'
+	);
+}
+
+endif; // function_exists stluth_add_meta_boxes
+
+/* ── Status meta box ── */
+if ( ! function_exists( 'stluth_render_status_box' ) ) :
+function stluth_render_status_box( $post ) {
+	wp_nonce_field( 'stluth_save_meta', 'stluth_meta_nonce' );
+	$status = get_post_status( $post->ID );
+	$statuses = array(
+		'stluth_pending'   => '⏳ En attente de paiement',
+		'stluth_paid'      => '✅ Payée / Validée',
+		'stluth_cancelled' => '❌ Annulée',
+	);
+	?>
+	<div style="padding:8px 0;">
+		<label for="stluth_status" style="font-weight:600;display:block;margin-bottom:6px;">Statut :</label>
+		<select name="stluth_status" id="stluth_status" style="width:100%;padding:6px;font-size:14px;">
+			<?php foreach ( $statuses as $val => $label ) : ?>
+				<option value="<?php echo esc_attr( $val ); ?>" <?php selected( $status, $val ); ?>><?php echo esc_html( $label ); ?></option>
+			<?php endforeach; ?>
+		</select>
+		<p class="description" style="margin-top:8px;">Passez en « Validée » à réception du paiement.</p>
+	</div>
+	<?php
+}
+endif;
+
+/* ── Identity meta box ── */
+if ( ! function_exists( 'stluth_render_identity_box' ) ) :
+function stluth_render_identity_box( $post ) {
+	$id = $post->ID;
+	$fields = array(
+		'nom'           => 'Nom',
+		'email'         => 'Email',
+		'telephone'     => 'Téléphone',
+		'dateNaissance' => 'Date de naissance',
+		'adresse'       => 'Adresse',
+		'cp'            => 'Code postal',
+		'ville'         => 'Ville',
+	);
+	echo '<table class="form-table" style="margin:0;">';
+	foreach ( $fields as $key => $label ) {
+		$val = get_post_meta( $id, '_stluth_' . $key, true );
+		$type = ( $key === 'email' ) ? 'email' : 'text';
+		echo '<tr><th style="width:160px;padding:8px 10px;">' . esc_html( $label ) . '</th>';
+		echo '<td style="padding:8px 10px;"><input type="' . $type . '" name="stluth_field_' . esc_attr( $key ) . '" value="' . esc_attr( $val ) . '" class="regular-text" style="width:100%;"></td></tr>';
+	}
+	echo '</table>';
+}
+endif;
+
+/* ── Stage choice meta box ── */
+if ( ! function_exists( 'stluth_render_stage_box' ) ) :
+function stluth_render_stage_box( $post ) {
+	$id = $post->ID;
+	$fields = array(
+		'session'    => 'Session',
+		'modele'     => 'Modèle',
+		'acompte'    => 'Acompte (€)',
+		'ancheAMano' => 'Anche a mano',
+		'upgrade2V'  => 'Upgrade 2 voix',
+	);
+	echo '<table class="form-table" style="margin:0;">';
+	foreach ( $fields as $key => $label ) {
+		$val = get_post_meta( $id, '_stluth_' . $key, true );
+		echo '<tr><th style="width:160px;padding:8px 10px;">' . esc_html( $label ) . '</th>';
+		echo '<td style="padding:8px 10px;"><input type="text" name="stluth_field_' . esc_attr( $key ) . '" value="' . esc_attr( $val ) . '" class="regular-text" style="width:100%;"></td></tr>';
+	}
+	echo '</table>';
+}
+endif;
+
+/* ── Accordion specs meta box ── */
+if ( ! function_exists( 'stluth_render_specs_box' ) ) :
+function stluth_render_specs_box( $post ) {
+	$id = $post->ID;
+	$fields = array(
+		'tonalite'       => 'Tonalité',
+		'disposition'    => 'Disposition',
+		'voix1'          => 'Voix 1',
+		'voix2'          => 'Voix 2',
+		'accordage'      => 'Accordage',
+		'boutonsMD'      => 'Boutons MD',
+		'boisClavier'    => 'Bois clavier',
+		'boisGrille'     => 'Bois grille',
+		'numGrille'      => 'N° grille',
+		'marquageMD'     => 'Marquage MD',
+		'remarquesMD'    => 'Remarques MD',
+		'nbBoutonsMG'    => 'Nb boutons MG',
+		'couleurSangles' => 'Couleur sangles',
+		'remarquesMG'    => 'Remarques MG',
+		'couleurSoufflet' => 'Couleur soufflet',
+		'planClavier'    => 'Plan clavier',
+	);
+	echo '<table class="form-table" style="margin:0;">';
+	foreach ( $fields as $key => $label ) {
+		$val = get_post_meta( $id, '_stluth_' . $key, true );
+		if ( $key === 'remarquesMD' || $key === 'remarquesMG' ) {
+			echo '<tr><th style="width:160px;padding:8px 10px;vertical-align:top;">' . esc_html( $label ) . '</th>';
+			echo '<td style="padding:8px 10px;"><textarea name="stluth_field_' . esc_attr( $key ) . '" rows="3" class="large-text" style="width:100%;">' . esc_textarea( $val ) . '</textarea></td></tr>';
+		} else {
+			echo '<tr><th style="width:160px;padding:8px 10px;">' . esc_html( $label ) . '</th>';
+			echo '<td style="padding:8px 10px;"><input type="text" name="stluth_field_' . esc_attr( $key ) . '" value="' . esc_attr( $val ) . '" class="regular-text" style="width:100%;"></td></tr>';
+		}
+	}
+	echo '</table>';
+}
+endif;
+
+/* ── Files meta box (PDF + JSON) ── */
+if ( ! function_exists( 'stluth_render_files_box' ) ) :
+function stluth_render_files_box( $post ) {
+	$id      = $post->ID;
+	$pdf_url = get_post_meta( $id, '_stluth_pdf_url', true );
+	$has_json = get_post_meta( $id, '_stluth_plan_json', true );
+	?>
+	<div style="padding:4px 0;">
+		<?php if ( $pdf_url ) : ?>
+			<p><a href="<?php echo esc_url( $pdf_url ); ?>" target="_blank" class="button button-primary" style="width:100%;text-align:center;">📄 Télécharger le PDF</a></p>
+		<?php else : ?>
+			<p style="color:#999;">Aucun PDF disponible.</p>
+		<?php endif; ?>
+		<?php if ( $has_json ) : ?>
+			<p><a href="<?php echo esc_url( admin_url( 'admin-ajax.php?action=stluth_download_json&post_id=' . $id . '&_wpnonce=' . wp_create_nonce( 'stluth_dl_json_' . $id ) ) ); ?>" class="button" style="width:100%;text-align:center;">🎹 Télécharger le plan JSON</a></p>
+		<?php else : ?>
+			<p style="color:#999;">Aucun plan de clavier JSON.</p>
+		<?php endif; ?>
+	</div>
+	<?php
+}
+endif;
+
+/* ── Save meta boxes on post save ── */
+
+if ( ! function_exists( 'stluth_save_meta_boxes' ) ) :
+
+add_action( 'save_post_stluth_inscription', 'stluth_save_meta_boxes', 10, 2 );
+
+function stluth_save_meta_boxes( $post_id, $post ) {
+	if ( ! isset( $_POST['stluth_meta_nonce'] ) ) {
+		return;
+	}
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['stluth_meta_nonce'] ) ), 'stluth_save_meta' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	/* Update status */
+	if ( isset( $_POST['stluth_status'] ) ) {
+		$new_status = sanitize_text_field( wp_unslash( $_POST['stluth_status'] ) );
+		$allowed    = array( 'stluth_pending', 'stluth_paid', 'stluth_cancelled' );
+		if ( in_array( $new_status, $allowed, true ) && $new_status !== get_post_status( $post_id ) ) {
+			/* remove_action to avoid infinite loop */
+			remove_action( 'save_post_stluth_inscription', 'stluth_save_meta_boxes', 10 );
+			wp_update_post( array(
+				'ID'          => $post_id,
+				'post_status' => $new_status,
+			) );
+			add_action( 'save_post_stluth_inscription', 'stluth_save_meta_boxes', 10, 2 );
+		}
+	}
+
+	/* Update editable meta fields */
+	$meta_fields = array(
+		'nom', 'email', 'telephone', 'dateNaissance', 'adresse', 'cp', 'ville',
+		'session', 'modele', 'acompte', 'ancheAMano', 'upgrade2V',
+		'tonalite', 'disposition', 'voix1', 'voix2', 'accordage',
+		'boutonsMD', 'boisClavier', 'boisGrille', 'numGrille', 'marquageMD',
+		'remarquesMD', 'nbBoutonsMG', 'couleurSangles', 'remarquesMG',
+		'couleurSoufflet', 'planClavier',
+	);
+	foreach ( $meta_fields as $key ) {
+		$field_name = 'stluth_field_' . $key;
+		if ( isset( $_POST[ $field_name ] ) ) {
+			$val = sanitize_text_field( wp_unslash( $_POST[ $field_name ] ) );
+			update_post_meta( $post_id, '_stluth_' . $key, $val );
+		}
+	}
+}
+
+endif; // function_exists stluth_save_meta_boxes
+
+/* ── JSON download via AJAX ── */
+
+if ( ! function_exists( 'stluth_download_json' ) ) :
+
+add_action( 'wp_ajax_stluth_download_json', 'stluth_download_json' );
+
+function stluth_download_json() {
+	$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : 0;
+	if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
+		wp_die( 'Accès refusé.', 403 );
+	}
+	if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'stluth_dl_json_' . $post_id ) ) {
+		wp_die( 'Nonce invalide.', 403 );
+	}
+	$json = get_post_meta( $post_id, '_stluth_plan_json', true );
+	if ( empty( $json ) ) {
+		wp_die( 'Aucun plan JSON.', 404 );
+	}
+	$nom = get_post_meta( $post_id, '_stluth_nom', true );
+	$filename = 'plan_clavier_' . sanitize_file_name( $nom ? $nom : 'inscription' ) . '.json';
+	header( 'Content-Type: application/json' );
+	header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+	echo $json; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- raw JSON download
+	exit;
+}
+
+endif; // function_exists stluth_download_json
+
+/* ── Row actions — quick validate / cancel ── */
+
+if ( ! function_exists( 'stluth_row_actions' ) ) :
+
+add_filter( 'post_row_actions', 'stluth_row_actions', 10, 2 );
+
+function stluth_row_actions( $actions, $post ) {
+	if ( 'stluth_inscription' !== get_post_type( $post ) ) {
+		return $actions;
+	}
+	$status = get_post_status( $post );
+	if ( 'stluth_paid' !== $status ) {
+		$url = wp_nonce_url(
+			admin_url( 'admin-ajax.php?action=stluth_quick_status&post_id=' . $post->ID . '&new_status=stluth_paid' ),
+			'stluth_quick_' . $post->ID
+		);
+		$actions['stluth_validate'] = '<a href="' . esc_url( $url ) . '" style="color:#1a7a1a;font-weight:600;">✅ Valider paiement</a>';
+	}
+	if ( 'stluth_cancelled' !== $status ) {
+		$url = wp_nonce_url(
+			admin_url( 'admin-ajax.php?action=stluth_quick_status&post_id=' . $post->ID . '&new_status=stluth_cancelled' ),
+			'stluth_quick_' . $post->ID
+		);
+		$actions['stluth_cancel'] = '<a href="' . esc_url( $url ) . '" style="color:#a00;">❌ Annuler</a>';
+	}
+	if ( 'stluth_pending' !== $status ) {
+		$url = wp_nonce_url(
+			admin_url( 'admin-ajax.php?action=stluth_quick_status&post_id=' . $post->ID . '&new_status=stluth_pending' ),
+			'stluth_quick_' . $post->ID
+		);
+		$actions['stluth_pending'] = '<a href="' . esc_url( $url ) . '" style="color:#b26a00;">⏳ Remettre en attente</a>';
+	}
+
+	/* PDF link in row actions too */
+	$pdf_url = get_post_meta( $post->ID, '_stluth_pdf_url', true );
+	if ( $pdf_url ) {
+		$actions['stluth_pdf'] = '<a href="' . esc_url( $pdf_url ) . '" target="_blank">📄 PDF</a>';
+	}
+
+	return $actions;
+}
+
+endif; // function_exists stluth_row_actions
+
+/* ── Quick status change via AJAX ── */
+
+if ( ! function_exists( 'stluth_quick_status' ) ) :
+
+add_action( 'wp_ajax_stluth_quick_status', 'stluth_quick_status' );
+
+function stluth_quick_status() {
+	$post_id    = isset( $_GET['post_id'] )    ? absint( $_GET['post_id'] ) : 0;
+	$new_status = isset( $_GET['new_status'] ) ? sanitize_text_field( wp_unslash( $_GET['new_status'] ) ) : '';
+
+	if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
+		wp_die( 'Accès refusé.', 403 );
+	}
+	if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'stluth_quick_' . $post_id ) ) {
+		wp_die( 'Nonce invalide.', 403 );
+	}
+	$allowed = array( 'stluth_pending', 'stluth_paid', 'stluth_cancelled' );
+	if ( ! in_array( $new_status, $allowed, true ) ) {
+		wp_die( 'Statut invalide.', 400 );
+	}
+	wp_update_post( array(
+		'ID'          => $post_id,
+		'post_status' => $new_status,
+	) );
+
+	/* Redirect back to the list */
+	$redirect = admin_url( 'edit.php?post_type=stluth_inscription&stluth_updated=1' );
+	wp_safe_redirect( $redirect );
+	exit;
+}
+
+endif; // function_exists stluth_quick_status
+
+/* ── Admin notice after quick action ── */
+
+if ( ! function_exists( 'stluth_admin_notices' ) ) :
+
+add_action( 'admin_notices', 'stluth_admin_notices' );
+
+function stluth_admin_notices() {
+	if ( isset( $_GET['stluth_updated'] ) ) {
+		echo '<div class="notice notice-success is-dismissible"><p>✅ Statut de l\'inscription mis à jour.</p></div>';
+	}
+}
+
+endif; // function_exists stluth_admin_notices
+
+/* ── Remove the default "Publish" meta box and replace with status ── */
+
+if ( ! function_exists( 'stluth_remove_publish_box' ) ) :
+
+add_action( 'add_meta_boxes_stluth_inscription', 'stluth_remove_publish_box' );
+
+function stluth_remove_publish_box() {
+	remove_meta_box( 'submitdiv', 'stluth_inscription', 'side' );
+	add_meta_box(
+		'stluth_submitdiv',
+		'Enregistrer',
+		'stluth_render_submit_box',
+		'stluth_inscription',
+		'side',
+		'high'
+	);
+}
+
+endif; // function_exists stluth_remove_publish_box
+
+if ( ! function_exists( 'stluth_render_submit_box' ) ) :
+function stluth_render_submit_box( $post ) {
+	?>
+	<div style="padding:8px 0;">
+		<div style="margin-bottom:10px;">
+			<span style="color:#666;">Créée le :</span>
+			<strong><?php echo esc_html( get_the_date( 'j F Y à H:i', $post ) ); ?></strong>
+		</div>
+		<div style="display:flex;gap:8px;">
+			<input type="submit" name="save" class="button button-primary button-large" value="Enregistrer" style="flex:1;">
+			<?php if ( current_user_can( 'delete_post', $post->ID ) ) : ?>
+				<a href="<?php echo esc_url( get_delete_post_link( $post->ID ) ); ?>" class="button button-link-delete" style="color:#a00;">Supprimer</a>
+			<?php endif; ?>
+		</div>
+	</div>
+	<?php
+}
+endif;
+
+/* ── Dashboard widget: recent inscriptions summary ── */
+
+if ( ! function_exists( 'stluth_dashboard_widget' ) ) :
+
+add_action( 'wp_dashboard_setup', 'stluth_dashboard_widget' );
+
+function stluth_dashboard_widget() {
+	wp_add_dashboard_widget(
+		'stluth_inscriptions_widget',
+		'📋 Inscriptions Stage',
+		'stluth_render_dashboard_widget'
+	);
+}
+
+endif; // function_exists stluth_dashboard_widget
+
+if ( ! function_exists( 'stluth_render_dashboard_widget' ) ) :
+function stluth_render_dashboard_widget() {
+	global $wpdb;
+	$counts = array(
+		'stluth_pending'   => 0,
+		'stluth_paid'      => 0,
+		'stluth_cancelled' => 0,
+	);
+	$results = $wpdb->get_results(
+		"SELECT post_status, COUNT(*) as cnt FROM {$wpdb->posts} WHERE post_type = 'stluth_inscription' GROUP BY post_status"
+	);
+	if ( $results ) {
+		foreach ( $results as $row ) {
+			if ( isset( $counts[ $row->post_status ] ) ) {
+				$counts[ $row->post_status ] = (int) $row->cnt;
+			}
+		}
+	}
+	$total = array_sum( $counts );
+	$list_url = admin_url( 'edit.php?post_type=stluth_inscription' );
+	?>
+	<div style="display:flex;gap:12px;margin-bottom:12px;">
+		<div style="flex:1;text-align:center;padding:12px;background:#fff8e6;border-radius:6px;border:1px solid #e0d4c4;">
+			<div style="font-size:28px;font-weight:700;color:#b26a00;"><?php echo esc_html( $counts['stluth_pending'] ); ?></div>
+			<div style="font-size:12px;color:#7a6a55;">En attente</div>
+		</div>
+		<div style="flex:1;text-align:center;padding:12px;background:#e8f5e3;border-radius:6px;border:1px solid #c3e6b5;">
+			<div style="font-size:28px;font-weight:700;color:#1a7a1a;"><?php echo esc_html( $counts['stluth_paid'] ); ?></div>
+			<div style="font-size:12px;color:#2d5a27;">Validées</div>
+		</div>
+		<div style="flex:1;text-align:center;padding:12px;background:#fce8e8;border-radius:6px;border:1px solid #e5c3c3;">
+			<div style="font-size:28px;font-weight:700;color:#a00;"><?php echo esc_html( $counts['stluth_cancelled'] ); ?></div>
+			<div style="font-size:12px;color:#7a3535;">Annulées</div>
+		</div>
+	</div>
+	<p style="text-align:center;margin:0;">
+		<strong><?php echo esc_html( $total ); ?></strong> inscription(s) au total —
+		<a href="<?php echo esc_url( $list_url ); ?>">Voir toutes les inscriptions →</a>
+	</p>
+	<?php
+	/* Last 5 pending */
+	$recent = get_posts( array(
+		'post_type'   => 'stluth_inscription',
+		'post_status' => 'stluth_pending',
+		'numberposts' => 5,
+		'orderby'     => 'date',
+		'order'       => 'DESC',
+	) );
+	if ( $recent ) {
+		echo '<hr style="margin:12px 0;">';
+		echo '<p style="font-weight:600;margin-bottom:6px;">⏳ En attente de paiement :</p>';
+		echo '<ul style="margin:0;">';
+		foreach ( $recent as $r ) {
+			$name  = get_post_meta( $r->ID, '_stluth_nom', true );
+			$model = get_post_meta( $r->ID, '_stluth_modele', true );
+			$edit  = get_edit_post_link( $r->ID );
+			echo '<li style="margin-bottom:4px;"><a href="' . esc_url( $edit ) . '">' . esc_html( $name ) . '</a> <span style="color:#888;">(' . esc_html( $model ) . ')</span></li>';
+		}
+		echo '</ul>';
+	}
+}
+endif;
+
+/* ── Admin CSS for the inscription list ── */
+
+if ( ! function_exists( 'stluth_admin_css' ) ) :
+
+add_action( 'admin_head', 'stluth_admin_css' );
+
+function stluth_admin_css() {
+	$screen = get_current_screen();
+	if ( ! $screen || 'stluth_inscription' !== $screen->post_type ) {
+		return;
+	}
+	?>
+	<style>
+		.column-stluth_status { width: 120px; }
+		.column-stluth_pdf    { width: 60px; text-align: center; }
+		.column-stluth_acompte { width: 90px; }
+		/* Hide default status dropdown in quick edit — we use our own */
+		.inline-edit-status { display: none !important; }
+	</style>
+	<?php
+}
+
+endif; // function_exists stluth_admin_css

@@ -123,7 +123,7 @@ select option{background:#fff;color:var(--txt)}
 .note-section{margin-bottom:18px}
 .note-section-title{font-size:.86rem;font-weight:700;color:var(--dark);
   border-bottom:2px solid var(--gold);padding-bottom:4px;margin-bottom:8px}
-.sec-hd{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.sec-hd{display:flex;align-items:center;gap:5px 7px;margin-bottom:5px;flex-wrap:wrap}
 .sec-label{font-size:.76rem;font-weight:700;color:var(--dark)}
 .row-wrap{margin-bottom:11px}
 .btn-grid{display:flex;flex-wrap:wrap;gap:4px}
@@ -1832,7 +1832,7 @@ function generateInputGrid(){
       const label=t('basses')+(nbVB>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_bCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
@@ -1856,7 +1856,7 @@ function generateInputGrid(){
       const label=t('accords')+(nbVA>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:4px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
