@@ -231,16 +231,18 @@ function buildSVG_Gauche(data,dark){
   let bassIdx=0,accordIdx=0;
   const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
   const bassFirst=data.lhBassFirst||false;
+  const _accLabel=data.lhAccordsLabel||t('accords');
+  const _basLabel=data.lhBassesLabel||t('basses');
   // Build accords sections
   const accordSecs=[];
   lhRows.forEach((row,ri)=>{
-    accordSecs.push({nom:lhRows.length===1?t('accords'):(ri===0?t('accords'):`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(accordIdx,accordIdx+row.nb):null,offset:row.offset||0,type:'A',voix:vA});
+    accordSecs.push({nom:lhRows.length===1?_accLabel:(ri===0?_accLabel:`  ↳ +${accordIdx}`),items:data.accords.slice(accordIdx,accordIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(accordIdx,accordIdx+row.nb):null,offset:row.offset||0,type:'A',voix:vA});
     accordIdx+=row.nb;
   });
   // Build basses sections
   const basseSecs=[];
   lhRows.forEach((row,ri)=>{
-    basseSecs.push({nom:lhRows.length===1?t('basses'):(ri===0?t('basses'):`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bassIdx,bassIdx+row.nb):null,offset:row.offset||0,type:'B',voix:vB});
+    basseSecs.push({nom:lhRows.length===1?_basLabel:(ri===0?_basLabel:`  ↳ +${bassIdx}`),items:data.basses.slice(bassIdx,bassIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bassIdx,bassIdx+row.nb):null,offset:row.offset||0,type:'B',voix:vB});
     bassIdx+=row.nb;
   });
   // Order: bassFirst → basses then accords, else accords then basses
@@ -261,8 +263,10 @@ function buildSVG_Gauche(data,dark){
     const cy=MARG+HEAD+si*VGAP+VGAP/2;
     if(sec.items.length)
       s+=`<rect x="${LPAD-4+off}" y="${cy-R-6}" width="${sec.items.length*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${si%2===0?band1:band2}" opacity=".7"/>`;
-    s+=tx(LPAD-R-10,cy,escSVG(sec.nom),10,gold,'bold','end');
-    if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-R-10,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
+    if(data.lhShowLabels!==false){
+      s+=tx(LPAD-R-10,cy,escSVG(sec.nom),10,gold,'bold','end');
+      if(sec.voix!==null&&sec.voix!==undefined)s+=tx(LPAD-R-10,cy+11,`${sec.voix}v`,7.5,dark?'rgba(200,162,39,.6)':'rgba(45,90,39,.55)','normal','end');
+    }
   });
   // Pass 2: table grid (column + row separator lines, outer border, column numbers)
   if(secRows.length>0&&maxItems>0){
@@ -436,7 +440,8 @@ function buildSVG_Plan(data,dark){
           });
         }
         if(intItems.length){
-          const lbl=ppRow===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${c+1}`;
+          const _bL=data.lhBassesLabel||t('basses'),_aL=data.lhAccordsLabel||t('accords');
+          const lbl=ppRow===1?`${_bL} / ${_aL}`:`${_bL}/${_aL} ${c+1}`;
           lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
         }
       }
@@ -453,7 +458,8 @@ function buildSVG_Plan(data,dark){
             if(src[i]){intItems.push(src[i]);intItems2.push(nv>1&&src2?src2[i]||null:null);intTypes.push(typ);intIndices.push(i+1);}
           });
         }
-        const lbl=nGroups===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`;
+        const _bL2=data.lhBassesLabel||t('basses'),_aL2=data.lhAccordsLabel||t('accords');
+        const lbl=nGroups===1?`${_bL2} / ${_aL2}`:`${_bL2}/${_aL2} ${g+1}`;
         lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
       }
     }
@@ -464,10 +470,11 @@ function buildSVG_Plan(data,dark){
     const accSecs=[],basSecs=[];
     let bIdx=0,aIdx=0;
     const vA=data.nbVoixAccords||2,vB=data.nbVoixBasses||2;
+    const _accL=data.lhAccordsLabel||t('accords'),_basL=data.lhBassesLabel||t('basses');
     lhRowCfg.forEach((row,ri)=>{
-      accSecs.push({nom:lhRowCfg.length===1?t('accords'):(ri===0?t('accords'):`↳+${aIdx}`),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0,type:'A'});
+      accSecs.push({nom:lhRowCfg.length===1?_accL:(ri===0?_accL:`↳+${aIdx}`),items:data.accords.slice(aIdx,aIdx+row.nb),items2:vA>1?(data.accords2||[]).slice(aIdx,aIdx+row.nb):null,offset:row.offset||0,type:'A'});
       aIdx+=row.nb;
-      basSecs.push({nom:lhRowCfg.length===1?t('basses'):(ri===0?t('basses'):`↳+${bIdx}`),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0,type:'B'});
+      basSecs.push({nom:lhRowCfg.length===1?_basL:(ri===0?_basL:`↳+${bIdx}`),items:data.basses.slice(bIdx,bIdx+row.nb),items2:vB>1?(data.basses2||[]).slice(bIdx,bIdx+row.nb):null,offset:row.offset||0,type:'B'});
       bIdx+=row.nb;
     });
     if(data.lhBassFirst){ basSecs.forEach(s=>lhSecRows.push(s)); accSecs.forEach(s=>lhSecRows.push(s)); }
@@ -637,8 +644,10 @@ function buildSVG_Plan(data,dark){
       const off=lhTopShift+(sec.offset||0)*(BGAP/2);
       const has2=sec.items2&&sec.items2.some(x=>x!=null);
       // rotated column label above the column (like RH columns)
-      const lblY=lhGridTop-8;
-      s+=`<text x="${cx}" y="${lblY}" text-anchor="start" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
+      if(data.lhShowLabels!==false){
+        const lblY=lhGridTop-8;
+        s+=`<text x="${cx}" y="${lblY}" text-anchor="start" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
+      }
       // alternating column band
       if(sec.items.length){
         const cy0=lhGridTop+off+BGAP/2;
@@ -706,6 +715,9 @@ function presetToSVGData(rec){
     lhRows:rec.lhRows||[{nb:lhNb,offset:0}],
     lhPairsPerRow:rec.lhPairsPerRow||2,
     lhBassFirst:rec.lhBassFirst||false,
+    lhBassesLabel:rec.lhBassesLabel||'',
+    lhAccordsLabel:rec.lhAccordsLabel||'',
+    lhShowLabels:rec.lhShowLabels!==false,
     showMidi:false,
     droite:droite,
     basses:n.basses||[],

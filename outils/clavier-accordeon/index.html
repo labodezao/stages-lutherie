@@ -385,7 +385,23 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
                 <span data-i="lhPairedHorizontal">↔ Horizontal (B|A)</span></label>
             </div>
             <div style="margin-top:5px;">
-              <button type="button" id="lh-order-btn" class="rng-btn" style="font-size:.75rem;padding:3px 8px;" onclick="toggleLhBassFirst()" data-i-btn="lhOrderBtn">🔄 Accords → Basses</button>
+              <button type="button" id="lh-order-btn" class="rng-btn" style="width:auto;height:auto;font-size:.75rem;padding:3px 8px;" onclick="toggleLhBassFirst()" data-i-btn="lhOrderBtn">🔄 Accords → Basses</button>
+            </div>
+            <!-- LH labels config -->
+            <div style="margin-top:6px;padding:6px 8px;background:#f5f5f0;border-radius:5px;border:1px solid #ddd;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="font-size:.74rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;">Labels</span>
+                <label style="font-size:.72rem;cursor:pointer;display:flex;align-items:center;gap:3px;margin-left:auto;">
+                  <input type="checkbox" id="lh-show-labels" checked onchange="onAnyChange()">
+                  <span>Afficher</span>
+                </label>
+              </div>
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 6px;align-items:center;">
+                <span style="font-size:.72rem;color:var(--gris);">Basses :</span>
+                <input type="text" id="lh-basses-label" value="" placeholder="Basses" style="font-size:.72rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;" oninput="onAnyChange()">
+                <span style="font-size:.72rem;color:var(--gris);">Accords :</span>
+                <input type="text" id="lh-accords-label" value="" placeholder="Accords" style="font-size:.72rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;" oninput="onAnyChange()">
+              </div>
             </div>
             <!-- LH rows + offsets config (shown for both modes) -->
             <div id="lh-rows-cfg" style="margin-top:6px;padding:6px 8px;background:#f5f5f0;border-radius:5px;border:1px solid #ddd;">
@@ -1127,6 +1143,9 @@ function snapshotToDB(){
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
     lhBassFirst:CFG.lhBassFirst||false,
+    lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
+    lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
+    lhShowLabels:document.getElementById('lh-show-labels')?.checked!==false,
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -1166,6 +1185,13 @@ function loadFromDB(rec){
   if(lhpdEl)lhpdEl.checked=true;
   const dw=document.getElementById('lh-paired-dir-wrap');
   if(dw)dw.style.display=lhm==='paired'?'block':'none';
+  // Restore LH labels
+  const lhBlEl=document.getElementById('lh-basses-label');
+  if(lhBlEl)lhBlEl.value=rec.lhBassesLabel||'';
+  const lhAlEl=document.getElementById('lh-accords-label');
+  if(lhAlEl)lhAlEl.value=rec.lhAccordsLabel||'';
+  const lhSlEl=document.getElementById('lh-show-labels');
+  if(lhSlEl)lhSlEl.checked=rec.lhShowLabels!==false;
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
@@ -1236,6 +1262,9 @@ function _savePresetToServer(rec){
     lhRows:rec.lhRows,
     lhPairsPerRow:rec.lhPairsPerRow||2,
     lhBassFirst:rec.lhBassFirst||false,
+    lhBassesLabel:rec.lhBassesLabel||'',
+    lhAccordsLabel:rec.lhAccordsLabel||'',
+    lhShowLabels:rec.lhShowLabels!==false,
     nbVoix:rec.nbVoix||2,
     nbVoixAccords:rec.nbVoixAccords||2,
     nbVoixBasses:rec.nbVoixBasses||2,
@@ -1284,6 +1313,9 @@ function newInstrument(){
   document.getElementById('nb-voix-accords').value='2';
   document.getElementById('nb-voix-basses').value='2';
   document.getElementById('lh-separated').checked=true;
+  const _nlBlEl=document.getElementById('lh-basses-label');if(_nlBlEl)_nlBlEl.value='';
+  const _nlAlEl=document.getElementById('lh-accords-label');if(_nlAlEl)_nlAlEl.value='';
+  const _nlSlEl=document.getElementById('lh-show-labels');if(_nlSlEl)_nlSlEl.checked=true;
   CFG.lhRows=[{nb:6,offset:0}];
   loadPreset('GCD33');
   document.getElementById('preset-select').value='GCD33';
@@ -1761,7 +1793,7 @@ function generateInputGrid(){
       const label=t('basses')+(nbVB>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_bCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
@@ -1785,7 +1817,7 @@ function generateInputGrid(){
       const label=t('accords')+(nbVA>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
@@ -1991,6 +2023,9 @@ function readInputs(){
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
     lhBassFirst:CFG.lhBassFirst||false,
+    lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
+    lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
+    lhShowLabels:document.getElementById('lh-show-labels')?.checked!==false,
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
     basses:CFG.notes.basses,
@@ -2911,6 +2946,9 @@ function renderKbdCompare(){
       lhRows:rec.lhRows||[{nb:6,offset:0}],
       lhPairsPerRow:rec.lhPairsPerRow||2,
       lhBassFirst:rec.lhBassFirst||false,
+      lhBassesLabel:rec.lhBassesLabel||'',
+      lhAccordsLabel:rec.lhAccordsLabel||'',
+      lhShowLabels:rec.lhShowLabels!==false,
       showMidi:false,
       droite,
       basses:nRec.basses||[],
