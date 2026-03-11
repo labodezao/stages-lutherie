@@ -336,14 +336,15 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	/* ── Email to luthier ── */
 	$luthier_subject = 'Nouvelle inscription stage — ' . $nom;
+	$safe_luthier    = sanitize_email( $luthier_email );
 	$headers_luthier = array(
 		'Content-Type: text/plain; charset=UTF-8',
-		'From: ' . $luthier_email,
+		'From: ' . $safe_luthier,
 		'Reply-To: ' . $email,
 	);
 
 	$luthier_sent = wp_mail(
-		$luthier_email,
+		$safe_luthier,
 		$luthier_subject,
 		$field_lines,
 		$headers_luthier,
@@ -374,8 +375,8 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$conf_body_html = str_replace( array_keys( $html_replacements ), array_values( $html_replacements ), $html_tpl );
 	$headers_conf   = array(
 		'Content-Type: text/html; charset=UTF-8',
-		'From: Ewen Daviau <' . $luthier_email . '>',
-		'Reply-To: ' . $luthier_email,
+		'From: Ewen Daviau <' . $safe_luthier . '>',
+		'Reply-To: ' . $safe_luthier,
 	);
 
 	/* Verify temp files still exist before sending trainee email */
@@ -390,7 +391,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
 
 	if ( ! $trainee_sent ) {
-		error_log( '[Stages Lutherie] Échec envoi email confirmation à ' . $email . ' — pièces jointes : ' . implode( ', ', $trainee_attachments ) );
+		error_log( '[Stages Lutherie] Failed to send trainee confirmation email — ' . count( $trainee_attachments ) . ' attachment(s)' );
 	}
 
 	/* ── Cleanup temp files ── */
@@ -476,14 +477,19 @@ function stluth_register_settings() {
 endif; // function_exists stluth_register_settings
 
 /* Sanitize full HTML email body — wp_kses_post strips html/head/body/meta/title
-   which are required for a complete email document. We use a permissive kses list. */
+   which are required for a complete email document. Only admins (manage_options)
+   can edit this setting, so we strip dangerous tags and event-handler attributes. */
 if ( ! function_exists( 'stluth_sanitize_email_html' ) ) :
 function stluth_sanitize_email_html( $value ) {
-	/* Only admins can edit this setting (manage_options), so we just strip
-	   potentially dangerous tags (script, iframe, object, embed) while
-	   preserving the full HTML document structure needed for emails. */
-	$value = preg_replace( '#<(script|iframe|object|embed|applet|form|input|button)[\s>].*?</\1>#is', '', $value );
-	$value = preg_replace( '#<(script|iframe|object|embed|applet|form|input|button)\s*/?\s*>#is', '', $value );
+	/* Remove dangerous tags (with content) */
+	$dangerous = 'script|iframe|object|embed|applet|form|input|button';
+	$value = preg_replace( '#<(' . $dangerous . ')[\s>][^<]*(?:<(?!/?\1[\s>])[^<]*)*</\1\s*>#i', '', $value );
+	/* Remove self-closing dangerous tags */
+	$value = preg_replace( '#<(' . $dangerous . ')\s*/?\s*>#i', '', $value );
+	/* Remove event handler attributes (on*="...") from all remaining tags */
+	$value = preg_replace( '#\s+on\w+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $value );
+	/* Remove javascript: protocol in href/src attributes */
+	$value = preg_replace( '#(href|src)\s*=\s*(["\'])javascript:.*?\2#i', '$1=$2$2', $value );
 	return $value;
 }
 endif; // function_exists stluth_sanitize_email_html
