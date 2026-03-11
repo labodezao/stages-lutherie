@@ -353,12 +353,20 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 			   so the email attachment survives any temp-file cleanup race. */
 			$perm_pdf = get_post_meta( $reg_id, '_stluth_pdf_path', true );
 			if ( ! empty( $perm_pdf ) && file_exists( $perm_pdf ) ) {
-				/* Replace the temp PDF with the permanent copy in attachments */
 				$idx = array_search( $pdf_path_pdf, $attachments, true );
 				if ( false !== $idx ) {
 					$attachments[ $idx ] = $perm_pdf;
 				}
 				error_log( '[Stages Lutherie] Using permanent PDF for attachments: ' . $perm_pdf );
+			}
+			/* Same for JSON — prefer the permanent copy over the temp file */
+			$perm_json = get_post_meta( $reg_id, '_stluth_json_path', true );
+			if ( ! empty( $perm_json ) && file_exists( $perm_json ) && ! empty( $json_path ) ) {
+				$idx_j = array_search( $json_path, $attachments, true );
+				if ( false !== $idx_j ) {
+					$attachments[ $idx_j ] = $perm_json;
+				}
+				error_log( '[Stages Lutherie] Using permanent JSON for attachments: ' . $perm_json );
 			}
 		}
 	}
@@ -411,6 +419,14 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		}
 	}
 	$conf_body_html = str_replace( array_keys( $html_replacements ), array_values( $html_replacements ), $html_tpl );
+
+	/* Strip MSO conditional comments so they don't render as visible text
+	   in Gmail, Apple Mail, etc. — covers templates the user may have
+	   pasted from external email builders (Litmus, Cerberus, etc.). */
+	if ( function_exists( 'stluth_strip_mso_conditionals' ) ) {
+		$conf_body_html = stluth_strip_mso_conditionals( $conf_body_html );
+	}
+
 	$headers_conf   = array(
 		'Content-Type: text/html; charset=UTF-8',
 		'From: ' . $safe_name . ' <' . $safe_luthier . '>',
@@ -545,6 +561,11 @@ endif; // function_exists stluth_register_settings
    can edit this setting, so we strip dangerous tags and event-handler attributes. */
 if ( ! function_exists( 'stluth_sanitize_email_html' ) ) :
 function stluth_sanitize_email_html( $value ) {
+	/* Strip MSO conditional comments — they render as visible text in
+	   most email clients (Gmail, Apple Mail, etc.) and only Outlook
+	   interprets them.  Covers <!--[if mso]>…<![endif]-->,
+	   <!--[if !mso]>…<![endif]-->, and similar variants. */
+	$value = stluth_strip_mso_conditionals( $value );
 	/* Remove dangerous tags (with content) */
 	$dangerous = 'script|iframe|object|embed|applet|form|input|button';
 	$value = preg_replace( '#<(' . $dangerous . ')[\s>][^<]*(?:<(?!/?\1[\s>])[^<]*)*</\1\s*>#i', '', $value );
@@ -557,6 +578,27 @@ function stluth_sanitize_email_html( $value ) {
 	return $value;
 }
 endif; // function_exists stluth_sanitize_email_html
+
+/**
+ * Strip all MSO / IE conditional comment blocks from HTML.
+ *
+ * Handles the three common patterns:
+ *   1) <!--[if mso]>…<![endif]-->           (Outlook-only content → removed entirely)
+ *   2) <!--[if !mso]><!--> … <!--<![endif]--> (non-Outlook content → keep inner HTML)
+ *   3) <!--[if gte mso 9]>…<![endif]-->     (version variants → removed entirely)
+ */
+if ( ! function_exists( 'stluth_strip_mso_conditionals' ) ) :
+function stluth_strip_mso_conditionals( $html ) {
+	/* Pattern 2 first: <!--[if !mso]><!--> KEEP THIS <!--<![endif]--> */
+	$html = preg_replace( '#<!--\[if\s+!mso\]><!-->\s*(.*?)\s*<!--<!\[endif\]-->#si', '$1', $html );
+	/* Pattern 1 & 3: <!--[if (anything)]>…<![endif]--> → remove entirely */
+	$html = preg_replace( '#<!--\[if\s[^\]]*\]>.*?<!\[endif\]-->#si', '', $html );
+	/* Stray conditional leftovers (malformed) */
+	$html = preg_replace( '#<!--\[if\s[^\]]*\]>#i', '', $html );
+	$html = preg_replace( '#<!\[endif\]-->#i', '', $html );
+	return $html;
+}
+endif; // function_exists stluth_strip_mso_conditionals
 
 if ( ! function_exists( 'stluth_render_settings_page' ) ) :
 
