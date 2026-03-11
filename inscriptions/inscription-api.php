@@ -290,6 +290,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	/* ── WordPress option defaults ── */
 	$defaults = array(
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
+		'stluth_luthier_name'         => 'Ewen Daviau',
 		'stluth_bank_details'         => "IBAN : FR76 1380 7008 7907 0218 7398 930\nBIC : CCBPFRPPNAN\nTitulaire : Ewen Daviau",
 		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de fabrication d\'accordéon',
 		'stluth_luthier_subject'      => 'Nouvelle inscription stage — {nom}',
@@ -297,6 +298,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	);
 
 	$luthier_email = get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] );
+	$luthier_name  = get_option( 'stluth_luthier_name',  $defaults['stluth_luthier_name']  );
 	$bank_details  = get_option( 'stluth_bank_details',  $defaults['stluth_bank_details']  );
 	$conf_subject  = get_option( 'stluth_confirmation_subject', $defaults['stluth_confirmation_subject'] );
 
@@ -360,9 +362,10 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$luthier_body     = str_replace( array_keys( $replacements ), array_values( $replacements ), $luthier_body_tpl );
 
 	$safe_luthier    = sanitize_email( $luthier_email );
+	$safe_name       = sanitize_text_field( $luthier_name );
 	$headers_luthier = array(
 		'Content-Type: text/plain; charset=UTF-8',
-		'From: ' . $safe_luthier,
+		'From: ' . $safe_name . ' <' . $safe_luthier . '>',
 		'Reply-To: ' . $email,
 	);
 
@@ -391,7 +394,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$conf_body_html = str_replace( array_keys( $html_replacements ), array_values( $html_replacements ), $html_tpl );
 	$headers_conf   = array(
 		'Content-Type: text/html; charset=UTF-8',
-		'From: Ewen Daviau <' . $safe_luthier . '>',
+		'From: ' . $safe_name . ' <' . $safe_luthier . '>',
 		'Reply-To: ' . $safe_luthier,
 	);
 
@@ -407,13 +410,17 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		error_log( '[Stages Lutherie] Trainee confirmation email sent successfully to ' . $email );
 	}
 
-	/* ── Cleanup temp files ── */
+	/* ── Cleanup temp files — deferred to shutdown so mail plugins
+	      (e.g. MailPoet) that queue emails asynchronously can still
+	      read the attachment files before they are removed. ── */
 	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_tmp_base, $json_path );
-	foreach ( $tmp_files as $tmp ) {
-		if ( ! empty( $tmp ) && file_exists( $tmp ) ) {
-			unlink( $tmp );
+	register_shutdown_function( function () use ( $tmp_files ) {
+		foreach ( $tmp_files as $tmp ) {
+			if ( ! empty( $tmp ) && file_exists( $tmp ) ) {
+				@unlink( $tmp );
+			}
 		}
-	}
+	} );
 
 	return new WP_REST_Response(
 		array(
@@ -482,6 +489,7 @@ add_action( 'admin_init', 'stluth_register_settings' );
 
 function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_luthier_email',        array( 'sanitize_callback' => 'sanitize_email' ) );
+	register_setting( 'stluth_inscription', 'stluth_luthier_name',         array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_bank_details',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_subject', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_body',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
@@ -514,6 +522,7 @@ if ( ! function_exists( 'stluth_render_settings_page' ) ) :
 function stluth_render_settings_page() {
 	$defaults = array(
 		'stluth_luthier_email'        => 'contact@ewendaviau.com',
+		'stluth_luthier_name'         => 'Ewen Daviau',
 		'stluth_bank_details'         => "IBAN : FR76 1380 7008 7907 0218 7398 930\nBIC : CCBPFRPPNAN\nTitulaire : Ewen Daviau",
 		'stluth_confirmation_subject' => 'Confirmation d\'inscription — Stage de fabrication d\'accordéon',
 		'stluth_luthier_subject'      => 'Nouvelle inscription stage — {nom}',
@@ -537,6 +546,10 @@ function stluth_render_settings_page() {
 		<form method="post" action="options.php">
 			<?php settings_fields( 'stluth_inscription' ); ?>
 			<table class="form-table">
+				<tr>
+					<th scope="row">Nom du luthier<br><small style="font-weight:normal;">(affiché dans « De : » des emails)</small></th>
+					<td><input type="text" name="stluth_luthier_name" value="<?php echo esc_attr( get_option( 'stluth_luthier_name', $defaults['stluth_luthier_name'] ) ); ?>" class="regular-text"></td>
+				</tr>
 				<tr>
 					<th scope="row">Email luthier<br><small style="font-weight:normal;">(destinataire des nouvelles inscriptions)</small></th>
 					<td><input type="email" name="stluth_luthier_email" value="<?php echo esc_attr( get_option( 'stluth_luthier_email', $defaults['stluth_luthier_email'] ) ); ?>" class="regular-text"></td>

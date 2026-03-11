@@ -91,7 +91,7 @@ function buildSVG_Droite(data,dark){
   const pushTx=dark?'#6fcf5a':'#3730A3',pullTx=dark?'#e8b840':'#92400E';
   const subtl=dark?'#888866':'#94A3B8',stroke=dark?'#c9a227':'#6366F1';
   const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(99,102,241,.2)';
+  const numTx=dark?'rgba(200,162,39,.55)':'rgba(99,102,241,.45)';
 
   const maxBtns=Math.max(...data.droite.map(r=>r.boutons.length),1);
   const allOffs=data.droite.map(r=>r.offset||0);
@@ -169,7 +169,7 @@ function buildSVG_Gauche(data,dark){
   const pushTx=dark?'#6fcf5a':'#3730A3',pullTx=dark?'#e8b840':'#92400E';
   const stroke=dark?'#c9a227':'#6366F1';
   const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(99,102,241,.2)';
+  const numTx=dark?'rgba(200,162,39,.55)':'rgba(99,102,241,.45)';
   const pushTx2=dark?'rgba(111,207,90,.55)':'rgba(55,48,163,.5)';
   const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(146,64,14,.5)';
 
@@ -369,7 +369,7 @@ function buildSVG_Plan(data,dark){
   const pullTx2=dark?'rgba(232,184,64,.55)':'rgba(146,64,14,.5)';
   const subtl=dark?'#888866':'#94A3B8';
   const stroke=dark?'#c9a227':'#6366F1';
-  const numTx=dark?'rgba(200,162,39,.3)':'rgba(99,102,241,.2)';
+  const numTx=dark?'rgba(200,162,39,.65)':'rgba(99,102,241,.55)';
   const band1=dark?'#1a1a1a':'#FAFAFA',band2=dark?'#161616':'#F5F3FF';
   const circleBorder=dark?'#333':'#C7D2FE';
   const textColor=dark?'#ccc':'#1E293B';
@@ -562,7 +562,7 @@ function buildSVG_Plan(data,dark){
   s+=`<text x="${tblInfoX}" y="${tblY+3*rowH+rowH/2+3}" font-size="7.5" fill="${subtl}">${escSVG(data.nomLuthier)}  ·  ${escSVG(fmtDate(data.date))}</text>`;
 
   /* ── "Haut (graves)" in italics near top-left ─────── */
-  s+=`<text x="${rhX0-R-6}" y="${gridTop-HEADER_GAP+4}" font-size="8.5" fill="${subtl}" font-style="italic">Haut (graves)</text>`;
+  s+=`<text x="${rhX0-R-6}" y="${gridTop-HEADER_GAP-8}" font-size="8" fill="${subtl}" font-style="italic">Haut (graves)</text>`;
 
   /* ── push/pull legend (small circle, top-right) ───── */
   const legR=7,legX=W-MH-legR-2,legY=tblY+tblH/2;
@@ -579,7 +579,7 @@ function buildSVG_Plan(data,dark){
      Matches TikZ: \node[anchor=west]{\input{left}}
      Row 0 (R1/Sol/int.) on far left, last row on right
      ═══════════════════════════════════════════════════ */
-  s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-HEADER_GAP+6,t('svgRH'),8.5,gold,'bold','middle');
+  s+=tx(rhX0+((nRH-1)*CGAP)/2,gridTop-HEADER_GAP+10,t('svgRH'),8.5,gold,'bold','middle');
   rhRows.forEach((row,ri)=>{
     const cx=rhX0+ri*CGAP;  // ri=0=R1 → leftmost
     const off=rhTopShift+(row.offset||0)*(BGAP/2);  // normalized: topShift ensures negative offsets stay visible
@@ -625,7 +625,7 @@ function buildSVG_Plan(data,dark){
     const lhBlockH=maxLHBtns*BGAP+lhTopShift+lhBottomExtra;
     const lhGridTop=gridTop+Math.round((rhBlockH-lhBlockH)/2);
 
-    s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-HEADER_GAP+6,t('svgLH'),8.5,gold,'bold','middle');
+    s+=tx(lhX0+((nLH-1)*CGAP)/2,lhGridTop-HEADER_GAP+10,t('svgLH'),8.5,gold,'bold','middle');
 
     /* All LH sections: unified render loop.
        isPaired mode pushes a single interleaved column into lhSecRows (B-A-B-A).
@@ -636,6 +636,9 @@ function buildSVG_Plan(data,dark){
       const cx=lhX0+si*CGAP;
       const off=lhTopShift+(sec.offset||0)*(BGAP/2);
       const has2=sec.items2&&sec.items2.some(x=>x!=null);
+      // rotated column label above the column (like RH columns)
+      const lblY=lhGridTop-8;
+      s+=`<text x="${cx}" y="${lblY}" text-anchor="start" font-size="6.5" fill="${gold}" font-weight="bold" transform="rotate(-90,${cx},${lblY})">${escSVG(sec.nom)}</text>`;
       // alternating column band
       if(sec.items.length){
         const cy0=lhGridTop+off+BGAP/2;
@@ -643,15 +646,18 @@ function buildSVG_Plan(data,dark){
         const bandH=(sec.items.length-1)*BGAP+2*(R+3);
         s+=`<rect x="${cx-R-3}" y="${bandY}" width="${(R+3)*2}" height="${bandH}" rx="3" fill="${si%2===0?band1:band2}" opacity=".6"/>`;
       }
-      // buttons + B/A markers for interleaved mode
+      // buttons + B/A markers
       sec.items.forEach((btn,bi)=>{
         const cy=lhGridTop+off+bi*BGAP+BGAP/2;
         s+=drawBtn(cx,cy,btn,has2?(sec.items2[bi]||null):null);
         if(sec.interleavedTypes){
+          // interleaved mode: show B1/A1 markers
           const typ=sec.interleavedTypes[bi];
           const idx=sec.interleavedIndices?sec.interleavedIndices[bi]:'';
-          s+=tx(cx-R+4,cy-R-2,typ+idx,5.5,typ==='B'?bassLbl:accLbl,'bold','start');
+          s+=tx(cx-R+4,cy-R-2,typ+idx,6,typ==='B'?bassLbl:accLbl,'bold','start');
         }
+        // button number inside each button (faint, centred)
+        s+=tx(cx,cy+3.5,bi+1,7,numTx,'normal','middle');
       });
     });
     // button numbers on the far right

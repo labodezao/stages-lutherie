@@ -1088,15 +1088,15 @@ function stluth_handle_inscription(WP_REST_Request $request) {
     $conf_subject = str_replace(array_keys($replacements), array_values($replacements), $conf_subject);
     wp_mail($email, $conf_subject, $conf_body, array(), $attachments);
 
-    // Cleanup
-    if (!empty($pdf_path) && file_exists($pdf_path)) {
-        unlink($pdf_path);
-    }
-    if (!empty($json_path) && file_exists($json_path)) {
-        unlink($json_path);
-    }
+    // Cleanup — deferred so mail plugins can read attachments
+    $tmp_files = array($pdf_path, $json_path);
+    register_shutdown_function(function() use ($tmp_files) {
+        foreach ($tmp_files as $tmp) {
+            if (!empty($tmp)) { if (file_exists($tmp)) { @unlink($tmp); } }
+        }
+    });
 
-    return new WP_REST_Response(array('success' => true, 'message' => 'Inscription envoyée avec succès !'), 200);
+    return new WP_REST_Response(array('success' => true, 'message' => 'Inscription envoy\u00e9e avec succ\u00e8s !'), 200);
 }
 ?>
 
