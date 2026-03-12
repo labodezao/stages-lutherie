@@ -3,7 +3,7 @@
  * Plugin Name: Stages Lutherie — Inscription REST API
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF + JSON joints) et un
- *              email de confirmation au stagiaire (avec PDF + JSON joints).
+ *              email de confirmation au stagiaire (avec PDF joint).
  * Version:     2.0
  * Author:      Labodezao
  *
@@ -73,7 +73,7 @@ endif;
 
 if ( ! function_exists( 'stluth_prepare_mail_attachment_copy' ) ) :
 	function stluth_prepare_mail_attachment_copy( $source_path, $prefix = 'attachment' ) {
-		if ( empty( $source_path ) || ! file_exists( $source_path ) ) {
+		if ( empty( $source_path ) || ! file_exists( $source_path ) || ! is_readable( $source_path ) ) {
 			return '';
 		}
 
@@ -90,7 +90,7 @@ if ( ! function_exists( 'stluth_prepare_mail_attachment_copy' ) ) :
 		}
 
 		$ext       = pathinfo( $source_path, PATHINFO_EXTENSION );
-		$base_name = sanitize_file_name( $prefix . '_' . wp_date( 'Ymd_His' ) . '_' . wp_generate_password( 6, false, false ) );
+		$base_name = sanitize_file_name( $prefix . '_' . wp_date( 'Ymd_His' ) . '_' . wp_generate_uuid4() );
 		$dest_path = trailingslashit( $dest_dir ) . $base_name . ( $ext ? '.' . strtolower( $ext ) : '' );
 
 		if ( copy( $source_path, $dest_path ) ) {
@@ -922,10 +922,11 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	/* ── Confirmation email to trainee (HTML) ── */
 	$trainee_pdf_attachment = '';
+	$safe_trainee_name      = sanitize_file_name( $nom );
 	if ( ! empty( $perm_pdf ) && file_exists( $perm_pdf ) ) {
 		$trainee_pdf_attachment = $perm_pdf;
 	} elseif ( ! empty( $pdf_path_pdf ) && file_exists( $pdf_path_pdf ) ) {
-		$trainee_pdf_attachment = stluth_prepare_mail_attachment_copy( $pdf_path_pdf, 'stagiaire_' . sanitize_file_name( $nom ) );
+		$trainee_pdf_attachment = stluth_prepare_mail_attachment_copy( $pdf_path_pdf, 'trainee_' . $safe_trainee_name );
 	}
 
 	$trainee_attachments = array();
