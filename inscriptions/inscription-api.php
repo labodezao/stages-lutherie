@@ -933,40 +933,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	/* Log attachment details for debugging */
 	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $trainee_attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $trainee_attachments ) ) );
 
-	/* Belt-and-suspenders: force-add attachments via phpmailer_init
-	   in case a plugin or wp_mail filter strips them from HTML emails.
-	   The trainee only needs the PDF recap; the JSON plan remains on the
-	   luthier/admin side to keep deliverability closer to the test emails. */
-	if ( ! empty( $trainee_attachments ) ) {
-		$stluth_trainee_atts = $trainee_attachments;
-		$stluth_force_atts   = null;
-		$stluth_force_atts   = function ( $phpmailer ) use ( $stluth_trainee_atts, &$stluth_force_atts ) {
-			/* Diagnostic: log what PHPMailer has before we touch it */
-			$existing = array();
-			foreach ( $phpmailer->getAttachments() as $a ) {
-				$existing[] = $a[0];
-			}
-			error_log( '[Stages Lutherie] phpmailer_init hook fired — ContentType=' . $phpmailer->ContentType
-				. ', existing attachments=' . count( $existing )
-				. ', our files=' . count( $stluth_trainee_atts ) );
-
-			foreach ( $stluth_trainee_atts as $att ) {
-				if ( file_exists( $att ) && ! in_array( $att, $existing, true ) ) {
-					$phpmailer->addAttachment( $att );
-					error_log( '[Stages Lutherie] phpmailer_init: force-added ' . basename( $att ) );
-				}
-			}
-
-			/* Final count */
-			error_log( '[Stages Lutherie] phpmailer_init: final attachment count = ' . count( $phpmailer->getAttachments() ) );
-
-			/* Self-remove — this hook is for the trainee email only */
-			remove_action( 'phpmailer_init', $stluth_force_atts, 99999 );
-		};
-		add_action( 'phpmailer_init', $stluth_force_atts, 99999 );
-	}
-
-	/* Trainee receives the same PDF attachment source as the luthier mail. */
+	/* Trainee receives the same PDF attachment source as the working HTML test mail. */
 	$trainee_sent = function_exists( 'stluth_send_html_mail' )
 		? stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments )
 		: wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
