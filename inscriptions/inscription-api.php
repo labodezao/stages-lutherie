@@ -928,9 +928,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $trainee_attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $trainee_attachments ) ) );
 
 	/* Trainee reuses the luthier attachment list and keeps only the PDF recap. */
-	$trainee_sent = function_exists( 'stluth_send_html_mail' )
-		? stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments )
-		: wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
+	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
 
 	if ( ! $trainee_sent ) {
 		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );
