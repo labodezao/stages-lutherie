@@ -866,6 +866,10 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	error_log( '[Stages Lutherie] Luthier email ' . ( $luthier_sent ? 'sent' : 'FAILED' ) . ' to ' . $safe_luthier );
 
 	/* ── Confirmation email to trainee (HTML) ── */
+	$trainee_attachments = array_values( array_filter( $attachments, function ( $path ) {
+		return is_string( $path ) && preg_match( '/\.pdf$/i', $path );
+	} ) );
+
 	$conf_subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_subject );
 
 	/* Replace variables — escape HTML values, bank_details newlines → <br> */
@@ -893,13 +897,14 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	);
 
 	/* Log attachment details for debugging */
-	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $attachments ) ) );
+	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $trainee_attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $trainee_attachments ) ) );
 
 	/* Belt-and-suspenders: force-add attachments via phpmailer_init
 	   in case a plugin or wp_mail filter strips them from HTML emails.
-	   This ensures the trainee always receives the PDF + JSON. */
-	if ( ! empty( $attachments ) ) {
-		$stluth_trainee_atts = $attachments;
+	   The trainee only needs the PDF recap; the JSON plan remains on the
+	   luthier/admin side to keep deliverability closer to the test emails. */
+	if ( ! empty( $trainee_attachments ) ) {
+		$stluth_trainee_atts = $trainee_attachments;
 		$stluth_force_atts   = null;
 		$stluth_force_atts   = function ( $phpmailer ) use ( $stluth_trainee_atts, &$stluth_force_atts ) {
 			/* Diagnostic: log what PHPMailer has before we touch it */
@@ -927,8 +932,8 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		add_action( 'phpmailer_init', $stluth_force_atts, 99999 );
 	}
 
-	/* Trainee receives the same attachments as the luthier (PDF recap + JSON plan if present) */
-	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $attachments );
+	/* Trainee receives the PDF recap only. */
+	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
 
 	if ( ! $trainee_sent ) {
 		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );

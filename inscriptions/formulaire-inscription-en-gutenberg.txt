@@ -1650,6 +1650,101 @@ var STAGE_CONFIG = {
     return { dataUrl: c.toDataURL('image/jpeg', 0.90), w: c.width, h: c.height };
   }
 
+  function extractCssUrl(bgValue) {
+    if (!bgValue || bgValue === 'none') return '';
+    var m = bgValue.match(/^url\((['"]?)(.*?)\1\)$/);
+    return m ? m[2] : '';
+  }
+
+  function parseClipPolygonPoints(clipPath, w, h) {
+    if (!clipPath || clipPath === 'none') return null;
+    var m = clipPath.match(/^polygon\((.+)\)$/);
+    if (!m) return null;
+    var pts = m[1].split(',').map(function(part) {
+      var coords = part.trim().split(/\s+/);
+      var xRaw = coords[0], yRaw = coords[1];
+      if (!xRaw || !yRaw) return null;
+      var x = xRaw.indexOf('%') >= 0 ? w * parseFloat(xRaw) / 100 : parseFloat(xRaw);
+      var y = yRaw.indexOf('%') >= 0 ? h * parseFloat(yRaw) / 100 : parseFloat(yRaw);
+      if (isNaN(x) || isNaN(y)) return null;
+      return { x: x, y: y };
+    }).filter(Boolean);
+    return pts.length ? pts : null;
+  }
+
+  function loadImageElement(url) {
+    return new Promise(function(resolve, reject) {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function() { resolve(img); };
+      img.onerror = function(err) { reject(err); };
+      img.src = url;
+    });
+  }
+
+  async function renderAccordionPreviewDataUrl() {
+    var wrap = document.getElementById('accordionPreview');
+    if (!wrap) return null;
+    var rect = wrap.getBoundingClientRect();
+    var sw = Math.max(1, Math.round(rect.width || wrap.offsetWidth || 920));
+    var sh = Math.max(1, Math.round(rect.height || wrap.offsetHeight || 420));
+    var SCALE = 2;
+    var c = document.createElement('canvas');
+    c.width = sw * SCALE;
+    c.height = sh * SCALE;
+    var ctx = c.getContext('2d');
+    ctx.scale(SCALE, SCALE);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, sw, sh);
+    var layers = wrap.querySelectorAll('.acc-layer');
+    for (var i = 0; i < layers.length; i++) {
+      var layer = layers[i];
+      var style = window.getComputedStyle(layer);
+      var opacity = parseFloat(style.opacity || '1');
+      var clipPath = style.clipPath;
+      if (!clipPath || clipPath === 'none') {
+        if (style.webkitClipPath) clipPath = style.webkitClipPath;
+      }
+      var points = parseClipPolygonPoints(clipPath, sw, sh);
+      ctx.save();
+      ctx.globalAlpha = isNaN(opacity) ? 1 : opacity;
+      if (points) {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (var p = 1; p < points.length; p++) ctx.lineTo(points[p].x, points[p].y);
+        ctx.closePath();
+        ctx.clip();
+      }
+      var bgColor = style.backgroundColor;
+      if (bgColor) {
+        if (bgColor !== 'rgba(0, 0, 0, 0)') {
+          if (bgColor !== 'transparent') {
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, sw, sh);
+          }
+        }
+      }
+      var bgUrl = extractCssUrl(style.backgroundImage);
+      if (bgUrl) {
+        try {
+          var bgImg = await loadImageElement(bgUrl);
+          ctx.drawImage(bgImg, 0, 0, sw, sh);
+        } catch (bgErr) {}
+      }
+      ctx.restore();
+    }
+    return { dataUrl: c.toDataURL('image/jpeg', 0.90), w: sw, h: sh };
+  }
+
+  function getSelectedGrilleImageData() {
+    var grilleVal = document.getElementById('numGrille').value;
+    if (!grilleVal) return null;
+    var gCell = document.getElementById('grilleCell-' + parseInt(grilleVal, 10));
+    var gImg = gCell ? gCell.querySelector('img') : null;
+    if (!gImg || gImg.naturalWidth <= 0) return null;
+    return imgToDataUrl(gImg);
+  }
+
   var JSPDF_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
   /* ── PDF number formatter (plain space — avoids jsPDF unicode rendering issues) ── */
@@ -1761,22 +1856,6 @@ var STAGE_CONFIG = {
     addLine('Grille/body wood', selVal('boisGrille') || '\u2013');
     var pdfGrille = document.getElementById('numGrille').value;
     addLine('Grille', pdfGrille ? 'Grille #' + pdfGrille : '\u2013');
-    if (pdfGrille) {
-      try {
-        var gCell = document.getElementById('grilleCell-' + parseInt(pdfGrille, 10));
-        var gImg = gCell ? gCell.querySelector('img') : null;
-        if (gImg) {
-          if (gImg.naturalWidth > 0) {
-            var gData = imgToDataUrl(gImg);
-            var gAspect = gData.w / gData.h;
-            var gW = 40; var gH = Math.round(gW / gAspect);
-            if (y + gH > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
-            doc.addImage(gData.dataUrl, 'JPEG', MARGIN + 62, y, gW, gH);
-            y += gH + 4;
-          }
-        }
-      } catch (gErr) { /* skip grille image if canvas render fails */ }
-    }
     addLine('Button markings', document.getElementById('marquageMD').value || '\u2013');
     var remMD = document.getElementById('remarquesMD').value;
     if (remMD) addLine('RH Notes', remMD);
@@ -1817,6 +1896,39 @@ var STAGE_CONFIG = {
           doc.addImage(planImg.dataUrl, 'JPEG', MARGIN, y, svgImgW, svgImgH);
           y += svgImgH + 4;
         } catch (planImgErr) { /* skip SVG if canvas render fails */ }
+      }
+      y += 4;
+    }
+
+    /* 8. Informal preview */
+    var previewImgData = null;
+    var grilleImgData = null;
+    try {
+      updateAccordionPreview();
+      previewImgData = await renderAccordionPreviewDataUrl();
+    } catch (previewErr) { /* skip visual preview if canvas render fails */ }
+    try {
+      grilleImgData = getSelectedGrilleImageData();
+    } catch (grilleImgErr) { /* skip grille image if canvas render fails */ }
+    if (previewImgData || grilleImgData) {
+      sectionTitle('Informal preview (non-binding)');
+      if (previewImgData) {
+        var prevAspect = previewImgData.w / previewImgData.h;
+        var prevW = CW;
+        var prevH = Math.round(prevW / prevAspect);
+        var maxPrevH = 72;
+        if (prevH > maxPrevH) { prevH = maxPrevH; prevW = Math.round(prevH * prevAspect); }
+        if (y + prevH > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        doc.addImage(previewImgData.dataUrl, 'JPEG', MARGIN + Math.max(0, (CW - prevW) / 2), y, prevW, prevH);
+        y += prevH + 5;
+      }
+      if (grilleImgData) {
+        var gAspect2 = grilleImgData.w / grilleImgData.h;
+        var gW2 = Math.min(54, CW);
+        var gH2 = Math.round(gW2 / gAspect2);
+        if (y + gH2 > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        doc.addImage(grilleImgData.dataUrl, 'JPEG', MARGIN + Math.max(0, (CW - gW2) / 2), y, gW2, gH2);
+        y += gH2 + 4;
       }
       y += 4;
     }
