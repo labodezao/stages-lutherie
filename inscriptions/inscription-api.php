@@ -468,6 +468,148 @@ function stluth_register_inscription_route() {
 
 endif; // function_exists stluth_register_inscription_route
 
+/* ══════════════════════════════════════════════════════
+   AVAILABILITY ENDPOINT — GET /stages-lutherie/v1/availability
+   Returns current inscription counts per session and model.
+   Used by the inscription forms to grey out full options.
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'stluth_count_inscriptions' ) ) :
+
+/**
+ * Count non-cancelled inscriptions for a session, optionally filtered by model.
+ *
+ * @param string $session  Session ID (e.g. 'avril2026').
+ * @param string $modele   Model value (e.g. '33/24b'), or '' for session total.
+ * @return int
+ */
+function stluth_count_inscriptions( $session, $modele ) {
+	$meta_query = array(
+		'relation' => 'AND',
+		array(
+			'key'     => '_stluth_session',
+			'value'   => $session,
+			'compare' => '=',
+		),
+	);
+	if ( '' !== $modele ) {
+		$meta_query[] = array(
+			'key'     => '_stluth_modele',
+			'value'   => $modele,
+			'compare' => '=',
+		);
+	}
+	$q = new WP_Query( array(
+		'post_type'      => 'stluth_inscription',
+		'post_status'    => array( 'publish', 'stluth_pending', 'stluth_paid' ),
+		'meta_query'     => $meta_query,
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+		'no_found_rows'  => true,
+	) );
+	return (int) $q->post_count;
+}
+
+endif; // function_exists stluth_count_inscriptions
+
+if ( ! function_exists( 'stluth_register_availability_route' ) ) :
+
+add_action( 'rest_api_init', 'stluth_register_availability_route', 99 );
+
+function stluth_register_availability_route() {
+	register_rest_route(
+		'stages-lutherie/v1',
+		'/availability',
+		array(
+			'methods'             => 'GET',
+			'callback'            => 'stluth_handle_availability',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+
+endif; // function_exists stluth_register_availability_route
+
+if ( ! function_exists( 'stluth_handle_availability' ) ) :
+
+function stluth_handle_availability( WP_REST_Request $request ) {
+	$all_models = array( '21/8b', '33/12b', '33/18b', '33/24b' );
+	$cap_map    = array(
+		'21/8b'  => (int) get_option( 'stluth_cap_21_8b',  6 ),
+		'33/12b' => (int) get_option( 'stluth_cap_33_12b', 5 ),
+		'33/18b' => (int) get_option( 'stluth_cap_33_18b', 3 ),
+		'33/24b' => (int) get_option( 'stluth_cap_33_24b', 3 ),
+	);
+	$cap_total = (int) get_option( 'stluth_cap_total', 15 );
+
+	/* Build session list from ?sessions= param (comma-separated) */
+	$sessions_param = sanitize_text_field( $request->get_param( 'sessions' ) );
+	$session_ids    = array();
+	if ( ! empty( $sessions_param ) ) {
+		foreach ( explode( ',', $sessions_param ) as $s ) {
+			$s = sanitize_text_field( trim( $s ) );
+			if ( ! empty( $s ) ) {
+				$session_ids[] = $s;
+			}
+		}
+	}
+
+	/* Also discover sessions already in the database */
+	$pids = get_posts( array(
+		'post_type'      => 'stluth_inscription',
+		'post_status'    => array( 'publish', 'stluth_pending', 'stluth_paid', 'stluth_cancelled' ),
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+	) );
+	foreach ( $pids as $pid ) {
+		$s = sanitize_text_field( get_post_meta( $pid, '_stluth_session', true ) );
+		if ( ! empty( $s ) && ! in_array( $s, $session_ids, true ) ) {
+			$session_ids[] = $s;
+		}
+	}
+
+	$result = array();
+	foreach ( $session_ids as $session_id ) {
+		$total_used   = stluth_count_inscriptions( $session_id, '' );
+		$session_full = $total_used >= $cap_total;
+		$all_full     = true;
+		$models_data  = array();
+
+		foreach ( $all_models as $model ) {
+			$cap       = $cap_map[ $model ];
+			$used      = stluth_count_inscriptions( $session_id, $model );
+			$remaining = max( 0, $cap - $used );
+			$full      = $session_full || ( $used >= $cap );
+			if ( ! $full ) {
+				$all_full = false;
+			}
+			$models_data[ $model ] = array(
+				'max'       => $cap,
+				'used'      => $used,
+				'remaining' => $remaining,
+				'full'      => $full,
+			);
+		}
+
+		/* Mark session full when all individual model caps are reached */
+		if ( $all_full && ! $session_full ) {
+			$session_full = true;
+		}
+
+		$result[ $session_id ] = array(
+			'max'       => $cap_total,
+			'used'      => $total_used,
+			'remaining' => max( 0, $cap_total - $total_used ),
+			'full'      => $session_full,
+			'models'    => $models_data,
+		);
+	}
+
+	return new WP_REST_Response( array( 'sessions' => $result ), 200 );
+}
+
+endif; // function_exists stluth_handle_availability
+
 if ( ! function_exists( 'stluth_handle_inscription' ) ) :
 function stluth_handle_inscription( WP_REST_Request $request ) {
 	/* Log raw body size — helps diagnose truncation by WAF / post_max_size */
@@ -497,6 +639,35 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$acompte  = sanitize_text_field( isset( $fields['acompte'] )      ? $fields['acompte']      : '' );
 	$plan_lbl = sanitize_text_field( isset( $fields['planClavier'] )  ? $fields['planClavier']  : '' );
 	$lang     = sanitize_text_field( isset( $fields['lang'] )         ? $fields['lang']         : 'fr' );
+
+	/* ── Capacity check — reject if session or model is full ── */
+	if ( function_exists( 'stluth_count_inscriptions' ) && ! empty( $session ) && ! empty( $modele ) ) {
+		$cap_total   = (int) get_option( 'stluth_cap_total', 15 );
+		$count_total = stluth_count_inscriptions( $session, '' );
+		if ( $count_total >= $cap_total ) {
+			return new WP_REST_Response(
+				array( 'success' => false, 'message' => 'La session est complète. Aucune place disponible.' ),
+				409
+			);
+		}
+		$model_cap_keys = array(
+			'21/8b'  => array( 'stluth_cap_21_8b',  6 ),
+			'33/12b' => array( 'stluth_cap_33_12b', 5 ),
+			'33/18b' => array( 'stluth_cap_33_18b', 3 ),
+			'33/24b' => array( 'stluth_cap_33_24b', 3 ),
+		);
+		if ( isset( $model_cap_keys[ $modele ] ) ) {
+			list( $cap_opt, $cap_default ) = $model_cap_keys[ $modele ];
+			$cap_model   = (int) get_option( $cap_opt, $cap_default );
+			$count_model = stluth_count_inscriptions( $session, $modele );
+			if ( $count_model >= $cap_model ) {
+				return new WP_REST_Response(
+					array( 'success' => false, 'message' => sprintf( 'Le modèle "%s" est complet pour cette session.', $modele ) ),
+					409
+				);
+			}
+		}
+	}
 
 	/* ── WordPress option defaults ── */
 	$defaults = array(
@@ -933,6 +1104,11 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_luthier_body',         array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_subject_en', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_confirmation_body_en',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
+	register_setting( 'stluth_inscription', 'stluth_cap_total',   array( 'sanitize_callback' => 'absint' ) );
+	register_setting( 'stluth_inscription', 'stluth_cap_21_8b',  array( 'sanitize_callback' => 'absint' ) );
+	register_setting( 'stluth_inscription', 'stluth_cap_33_12b', array( 'sanitize_callback' => 'absint' ) );
+	register_setting( 'stluth_inscription', 'stluth_cap_33_18b', array( 'sanitize_callback' => 'absint' ) );
+	register_setting( 'stluth_inscription', 'stluth_cap_33_24b', array( 'sanitize_callback' => 'absint' ) );
 }
 
 endif; // function_exists stluth_register_settings
@@ -1205,6 +1381,84 @@ function stluth_render_settings_page() {
 					</td>
 				</tr>
 			</table>
+
+		<hr style="margin:32px 0 24px;">
+		<h2 style="font-size:1.1rem;">🎓 Gestion des places par session</h2>
+		<p>Les limites s'appliquent à <strong>chaque session</strong> indépendamment. Les formulaires d'inscription griseront automatiquement les modèles complets.</p>
+		<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
+			<small>Quand tous les modèles d'une session sont complets <em>ou</em> que le total est atteint, la session est grisée avec la mention <strong>Session complète</strong>.</small>
+		</div>
+		<table class="form-table">
+			<tr>
+				<th scope="row">Max. stagiaires par session<br><small style="font-weight:normal;">(total toutes modèles confondus)</small></th>
+				<td>
+					<input type="number" name="stluth_cap_total" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_total', 15 ) ); ?>" min="1" max="99" style="width:80px;">
+					<p class="description">Aucune inscription n'est acceptée au-delà de ce total pour une même session.</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">21 / 8 basses <small style="font-weight:normal;">(2 rangées)</small></th>
+				<td><input type="number" name="stluth_cap_21_8b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_21_8b', 6 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
+			</tr>
+			<tr>
+				<th scope="row">33 / 12 basses <small style="font-weight:normal;">(3 rangées)</small></th>
+				<td><input type="number" name="stluth_cap_33_12b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_33_12b', 5 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
+			</tr>
+			<tr>
+				<th scope="row">33 / 18 basses <small style="font-weight:normal;">(3 rangées)</small></th>
+				<td><input type="number" name="stluth_cap_33_18b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_33_18b', 3 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
+			</tr>
+			<tr>
+				<th scope="row">33 / 24 basses <small style="font-weight:normal;">(4 rangées)</small></th>
+				<td><input type="number" name="stluth_cap_33_24b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_33_24b', 3 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
+			</tr>
+		</table>
+		<?php
+		/* Show current inscription counts per session */
+		$known_sessions = array( 'avril2026', 'octobre2026' );
+		if ( function_exists( 'stluth_count_inscriptions' ) ) {
+			/* Discover additional sessions from DB */
+			$db_pids = get_posts( array(
+				'post_type'      => 'stluth_inscription',
+				'post_status'    => array( 'publish', 'stluth_pending', 'stluth_paid' ),
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			) );
+			foreach ( $db_pids as $pid ) {
+				$s = sanitize_text_field( get_post_meta( $pid, '_stluth_session', true ) );
+				if ( ! empty( $s ) && ! in_array( $s, $known_sessions, true ) ) {
+					$known_sessions[] = $s;
+				}
+			}
+			echo '<h3 style="font-size:.9rem;margin-top:20px;color:#23282d;">📊 Inscriptions actuelles (hors annulées)</h3>';
+			echo '<table class="widefat striped" style="margin-top:6px;max-width:680px;">';
+			echo '<thead><tr><th>Session</th><th>21/8b</th><th>33/12b</th><th>33/18b</th><th>33/24b</th><th>Total</th></tr></thead><tbody>';
+			$c21d  = (int) get_option( 'stluth_cap_21_8b',  6 );
+			$c12d  = (int) get_option( 'stluth_cap_33_12b', 5 );
+			$c18d  = (int) get_option( 'stluth_cap_33_18b', 3 );
+			$c24d  = (int) get_option( 'stluth_cap_33_24b', 3 );
+			$ctotd = (int) get_option( 'stluth_cap_total',  15 );
+			foreach ( $known_sessions as $sess ) {
+				$u21  = stluth_count_inscriptions( $sess, '21/8b' );
+				$u12  = stluth_count_inscriptions( $sess, '33/12b' );
+				$u18  = stluth_count_inscriptions( $sess, '33/18b' );
+				$u24  = stluth_count_inscriptions( $sess, '33/24b' );
+				$utot = stluth_count_inscriptions( $sess, '' );
+				$style_full = 'color:#c0392b;font-weight:700;';
+				echo '<tr>';
+				echo '<td><strong>' . esc_html( $sess ) . '</strong></td>';
+				echo '<td' . ( $u21  >= $c21d  ? ' style="' . $style_full . '"' : '' ) . '>' . $u21  . ' / ' . $c21d  . '</td>';
+				echo '<td' . ( $u12  >= $c12d  ? ' style="' . $style_full . '"' : '' ) . '>' . $u12  . ' / ' . $c12d  . '</td>';
+				echo '<td' . ( $u18  >= $c18d  ? ' style="' . $style_full . '"' : '' ) . '>' . $u18  . ' / ' . $c18d  . '</td>';
+				echo '<td' . ( $u24  >= $c24d  ? ' style="' . $style_full . '"' : '' ) . '>' . $u24  . ' / ' . $c24d  . '</td>';
+				echo '<td' . ( $utot >= $ctotd ? ' style="' . $style_full . '"' : '' ) . '><strong>' . $utot . ' / ' . $ctotd . '</strong></td>';
+				echo '</tr>';
+			}
+			echo '</tbody></table>';
+		}
+		?>
+		<table class="form-table">
+		</table>
 			<?php submit_button( 'Enregistrer les réglages' ); ?>
 		</form>
 
