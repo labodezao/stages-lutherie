@@ -889,9 +889,20 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	error_log( '[Stages Lutherie] Luthier email ' . ( $luthier_sent ? 'sent' : 'FAILED' ) . ' to ' . $safe_luthier );
 
 	/* ── Confirmation email to trainee (HTML) ── */
-	$trainee_attachments = array_values( array_filter( $attachments, function ( $path ) {
-		return is_string( $path ) && preg_match( '/\.pdf$/i', $path );
-	} ) );
+	$trainee_pdf_path = '';
+	if ( ! empty( $perm_pdf ) && is_string( $perm_pdf ) && file_exists( $perm_pdf ) ) {
+		$trainee_pdf_path = $perm_pdf;
+	} elseif ( ! empty( $pdf_path_pdf ) && is_string( $pdf_path_pdf ) && file_exists( $pdf_path_pdf ) ) {
+		$trainee_pdf_path = $pdf_path_pdf;
+	} else {
+		foreach ( $attachments as $path ) {
+			if ( is_string( $path ) && preg_match( '/\.pdf$/i', $path ) && file_exists( $path ) ) {
+				$trainee_pdf_path = $path;
+				break;
+			}
+		}
+	}
+	$trainee_attachments = ! empty( $trainee_pdf_path ) ? array( $trainee_pdf_path ) : array();
 
 	$conf_subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_subject );
 
@@ -956,7 +967,9 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	}
 
 	/* Trainee receives the same PDF attachment source as the luthier mail. */
-	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
+	$trainee_sent = function_exists( 'stluth_send_html_mail' )
+		? stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments )
+		: wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
 
 	if ( ! $trainee_sent ) {
 		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );
