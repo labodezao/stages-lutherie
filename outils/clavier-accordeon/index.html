@@ -363,14 +363,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               <option value="3">3 voix</option>
             </select>
           </div>
-          <div style="margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
-              <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
-              <span class="gauche-label">Seuil accords MG</span>
-            </label>
-            <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activé : si une note dépasse ce seuil, elle est&#10;automatiquement transposée à l'octave d'en dessous.&#10;S'applique aussi au bouton ↑5te→V2.&#10;Exemple : seuil Sol4 → toute note &gt; Sol4 descend d'une octave.">ⓘ</span>
-            <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;" oninput="onAnyChange()">
-          </div>
           <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
             <input type="checkbox" id="show-midi" onchange="onAnyChange()">
             <label for="show-midi" style="font-size:.82rem;cursor:pointer;font-weight:normal;text-transform:none;letter-spacing:0" data-i="showMidi">Numéros MIDI <span class="tip tip-up" tabindex="0" role="tooltip" aria-label="Info: MIDI" data-tip="Affiche le numéro MIDI de chaque note sur le clavier et dans le tableau fabricant.&#10;Do central (Do4) = MIDI 60. Utile pour les logiciels et fabricants.&#10;—&#10;Shows MIDI note number on keyboard and manufacturer table.&#10;Middle C (C4) = MIDI 60. Useful for software and manufacturers.">ⓘ</span></label>
@@ -1812,7 +1804,15 @@ function generateInputGrid(){
   }
   html+=`</div>`;
   // Left hand — voice sections for basses and accords
-  html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>`;
+  html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>
+    <div style="margin:0 0 10px 0;padding:8px 10px;background:#fff8e8;border:1px solid #ead7a3;border-radius:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
+        <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
+        <span>Seuil accords MG</span>
+      </label>
+      <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activé : si une note dépasse ce seuil, elle est&#10;automatiquement transposée à l'octave d'en dessous.&#10;S'applique aussi au bouton ↑5te→V2.&#10;Exemple : seuil Sol4 → toute note &gt; Sol4 descend d'une octave.">ⓘ</span>
+      <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;" oninput="onAnyChange()">
+    </div>`;
   const nbVB=parseInt(document.getElementById('nb-voix-basses')?.value||'2');
   const nbVA=parseInt(document.getElementById('nb-voix-accords')?.value||'2');
   const _bCount=(CFG.notes.basses||[]).length;
