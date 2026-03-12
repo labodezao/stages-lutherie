@@ -340,14 +340,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               <input type="checkbox" id="terzetto-enabled" onchange="onTerzettoChange()">
               <span class="gauche-label" data-i="terzetto">Terzetto</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Terzetto" data-tip="Terzetto (italien : &quot;trio&quot;) : plaque d'anche ajoutant la TIERCE à l'accord.&#10;2 voix : Do+Sol · 3 voix terzetto : Do+Mi+Sol (accord complet).&#10;Optionnel sur accordéon 2-voix ; inclus sur 3-voix.&#10;—&#10;Terzetto (Italian: &quot;trio&quot;): reed plate adding the 3RD to each chord.&#10;2-voice: C+G · 3-voice terzetto: C+E+G (full chord).&#10;Optional on 2-voice; standard on 3-voice instruments.">ⓘ</span>
             </label>
-            <div style="display:flex;align-items:center;gap:6px;grid-column:1/-1;margin-top:4px;flex-wrap:wrap;">
-              <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
-                <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
-                <span class="gauche-label">Seuil accords MG</span>
-              </label>
-              <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
-              <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;" oninput="onAnyChange()">
-            </div>
           </div>
           <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
             <span style="font-size:.65rem;color:#888;" data-i="quickSet">Rapide :</span>
@@ -378,6 +370,14 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               <option value="2" selected>2 voix</option>
               <option value="3">3 voix</option>
             </select>
+          </div>
+          <div style="margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
+              <span class="gauche-label">Seuil accords MG</span>
+            </label>
+            <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
+            <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;" oninput="onAnyChange()">
           </div>
           <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
             <input type="checkbox" id="show-midi" onchange="onAnyChange()">

@@ -51,6 +51,30 @@ if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
 	}
 endif;
 
+if ( ! function_exists( 'stluth_force_html_mail_content_type' ) ) :
+	function stluth_force_html_mail_content_type() {
+		return 'text/html';
+	}
+endif;
+
+if ( ! function_exists( 'stluth_send_html_mail' ) ) :
+	function stluth_send_html_mail( $to, $subject, $message, $headers = array(), $attachments = array() ) {
+		$clean_headers = array();
+		foreach ( (array) $headers as $header ) {
+			if ( stripos( $header, 'Content-Type:' ) === 0 ) {
+				continue;
+			}
+			$clean_headers[] = $header;
+		}
+
+		add_filter( 'wp_mail_content_type', 'stluth_force_html_mail_content_type' );
+		$sent = wp_mail( $to, $subject, $message, $clean_headers, $attachments );
+		remove_filter( 'wp_mail_content_type', 'stluth_force_html_mail_content_type' );
+
+		return $sent;
+	}
+endif;
+
 /* ══════════════════════════════════════════════════════
    HELPER — Default HTML email template
    ══════════════════════════════════════════════════════ */
@@ -891,7 +915,6 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	}
 
 	$headers_conf   = array(
-		'Content-Type: text/html; charset=UTF-8',
 		'From: ' . $safe_name . ' <' . $safe_luthier . '>',
 		'Reply-To: ' . $safe_luthier,
 	);
@@ -933,7 +956,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	}
 
 	/* Trainee receives the PDF recap only. */
-	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
+	$trainee_sent = stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
 
 	if ( ! $trainee_sent ) {
 		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );
@@ -1273,11 +1296,10 @@ function stluth_render_settings_page() {
 
 		/* Send HTML test email (like trainee) */
 		$test_headers_html = array(
-			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . $luthier_name . ' <' . $test_to . '>',
 		);
 
-		$html_sent = wp_mail( $test_to, '[TEST HTML] Confirmation inscription — v' . STLUTH_API_VERSION, $test_html, $test_headers_html, $test_attachments );
+		$html_sent = stluth_send_html_mail( $test_to, '[TEST HTML] Confirmation inscription — v' . STLUTH_API_VERSION, $test_html, $test_headers_html, $test_attachments );
 
 		/* Send plain text test email (like luthier) */
 		$test_headers_plain = array(
@@ -1299,7 +1321,7 @@ function stluth_render_settings_page() {
 		if ( function_exists( 'stluth_strip_mso_conditionals' ) ) {
 			$test_html_en = stluth_strip_mso_conditionals( $test_html_en );
 		}
-		$en_sent = wp_mail( $test_to, '[TEST EN] Registration confirmation — v' . STLUTH_API_VERSION, $test_html_en, $test_headers_html, $test_attachments );
+		$en_sent = stluth_send_html_mail( $test_to, '[TEST EN] Registration confirmation — v' . STLUTH_API_VERSION, $test_html_en, $test_headers_html, $test_attachments );
 
 		/* Cleanup */
 		@unlink( $test_pdf_path );
