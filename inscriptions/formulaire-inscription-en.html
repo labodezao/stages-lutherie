@@ -1030,6 +1030,29 @@ var STAGE_CONFIG = {
       }
     });
   }
+  function stluthBlobToBase64(blob) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        var result = reader.result;
+        if (typeof result !== 'string') {
+          reject(new Error('PDF conversion failed'));
+          return;
+        }
+        var commaIndex = result.indexOf(',');
+        resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
+      };
+      reader.onerror = function() {
+        reject(reader.error || new Error('PDF conversion failed'));
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
+  function stluthShowSendError(statusEl, message) {
+    statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#e74c3c;"><strong>⚠️ Unable to send.</strong><br>'
+      + message
+      + '</div>';
+  }
   fetch(AVAIL_ENDPOINT).then(function(r){return r.ok?r.json():null;}).then(function(d){if(d){_stluthAvail=d;stluthApplyAvail(d,null);}}).catch(function(){});
   var _sessOptsEl = document.getElementById('sessionOptions');
   if (_sessOptsEl) _sessOptsEl.addEventListener('change', function(e){if(_stluthAvail)stluthApplyAvail(_stluthAvail,e.target.value);});
@@ -2129,31 +2152,42 @@ var STAGE_CONFIG = {
       planJson = JSON.stringify(planData, null, 2);
     }
 
-    var formData = new FormData();
-    formData.append('fields', JSON.stringify(fields));
-    formData.append('planJson', planJson);
-    formData.append('pdfFile', pdfBlob, 'inscription.pdf');
-
-    /* Try WordPress endpoint first */
-    fetch(WP_ENDPOINT, {
-      method: 'POST',
-      body: formData
-    })
-    .then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
-    .then(function (json) {
-      if (json.success) {
-        statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#27ae60;">'
-          + '<strong>\u2705 Registration sent successfully!</strong><br>'
-          + 'A confirmation email has been sent to <strong>' + fields.email + '</strong> with the bank details for the deposit.'
-          + '</div>';
-      } else {
-        throw new Error(json.message || 'Server error');
+    try {
+      var pdfBase64 = await stluthBlobToBase64(pdfBlob);
+      var res = await fetch(WP_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields: fields,
+          planJson: planJson,
+          pdfBase64: pdfBase64
+        })
+      });
+      var json = null;
+      try {
+        json = await res.json();
+      } catch (parseErr) {}
+      if (!res.ok) {
+        if (json) {
+          if (json.message) {
+            stluthShowSendError(statusEl, json.message);
+            return;
+          }
+        }
+        throw new Error('HTTP ' + res.status);
       }
-    })
-    .catch(function () {
+      if (!json) {
+        throw new Error('Invalid server response');
+      }
+      if (!json.success) {
+        stluthShowSendError(statusEl, json.message || 'Server error');
+        return;
+      }
+      statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#27ae60;">'
+        + '<strong>\u2705 Registration sent successfully!</strong><br>'
+        + 'A confirmation email has been sent to <strong>' + fields.email + '</strong> with the bank details for the deposit.'
+        + '</div>';
+    } catch (err) {
       /* Fallback: download PDF + open mailto */
       var safeName = (fields.nom || 'inscription').replace(/[^a-zA-Z\u00C0-\u00FF0-9]/g, '_');
       doc.save('inscription_' + safeName + '.pdf');
@@ -2174,7 +2208,7 @@ var STAGE_CONFIG = {
         + '<a href="mailto:contact@ewendaviau.com" style="color:var(--gold)">contact@ewendaviau.com</a> '
         + 'as an attachment.'
         + '</div>';
-    });
+    }
   });
 
 })();
