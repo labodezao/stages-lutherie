@@ -1766,7 +1766,15 @@ var STAGE_CONFIG = {
       if (bgUrl) {
         try {
           var bgImg = await loadImageElement(bgUrl);
-          ctx.drawImage(bgImg, 0, 0, sw, sh);
+          /* Respect CSS background-size:contain — scale to fit, maintain aspect ratio, center */
+          var bW = bgImg.naturalWidth, bH = bgImg.naturalHeight;
+          if (bW > 0 && bH > 0) {
+            var bScale = Math.min(sw / bW, sh / bH);
+            var bDW = bW * bScale, bDH = bH * bScale;
+            ctx.drawImage(bgImg, (sw - bDW) / 2, (sh - bDH) / 2, bDW, bDH);
+          } else {
+            ctx.drawImage(bgImg, 0, 0, sw, sh);
+          }
         } catch (bgErr) {}
       }
       ctx.restore();
@@ -1950,7 +1958,32 @@ var STAGE_CONFIG = {
     } catch (grilleImgErr) { /* skip grille image if canvas render fails */ }
     if (previewImgData || grilleImgData) {
       sectionTitle('Informal preview (non-binding)');
-      if (previewImgData) {
+      if (previewImgData && grilleImgData) {
+        /* Side-by-side: accordion preview left (~62 %), grille right (~35 %) */
+        var sbGap = 5;
+        var sbPW = Math.round(CW * 0.62);
+        var sbGWMax = CW - sbPW - sbGap;
+        var sbGW = sbGWMax;
+        var sbPAspect = previewImgData.w / previewImgData.h;
+        var sbPH = Math.round(sbPW / sbPAspect);
+        var sbMaxH = 74;
+        if (sbPH > sbMaxH) { sbPH = sbMaxH; sbPW = Math.round(sbPH * sbPAspect); }
+        var sbGAspect = grilleImgData.w / grilleImgData.h;
+        var sbGH = Math.round(sbGW / sbGAspect);
+        if (sbGH > sbPH) { sbGH = sbPH; sbGW = Math.min(Math.round(sbGH * sbGAspect), sbGWMax); }
+        var sbRowH = Math.max(sbPH, sbGH);
+        if (y + sbRowH + 6 > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        doc.addImage(previewImgData.dataUrl, 'JPEG', MARGIN, y, sbPW, sbPH);
+        var sbGX = MARGIN + CW - sbGW;
+        var sbGY = y + Math.round((sbRowH - sbGH) / 2);
+        doc.addImage(grilleImgData.dataUrl, 'JPEG', sbGX, sbGY, sbGW, sbGH);
+        var sbGrilleNum = document.getElementById('numGrille').value;
+        if (sbGrilleNum) {
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor.apply(doc, grey);
+          doc.text('Grille no.' + sbGrilleNum, sbGX + sbGW / 2, sbGY + sbGH + 4, { align: 'center' });
+        }
+        y += sbRowH + 8;
+      } else if (previewImgData) {
         var prevAspect = previewImgData.w / previewImgData.h;
         var prevW = CW;
         var prevH = Math.round(prevW / prevAspect);
@@ -1959,14 +1992,18 @@ var STAGE_CONFIG = {
         if (y + prevH > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
         doc.addImage(previewImgData.dataUrl, 'JPEG', MARGIN + Math.max(0, (CW - prevW) / 2), y, prevW, prevH);
         y += prevH + 5;
-      }
-      if (grilleImgData) {
-        var gAspect2 = grilleImgData.w / grilleImgData.h;
-        var gW2 = Math.min(54, CW);
-        var gH2 = Math.round(gW2 / gAspect2);
-        if (y + gH2 > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
-        doc.addImage(grilleImgData.dataUrl, 'JPEG', MARGIN + Math.max(0, (CW - gW2) / 2), y, gW2, gH2);
-        y += gH2 + 4;
+      } else if (grilleImgData) {
+        var gAspectO = grilleImgData.w / grilleImgData.h;
+        var gWO = Math.min(80, CW);
+        var gHO = Math.round(gWO / gAspectO);
+        if (y + gHO + 6 > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        doc.addImage(grilleImgData.dataUrl, 'JPEG', MARGIN + Math.max(0, (CW - gWO) / 2), y, gWO, gHO);
+        var grilleNumO = document.getElementById('numGrille').value;
+        if (grilleNumO) {
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor.apply(doc, grey);
+          doc.text('Grille no.' + grilleNumO, MARGIN + CW / 2, y + gHO + 4, { align: 'center' });
+        }
+        y += gHO + 8;
       }
       y += 4;
     }
