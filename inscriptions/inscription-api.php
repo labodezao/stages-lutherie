@@ -454,6 +454,10 @@ endif; // function_exists stluth_register_inscription_route
 
 if ( ! function_exists( 'stluth_handle_inscription' ) ) :
 function stluth_handle_inscription( WP_REST_Request $request ) {
+	/* Log raw body size — helps diagnose truncation by WAF / post_max_size */
+	$raw_body = $request->get_body();
+	error_log( '[Stages Lutherie] Raw body size: ' . strlen( $raw_body ) . ' bytes, post_max_size=' . ini_get( 'post_max_size' ) );
+
 	$data       = $request->get_json_params();
 	$fields     = isset( $data['fields'] )   ? (array) $data['fields']  : array();
 	$pdf_base64 = isset( $data['pdfBase64'] ) ? (string) $data['pdfBase64'] : '';
@@ -531,13 +535,34 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	error_log( '[Stages Lutherie] Received inscription: lang=' . $lang . ', pdfBase64 length=' . strlen( $pdf_base64 ) . ', planJson length=' . strlen( $plan_json ) );
 
 	if ( ! empty( $pdf_base64 ) ) {
-		$pdf_data = base64_decode( $pdf_base64, true );
-		if ( $pdf_data !== false ) {
+		/* Strip data-URI prefix if the frontend accidentally sent the full URI */
+		if ( strpos( $pdf_base64, 'data:' ) === 0 ) {
+			$comma = strpos( $pdf_base64, ',' );
+			if ( false !== $comma ) {
+				$pdf_base64 = substr( $pdf_base64, $comma + 1 );
+			}
+			error_log( '[Stages Lutherie] Stripped data-URI prefix from pdfBase64 (length now ' . strlen( $pdf_base64 ) . ')' );
+		}
+
+		/* Remove whitespace / newlines that some encoders or proxies inject —
+		   strict base64_decode rejects ANY character outside [A-Za-z0-9+/=]. */
+		$pdf_base64 = preg_replace( '/\s+/', '', $pdf_base64 );
+
+		$pdf_data = base64_decode( $pdf_base64, false );
+
+		if ( false === $pdf_data || 0 === strlen( $pdf_data ) ) {
+			error_log( '[Stages Lutherie] ERROR: base64_decode failed. First 80 chars: ' . substr( $pdf_base64, 0, 80 ) );
+		} else {
+			error_log( '[Stages Lutherie] PDF decoded OK: ' . strlen( $pdf_data ) . ' bytes' );
 			$pdf_path = wp_tempnam( 'inscription_' . sanitize_file_name( $nom ) . '.pdf' );
 			// Ensure the file ends with .pdf so mail clients recognise the attachment.
 			$pdf_path_pdf = $pdf_path . '.pdf';
-			if ( file_put_contents( $pdf_path_pdf, $pdf_data ) !== false ) {
+			$written = file_put_contents( $pdf_path_pdf, $pdf_data );
+			if ( false !== $written && $written > 0 ) {
 				$attachments[] = $pdf_path_pdf;
+				error_log( '[Stages Lutherie] PDF written to ' . $pdf_path_pdf . ' (' . $written . ' bytes)' );
+			} else {
+				error_log( '[Stages Lutherie] ERROR: file_put_contents failed for ' . $pdf_path_pdf );
 			}
 		}
 	} else {
