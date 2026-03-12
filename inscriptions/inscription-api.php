@@ -889,14 +889,20 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	error_log( '[Stages Lutherie] Luthier email ' . ( $luthier_sent ? 'sent' : 'FAILED' ) . ' to ' . $safe_luthier );
 
 	/* ── Confirmation email to trainee (HTML) ── */
-	$trainee_attachments = array_values(
-		array_filter(
-			$attachments,
-			function ( $path ) {
-				return is_string( $path ) && preg_match( '/\.pdf$/i', $path ) && file_exists( $path );
+	$trainee_pdf_attachment = '';
+	if ( ! empty( $perm_pdf ) && file_exists( $perm_pdf ) ) {
+		$trainee_pdf_attachment = $perm_pdf;
+	} elseif ( ! empty( $pdf_path_pdf ) && file_exists( $pdf_path_pdf ) ) {
+		$trainee_pdf_attachment = $pdf_path_pdf;
+	} else {
+		foreach ( $attachments as $path ) {
+			if ( is_string( $path ) && preg_match( '/\.pdf$/i', $path ) && file_exists( $path ) ) {
+				$trainee_pdf_attachment = $path;
+				break;
 			}
-		)
-	);
+		}
+	}
+	$trainee_attachments = ! empty( $trainee_pdf_attachment ) ? array( $trainee_pdf_attachment ) : array();
 
 	$conf_subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_subject );
 
