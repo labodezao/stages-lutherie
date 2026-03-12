@@ -1390,7 +1390,7 @@ function stluth_render_settings_page() {
 		</div>
 		<table class="form-table">
 			<tr>
-				<th scope="row">Max. stagiaires par session<br><small style="font-weight:normal;">(total toutes modèles confondus)</small></th>
+				<th scope="row">Max. stagiaires par session<br><small style="font-weight:normal;">(total tous modèles confondus)</small></th>
 				<td>
 					<input type="number" name="stluth_cap_total" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_total', 15 ) ); ?>" min="1" max="99" style="width:80px;">
 					<p class="description">Aucune inscription n'est acceptée au-delà de ce total pour une même session.</p>
@@ -1457,8 +1457,6 @@ function stluth_render_settings_page() {
 			echo '</tbody></table>';
 		}
 		?>
-		<table class="form-table">
-		</table>
 			<?php submit_button( 'Enregistrer les réglages' ); ?>
 		</form>
 
