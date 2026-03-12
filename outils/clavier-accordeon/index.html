@@ -332,6 +332,15 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
               <input type="checkbox" id="terzetto-enabled" onchange="onTerzettoChange()">
               <span class="gauche-label" data-i="terzetto">Terzetto</span><span class="tip" tabindex="0" role="tooltip" aria-label="Info: Terzetto" data-tip="Terzetto (italien : &quot;trio&quot;) : plaque d'anche ajoutant la TIERCE à l'accord.&#10;2 voix : Do+Sol · 3 voix terzetto : Do+Mi+Sol (accord complet).&#10;Optionnel sur accordéon 2-voix ; inclus sur 3-voix.&#10;—&#10;Terzetto (Italian: &quot;trio&quot;): reed plate adding the 3RD to each chord.&#10;2-voice: C+G · 3-voice terzetto: C+E+G (full chord).&#10;Optional on 2-voice; standard on 3-voice instruments.">ⓘ</span>
             </label>
+            <div style="display:flex;align-items:center;gap:6px;grid-column:1/-1;margin-top:4px;flex-wrap:wrap;">
+              <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+                <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
+                <span class="gauche-label">Seuil accords MG</span>
+              </label>
+              <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activé : si une note dépasse ce seuil, elle est&#10;automatiquement transposée à l'octave d'en dessous.&#10;S'applique aussi au bouton ↑5te→V2.&#10;Exemple : seuil Sol4 → toute note &gt; Sol4 descend d'une octave.">ⓘ</span>
+              <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;" oninput="onAnyChange()">
+              <button type="button" class="rng-btn" style="width:auto;height:auto;font-size:.7rem;padding:2px 7px;white-space:nowrap;background:#f0e8ff;color:#5b21b6;" onclick="applyAccordsSeuilManual()" title="Appliquer le seuil maintenant à tous les accords (V1, V2, V3)">⬇ Appliquer seuil</button>
+            </div>
           </div>
           <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
             <span style="font-size:.65rem;color:#888;" data-i="quickSet">Rapide :</span>
@@ -1633,6 +1642,32 @@ function bassesOctaveShift(){
 function accordsFifthShift(){
   readNoteInputsIntoCFG();
   CFG.notes.accords2=(CFG.notes.accords||[]).map(a=>({p:shiftNote(a.p,7),t:shiftNote(a.t,7)}));
+  CFG.notes.accords2=applyAccordsSeuil(CFG.notes.accords2);
+  generateInputGrid();onAnyChange();
+}
+/* ── Seuil accords MG — transpose down one octave any note above the threshold ── */
+function applyAccordsSeuil(arr){
+  const chkEl=document.getElementById('accords-seuil-enabled');
+  if(!chkEl||!chkEl.checked)return arr;
+  const seuilNote=(document.getElementById('accords-seuil-note')||{}).value||'';
+  const seuilMidi=noteToMidi(seuilNote.trim());
+  if(seuilMidi===null)return arr;
+  return arr.map(function(a){
+    const mp=noteToMidi(a.p);
+    const mt=noteToMidi(a.t);
+    return{
+      p:(mp!==null&&mp>seuilMidi)?midiToFr(mp-12):a.p,
+      t:(mt!==null&&mt>seuilMidi)?midiToFr(mt-12):a.t
+    };
+  });
+}
+function applyAccordsSeuilManual(){
+  readNoteInputsIntoCFG();
+  ['accords','accords2','accords3'].forEach(function(key){
+    if(CFG.notes[key]&&CFG.notes[key].length>0){
+      CFG.notes[key]=applyAccordsSeuil(CFG.notes[key]);
+    }
+  });
   generateInputGrid();onAnyChange();
 }
 function basseV2ToAccordV1Shift(){
