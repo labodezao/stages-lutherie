@@ -1603,6 +1603,16 @@ var STAGE_CONFIG = {
       img.src = URL.createObjectURL(blob);
     });
   }
+  /* Convert a loaded <img> element to a JPEG data-URL via canvas */
+  function imgToDataUrl(imgEl) {
+    var c = document.createElement('canvas');
+    c.width = imgEl.naturalWidth; c.height = imgEl.naturalHeight;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(imgEl, 0, 0);
+    return { dataUrl: c.toDataURL('image/jpeg', 0.90), w: c.width, h: c.height };
+  }
+
   var JSPDF_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
   /* ── PDF number formatter (plain space — avoids jsPDF unicode rendering issues) ── */
@@ -1714,6 +1724,22 @@ var STAGE_CONFIG = {
     addLine('Bois grille/caisse', selVal('boisGrille') || '\u2013');
     var pdfGrille = document.getElementById('numGrille').value;
     addLine('Grille', pdfGrille ? 'Grille n\u00b0' + pdfGrille : '\u2013');
+    if (pdfGrille) {
+      try {
+        var gCell = document.getElementById('grilleCell-' + parseInt(pdfGrille, 10));
+        var gImg = gCell ? gCell.querySelector('img') : null;
+        if (gImg) {
+          if (gImg.naturalWidth > 0) {
+            var gData = imgToDataUrl(gImg);
+            var gAspect = gData.w / gData.h;
+            var gW = 40; var gH = Math.round(gW / gAspect);
+            if (y + gH > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+            doc.addImage(gData.dataUrl, 'JPEG', MARGIN + 62, y, gW, gH);
+            y += gH + 4;
+          }
+        }
+      } catch (gErr) { /* skip grille image if canvas render fails */ }
+    }
     addLine('Marquage boutons', document.getElementById('marquageMD').value || '\u2013');
     var remMD = document.getElementById('remarquesMD').value;
     if (remMD) addLine('Remarques MD', remMD);
