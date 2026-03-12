@@ -971,8 +971,23 @@ var STAGE_CONFIG = {
   'use strict';
 
   /* ── Configuration ── */
-  var WP_ENDPOINT = '/wp-json/stages-lutherie/v1/inscription';
-  var AVAIL_ENDPOINT = '/wp-json/stages-lutherie/v1/availability?sessions=avril2026,octobre2026';
+  var STLUTH_REST_ROOT = '/wp-json/';
+  if (window.CA_REST_ROOT) {
+    STLUTH_REST_ROOT = window.CA_REST_ROOT;
+  } else {
+    var stluthApiLink = document.querySelector('link[rel="https://api.w.org/"]');
+    if (stluthApiLink) {
+      var stluthApiHref = stluthApiLink.getAttribute('href');
+      if (stluthApiHref) {
+        STLUTH_REST_ROOT = stluthApiHref;
+      }
+    }
+  }
+  if (STLUTH_REST_ROOT.slice(-1) !== '/') {
+    STLUTH_REST_ROOT += '/';
+  }
+  var WP_ENDPOINT = STLUTH_REST_ROOT + 'stages-lutherie/v1/inscription';
+  var AVAIL_ENDPOINT = STLUTH_REST_ROOT + 'stages-lutherie/v1/availability?sessions=avril2026,octobre2026';
   var _stluthAvail = null;
   function stluthApplyAvail(avail, sessionId) {
     if (!avail || !avail.sessions) return;
