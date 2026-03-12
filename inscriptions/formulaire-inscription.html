@@ -1963,9 +1963,9 @@ var STAGE_CONFIG = {
     statusEl.classList.add('visible');
     statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:var(--gold);"><strong>\u23f3 Envoi en cours\u2026</strong></div>';
 
-    /* Build PDF as base64 */
+    /* Build PDF as file upload */
     var doc = await buildPDF();
-    var pdfBase64 = doc.output('datauristring').split(',')[1];
+    var pdfBlob = doc.output('blob');
 
     /* Collect form fields */
     var modEl = form.querySelector('input[name="modele"]:checked');
@@ -2016,11 +2016,15 @@ var STAGE_CONFIG = {
       planJson = JSON.stringify(planData, null, 2);
     }
 
+    var formData = new FormData();
+    formData.append('fields', JSON.stringify(fields));
+    formData.append('planJson', planJson);
+    formData.append('pdfFile', pdfBlob, 'inscription.pdf');
+
     /* Try WordPress endpoint first */
     fetch(WP_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: fields, pdfBase64: pdfBase64, planJson: planJson })
+      body: formData
     })
     .then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);

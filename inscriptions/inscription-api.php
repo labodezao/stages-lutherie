@@ -616,10 +616,26 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$raw_body = $request->get_body();
 	error_log( '[Stages Lutherie] Raw body size: ' . strlen( $raw_body ) . ' bytes, post_max_size=' . ini_get( 'post_max_size' ) );
 
-	$data       = $request->get_json_params();
-	$fields     = isset( $data['fields'] )   ? (array) $data['fields']  : array();
-	$pdf_base64 = isset( $data['pdfBase64'] ) ? (string) $data['pdfBase64'] : '';
-	$plan_json  = isset( $data['planJson'] )  ? (string) $data['planJson']  : '';
+	$data        = $request->get_json_params();
+	$file_params = $request->get_file_params();
+	if ( ! is_array( $data ) ) {
+		$data = array();
+	}
+	$fields = isset( $data['fields'] ) ? (array) $data['fields'] : array();
+	if ( empty( $fields ) ) {
+		$fields_param = $request->get_param( 'fields' );
+		if ( is_array( $fields_param ) ) {
+			$fields = $fields_param;
+		} elseif ( is_string( $fields_param ) && ! empty( $fields_param ) ) {
+			$decoded_fields = json_decode( wp_unslash( $fields_param ), true );
+			if ( is_array( $decoded_fields ) ) {
+				$fields = $decoded_fields;
+			}
+		}
+	}
+	$pdf_base64 = isset( $data['pdfBase64'] ) ? (string) $data['pdfBase64'] : (string) $request->get_param( 'pdfBase64' );
+	$plan_json  = isset( $data['planJson'] ) ? (string) $data['planJson'] : (string) $request->get_param( 'planJson' );
+	$pdf_upload = ( isset( $file_params['pdfFile'] ) && is_array( $file_params['pdfFile'] ) ) ? $file_params['pdfFile'] : array();
 
 	/* ── Sanitize required fields ── */
 	$nom   = sanitize_text_field( isset( $fields['nom'] )   ? $fields['nom']   : '' );
@@ -719,9 +735,18 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$pdf_path     = '';
 	$pdf_path_pdf = '';
 
-	error_log( '[Stages Lutherie] Received inscription: lang=' . $lang . ', pdfBase64 length=' . strlen( $pdf_base64 ) . ', planJson length=' . strlen( $plan_json ) );
+	error_log( '[Stages Lutherie] Received inscription: lang=' . $lang . ', pdfBase64 length=' . strlen( $pdf_base64 ) . ', pdf upload=' . ( ! empty( $pdf_upload['tmp_name'] ) ? 'yes' : 'no' ) . ', planJson length=' . strlen( $plan_json ) );
 
-	if ( ! empty( $pdf_base64 ) ) {
+	if ( ! empty( $pdf_upload['tmp_name'] ) && isset( $pdf_upload['error'] ) && UPLOAD_ERR_OK === (int) $pdf_upload['error'] && file_exists( $pdf_upload['tmp_name'] ) ) {
+		$pdf_path     = wp_tempnam( 'inscription_' . sanitize_file_name( $nom ) . '.pdf' );
+		$pdf_path_pdf = $pdf_path . '.pdf';
+		if ( copy( $pdf_upload['tmp_name'], $pdf_path_pdf ) ) {
+			$attachments[] = $pdf_path_pdf;
+			error_log( '[Stages Lutherie] Uploaded PDF copied to ' . $pdf_path_pdf . ' (' . filesize( $pdf_path_pdf ) . ' bytes)' );
+		} else {
+			error_log( '[Stages Lutherie] ERROR: failed to copy uploaded PDF from ' . $pdf_upload['tmp_name'] . ' to ' . $pdf_path_pdf );
+		}
+	} elseif ( ! empty( $pdf_base64 ) ) {
 		/* Strip data-URI prefix if the frontend accidentally sent the full URI */
 		if ( strpos( $pdf_base64, 'data:' ) === 0 ) {
 			$comma = strpos( $pdf_base64, ',' );
@@ -753,7 +778,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 			}
 		}
 	} else {
-		error_log( '[Stages Lutherie] WARNING: pdfBase64 is empty — no PDF attachment will be included. Check frontend buildPDF() and PHP post_max_size (current: ' . ini_get( 'post_max_size' ) . ').' );
+		error_log( '[Stages Lutherie] WARNING: no PDF received — neither pdfFile nor pdfBase64 was present. Check frontend submission mode and PHP post_max_size (current: ' . ini_get( 'post_max_size' ) . ').' );
 	}
 
 	/* ── Attach plan JSON if custom plan ── */
