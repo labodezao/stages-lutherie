@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF + JSON joints) et un
  *              email de confirmation au stagiaire (avec PDF joint).
- * Version:     2.2
+ * Version:     2.3
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '2.2' );
+define( 'STLUTH_API_VERSION', '2.3' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -888,16 +888,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	error_log( '[Stages Lutherie] Luthier email ' . ( $luthier_sent ? 'sent' : 'FAILED' ) . ' to ' . $safe_luthier );
 
-	/* ── Confirmation email to trainee (HTML) ──
-	   WordPress fires phpmailer_init BEFORE it calls addAttachment() for the
-	   $attachments param.  Plugins such as MailPoet MSS hook phpmailer_init
-	   (default priority 10) and build their outbound API call at that point —
-	   so any attachment passed via wp_mail()'s $attachments array is added
-	   too late and is silently dropped for subscriber emails routed through MSS.
-	   Fix: add the PDF directly inside phpmailer_init at priority 1 (before
-	   MailPoet) so it is already present on the PHPMailer object when MailPoet
-	   reads the email state.  We pass no $attachments to wp_mail to avoid a
-	   duplicate in native (non-MSS) setups where PHPMailer would add it again. */
+	/* ── Confirmation email to trainee (HTML) ── */
 
 	/* Resolve the PDF path — prefer the permanent copy already saved to disk */
 	$trainee_pdf_path = '';
@@ -912,6 +903,9 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	} else {
 		error_log( '[Stages Lutherie] WARNING: no PDF found for trainee attachment' );
 	}
+
+	/* Build attachments array — same pattern as the test email which works */
+	$trainee_pdf_attachments = ! empty( $trainee_pdf_path ) ? array( $trainee_pdf_path ) : array();
 
 	$conf_subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_subject );
 
@@ -937,31 +931,14 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 		'Reply-To: ' . $safe_luthier,
 	);
 
-	/* Hook phpmailer_init at priority 1 so the PDF is on the PHPMailer object
-	   before any plugin (e.g. MailPoet at priority 10) reads the email state. */
-	$trainee_attachment_cb = null;
-	if ( ! empty( $trainee_pdf_path ) ) {
-		$trainee_attachment_cb = function ( $phpmailer ) use ( $trainee_pdf_path ) {
-			if ( file_exists( $trainee_pdf_path ) ) {
-				try {
-					$phpmailer->addAttachment( $trainee_pdf_path );
-				} catch ( Exception $e ) {
-					error_log( '[Stages Lutherie] phpmailer_init attachment error: ' . $e->getMessage() );
-				}
-			}
-		};
-		add_action( 'phpmailer_init', $trainee_attachment_cb, 1 );
-	}
-
 	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ( ! empty( $trainee_pdf_path ) ? ' with PDF: ' . basename( $trainee_pdf_path ) : ' (no PDF)' ) );
 
-	/* Pass no $attachments — the phpmailer_init hook above already added the
-	   PDF so wp_mail()'s own addAttachment() loop would cause a duplicate. */
-	$trainee_sent = stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf );
-
-	if ( $trainee_attachment_cb !== null ) {
-		remove_action( 'phpmailer_init', $trainee_attachment_cb, 1 );
-	}
+	/* Pass PDF as 5th argument — identical to the test HTML email that is known
+	   to work.  The previous phpmailer_init hook approach was unreliable because
+	   MailPoet MSS (and similar plugins) read wp_mail()'s $attachments parameter
+	   before phpmailer_init fires, so attachments added only via that hook were
+	   silently dropped. */
+	$trainee_sent = stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_pdf_attachments );
 
 	if ( $trainee_sent ) {
 		error_log( '[Stages Lutherie] Trainee confirmation email sent successfully to ' . $email );
