@@ -4,7 +4,7 @@
  * Description: Endpoint REST pour recevoir les inscriptions du formulaire,
  *              envoyer un email au luthier (avec PDF + JSON joints) et un
  *              email de confirmation au stagiaire (avec PDF joint).
- * Version:     2.0
+ * Version:     2.2
  * Author:      Labodezao
  *
  * INSTALLATION : copier ce fichier dans wp-content/mu-plugins/
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '2.1' );
+define( 'STLUTH_API_VERSION', '2.2' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -888,21 +888,37 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	error_log( '[Stages Lutherie] Luthier email ' . ( $luthier_sent ? 'sent' : 'FAILED' ) . ' to ' . $safe_luthier );
 
-	/* ── Confirmation email to trainee (HTML) ── */
-	$trainee_pdf_attachment = '';
+	/* ── Confirmation email to trainee (HTML) ──
+	   Mirror the test-email pattern exactly: copy the PDF into a fresh /tmp
+	   file so the mail daemon can read it regardless of uploads/ permissions. */
+	$trainee_pdf_tmp      = '';
+	$trainee_pdf_tmp_base = '';
+
+	/* Source: prefer permanent copy (already on disk), fall back to temp */
+	$trainee_pdf_src = '';
 	if ( ! empty( $perm_pdf ) && file_exists( $perm_pdf ) ) {
-		$trainee_pdf_attachment = $perm_pdf;
+		$trainee_pdf_src = $perm_pdf;
 	} elseif ( ! empty( $pdf_path_pdf ) && file_exists( $pdf_path_pdf ) ) {
-		$trainee_pdf_attachment = $pdf_path_pdf;
-	} else {
-		foreach ( $attachments as $path ) {
-			if ( is_string( $path ) && preg_match( '/\.pdf$/i', $path ) && file_exists( $path ) ) {
-				$trainee_pdf_attachment = $path;
-				break;
-			}
-		}
+		$trainee_pdf_src = $pdf_path_pdf;
 	}
-	$trainee_attachments = ! empty( $trainee_pdf_attachment ) ? array( $trainee_pdf_attachment ) : array();
+
+	if ( ! empty( $trainee_pdf_src ) ) {
+		/* Copy to a fresh /tmp file — identical to what the working test email does */
+		$trainee_pdf_tmp_base = wp_tempnam( 'confirmation_' . sanitize_file_name( $nom ) );
+		$trainee_pdf_tmp      = $trainee_pdf_tmp_base . '.pdf';
+		if ( copy( $trainee_pdf_src, $trainee_pdf_tmp ) ) {
+			error_log( '[Stages Lutherie] Trainee PDF tmp: ' . $trainee_pdf_tmp . ' (' . filesize( $trainee_pdf_tmp ) . ' bytes)' );
+		} else {
+			/* Copy failed — fall back to using the source path directly */
+			error_log( '[Stages Lutherie] WARNING: PDF copy to tmp failed, using source directly: ' . $trainee_pdf_src );
+			$trainee_pdf_tmp      = $trainee_pdf_src;
+			$trainee_pdf_tmp_base = '';
+		}
+	} else {
+		error_log( '[Stages Lutherie] WARNING: no PDF source found for trainee attachment' );
+	}
+
+	$trainee_attachments = ! empty( $trainee_pdf_tmp ) ? array( $trainee_pdf_tmp ) : array();
 
 	$conf_subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $conf_subject );
 
@@ -918,33 +934,37 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$conf_body_html = str_replace( array_keys( $html_replacements ), array_values( $html_replacements ), $html_tpl );
 
 	/* Strip MSO conditional comments so they don't render as visible text
-	   in Gmail, Apple Mail, etc. — covers templates the user may have
-	   pasted from external email builders (Litmus, Cerberus, etc.). */
+	   in Gmail, Apple Mail, etc. */
 	if ( function_exists( 'stluth_strip_mso_conditionals' ) ) {
 		$conf_body_html = stluth_strip_mso_conditionals( $conf_body_html );
 	}
 
-	$headers_conf   = array(
+	$headers_conf = array(
 		'From: ' . $safe_name . ' <' . $safe_luthier . '>',
 		'Reply-To: ' . $safe_luthier,
 	);
 
-	/* Log attachment details for debugging */
 	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $trainee_attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $trainee_attachments ) ) );
 
-	/* Trainee follows the same HTML send path as the working test email. */
 	$trainee_sent = stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
 
-	if ( ! $trainee_sent ) {
-		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );
-	} else {
+	if ( $trainee_sent ) {
 		error_log( '[Stages Lutherie] Trainee confirmation email sent successfully to ' . $email );
+	} else {
+		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );
 	}
 
 	/* ── Cleanup temp files — deferred to shutdown so mail plugins
 	      (e.g. MailPoet) that queue emails asynchronously can still
 	      read the attachment files before they are removed. ── */
 	$tmp_files = array( $pdf_path, $pdf_path_pdf, $json_tmp_base, $json_path );
+	/* Only clean up the trainee /tmp copy if it's a fresh copy we created
+	   (trainee_pdf_tmp_base was set). Don't delete if we fell back to the
+	   permanent uploads file or the original temp. */
+	if ( ! empty( $trainee_pdf_tmp_base ) ) {
+		$tmp_files[] = $trainee_pdf_tmp_base;
+		$tmp_files[] = $trainee_pdf_tmp;
+	}
 	register_shutdown_function( function () use ( $tmp_files ) {
 		foreach ( $tmp_files as $tmp ) {
 			if ( ! empty( $tmp ) && file_exists( $tmp ) ) {
@@ -1095,6 +1115,26 @@ function stluth_version_migration() {
 			if ( function_exists( 'stluth_default_email_html_en' ) ) {
 				update_option( 'stluth_confirmation_body_en', stluth_default_email_html_en() );
 				error_log( '[Stages Lutherie] v2.1 migration: updated English email template to include {email} and {telephone}.' );
+			}
+		}
+	}
+
+	/* v2.2 — Force-reset any template that still has no style= attributes
+	   (corrupted by wp_kses or a security plugin after the v2.0/v2.1 migration).
+	   Runs whenever the live site upgrades from ≤2.1 to 2.2. */
+	if ( version_compare( $db_version, '2.2', '<' ) ) {
+		$stored_fr = get_option( 'stluth_confirmation_body', '' );
+		if ( ! empty( $stored_fr ) && stripos( $stored_fr, 'style=' ) === false ) {
+			if ( function_exists( 'stluth_default_email_html' ) ) {
+				update_option( 'stluth_confirmation_body', stluth_default_email_html() );
+				error_log( '[Stages Lutherie] v2.2 migration: French email template was corrupted (no style=) — replaced with default.' );
+			}
+		}
+		$stored_en = get_option( 'stluth_confirmation_body_en', '' );
+		if ( ! empty( $stored_en ) && stripos( $stored_en, 'style=' ) === false ) {
+			if ( function_exists( 'stluth_default_email_html_en' ) ) {
+				update_option( 'stluth_confirmation_body_en', stluth_default_email_html_en() );
+				error_log( '[Stages Lutherie] v2.2 migration: English email template was corrupted (no style=) — replaced with default.' );
 			}
 		}
 	}
