@@ -89,9 +89,9 @@ if ( ! function_exists( 'stluth_prepare_mail_attachment_copy' ) ) :
 			wp_mkdir_p( $dest_dir );
 		}
 
-		$ext       = pathinfo( $source_path, PATHINFO_EXTENSION );
-		$base_name = sanitize_file_name( $prefix . '_' . wp_date( 'Ymd_His' ) . '_' . wp_generate_uuid4() );
-		$dest_path = trailingslashit( $dest_dir ) . $base_name . ( $ext ? '.' . strtolower( $ext ) : '' );
+		$ext           = pathinfo( $source_path, PATHINFO_EXTENSION );
+		$file_basename = sanitize_file_name( $prefix . '_' . wp_date( 'Ymd_His' ) . '_' . wp_generate_uuid4() );
+		$dest_path     = trailingslashit( $dest_dir ) . $file_basename . ( $ext ? '.' . strtolower( $ext ) : '' );
 
 		if ( copy( $source_path, $dest_path ) ) {
 			error_log( '[Stages Lutherie] Durable attachment copy created: ' . $dest_path );
@@ -922,7 +922,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	/* ── Confirmation email to trainee (HTML) ── */
 	$trainee_pdf_attachment = '';
-	$safe_trainee_name      = sanitize_file_name( $nom );
+	$safe_trainee_name      = ( is_string( $nom ) && '' !== $nom ) ? sanitize_file_name( $nom ) : 'trainee';
 	if ( ! empty( $perm_pdf ) && file_exists( $perm_pdf ) ) {
 		$trainee_pdf_attachment = $perm_pdf;
 	} elseif ( ! empty( $pdf_path_pdf ) && file_exists( $pdf_path_pdf ) ) {
