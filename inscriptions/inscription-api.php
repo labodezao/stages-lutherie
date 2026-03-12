@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '2.0' );
+define( 'STLUTH_API_VERSION', '2.1' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -119,6 +119,14 @@ function stluth_default_email_html() {
                     <tr style="border-top:1px solid #e0d4c4;">
                       <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Session</td>
                       <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{session}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Email</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{email}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Téléphone</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{telephone}</td>
                     </tr>
                     <tr style="border-top:1px solid #e0d4c4;">
                       <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Acompte&nbsp;(40&nbsp;%)</td>
@@ -307,6 +315,14 @@ function stluth_default_email_html_en() {
                     <tr style="border-top:1px solid #e0d4c4;">
                       <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Session</td>
                       <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{session}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Email</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{email}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Phone</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{telephone}</td>
                     </tr>
                     <tr style="border-top:1px solid #e0d4c4;">
                       <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Deposit&nbsp;(40&nbsp;%)</td>
@@ -852,6 +868,28 @@ function stluth_version_migration() {
 		if ( empty( $stored_en ) && function_exists( 'stluth_default_email_html_en' ) ) {
 			update_option( 'stluth_confirmation_body_en', stluth_default_email_html_en() );
 			error_log( '[Stages Lutherie] v2.0 migration: initialized English email template with default.' );
+		}
+	}
+
+	/* v2.1 — Add {email} and {telephone} fields to both email templates.
+	   If the stored template doesn't contain the {email} placeholder, refresh
+	   it with the updated default that now includes email + phone rows. */
+	if ( version_compare( $db_version, '2.1', '<' ) ) {
+		/* French template */
+		$stored_fr = get_option( 'stluth_confirmation_body', '' );
+		if ( ! empty( $stored_fr ) && strpos( $stored_fr, '{email}' ) === false ) {
+			if ( function_exists( 'stluth_default_email_html' ) ) {
+				update_option( 'stluth_confirmation_body', stluth_default_email_html() );
+				error_log( '[Stages Lutherie] v2.1 migration: updated French email template to include {email} and {telephone}.' );
+			}
+		}
+		/* English template */
+		$stored_en = get_option( 'stluth_confirmation_body_en', '' );
+		if ( ! empty( $stored_en ) && strpos( $stored_en, '{email}' ) === false ) {
+			if ( function_exists( 'stluth_default_email_html_en' ) ) {
+				update_option( 'stluth_confirmation_body_en', stluth_default_email_html_en() );
+				error_log( '[Stages Lutherie] v2.1 migration: updated English email template to include {email} and {telephone}.' );
+			}
 		}
 	}
 
