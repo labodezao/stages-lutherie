@@ -1010,8 +1010,8 @@ var STAGE_CONFIG = {
         avEl.style.color = '#c0392b'; avEl.textContent = 'Complet';
       } else if (mData) {
         lbl.classList.remove('card-disabled'); inp.disabled = false;
-        avEl.style.color = '#e67e22';
-        avEl.textContent = mData.remaining <= 3 ? mData.remaining + ' place' + (mData.remaining > 1 ? 's' : '') + ' restante' + (mData.remaining > 1 ? 's' : '') : '';
+        avEl.style.color = mData.remaining <= 3 ? '#e67e22' : '#6b5b53';
+        avEl.textContent = mData.remaining + ' place' + (mData.remaining > 1 ? 's' : '') + ' restante' + (mData.remaining > 1 ? 's' : '');
       } else {
         lbl.classList.remove('card-disabled'); inp.disabled = false; avEl.textContent = '';
       }
