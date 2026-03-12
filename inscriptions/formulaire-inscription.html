@@ -378,6 +378,10 @@ var STAGE_CONFIG = {
       font-weight: 700 !important;
       margin: 0 !important;
     }
+    /* ── Capacity / availability ── */
+    .insc-option-card.card-disabled { opacity:0.52; }
+    .insc-option-card.card-disabled .card-label { cursor:not-allowed; background:#f0ece8; border-color:#ccc; }
+    .insc-option-card.card-disabled .card-label:hover { border-color:#ccc; }
   </style>
 <!-- /wp:html -->
 
@@ -970,6 +974,52 @@ var STAGE_CONFIG = {
 
   /* ── Configuration ── */
   var WP_ENDPOINT = '/wp-json/stages-lutherie/v1/inscription';
+  var AVAIL_ENDPOINT = '/wp-json/stages-lutherie/v1/availability?sessions=avril2026,octobre2026';
+  var _stluthAvail = null;
+  function stluthApplyAvail(avail, sessionId) {
+    if (!avail || !avail.sessions) return;
+    /* Session cards */
+    document.querySelectorAll('#sessionOptions input[type="radio"]').forEach(function(inp) {
+      var sData = avail.sessions[inp.value];
+      var lbl = inp.closest('label') || inp.parentElement;
+      var sub = lbl.querySelector('.card-sub');
+      if (sData && sData.full) {
+        lbl.classList.add('card-disabled'); inp.disabled = true;
+        if (sub && !sub.getAttribute('data-orig')) sub.setAttribute('data-orig', sub.innerHTML);
+        if (sub) sub.innerHTML = '<span style="color:#c0392b;font-weight:700;">Session compl\u00e8te</span>';
+      } else {
+        lbl.classList.remove('card-disabled'); inp.disabled = false;
+        if (sub) { var orig = sub.getAttribute('data-orig'); if (orig) sub.innerHTML = orig; }
+      }
+    });
+    /* Model cards — based on selected session */
+    var selSess = sessionId;
+    if (!selSess) { var ci = document.querySelector('#sessionOptions input[type="radio"]:checked'); if (ci) selSess = ci.value; }
+    var sData2 = selSess ? avail.sessions[selSess] : null;
+    document.querySelectorAll('input[name="modele"]').forEach(function(inp) {
+      var mData = sData2 && sData2.models ? sData2.models[inp.value] : null;
+      var lbl = inp.closest('label') || inp.parentElement;
+      var avEl = lbl.querySelector('.card-avail');
+      if (!avEl) {
+        avEl = document.createElement('span'); avEl.className = 'card-avail';
+        avEl.style.cssText = 'display:block;font-size:.72rem;font-weight:700;margin-top:4px;';
+        var cl = lbl.querySelector('.card-label'); if (cl) cl.appendChild(avEl);
+      }
+      if (mData && mData.full) {
+        lbl.classList.add('card-disabled'); inp.disabled = true;
+        avEl.style.color = '#c0392b'; avEl.textContent = 'Complet';
+      } else if (mData) {
+        lbl.classList.remove('card-disabled'); inp.disabled = false;
+        avEl.style.color = '#e67e22';
+        avEl.textContent = mData.remaining <= 3 ? mData.remaining + ' place' + (mData.remaining > 1 ? 's' : '') + ' restante' + (mData.remaining > 1 ? 's' : '') : '';
+      } else {
+        lbl.classList.remove('card-disabled'); inp.disabled = false; avEl.textContent = '';
+      }
+    });
+  }
+  fetch(AVAIL_ENDPOINT).then(function(r){return r.ok?r.json():null;}).then(function(d){if(d){_stluthAvail=d;stluthApplyAvail(d,null);}}).catch(function(){});
+  var _sessOptsEl = document.getElementById('sessionOptions');
+  if (_sessOptsEl) _sessOptsEl.addEventListener('change', function(e){if(_stluthAvail)stluthApplyAvail(_stluthAvail,e.target.value);});
   var ANNEE = STAGE_CONFIG.annee;
   var ANCHE_SURCHARGE = 1.15;  /* 15% surcharge multiplier for Anche a mano Blue Star */
   var UPGRADE_2V_SURCHARGE = 1.08; /* 8% surcharge multiplier for 2 Voix upgrade */
