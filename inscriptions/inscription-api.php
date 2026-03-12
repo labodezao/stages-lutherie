@@ -628,13 +628,17 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 			$fields = $fields_param;
 		} elseif ( is_string( $fields_param ) && ! empty( $fields_param ) ) {
 			$decoded_fields = json_decode( wp_unslash( $fields_param ), true );
-			if ( is_array( $decoded_fields ) ) {
+			if ( JSON_ERROR_NONE !== json_last_error() ) {
+				error_log( '[Stages Lutherie] Invalid multipart fields JSON: ' . json_last_error_msg() );
+			} elseif ( is_array( $decoded_fields ) ) {
 				$fields = $decoded_fields;
 			}
 		}
 	}
-	$pdf_base64 = isset( $data['pdfBase64'] ) ? (string) $data['pdfBase64'] : (string) $request->get_param( 'pdfBase64' );
-	$plan_json  = isset( $data['planJson'] ) ? (string) $data['planJson'] : (string) $request->get_param( 'planJson' );
+	$pdf_base64_param = $request->get_param( 'pdfBase64' );
+	$plan_json_param  = $request->get_param( 'planJson' );
+	$pdf_base64       = isset( $data['pdfBase64'] ) ? (string) $data['pdfBase64'] : ( is_string( $pdf_base64_param ) ? $pdf_base64_param : '' );
+	$plan_json        = isset( $data['planJson'] ) ? (string) $data['planJson'] : ( is_string( $plan_json_param ) ? $plan_json_param : '' );
 	$pdf_upload = ( isset( $file_params['pdfFile'] ) && is_array( $file_params['pdfFile'] ) ) ? $file_params['pdfFile'] : array();
 
 	/* ── Sanitize required fields ── */
@@ -734,11 +738,12 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	$attachments  = array();
 	$pdf_path     = '';
 	$pdf_path_pdf = '';
+	$pdf_tmp_key  = 'inscription_' . sanitize_file_name( $nom );
 
 	error_log( '[Stages Lutherie] Received inscription: lang=' . $lang . ', pdfBase64 length=' . strlen( $pdf_base64 ) . ', pdf upload=' . ( ! empty( $pdf_upload['tmp_name'] ) ? 'yes' : 'no' ) . ', planJson length=' . strlen( $plan_json ) );
 
 	if ( ! empty( $pdf_upload['tmp_name'] ) && isset( $pdf_upload['error'] ) && UPLOAD_ERR_OK === (int) $pdf_upload['error'] && file_exists( $pdf_upload['tmp_name'] ) ) {
-		$pdf_path     = wp_tempnam( 'inscription_' . sanitize_file_name( $nom ) . '.pdf' );
+		$pdf_path     = wp_tempnam( $pdf_tmp_key );
 		$pdf_path_pdf = $pdf_path . '.pdf';
 		if ( copy( $pdf_upload['tmp_name'], $pdf_path_pdf ) ) {
 			$attachments[] = $pdf_path_pdf;
@@ -766,7 +771,7 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 			error_log( '[Stages Lutherie] ERROR: base64_decode failed. First 80 chars: ' . substr( $pdf_base64, 0, 80 ) );
 		} else {
 			error_log( '[Stages Lutherie] PDF decoded OK: ' . strlen( $pdf_data ) . ' bytes' );
-			$pdf_path = wp_tempnam( 'inscription_' . sanitize_file_name( $nom ) . '.pdf' );
+			$pdf_path = wp_tempnam( $pdf_tmp_key );
 			// Ensure the file ends with .pdf so mail clients recognise the attachment.
 			$pdf_path_pdf = $pdf_path . '.pdf';
 			$written = file_put_contents( $pdf_path_pdf, $pdf_data );
