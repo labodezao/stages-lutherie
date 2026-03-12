@@ -554,10 +554,10 @@ function stluth_handle_availability( WP_REST_Request $request ) {
 		}
 	}
 
-	/* Also discover sessions already in the database */
+	/* Also discover sessions already in the database (non-cancelled only, consistent with counting) */
 	$pids = get_posts( array(
 		'post_type'      => 'stluth_inscription',
-		'post_status'    => array( 'publish', 'stluth_pending', 'stluth_paid', 'stluth_cancelled' ),
+		'post_status'    => array( 'publish', 'stluth_pending', 'stluth_paid' ),
 		'posts_per_page' => -1,
 		'fields'         => 'ids',
 	) );
