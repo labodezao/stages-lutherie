@@ -94,11 +94,11 @@ if ( ! function_exists( 'stluth_prepare_mail_attachment_copy' ) ) :
 		$dest_path     = trailingslashit( $dest_dir ) . $file_basename . ( $ext ? '.' . strtolower( $ext ) : '' );
 
 		if ( copy( $source_path, $dest_path ) ) {
-			error_log( '[Stages Lutherie] Durable attachment copy created: ' . $dest_path );
+			error_log( '[Stages Lutherie] Durable attachment copy created: ' . basename( $dest_path ) );
 			return $dest_path;
 		}
 
-		error_log( '[Stages Lutherie] Attachment fallback copy FAILED, using original path: ' . $source_path );
+		error_log( '[Stages Lutherie] Attachment fallback copy FAILED, using original file: ' . basename( $source_path ) );
 		return $source_path;
 	}
 endif;
