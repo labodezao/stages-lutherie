@@ -919,7 +919,6 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	}
 
 	$headers_conf   = array(
-		'Content-Type: text/html; charset=UTF-8',
 		'From: ' . $safe_name . ' <' . $safe_luthier . '>',
 		'Reply-To: ' . $safe_luthier,
 	);
@@ -927,8 +926,8 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 	/* Log attachment details for debugging */
 	error_log( '[Stages Lutherie] Sending trainee email to ' . $email . ' with ' . count( $trainee_attachments ) . ' attachment(s): ' . implode( ', ', array_map( 'basename', $trainee_attachments ) ) );
 
-	/* Trainee reuses the luthier attachment list and keeps only the PDF recap. */
-	$trainee_sent = wp_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
+	/* Trainee follows the same HTML send path as the working test email. */
+	$trainee_sent = stluth_send_html_mail( $email, $conf_subject_filled, $conf_body_html, $headers_conf, $trainee_attachments );
 
 	if ( ! $trainee_sent ) {
 		error_log( '[Stages Lutherie] FAILED to send trainee confirmation email to ' . $email );
