@@ -378,6 +378,10 @@ var STAGE_CONFIG = {
       font-weight: 700 !important;
       margin: 0 !important;
     }
+    /* ── Capacity / availability ── */
+    .insc-option-card.card-disabled { opacity:0.52; }
+    .insc-option-card.card-disabled .card-label { cursor:not-allowed; background:#f0ece8; border-color:#ccc; }
+    .insc-option-card.card-disabled .card-label:hover { border-color:#ccc; }
   </style>
 <!-- /wp:html -->
 
@@ -943,170 +947,21 @@ var STAGE_CONFIG = {
 <!-- wp:html -->
 <!--
   ┌──────────────────────────────────────────────────────────────┐
-  │  WordPress functions.php snippet — COPY THIS BLOCK          │
-  │  (or paste it in the "Code Snippets" plugin)                │
+  │  SERVER: copy inscription-api.php                           │
+  │  to wp-content/mu-plugins/inscription-api.php               │
+  │                                                              │
+  │  This file contains:                                         │
+  │    • REST endpoint POST /stages-lutherie/v1/inscription      │
+  │    • luthier email (PDF+JSON attached)                       │
+  │    • HTML trainee confirmation email (PDF+JSON attached)     │
+  │    • registration saved to DB (CPT stluth_inscription)       │
+  │    • permanent PDF + JSON storage on disk                    │
+  │    • file cleanup on post deletion                           │
+  │    • settings page (Settings → Inscription Stage)            │
+  │    • admin columns, detail view, custom statuses             │
+  │                                                              │
+  │  DO NOT copy PHP code here — everything is in the mu-plugin │
   └──────────────────────────────────────────────────────────────┘
-
-<?php
-/**
- * Stages Lutherie — Registration REST endpoint (English version)
- * Handles form submission with PDF attachment.
- *
- * Sends:
- *   1) Email to luthier with PDF recap attached
- *   2) Confirmation email to participant with bank details
- *
- * Editable settings in WordPress: Settings → Workshop Registration
- */
-
-// ── Settings page ──
-add_action('admin_menu', function () {
-    add_options_page(
-        'Workshop Registration',
-        'Workshop Registration',
-        'manage_options',
-        'inscription-stage',
-        'stluth_inscription_settings_page'
-    );
-});
-
-add_action('admin_init', function () {
-    register_setting('stluth_inscription', 'stluth_luthier_email');
-    register_setting('stluth_inscription', 'stluth_bank_details');
-    register_setting('stluth_inscription', 'stluth_confirmation_subject');
-    register_setting('stluth_inscription', 'stluth_confirmation_body');
-});
-
-function stluth_inscription_settings_page() {
-    $defaults = array(
-        'stluth_luthier_email'       => 'contact@ewendaviau.com',
-        'stluth_bank_details'        => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-        'stluth_confirmation_subject' => 'Registration confirmation — Building Workshop 2026',
-        'stluth_confirmation_body'   => "Hello {nom},\n\nThank you for your registration for the building workshop!\n\nHere is the information to validate your registration:\n\n📋 Selected model : {modele}\n💰 Deposit to pay (40 %) : {acompte} €\n📅 Session : {session}\n\n🏦 Bank details :\n{bank_details}\n\n⚠️ Please indicate as transfer reference : STAGE-{nom}\n\nYour registration will be confirmed upon receipt of the deposit.\n\nSee you soon at the workshop!\n\nEwen Daviau\n9 rue Fernand de Magellan\n44600 Saint-Nazaire\ncontact@ewendaviau.com\newendaviau.com",
-    );
-    ?>
-    <div class="wrap">
-        <h1>Workshop Registration — Settings</h1>
-        <form method="post" action="options.php">
-            <?php settings_fields('stluth_inscription'); ?>
-            <table class="form-table">
-                <tr>
-                    <th>Luthier email</th>
-                    <td><input type="email" name="stluth_luthier_email" value="<?php echo esc_attr(get_option('stluth_luthier_email', $defaults['stluth_luthier_email'])); ?>" class="regular-text"></td>
-                </tr>
-                <tr>
-                    <th>Bank details</th>
-                    <td><textarea name="stluth_bank_details" rows="4" class="large-text"><?php echo esc_textarea(get_option('stluth_bank_details', $defaults['stluth_bank_details'])); ?></textarea></td>
-                </tr>
-                <tr>
-                    <th>Confirmation email subject</th>
-                    <td><input type="text" name="stluth_confirmation_subject" value="<?php echo esc_attr(get_option('stluth_confirmation_subject', $defaults['stluth_confirmation_subject'])); ?>" class="large-text"></td>
-                </tr>
-                <tr>
-                    <th>Confirmation email body</th>
-                    <td>
-                        <textarea name="stluth_confirmation_body" rows="16" class="large-text"><?php echo esc_textarea(get_option('stluth_confirmation_body', $defaults['stluth_confirmation_body'])); ?></textarea>
-                        <p class="description">Variables: {nom}, {modele}, {acompte}, {session}, {bank_details}, {email}, {telephone}</p>
-                    </td>
-                </tr>
-            </table>
-            <?php submit_button(); ?>
-        </form>
-    </div>
-    <?php
-}
-
-// ── REST endpoint ──
-add_action('rest_api_init', function () {
-    register_rest_route('stages-lutherie/v1', '/inscription', array(
-        'methods'  => 'POST',
-        'callback' => 'stluth_handle_inscription',
-        'permission_callback' => '__return_true',
-    ));
-});
-
-function stluth_handle_inscription(WP_REST_Request $request) {
-    $data       = $request->get_json_params();
-    $fields     = isset($data['fields']) ? $data['fields'] : array();
-    $pdf_base64 = isset($data['pdfBase64']) ? $data['pdfBase64'] : '';
-
-    $nom     = sanitize_text_field(isset($fields['nom']) ? $fields['nom'] : '');
-    $email   = sanitize_email(isset($fields['email']) ? $fields['email'] : '');
-    $modele  = sanitize_text_field(isset($fields['modele']) ? $fields['modele'] : '');
-    $acompte = sanitize_text_field(isset($fields['acompte']) ? $fields['acompte'] : '');
-    $session = sanitize_text_field(isset($fields['session']) ? $fields['session'] : '');
-    $tel     = sanitize_text_field(isset($fields['telephone']) ? $fields['telephone'] : '');
-
-    if (empty($nom) || empty($email)) {
-        return new WP_REST_Response(array('success' => false, 'message' => 'Name and email required.'), 400);
-    }
-
-    // Save PDF to temp file
-    $plan_json  = isset($data['planJson'])  ? (string) $data['planJson']  : '';
-
-    $pdf_path = '';
-    if (!empty($pdf_base64)) {
-        $pdf_data = base64_decode($pdf_base64);
-        $pdf_path = wp_tempnam('inscription_' . sanitize_file_name($nom) . '.pdf');
-        file_put_contents($pdf_path, $pdf_data);
-    }
-
-    $attachments = array();
-    if (!empty($pdf_path)) { $attachments[] = $pdf_path; }
-
-    $json_path = '';
-    if (!empty($plan_json)) {
-        $json_path = wp_tempnam('plan_clavier_' . sanitize_file_name($nom)) . '.json';
-        if (file_put_contents($json_path, $plan_json) !== false) {
-            $attachments[] = $json_path;
-        } else {
-            $json_path = '';
-        }
-    }
-
-    $defaults = array(
-        'stluth_luthier_email'        => 'contact@ewendaviau.com',
-        'stluth_bank_details'         => "IBAN : FR76 XXXX XXXX XXXX XXXX XXXX XXX\nBIC : XXXXXXXX\nTitulaire : Ewen Daviau",
-        'stluth_confirmation_subject' => 'Registration confirmation — Building Workshop 2026',
-        'stluth_confirmation_body'    => "Hello {nom},\n\nThank you for your registration!",
-    );
-
-    $luthier_email = get_option('stluth_luthier_email', $defaults['stluth_luthier_email']);
-    $bank_details  = get_option('stluth_bank_details', $defaults['stluth_bank_details']);
-    $conf_subject  = get_option('stluth_confirmation_subject', $defaults['stluth_confirmation_subject']);
-    $conf_body     = get_option('stluth_confirmation_body', $defaults['stluth_confirmation_body']);
-
-    // 1) Email to luthier with PDF + JSON
-    $luthier_subject = 'New workshop registration — ' . $nom;
-    $luthier_body    = "New registration received:\n\nName: $nom\nEmail: $email\nPhone: $tel\nModel: $modele\nSession: $session\nDeposit: $acompte €\n\nThe PDF summary is attached.";
-    wp_mail($luthier_email, $luthier_subject, $luthier_body, array(), $attachments);
-
-    // 2) Confirmation email to participant (with same attachments: PDF + JSON)
-    $replacements = array(
-        '{nom}'          => $nom,
-        '{modele}'       => $modele,
-        '{acompte}'      => $acompte,
-        '{session}'      => $session,
-        '{bank_details}' => $bank_details,
-        '{email}'        => $email,
-        '{telephone}'    => $tel,
-    );
-    $conf_body    = str_replace(array_keys($replacements), array_values($replacements), $conf_body);
-    $conf_subject = str_replace(array_keys($replacements), array_values($replacements), $conf_subject);
-    wp_mail($email, $conf_subject, $conf_body, array(), $attachments);
-
-    // Cleanup
-    if (!empty($pdf_path) && file_exists($pdf_path)) {
-        unlink($pdf_path);
-    }
-    if (!empty($json_path) && file_exists($json_path)) {
-        unlink($json_path);
-    }
-
-    return new WP_REST_Response(array('success' => true, 'message' => 'Registration sent successfully!'), 200);
-}
-?>
-
 -->
 
 <script src="../outils/clavier-accordeon/ca-svg.js"></script>
@@ -1116,7 +971,91 @@ function stluth_handle_inscription(WP_REST_Request $request) {
   'use strict';
 
   /* ── Configuration ── */
-  var WP_ENDPOINT = '/wp-json/stages-lutherie/v1/inscription';
+  var STLUTH_REST_ROOT = '/wp-json/';
+  if (window.CA_REST_ROOT) {
+    STLUTH_REST_ROOT = window.CA_REST_ROOT;
+  } else {
+    var stluthApiLink = document.querySelector('link[rel="https://api.w.org/"]');
+    if (stluthApiLink) {
+      var stluthApiHref = stluthApiLink.getAttribute('href');
+      if (stluthApiHref) {
+        STLUTH_REST_ROOT = stluthApiHref;
+      }
+    }
+  }
+  if (STLUTH_REST_ROOT.slice(-1) !== '/') {
+    STLUTH_REST_ROOT += '/';
+  }
+  var WP_ENDPOINT = STLUTH_REST_ROOT + 'stages-lutherie/v1/inscription';
+  var AVAIL_ENDPOINT = STLUTH_REST_ROOT + 'stages-lutherie/v1/availability?sessions=avril2026,octobre2026';
+  var _stluthAvail = null;
+  function stluthApplyAvail(avail, sessionId) {
+    if (!avail || !avail.sessions) return;
+    /* Session cards */
+    document.querySelectorAll('#sessionOptions input[type="radio"]').forEach(function(inp) {
+      var sData = avail.sessions[inp.value];
+      var lbl = inp.closest('label') || inp.parentElement;
+      var sub = lbl.querySelector('.card-sub');
+      if (sData && sData.full) {
+        lbl.classList.add('card-disabled'); inp.disabled = true;
+        if (sub && !sub.getAttribute('data-orig')) sub.setAttribute('data-orig', sub.innerHTML);
+        if (sub) sub.innerHTML = '<span style="color:#c0392b;font-weight:700;">Session full</span>';
+      } else {
+        lbl.classList.remove('card-disabled'); inp.disabled = false;
+        if (sub) { var orig = sub.getAttribute('data-orig'); if (orig) sub.innerHTML = orig; }
+      }
+    });
+    /* Model cards — based on selected session */
+    var selSess = sessionId;
+    if (!selSess) { var ci = document.querySelector('#sessionOptions input[type="radio"]:checked'); if (ci) selSess = ci.value; }
+    var sData2 = selSess ? avail.sessions[selSess] : null;
+    document.querySelectorAll('input[name="modele"]').forEach(function(inp) {
+      var mData = sData2 && sData2.models ? sData2.models[inp.value] : null;
+      var lbl = inp.closest('label') || inp.parentElement;
+      var avEl = lbl.querySelector('.card-avail');
+      if (!avEl) {
+        avEl = document.createElement('span'); avEl.className = 'card-avail';
+        avEl.style.cssText = 'display:block;font-size:.72rem;font-weight:700;margin-top:4px;';
+        var cl = lbl.querySelector('.card-label'); if (cl) cl.appendChild(avEl);
+      }
+      if (mData && mData.full) {
+        lbl.classList.add('card-disabled'); inp.disabled = true;
+        avEl.style.color = '#c0392b'; avEl.textContent = 'Full';
+      } else if (mData) {
+        lbl.classList.remove('card-disabled'); inp.disabled = false;
+        avEl.style.color = mData.remaining <= 3 ? '#e67e22' : '#6b5b53';
+        avEl.textContent = mData.remaining + ' place' + (mData.remaining > 1 ? 's' : '') + ' remaining';
+      } else {
+        lbl.classList.remove('card-disabled'); inp.disabled = false; avEl.textContent = '';
+      }
+    });
+  }
+  function stluthBlobToBase64(blob) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        var result = reader.result;
+        if (typeof result !== 'string') {
+          reject(new Error('PDF conversion failed'));
+          return;
+        }
+        var commaIndex = result.indexOf(',');
+        resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
+      };
+      reader.onerror = function() {
+        reject(reader.error || new Error('PDF conversion failed'));
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
+  function stluthShowSendError(statusEl, message) {
+    statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#e74c3c;"><strong>⚠️ Unable to send.</strong><br>'
+      + message
+      + '</div>';
+  }
+  fetch(AVAIL_ENDPOINT).then(function(r){return r.ok?r.json():null;}).then(function(d){if(d){_stluthAvail=d;stluthApplyAvail(d,null);}}).catch(function(){});
+  var _sessOptsEl = document.getElementById('sessionOptions');
+  if (_sessOptsEl) _sessOptsEl.addEventListener('change', function(e){if(_stluthAvail)stluthApplyAvail(_stluthAvail,e.target.value);});
   var ANNEE = STAGE_CONFIG.annee;
   var ANCHE_SURCHARGE = 1.15;  /* 15% surcharge multiplier for Anche a mano Blue Star */
   var UPGRADE_2V_SURCHARGE = 1.08; /* 8% surcharge multiplier for 2 Voix upgrade */
@@ -1746,6 +1685,113 @@ function stluth_handle_inscription(WP_REST_Request $request) {
       img.src = URL.createObjectURL(blob);
     });
   }
+  /* Convert a loaded <img> element to a JPEG data-URL via canvas */
+  function imgToDataUrl(imgEl) {
+    var c = document.createElement('canvas');
+    c.width = imgEl.naturalWidth; c.height = imgEl.naturalHeight;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(imgEl, 0, 0);
+    return { dataUrl: c.toDataURL('image/jpeg', 0.90), w: c.width, h: c.height };
+  }
+
+  function extractCssUrl(bgValue) {
+    if (!bgValue || bgValue === 'none') return '';
+    var m = bgValue.match(/^url\((['"]?)(.*?)\1\)$/);
+    return m ? m[2] : '';
+  }
+
+  function parseClipPolygonPoints(clipPath, w, h) {
+    if (!clipPath || clipPath === 'none') return null;
+    var m = clipPath.match(/^polygon\((.+)\)$/);
+    if (!m) return null;
+    var pts = m[1].split(',').map(function(part) {
+      var coords = part.trim().split(/\s+/);
+      var xRaw = coords[0], yRaw = coords[1];
+      if (!xRaw || !yRaw) return null;
+      var x = xRaw.indexOf('%') >= 0 ? w * parseFloat(xRaw) / 100 : parseFloat(xRaw);
+      var y = yRaw.indexOf('%') >= 0 ? h * parseFloat(yRaw) / 100 : parseFloat(yRaw);
+      if (isNaN(x) || isNaN(y)) return null;
+      return { x: x, y: y };
+    }).filter(Boolean);
+    return pts.length ? pts : null;
+  }
+
+  function loadImageElement(url) {
+    return new Promise(function(resolve, reject) {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function() { resolve(img); };
+      img.onerror = function(err) { reject(err); };
+      img.src = url;
+    });
+  }
+
+  async function renderAccordionPreviewDataUrl() {
+    var wrap = document.getElementById('accordionPreview');
+    if (!wrap) return null;
+    var rect = wrap.getBoundingClientRect();
+    var sw = Math.max(1, Math.round(rect.width || wrap.offsetWidth || 920));
+    var sh = Math.max(1, Math.round(rect.height || wrap.offsetHeight || 420));
+    var SCALE = 2;
+    var c = document.createElement('canvas');
+    c.width = sw * SCALE;
+    c.height = sh * SCALE;
+    var ctx = c.getContext('2d');
+    ctx.scale(SCALE, SCALE);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, sw, sh);
+    var layers = wrap.querySelectorAll('.acc-layer');
+    for (var i = 0; i < layers.length; i++) {
+      var layer = layers[i];
+      var style = window.getComputedStyle(layer);
+      var opacity = parseFloat(style.opacity || '1');
+      var clipPath = style.clipPath;
+      if ((!clipPath || clipPath === 'none') && style.webkitClipPath) clipPath = style.webkitClipPath;
+      var points = parseClipPolygonPoints(clipPath, sw, sh);
+      ctx.save();
+      ctx.globalAlpha = isNaN(opacity) ? 1 : opacity;
+      if (points) {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (var p = 1; p < points.length; p++) ctx.lineTo(points[p].x, points[p].y);
+        ctx.closePath();
+        ctx.clip();
+      }
+      var bgColor = style.backgroundColor;
+      if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, sw, sh);
+      }
+      var bgUrl = extractCssUrl(style.backgroundImage);
+      if (bgUrl) {
+        try {
+          var bgImg = await loadImageElement(bgUrl);
+          /* Respect CSS background-size:contain — scale to fit, maintain aspect ratio, center */
+          var bW = bgImg.naturalWidth, bH = bgImg.naturalHeight;
+          if (bW > 0 && bH > 0) {
+            var bScale = Math.min(sw / bW, sh / bH);
+            var bDW = bW * bScale, bDH = bH * bScale;
+            ctx.drawImage(bgImg, (sw - bDW) / 2, (sh - bDH) / 2, bDW, bDH);
+          } else {
+            ctx.drawImage(bgImg, 0, 0, sw, sh);
+          }
+        } catch (bgErr) {}
+      }
+      ctx.restore();
+    }
+    return { dataUrl: c.toDataURL('image/jpeg', 0.90), w: sw, h: sh };
+  }
+
+  function getSelectedGrilleImageData() {
+    var grilleVal = document.getElementById('numGrille').value;
+    if (!grilleVal) return null;
+    var gCell = document.getElementById('grilleCell-' + parseInt(grilleVal, 10));
+    var gImg = gCell ? gCell.querySelector('img') : null;
+    if (!gImg || gImg.naturalWidth <= 0) return null;
+    return imgToDataUrl(gImg);
+  }
+
   var JSPDF_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
   /* ── PDF number formatter (plain space — avoids jsPDF unicode rendering issues) ── */
@@ -1901,6 +1947,68 @@ function stluth_handle_inscription(WP_REST_Request $request) {
       y += 4;
     }
 
+    /* 8. Informal preview */
+    var previewImgData = null;
+    var grilleImgData = null;
+    try {
+      updateAccordionPreview();
+      previewImgData = await renderAccordionPreviewDataUrl();
+    } catch (previewErr) { /* skip visual preview if canvas render fails */ }
+    try {
+      grilleImgData = getSelectedGrilleImageData();
+    } catch (grilleImgErr) { /* skip grille image if canvas render fails */ }
+    if (previewImgData || grilleImgData) {
+      sectionTitle('Informal preview (non-binding)');
+      if (previewImgData && grilleImgData) {
+        /* Side-by-side: accordion preview left (~62 %), grille right (~35 %) */
+        var sbGap = 5;
+        var sbPW = Math.round(CW * 0.62);
+        var sbGWMax = CW - sbPW - sbGap;
+        var sbGW = sbGWMax;
+        var sbPAspect = previewImgData.w / previewImgData.h;
+        var sbPH = Math.round(sbPW / sbPAspect);
+        var sbMaxH = 74;
+        if (sbPH > sbMaxH) { sbPH = sbMaxH; sbPW = Math.round(sbPH * sbPAspect); }
+        var sbGAspect = grilleImgData.w / grilleImgData.h;
+        var sbGH = Math.round(sbGW / sbGAspect);
+        if (sbGH > sbPH) { sbGH = sbPH; sbGW = Math.min(Math.round(sbGH * sbGAspect), sbGWMax); }
+        var sbRowH = Math.max(sbPH, sbGH);
+        if (y + sbRowH + 6 > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        doc.addImage(previewImgData.dataUrl, 'JPEG', MARGIN, y, sbPW, sbPH);
+        var sbGX = MARGIN + CW - sbGW;
+        var sbGY = y + Math.round((sbRowH - sbGH) / 2);
+        doc.addImage(grilleImgData.dataUrl, 'JPEG', sbGX, sbGY, sbGW, sbGH);
+        var sbGrilleNum = document.getElementById('numGrille').value;
+        if (sbGrilleNum) {
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor.apply(doc, grey);
+          doc.text('Grille no.' + sbGrilleNum, sbGX + sbGW / 2, sbGY + sbGH + 4, { align: 'center' });
+        }
+        y += sbRowH + 8;
+      } else if (previewImgData) {
+        var prevAspect = previewImgData.w / previewImgData.h;
+        var prevW = CW;
+        var prevH = Math.round(prevW / prevAspect);
+        var maxPrevH = 72;
+        if (prevH > maxPrevH) { prevH = maxPrevH; prevW = Math.round(prevH * prevAspect); }
+        if (y + prevH > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        doc.addImage(previewImgData.dataUrl, 'JPEG', MARGIN + Math.max(0, (CW - prevW) / 2), y, prevW, prevH);
+        y += prevH + 5;
+      } else if (grilleImgData) {
+        var gAspectO = grilleImgData.w / grilleImgData.h;
+        var gWO = Math.min(80, CW);
+        var gHO = Math.round(gWO / gAspectO);
+        if (y + gHO + 6 > PAGE_LIMIT) { doc.addPage(); y = MARGIN; }
+        doc.addImage(grilleImgData.dataUrl, 'JPEG', MARGIN + Math.max(0, (CW - gWO) / 2), y, gWO, gHO);
+        var grilleNumO = document.getElementById('numGrille').value;
+        if (grilleNumO) {
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor.apply(doc, grey);
+          doc.text('Grille no.' + grilleNumO, MARGIN + CW / 2, y + gHO + 4, { align: 'center' });
+        }
+        y += gHO + 8;
+      }
+      y += 4;
+    }
+
     y += 2;
 
     /* Total */
@@ -2027,9 +2135,9 @@ function stluth_handle_inscription(WP_REST_Request $request) {
     statusEl.classList.add('visible');
     statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:var(--gold);"><strong>\u23f3 Sending\u2026</strong></div>';
 
-    /* Build PDF as base64 */
+    /* Build PDF as file upload */
     var doc = await buildPDF();
-    var pdfBase64 = doc.output('datauristring').split(',')[1];
+    var pdfBlob = doc.output('blob');
 
     /* Collect form fields */
     var modEl = form.querySelector('input[name="modele"]:checked');
@@ -2068,7 +2176,8 @@ function stluth_handle_inscription(WP_REST_Request $request) {
       couleurSangles: selVal('couleurSangles'),
       remarquesMG: document.getElementById('remarquesMG').value,
       couleurSoufflet: getRadioVal('couleurSoufflet'),
-      planClavier: planData ? (planData.nom || 'Custom plan') : ''
+      planClavier: planData ? (planData.nom || 'Custom plan') : '',
+      lang: 'en'
     };
 
     /* JSON keyboard plan (preset or custom) */
@@ -2080,27 +2189,42 @@ function stluth_handle_inscription(WP_REST_Request $request) {
       planJson = JSON.stringify(planData, null, 2);
     }
 
-    /* Try WordPress endpoint first */
-    fetch(WP_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: fields, pdfBase64: pdfBase64, planJson: planJson })
-    })
-    .then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
-    .then(function (json) {
-      if (json.success) {
-        statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#27ae60;">'
-          + '<strong>\u2705 Registration sent successfully!</strong><br>'
-          + 'A confirmation email has been sent to <strong>' + fields.email + '</strong> with the bank details for the deposit.'
-          + '</div>';
-      } else {
-        throw new Error(json.message || 'Server error');
+    try {
+      var pdfBase64 = await stluthBlobToBase64(pdfBlob);
+      var res = await fetch(WP_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields: fields,
+          planJson: planJson,
+          pdfBase64: pdfBase64
+        })
+      });
+      var json = null;
+      try {
+        json = await res.json();
+      } catch (parseErr) {}
+      if (!res.ok) {
+        if (json) {
+          if (json.message) {
+            stluthShowSendError(statusEl, json.message);
+            return;
+          }
+        }
+        throw new Error('HTTP ' + res.status);
       }
-    })
-    .catch(function () {
+      if (!json) {
+        throw new Error('Invalid server response');
+      }
+      if (!json.success) {
+        stluthShowSendError(statusEl, json.message || 'Server error');
+        return;
+      }
+      statusEl.innerHTML = '<div class="insc-callout" style="border-left-color:#27ae60;">'
+        + '<strong>\u2705 Registration sent successfully!</strong><br>'
+        + 'A confirmation email has been sent to <strong>' + fields.email + '</strong> with the bank details for the deposit.'
+        + '</div>';
+    } catch (err) {
       /* Fallback: download PDF + open mailto */
       var safeName = (fields.nom || 'inscription').replace(/[^a-zA-Z\u00C0-\u00FF0-9]/g, '_');
       doc.save('inscription_' + safeName + '.pdf');
@@ -2121,7 +2245,7 @@ function stluth_handle_inscription(WP_REST_Request $request) {
         + '<a href="mailto:contact@ewendaviau.com" style="color:var(--gold)">contact@ewendaviau.com</a> '
         + 'as an attachment.'
         + '</div>';
-    });
+    }
   });
 
 })();

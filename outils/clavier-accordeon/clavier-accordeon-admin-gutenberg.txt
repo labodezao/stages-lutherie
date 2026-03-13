@@ -123,7 +123,7 @@ select option{background:#fff;color:var(--txt)}
 .note-section{margin-bottom:18px}
 .note-section-title{font-size:.86rem;font-weight:700;color:var(--dark);
   border-bottom:2px solid var(--gold);padding-bottom:4px;margin-bottom:8px}
-.sec-hd{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.sec-hd{display:flex;align-items:center;gap:5px 7px;margin-bottom:5px;flex-wrap:wrap}
 .sec-label{font-size:.76rem;font-weight:700;color:var(--dark)}
 .row-wrap{margin-bottom:11px}
 .btn-grid{display:flex;flex-wrap:wrap;gap:4px}
@@ -149,7 +149,7 @@ select option{background:#fff;color:var(--txt)}
 .mono{font-family:monospace;background:#f0f0ee;padding:1px 4px;border-radius:3px;color:var(--dark)}
 
 /* ── Note Picker ── */
-#note-picker{position:absolute;z-index:999;background:#fff;border:2px solid var(--dark);
+#note-picker{position:fixed;z-index:999;background:#fff;border:2px solid var(--dark);
   border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.15);padding:11px 13px;min-width:305px;display:none}
 .picker-tabs{display:flex;gap:0;margin-bottom:9px;border-bottom:1.5px solid var(--brd)}
 .picker-tab-btn{padding:4px 12px;border:none;background:none;font-family:inherit;font-size:.78rem;
@@ -402,7 +402,23 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
                 <span data-i="lhPairedHorizontal">↔ Horizontal (B|A)</span></label>
             </div>
             <div style="margin-top:5px;">
-              <button type="button" id="lh-order-btn" class="rng-btn" style="font-size:.75rem;padding:3px 8px;" onclick="toggleLhBassFirst()" data-i-btn="lhOrderBtn">🔄 Accords → Basses</button>
+              <button type="button" id="lh-order-btn" class="rng-btn" style="width:auto;height:auto;font-size:.75rem;padding:3px 8px;" onclick="toggleLhBassFirst()" data-i-btn="lhOrderBtn">🔄 Accords → Basses</button>
+            </div>
+            <!-- LH labels config -->
+            <div style="margin-top:6px;padding:6px 8px;background:#f5f5f0;border-radius:5px;border:1px solid #ddd;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="font-size:.74rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;">Labels</span>
+                <label style="font-size:.72rem;cursor:pointer;display:flex;align-items:center;gap:3px;margin-left:auto;">
+                  <input type="checkbox" id="lh-show-labels" checked onchange="onAnyChange()">
+                  <span>Afficher</span>
+                </label>
+              </div>
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 6px;align-items:center;">
+                <span style="font-size:.72rem;color:var(--gris);">Basses :</span>
+                <input type="text" id="lh-basses-label" value="" placeholder="Basses" style="font-size:.72rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;" oninput="onAnyChange()">
+                <span style="font-size:.72rem;color:var(--gris);">Accords :</span>
+                <input type="text" id="lh-accords-label" value="" placeholder="Accords" style="font-size:.72rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;" oninput="onAnyChange()">
+              </div>
             </div>
             <!-- LH rows + offsets config (shown for both modes) -->
             <div id="lh-rows-cfg" style="margin-top:6px;padding:6px 8px;background:#f5f5f0;border-radius:5px;border:1px solid #ddd;">
@@ -1158,6 +1174,9 @@ function snapshotToDB(){
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
     lhBassFirst:CFG.lhBassFirst||false,
+    lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
+    lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
+    lhShowLabels:document.getElementById('lh-show-labels')?.checked!==false,
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -1203,6 +1222,13 @@ function loadFromDB(rec){
   if(lhpdEl)lhpdEl.checked=true;
   const dw=document.getElementById('lh-paired-dir-wrap');
   if(dw)dw.style.display=lhm==='paired'?'block':'none';
+  // Restore LH labels
+  const lhBlEl=document.getElementById('lh-basses-label');
+  if(lhBlEl)lhBlEl.value=rec.lhBassesLabel||'';
+  const lhAlEl=document.getElementById('lh-accords-label');
+  if(lhAlEl)lhAlEl.value=rec.lhAccordsLabel||'';
+  const lhSlEl=document.getElementById('lh-show-labels');
+  if(lhSlEl)lhSlEl.checked=rec.lhShowLabels!==false;
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
@@ -1273,6 +1299,9 @@ function _savePresetToServer(rec){
     lhRows:rec.lhRows,
     lhPairsPerRow:rec.lhPairsPerRow||2,
     lhBassFirst:rec.lhBassFirst||false,
+    lhBassesLabel:rec.lhBassesLabel||'',
+    lhAccordsLabel:rec.lhAccordsLabel||'',
+    lhShowLabels:rec.lhShowLabels!==false,
     nbVoix:rec.nbVoix||2,
     nbVoixAccords:rec.nbVoixAccords||2,
     nbVoixBasses:rec.nbVoixBasses||2,
@@ -1321,6 +1350,9 @@ function newInstrument(){
   document.getElementById('nb-voix-accords').value='2';
   document.getElementById('nb-voix-basses').value='2';
   document.getElementById('lh-separated').checked=true;
+  const _nlBlEl=document.getElementById('lh-basses-label');if(_nlBlEl)_nlBlEl.value='';
+  const _nlAlEl=document.getElementById('lh-accords-label');if(_nlAlEl)_nlAlEl.value='';
+  const _nlSlEl=document.getElementById('lh-show-labels');if(_nlSlEl)_nlSlEl.checked=true;
   CFG.lhRows=[{nb:6,offset:0}];
   loadPreset('GCD33');
   document.getElementById('preset-select').value='GCD33';
@@ -1379,12 +1411,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
   document.getElementById('note-grid').addEventListener('click',e=>{
     const inp=e.target.closest('.note-input');
-    if(inp){e.stopPropagation();showPicker(inp);}
+    if(inp){e.stopPropagation();showPicker(inp);return;}
+    const seuil=e.target.closest('#accords-seuil-note');
+    if(seuil){e.stopPropagation();showPicker(seuil);return;}
   });
   // Close picker when clicking outside it (use computed style so initial '' != 'none' doesn't trick us)
   document.addEventListener('click',e=>{
     const p=document.getElementById('note-picker');
-    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?!e.target.closest('.note-input'):false):false)hidePicker();
+    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?!e.target.closest('.note-input')&&!e.target.closest('#accords-seuil-note'):false):false)hidePicker();
   });
   // Sync preset-export-label from nom-instrument (presetSel handled by loadPreset)
   const nomInstr=document.getElementById('nom-instrument');
@@ -1409,6 +1443,8 @@ async function loadPreset(key){
     if(elbl){elbl.value=entry.label||'';elbl.dataset.userEdited='1';}
     const ecat=document.getElementById('preset-export-category');
     if(ecat){ecat.value=entry.category||'Personnalis\u00e9s';}
+    const enom=document.getElementById('nom-instrument');
+    if(enom){enom.value=entry.label||key;}
   }
   let p;
   try{p=await fetchPresetData(key);}catch(e){console.warn('Preset not found:',key);return;}
@@ -1417,6 +1453,13 @@ async function loadPreset(key){
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
   // Reset lhRows to 1 row matching bass count
   CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
+  // Auto-set display mode: paired (alterné) for ≤18 basses, separated for 24+
+  const _nBas=CFG.notes.basses?CFG.notes.basses.length:0;
+  const _autoMode=_nBas<=18?'paired':'separated';
+  const _autoEl=document.getElementById('lh-'+_autoMode);
+  if(_autoEl)_autoEl.checked=true;
+  const _dw=document.getElementById('lh-paired-dir-wrap');
+  if(_dw)_dw.style.display=_autoMode==='paired'?'block':'none';
   document.getElementById('nb-rangees').value=p.nbRangees;
   syncGaucheInputs();
   renderRangeesCfg();renderLhRowsCfg();generateInputGrid();onAnyChange();
@@ -1635,6 +1678,30 @@ function bassesOctaveShift(){
 function accordsFifthShift(){
   readNoteInputsIntoCFG();
   CFG.notes.accords2=(CFG.notes.accords||[]).map(a=>({p:shiftNote(a.p,7),t:shiftNote(a.t,7)}));
+  CFG.notes.accords2=applyAccordsSeuil(CFG.notes.accords2);
+  generateInputGrid();onAnyChange();
+}
+/* \u2500\u2500 Seuil accords MG \u2014 transpose down one octave any note above the threshold \u2500\u2500 */
+function applyAccordsSeuil(arr){
+  const chkEl=document.getElementById('accords-seuil-enabled');
+  if(!chkEl||!chkEl.checked)return arr;
+  const seuilNote=(document.getElementById('accords-seuil-note')||{}).value||'';
+  const seuilMidi=noteToMidi(seuilNote.trim());
+  if(seuilMidi===null)return arr;
+  return arr.map(function(a){
+    const mp=noteToMidi(a.p);
+    const mt=noteToMidi(a.t);
+    return{
+      p:(mp!==null&&mp>seuilMidi)?midiToFr(mp-12):a.p,
+      t:(mt!==null&&mt>seuilMidi)?midiToFr(mt-12):a.t
+    };
+  });
+}
+function applyAccordsSeuilManual(){
+  readNoteInputsIntoCFG();
+  ['accords','accords2','accords3'].forEach(function(key){
+    if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuil(CFG.notes[key]);}}
+  });
   generateInputGrid();onAnyChange();
 }
 function basseV2ToAccordV1Shift(){
@@ -1778,7 +1845,15 @@ function generateInputGrid(){
   }
   html+=`</div>`;
   // Left hand — voice sections for basses and accords
-  html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>`;
+  html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>
+    <div style="margin:0 0 10px 0;padding:8px 10px;background:#fff8e8;border:1px solid #ead7a3;border-radius:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
+        <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
+        <span>Seuil accords MG</span>
+      </label>
+      <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
+      <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+    </div>`;
   const nbVB=parseInt(document.getElementById('nb-voix-basses')?.value||'2');
   const nbVA=parseInt(document.getElementById('nb-voix-accords')?.value||'2');
   const _bCount=(CFG.notes.basses||[]).length;
@@ -1793,7 +1868,7 @@ function generateInputGrid(){
       const label=t('basses')+(nbVB>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_bCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
@@ -1817,7 +1892,7 @@ function generateInputGrid(){
       const label=t('accords')+(nbVA>1?` — V${v+1}`:'');
       html+=`<div class="row-wrap" id="rw-g-${vkey}"><div class="sec-hd">
         <span class="sec-label">${label} <span style="color:var(--gris);font-weight:normal;">(${_aCount})</span></span>
-        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="margin-left:6px;font-size:.7rem;padding:2px 6px;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="margin-left:4px;font-size:.7rem;padding:2px 6px;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
+        ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:4px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
         <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
@@ -1940,12 +2015,12 @@ function showPicker(input){
   showPickerTab('notes',document.querySelector('.picker-tab-btn:first-child'));
   updatePickerHighlights();updatePickerPreview();
   const pk=document.getElementById('note-picker');pk.style.display='block';
-  const rect=input.getBoundingClientRect(),sy=window.scrollY,sx=window.scrollX;
-  let top=sy+rect.bottom+6,left=sx+rect.left;
+  const rect=input.getBoundingClientRect();
+  let top=rect.bottom+6,left=rect.left;
   const pw=pk.offsetWidth||310,ph=pk.offsetHeight||300;
-  if(left+pw>sx+window.innerWidth-10)left=sx+window.innerWidth-pw-10;
+  if(left+pw>window.innerWidth-10)left=window.innerWidth-pw-10;
   if(left<8)left=8;
-  if(top+ph>sy+window.innerHeight-10)top=sy+rect.top-ph-6;
+  if(top+ph>window.innerHeight-10)top=rect.top-ph-6;
   pk.style.top=top+'px';pk.style.left=left+'px';
   input.classList.add('picker-open');
 }
@@ -2024,6 +2099,9 @@ function readInputs(){
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
     lhBassFirst:CFG.lhBassFirst||false,
+    lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
+    lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
+    lhShowLabels:document.getElementById('lh-show-labels')?.checked!==false,
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
     basses:CFG.notes.basses,
@@ -2944,6 +3022,9 @@ function renderKbdCompare(){
       lhRows:rec.lhRows||[{nb:6,offset:0}],
       lhPairsPerRow:rec.lhPairsPerRow||2,
       lhBassFirst:rec.lhBassFirst||false,
+      lhBassesLabel:rec.lhBassesLabel||'',
+      lhAccordsLabel:rec.lhAccordsLabel||'',
+      lhShowLabels:rec.lhShowLabels!==false,
       showMidi:false,
       droite,
       basses:nRec.basses||[],
