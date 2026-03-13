@@ -1374,12 +1374,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
   document.getElementById('note-grid').addEventListener('click',e=>{
     const inp=e.target.closest('.note-input');
-    if(inp){e.stopPropagation();showPicker(inp);}
+    if(inp){e.stopPropagation();showPicker(inp);return;}
+    const seuil=e.target.closest('#accords-seuil-note');
+    if(seuil){e.stopPropagation();showPicker(seuil);return;}
   });
   // Close picker when clicking outside it (use computed style so initial '' != 'none' doesn't trick us)
   document.addEventListener('click',e=>{
     const p=document.getElementById('note-picker');
-    if(getComputedStyle(p).display!=='none'&&!p.contains(e.target)&&!e.target.closest('.note-input'))hidePicker();
+    if(getComputedStyle(p).display!=='none'&&!p.contains(e.target)&&!e.target.closest('.note-input')&&!e.target.closest('#accords-seuil-note'))hidePicker();
   });
   // Sync preset-export-label from nom-instrument (presetSel handled by loadPreset)
   const nomInstr=document.getElementById('nom-instrument');
@@ -1813,7 +1815,7 @@ function generateInputGrid(){
         <span>Seuil accords MG</span>
       </label>
       <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activé : si une note dépasse ce seuil, elle est&#10;automatiquement transposée à l'octave d'en dessous.&#10;S'applique aussi au bouton ↑5te→V2.&#10;Exemple : seuil Sol4 → toute note &gt; Sol4 descend d'une octave.">ⓘ</span>
-      <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;" oninput="onAnyChange()">
+      <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
     </div>`;
   const nbVB=parseInt(document.getElementById('nb-voix-basses')?.value||'2');
   const nbVA=parseInt(document.getElementById('nb-voix-accords')?.value||'2');
