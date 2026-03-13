@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '2.3' );
+define( 'STLUTH_API_VERSION', '2.4' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -103,7 +103,7 @@ function stluth_default_email_html() {
         <!-- BANDEAU TITRE -->
         <tr>
           <td style="background-color:#D4A017;padding:12px 40px;text-align:center;">
-            <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#3E2723;font-weight:bold;">Confirmation d\'inscription</p>
+            <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#3E2723;font-weight:bold;">Demande d\'inscription reçue</p>
           </td>
         </tr>
 
@@ -111,11 +111,22 @@ function stluth_default_email_html() {
         <tr>
           <td style="padding:36px 40px 20px 40px;">
             <p style="margin:0 0 16px 0;font-size:16px;color:#2c2c2c;line-height:1.6;">Bonjour <strong>{nom}</strong>,</p>
-            <p style="margin:0;font-size:15px;color:#2c2c2c;line-height:1.7;">
-              Merci pour votre inscription au stage de fabrication d\'accordéon diatonique&nbsp;!
-              Votre demande a bien été reçue. Voici le récapitulatif de votre inscription
-              ainsi que les informations nécessaires pour la valider.
+            <p style="margin:0 0 16px 0;font-size:15px;color:#2c2c2c;line-height:1.7;">
+              Merci pour votre demande d\'inscription au stage de fabrication d\'accordéon diatonique&nbsp;!
+              Votre dossier a bien été reçu et enregistré.
             </p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#fffbea;border-left:4px solid #D4A017;border-radius:0 4px 4px 0;margin-bottom:0;">
+              <tr>
+                <td style="padding:14px 18px;">
+                  <p style="margin:0;font-size:14px;color:#3E2723;line-height:1.7;">
+                    ⏳ <strong>Inscription en attente de validation.</strong><br>
+                    Votre place sera définitivement réservée dès réception de votre acompte de <strong>{acompte}&nbsp;€</strong>.
+                    Un email de confirmation vous sera envoyé à ce moment-là.
+                  </p>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -227,7 +238,7 @@ function stluth_default_email_html() {
         <tr>
           <td style="padding:0 40px 32px 40px;">
             <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-              Votre inscription sera définitivement confirmée dès réception de l\'acompte.
+              Dès réception de votre virement, votre inscription sera validée et vous recevrez un email de confirmation.
             </p>
             <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
               Pour toute question, n\'hésitez pas à me contacter&nbsp;:
@@ -299,7 +310,7 @@ function stluth_default_email_html_en() {
         <!-- TITLE BANNER -->
         <tr>
           <td style="background-color:#D4A017;padding:12px 40px;text-align:center;">
-            <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#3E2723;font-weight:bold;">Registration confirmation</p>
+            <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#3E2723;font-weight:bold;">Registration request received</p>
           </td>
         </tr>
 
@@ -307,11 +318,22 @@ function stluth_default_email_html_en() {
         <tr>
           <td style="padding:36px 40px 20px 40px;">
             <p style="margin:0 0 16px 0;font-size:16px;color:#2c2c2c;line-height:1.6;">Hello <strong>{nom}</strong>,</p>
-            <p style="margin:0;font-size:15px;color:#2c2c2c;line-height:1.7;">
-              Thank you for registering for the diatonic accordion building workshop!
-              Your registration has been received. Here is a summary of your registration
-              along with the information needed to confirm it.
+            <p style="margin:0 0 16px 0;font-size:15px;color:#2c2c2c;line-height:1.7;">
+              Thank you for your registration request for the diatonic accordion building workshop!
+              Your application has been received and registered.
             </p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#fffbea;border-left:4px solid #D4A017;border-radius:0 4px 4px 0;margin-bottom:0;">
+              <tr>
+                <td style="padding:14px 18px;">
+                  <p style="margin:0;font-size:14px;color:#3E2723;line-height:1.7;">
+                    ⏳ <strong>Registration pending validation.</strong><br>
+                    Your place will be definitively reserved upon receipt of your deposit of <strong>{acompte}&nbsp;€</strong>.
+                    A confirmation email will be sent to you at that time.
+                  </p>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -423,7 +445,7 @@ function stluth_default_email_html_en() {
         <tr>
           <td style="padding:0 40px 32px 40px;">
             <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-              Your registration will be definitively confirmed upon receipt of the deposit.
+              Once your bank transfer is received, your registration will be validated and you will receive a confirmation email.
             </p>
             <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
               For any questions, feel free to contact me&nbsp;:
@@ -465,6 +487,328 @@ function stluth_default_email_html_en() {
 </html>';
 }
 endif; // function_exists stluth_default_email_html_en
+
+/* ── French default payment-confirmed email template ── */
+if ( ! function_exists( 'stluth_default_payment_confirmed_html' ) ) :
+function stluth_default_payment_confirmed_html() {
+	return '<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription confirmée — Stage de fabrication d\'accordéon</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f0eb;font-family:Georgia,\'Times New Roman\',serif;">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0eb;padding:30px 10px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+
+        <!-- EN-TÊTE -->
+        <tr>
+          <td style="background-color:#3E2723;padding:32px 40px;text-align:center;">
+            <p style="margin:0 0 4px 0;font-family:Georgia,serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D4A017;">✦ Stage de lutherie · 2026 ✦</p>
+            <h1 style="margin:8px 0 6px 0;font-family:Georgia,serif;font-size:26px;font-weight:normal;color:#ffffff;letter-spacing:1px;">Ewen Daviau</h1>
+            <p style="margin:0;font-family:Georgia,serif;font-size:13px;color:#F5D061;font-style:italic;">Fabrication d\'accordéons diatoniques</p>
+          </td>
+        </tr>
+
+        <!-- BANDEAU TITRE -->
+        <tr>
+          <td style="background-color:#2e7d32;padding:12px 40px;text-align:center;">
+            <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-weight:bold;">✅ Inscription confirmée</p>
+          </td>
+        </tr>
+
+        <!-- SALUTATION -->
+        <tr>
+          <td style="padding:36px 40px 20px 40px;">
+            <p style="margin:0 0 16px 0;font-size:16px;color:#2c2c2c;line-height:1.6;">Bonjour <strong>{nom}</strong>,</p>
+            <p style="margin:0 0 16px 0;font-size:15px;color:#2c2c2c;line-height:1.7;">
+              Votre paiement a bien été reçu — merci&nbsp;!
+              Votre inscription au stage de fabrication d\'accordéon diatonique est désormais <strong>confirmée et définitive</strong>.
+            </p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#e8f5e9;border-left:4px solid #2e7d32;border-radius:0 4px 4px 0;margin-bottom:0;">
+              <tr>
+                <td style="padding:14px 18px;">
+                  <p style="margin:0;font-size:14px;color:#1b5e20;line-height:1.7;">
+                    🎉 <strong>Votre place est réservée&nbsp;!</strong><br>
+                    Nous vous attendons avec impatience à l\'atelier pour construire votre accordéon.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- RÉCAPITULATIF -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">Récapitulatif</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:20px;">
+                  <table role="presentation" width="100%" cellpadding="6" cellspacing="0">
+                    <tr>
+                      <td style="width:46%;font-size:13px;color:#7a6a55;font-family:Georgia,serif;vertical-align:top;">Modèle&nbsp;choisi</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;vertical-align:top;">{modele}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Session</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{session}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Email</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{email}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Statut</td>
+                      <td style="font-size:14px;color:#2e7d32;font-weight:bold;padding-top:10px;vertical-align:top;">✅ Paiement reçu · Inscription confirmée</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- INFORMATIONS PRATIQUES -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#f0ece6;border-radius:4px;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;border-radius:4px 4px 0 0;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🎵 Votre accordéon</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Pendant ces 10 jours, vous fabriquerez votre accordéon diatonique de A à Z&nbsp;:
+                    découpe et assemblage de la caisse, montage du sommier et du mécanisme,
+                    pose et réglage des anches, fabrication du soufflet, et finitions.
+                    Vous repartez avec <strong>votre propre instrument</strong>.
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Aucun prérequis en menuiserie n\'est nécessaire — juste de la curiosité et de la motivation&nbsp;!
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- TEXTE INFO -->
+        <tr>
+          <td style="padding:0 40px 32px 40px;">
+            <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+              N\'hésitez pas à me contacter pour toute question pratique concernant le stage&nbsp;:
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- SIGNATURE -->
+        <tr>
+          <td style="padding:0 40px 36px 40px;border-top:1px solid #e0d4c4;">
+            <p style="margin:24px 0 4px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">À très bientôt à l\'atelier&nbsp;!</p>
+            <p style="margin:0 0 4px 0;font-size:15px;color:#3E2723;font-family:Georgia,serif;font-weight:bold;">Ewen Daviau</p>
+            <p style="margin:0;font-size:13px;color:#7a6a55;line-height:1.7;">
+              9 rue Fernand de Magellan — 44600 Saint-Nazaire<br>
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a> —
+              <a href="https://ewendaviau.com" style="color:#D4A017;text-decoration:none;">ewendaviau.com</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- PIED DE PAGE -->
+        <tr>
+          <td style="background-color:#f0e8dc;padding:16px 40px;text-align:center;border-top:1px solid #e0d4c4;">
+            <p style="margin:0;font-size:11px;color:#a09080;line-height:1.6;">
+              Cet email vous a été envoyé suite à la validation de votre inscription sur
+              <a href="https://ewendaviau.com" style="color:#a09080;">ewendaviau.com</a>.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>';
+}
+endif; // function_exists stluth_default_payment_confirmed_html
+
+/* ── English default payment-confirmed email template ── */
+if ( ! function_exists( 'stluth_default_payment_confirmed_html_en' ) ) :
+function stluth_default_payment_confirmed_html_en() {
+	return '<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration confirmed — Diatonic accordion building workshop</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f0eb;font-family:Georgia,\'Times New Roman\',serif;">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0eb;padding:30px 10px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+
+        <!-- HEADER -->
+        <tr>
+          <td style="background-color:#3E2723;padding:32px 40px;text-align:center;">
+            <p style="margin:0 0 4px 0;font-family:Georgia,serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D4A017;">✦ Lutherie workshop · 2026 ✦</p>
+            <h1 style="margin:8px 0 6px 0;font-family:Georgia,serif;font-size:26px;font-weight:normal;color:#ffffff;letter-spacing:1px;">Ewen Daviau</h1>
+            <p style="margin:0;font-family:Georgia,serif;font-size:13px;color:#F5D061;font-style:italic;">Diatonic accordion building</p>
+          </td>
+        </tr>
+
+        <!-- TITLE BANNER -->
+        <tr>
+          <td style="background-color:#2e7d32;padding:12px 40px;text-align:center;">
+            <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-weight:bold;">✅ Registration confirmed</p>
+          </td>
+        </tr>
+
+        <!-- GREETING -->
+        <tr>
+          <td style="padding:36px 40px 20px 40px;">
+            <p style="margin:0 0 16px 0;font-size:16px;color:#2c2c2c;line-height:1.6;">Hello <strong>{nom}</strong>,</p>
+            <p style="margin:0 0 16px 0;font-size:15px;color:#2c2c2c;line-height:1.7;">
+              Your payment has been received — thank you&nbsp;!
+              Your registration for the diatonic accordion building workshop is now <strong>confirmed and definitive</strong>.
+            </p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#e8f5e9;border-left:4px solid #2e7d32;border-radius:0 4px 4px 0;margin-bottom:0;">
+              <tr>
+                <td style="padding:14px 18px;">
+                  <p style="margin:0;font-size:14px;color:#1b5e20;line-height:1.7;">
+                    🎉 <strong>Your place is reserved&nbsp;!</strong><br>
+                    We are looking forward to welcoming you at the workshop to build your accordion.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- SUMMARY -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">Summary</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:20px;">
+                  <table role="presentation" width="100%" cellpadding="6" cellspacing="0">
+                    <tr>
+                      <td style="width:46%;font-size:13px;color:#7a6a55;font-family:Georgia,serif;vertical-align:top;">Chosen&nbsp;model</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;vertical-align:top;">{modele}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Session</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{session}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Email</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{email}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Status</td>
+                      <td style="font-size:14px;color:#2e7d32;font-weight:bold;padding-top:10px;vertical-align:top;">✅ Payment received · Registration confirmed</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- YOUR ACCORDION -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="background-color:#f0ece6;border-radius:4px;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;border-radius:4px 4px 0 0;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🎵 Your accordion</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    During these 10 days, you will build your diatonic accordion from A to Z&nbsp;:
+                    cutting and assembling the case, mounting the reed block and mechanism,
+                    installing and tuning the reeds, making the bellows, and finishing touches.
+                    You leave with <strong>your own instrument</strong>.
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    No woodworking experience is required — just curiosity and motivation&nbsp;!
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- INFO TEXT -->
+        <tr>
+          <td style="padding:0 40px 32px 40px;">
+            <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+              Feel free to contact me for any practical questions about the workshop&nbsp;:
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- SIGNATURE -->
+        <tr>
+          <td style="padding:0 40px 36px 40px;border-top:1px solid #e0d4c4;">
+            <p style="margin:24px 0 4px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">See you soon at the workshop&nbsp;!</p>
+            <p style="margin:0 0 4px 0;font-size:15px;color:#3E2723;font-family:Georgia,serif;font-weight:bold;">Ewen Daviau</p>
+            <p style="margin:0;font-size:13px;color:#7a6a55;line-height:1.7;">
+              9 rue Fernand de Magellan — 44600 Saint-Nazaire<br>
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a> —
+              <a href="https://ewendaviau.com" style="color:#D4A017;text-decoration:none;">ewendaviau.com</a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- FOOTER -->
+        <tr>
+          <td style="background-color:#f0e8dc;padding:16px 40px;text-align:center;border-top:1px solid #e0d4c4;">
+            <p style="margin:0;font-size:11px;color:#a09080;line-height:1.6;">
+              This email was sent following the validation of your registration on
+              <a href="https://ewendaviau.com" style="color:#a09080;">ewendaviau.com</a>.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>';
+}
+endif; // function_exists stluth_default_payment_confirmed_html_en
 
 /* ══════════════════════════════════════════════════════
    REST ENDPOINT
@@ -1124,6 +1468,51 @@ function stluth_version_migration() {
 		}
 	}
 
+	/* v2.4 — Update registration emails to reflect "received, pending payment validation" messaging.
+	   Force-reset both FR and EN confirmation templates if they still contain the old banner title
+	   so the new pending-payment wording applies.
+	   Also initialize the new payment-confirmed email templates. */
+	if ( version_compare( $db_version, '2.4', '<' ) ) {
+		/* FR: reset only if banner still has old title */
+		$stored_fr = get_option( 'stluth_confirmation_body', '' );
+		if ( ! empty( $stored_fr ) && (
+			strpos( $stored_fr, 'Confirmation d\'inscription' ) !== false ||
+			strpos( $stored_fr, 'Confirmation d&#039;inscription' ) !== false
+		) ) {
+			if ( function_exists( 'stluth_default_email_html' ) ) {
+				update_option( 'stluth_confirmation_body', stluth_default_email_html() );
+				error_log( '[Stages Lutherie] v2.4 migration: updated French confirmation email to pending-payment messaging.' );
+			}
+		}
+		/* EN: reset only if banner still has old title */
+		$stored_en = get_option( 'stluth_confirmation_body_en', '' );
+		if ( ! empty( $stored_en ) && strpos( $stored_en, 'Registration confirmation' ) !== false ) {
+			if ( function_exists( 'stluth_default_email_html_en' ) ) {
+				update_option( 'stluth_confirmation_body_en', stluth_default_email_html_en() );
+				error_log( '[Stages Lutherie] v2.4 migration: updated English confirmation email to pending-payment messaging.' );
+			}
+		}
+		/* Initialize payment-confirmed body templates if not yet set */
+		$stored_pc = get_option( 'stluth_payment_confirmed_body', '' );
+		if ( empty( $stored_pc ) && function_exists( 'stluth_default_payment_confirmed_html' ) ) {
+			update_option( 'stluth_payment_confirmed_body', stluth_default_payment_confirmed_html() );
+			error_log( '[Stages Lutherie] v2.4 migration: initialized French payment-confirmed email template.' );
+		}
+		/* Initialize FR subject only if not already set */
+		if ( get_option( 'stluth_payment_confirmed_subject', null ) === null ) {
+			update_option( 'stluth_payment_confirmed_subject', 'Votre inscription est confirmée — Stage de fabrication d\'accordéon' );
+		}
+		$stored_pc_en = get_option( 'stluth_payment_confirmed_body_en', '' );
+		if ( empty( $stored_pc_en ) && function_exists( 'stluth_default_payment_confirmed_html_en' ) ) {
+			update_option( 'stluth_payment_confirmed_body_en', stluth_default_payment_confirmed_html_en() );
+			error_log( '[Stages Lutherie] v2.4 migration: initialized English payment-confirmed email template.' );
+		}
+		/* Initialize EN subject only if not already set */
+		if ( get_option( 'stluth_payment_confirmed_subject_en', null ) === null ) {
+			update_option( 'stluth_payment_confirmed_subject_en', 'Your registration is confirmed — Diatonic accordion building workshop' );
+		}
+	}
+
 	update_option( 'stluth_api_version', STLUTH_API_VERSION );
 	error_log( '[Stages Lutherie] Migrated to v' . STLUTH_API_VERSION );
 }
@@ -1169,6 +1558,10 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_cap_33_12b', array( 'sanitize_callback' => 'absint' ) );
 	register_setting( 'stluth_inscription', 'stluth_cap_33_18b', array( 'sanitize_callback' => 'absint' ) );
 	register_setting( 'stluth_inscription', 'stluth_cap_33_24b', array( 'sanitize_callback' => 'absint' ) );
+	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_subject',    array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_body',       array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
+	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_subject_en', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_body_en',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
 }
 
 endif; // function_exists stluth_register_settings
@@ -1260,6 +1653,20 @@ function stluth_render_settings_page() {
 		$default_en = function_exists( 'stluth_default_email_html_en' ) ? stluth_default_email_html_en() : '';
 		update_option( 'stluth_confirmation_body_en', $default_en );
 		echo '<div class="notice notice-success is-dismissible"><p>✅ English email body reset to default template.</p></div>';
+	}
+
+	/* Payment confirmed FR template reset */
+	if ( isset( $_POST['stluth_reset_payment_confirmed'] ) && check_admin_referer( 'stluth_reset_payment_confirmed_nonce' ) ) {
+		$default_pc = function_exists( 'stluth_default_payment_confirmed_html' ) ? stluth_default_payment_confirmed_html() : '';
+		update_option( 'stluth_payment_confirmed_body', $default_pc );
+		echo '<div class="notice notice-success is-dismissible"><p>✅ Corps de l\'email de confirmation de paiement réinitialisé au modèle par défaut.</p></div>';
+	}
+
+	/* Payment confirmed EN template reset */
+	if ( isset( $_POST['stluth_reset_payment_confirmed_en'] ) && check_admin_referer( 'stluth_reset_payment_confirmed_en_nonce' ) ) {
+		$default_pc_en = function_exists( 'stluth_default_payment_confirmed_html_en' ) ? stluth_default_payment_confirmed_html_en() : '';
+		update_option( 'stluth_payment_confirmed_body_en', $default_pc_en );
+		echo '<div class="notice notice-success is-dismissible"><p>✅ English payment confirmation email body reset to default template.</p></div>';
 	}
 
 	/* ── Send test email ── */
@@ -1442,6 +1849,47 @@ function stluth_render_settings_page() {
 			</table>
 
 		<hr style="margin:32px 0 24px;">
+		<h2 style="font-size:1.1rem;">💳 Email de confirmation de paiement &amp; validation finale</h2>
+		<p style="color:#555;margin-bottom:8px;">Cet email est envoyé manuellement par le luthier au stagiaire <strong>dès réception du paiement</strong>, pour confirmer que la place est définitivement réservée.</p>
+		<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
+			<small style="color:#555;">Variables disponibles :
+			<code>{nom}</code>, <code>{modele}</code>, <code>{session}</code>,
+			<code>{email}</code>, <code>{telephone}</code></small>
+		</div>
+		<table class="form-table">
+			<tr>
+				<th scope="row">Objet (FR)</th>
+				<td><input type="text" name="stluth_payment_confirmed_subject" value="<?php echo esc_attr( get_option( 'stluth_payment_confirmed_subject', 'Votre inscription est confirmée — Stage de fabrication d\'accordéon' ) ); ?>" class="large-text"></td>
+			</tr>
+			<tr>
+				<th scope="row">Corps de l'email (FR)<br><small style="font-weight:normal;">(HTML complet)</small></th>
+				<td>
+					<?php
+					$current_pc = get_option( 'stluth_payment_confirmed_body', '' );
+					$pc_for_display = ! empty( $current_pc ) ? $current_pc : ( function_exists( 'stluth_default_payment_confirmed_html' ) ? stluth_default_payment_confirmed_html() : '' );
+					?>
+					<textarea name="stluth_payment_confirmed_body" rows="30" class="large-text code" style="font-family:monospace;font-size:12px;"><?php echo esc_textarea( $pc_for_display ); ?></textarea>
+					<p class="description">HTML complet de l'email de confirmation de paiement envoyé au stagiaire une fois le paiement reçu.</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">Subject (EN)</th>
+				<td><input type="text" name="stluth_payment_confirmed_subject_en" value="<?php echo esc_attr( get_option( 'stluth_payment_confirmed_subject_en', 'Your registration is confirmed — Diatonic accordion building workshop' ) ); ?>" class="large-text"></td>
+			</tr>
+			<tr>
+				<th scope="row">Email body (EN)<br><small style="font-weight:normal;">(full HTML)</small></th>
+				<td>
+					<?php
+					$current_pc_en = get_option( 'stluth_payment_confirmed_body_en', '' );
+					$pc_en_for_display = ! empty( $current_pc_en ) ? $current_pc_en : ( function_exists( 'stluth_default_payment_confirmed_html_en' ) ? stluth_default_payment_confirmed_html_en() : '' );
+					?>
+					<textarea name="stluth_payment_confirmed_body_en" rows="30" class="large-text code" style="font-family:monospace;font-size:12px;"><?php echo esc_textarea( $pc_en_for_display ); ?></textarea>
+					<p class="description">Full HTML email sent to English-speaking trainees upon payment confirmation.</p>
+				</td>
+			</tr>
+		</table>
+
+		<hr style="margin:32px 0 24px;">
 		<h2 style="font-size:1.1rem;">🎓 Gestion des places par session</h2>
 		<p>Les limites s'appliquent à <strong>chaque session</strong> indépendamment. Les formulaires d'inscription griseront automatiquement les modèles complets.</p>
 		<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
@@ -1531,6 +1979,16 @@ function stluth_render_settings_page() {
 			<?php wp_nonce_field( 'stluth_reset_body_en_nonce' ); ?>
 			<input type="hidden" name="stluth_reset_body_en" value="1">
 			<?php submit_button( 'Reset English template to default', 'secondary', 'submit_reset_en', false ); ?>
+		</form>
+		<form method="post" style="margin-top:8px;">
+			<?php wp_nonce_field( 'stluth_reset_payment_confirmed_nonce' ); ?>
+			<input type="hidden" name="stluth_reset_payment_confirmed" value="1">
+			<?php submit_button( 'Réinitialiser l\'email de confirmation de paiement (FR)', 'secondary', 'submit_reset_pc', false ); ?>
+		</form>
+		<form method="post" style="margin-top:8px;">
+			<?php wp_nonce_field( 'stluth_reset_payment_confirmed_en_nonce' ); ?>
+			<input type="hidden" name="stluth_reset_payment_confirmed_en" value="1">
+			<?php submit_button( 'Reset payment confirmation email (EN)', 'secondary', 'submit_reset_pc_en', false ); ?>
 		</form>
 
 		<hr style="margin:32px 0 24px;">
