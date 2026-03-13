@@ -1406,6 +1406,8 @@ async function loadPreset(key){
     if(elbl){elbl.value=entry.label||'';elbl.dataset.userEdited='1';}
     const ecat=document.getElementById('preset-export-category');
     if(ecat){ecat.value=entry.category||'Personnalis\u00e9s';}
+    const enom=document.getElementById('nom-instrument');
+    if(enom){enom.value=entry.label||key;}
   }
   let p;
   try{p=await fetchPresetData(key);}catch(e){console.warn('Preset not found:',key);return;}
