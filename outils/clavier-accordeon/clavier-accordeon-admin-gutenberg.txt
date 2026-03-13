@@ -149,7 +149,7 @@ select option{background:#fff;color:var(--txt)}
 .mono{font-family:monospace;background:#f0f0ee;padding:1px 4px;border-radius:3px;color:var(--dark)}
 
 /* ── Note Picker ── */
-#note-picker{position:absolute;z-index:999;background:#fff;border:2px solid var(--dark);
+#note-picker{position:fixed;z-index:999;background:#fff;border:2px solid var(--dark);
   border-radius:10px;box-shadow:0 6px 28px rgba(0,0,0,.15);padding:11px 13px;min-width:305px;display:none}
 .picker-tabs{display:flex;gap:0;margin-bottom:9px;border-bottom:1.5px solid var(--brd)}
 .picker-tab-btn{padding:4px 12px;border:none;background:none;font-family:inherit;font-size:.78rem;
@@ -2015,12 +2015,12 @@ function showPicker(input){
   showPickerTab('notes',document.querySelector('.picker-tab-btn:first-child'));
   updatePickerHighlights();updatePickerPreview();
   const pk=document.getElementById('note-picker');pk.style.display='block';
-  const rect=input.getBoundingClientRect(),sy=window.scrollY,sx=window.scrollX;
-  let top=sy+rect.bottom+6,left=sx+rect.left;
+  const rect=input.getBoundingClientRect();
+  let top=rect.bottom+6,left=rect.left;
   const pw=pk.offsetWidth||310,ph=pk.offsetHeight||300;
-  if(left+pw>sx+window.innerWidth-10)left=sx+window.innerWidth-pw-10;
+  if(left+pw>window.innerWidth-10)left=window.innerWidth-pw-10;
   if(left<8)left=8;
-  if(top+ph>sy+window.innerHeight-10)top=sy+rect.top-ph-6;
+  if(top+ph>window.innerHeight-10)top=rect.top-ph-6;
   pk.style.top=top+'px';pk.style.left=left+'px';
   input.classList.add('picker-open');
 }
