@@ -1211,6 +1211,10 @@ function snapshotToDB(){
     lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
     lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
     lhShowLabels:document.getElementById('lh-show-labels')?.checked!==false,
+    accordsSeuilEnabled:document.getElementById('accords-seuil-enabled')?.checked||false,
+    accordsSeuilNote:document.getElementById('accords-seuil-note')?.value||'Sol4',
+    accordsSeuilBasEnabled:document.getElementById('accords-seuil-bas-enabled')?.checked||false,
+    accordsSeuilBasNote:document.getElementById('accords-seuil-bas-note')?.value||'Do3',
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -1263,6 +1267,14 @@ function loadFromDB(rec){
   if(lhAlEl)lhAlEl.value=rec.lhAccordsLabel||'';
   const lhSlEl=document.getElementById('lh-show-labels');
   if(lhSlEl)lhSlEl.checked=rec.lhShowLabels!==false;
+  const asEl=document.getElementById('accords-seuil-enabled');
+  if(asEl)asEl.checked=rec.accordsSeuilEnabled||false;
+  const asnEl=document.getElementById('accords-seuil-note');
+  if(asnEl)asnEl.value=rec.accordsSeuilNote||'Sol4';
+  const asbEl=document.getElementById('accords-seuil-bas-enabled');
+  if(asbEl)asbEl.checked=rec.accordsSeuilBasEnabled||false;
+  const asbnEl=document.getElementById('accords-seuil-bas-note');
+  if(asbnEl)asbnEl.value=rec.accordsSeuilBasNote||'Do3';
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
@@ -1336,6 +1348,10 @@ function _savePresetToServer(rec){
     lhBassesLabel:rec.lhBassesLabel||'',
     lhAccordsLabel:rec.lhAccordsLabel||'',
     lhShowLabels:rec.lhShowLabels!==false,
+    accordsSeuilEnabled:rec.accordsSeuilEnabled||false,
+    accordsSeuilNote:rec.accordsSeuilNote||'Sol4',
+    accordsSeuilBasEnabled:rec.accordsSeuilBasEnabled||false,
+    accordsSeuilBasNote:rec.accordsSeuilBasNote||'Do3',
     nbVoix:rec.nbVoix||2,
     nbVoixAccords:rec.nbVoixAccords||2,
     nbVoixBasses:rec.nbVoixBasses||2,
@@ -1637,6 +1653,14 @@ async function loadPreset(key){
   if(_dw)_dw.style.display=_autoMode==='paired'?'block':'none';
   document.getElementById('nb-rangees').value=p.nbRangees;
   syncGaucheInputs();
+  const _asEl=document.getElementById('accords-seuil-enabled');
+  if(_asEl)_asEl.checked=p.accordsSeuilEnabled||false;
+  const _asnEl=document.getElementById('accords-seuil-note');
+  if(_asnEl)_asnEl.value=p.accordsSeuilNote||'Sol4';
+  const _asbEl=document.getElementById('accords-seuil-bas-enabled');
+  if(_asbEl)_asbEl.checked=p.accordsSeuilBasEnabled||false;
+  const _asbnEl=document.getElementById('accords-seuil-bas-note');
+  if(_asbnEl)_asbnEl.value=p.accordsSeuilBasNote||'Do3';
   renderRangeesCfg();renderLhRowsCfg();generateInputGrid();onAnyChange();
 }
 
