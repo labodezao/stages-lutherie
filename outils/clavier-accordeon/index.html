@@ -1019,7 +1019,7 @@ function renderPresetManager(){
   }
   // Build full category list: base + custom (localStorage) + any in index not yet listed
   const customFams=(()=>{try{return JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');}catch(e){return[];}})();
-  const allCats=PM_CATS.concat(customFams.filter(f=>!PM_CATS.includes(f)));
+  const allCats=_getCustomFamilies().concat(_presetIndex.filter(p=>p.category).map(p=>p.category).filter(c=>_getCustomFamilies().indexOf(c)<0));
   _presetIndex.forEach(p=>{if(p.category){if(!allCats.includes(p.category))allCats.push(p.category);}});
   // Sort
   const sorted=_presetIndex.slice();

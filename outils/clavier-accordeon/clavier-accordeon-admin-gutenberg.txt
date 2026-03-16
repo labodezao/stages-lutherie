@@ -1047,9 +1047,8 @@ function renderPresetManager(){
     list.innerHTML='<p style="color:var(--gris);font-style:italic;font-size:.83rem">Aucun préset sur le serveur.</p>';
     return;
   }
-  // Build full category list: base + custom (localStorage) + any in index not yet listed
-  var customFams=(function(){try{return JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');}catch(e){return[];}})();
-  var allCats=PM_CATS.concat(customFams.filter(function(f){return PM_CATS.indexOf(f)<0;}));
+  // Build full category list from saved families + any extra in preset index
+  var allCats=_getCustomFamilies();
   _presetIndex.forEach(function(p){if(p.category){if(allCats.indexOf(p.category)<0)allCats.push(p.category);}});
   // Sort
   var sorted=_presetIndex.slice();
