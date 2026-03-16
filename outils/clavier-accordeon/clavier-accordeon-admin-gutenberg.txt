@@ -528,6 +528,15 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
         <span id="pm-status" style="font-size:.78rem;color:var(--gris);flex:1"></span>
         <button class="btn btn-bleu" style="font-size:.78rem;padding:4px 11px" onclick="pmRefresh()">🔄 Rafraîchir</button>
       </div>
+      <!-- Gestionnaire de familles -->
+      <div style="border:1px solid var(--brd);border-radius:6px;padding:10px 12px;margin-bottom:13px">
+        <div style="font-size:.76rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">📂 Familles</div>
+        <div id="pm-families"></div>
+        <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+          <input id="pm-new-family" type="text" placeholder="Nouvelle famille…" style="flex:1;padding:4px 8px;border:1.5px solid var(--brd);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)" onkeydown="if(event.key==='Enter')pmAddFamily()">
+          <button class="btn btn-bleu" style="font-size:.78rem;padding:4px 11px" onclick="pmAddFamily()">＋ Ajouter</button>
+        </div>
+      </div>
       <div id="pm-list"></div>
     </div>
   </div>
@@ -1006,6 +1015,7 @@ async function loadPresetIndex(){
     if(!r.ok)throw new Error('HTTP '+r.status);
     _presetIndex=await r.json();
     renderPresetOptions();
+    try{renderFamilyManager();}catch(e){console.warn('renderFamilyManager error:',e);}
     try{renderPresetManager();}catch(e){console.warn('renderPresetManager error:',e);}
   }catch(e){
     console.warn('loadPresetIndex failed:',e);
@@ -1366,7 +1376,7 @@ function _restoreCustomFamilies(){
     if(!sel)return;
     const existing=Array.from(sel.options).map(o=>o.value);
     saved.forEach(f=>{
-      if(f&&!existing.includes(f)){
+      if(f?!existing.includes(f):false){
         const opt=document.createElement('option');
         opt.value=f;opt.textContent=f;
         sel.insertBefore(opt,sel.lastElementChild);
@@ -1374,23 +1384,126 @@ function _restoreCustomFamilies(){
     });
   }catch(e){}
 }
+function _getCustomFamilies(){
+  try{return JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');}catch(e){return[];}
+}
+function _saveCustomFamilies(arr){
+  try{localStorage.setItem(CA_FAMILIES_KEY,JSON.stringify(arr));}catch(e){}
+}
 function addPresetFamily(){
-  const name=(prompt('Nom de la nouvelle famille :')||'').trim();
-  if(!name)return;
-  const sel=document.getElementById('preset-export-category');
-  if(!sel)return;
-  const existing=Array.from(sel.options).map(o=>o.value);
-  if(!existing.includes(name)){
-    const opt=document.createElement('option');
-    opt.value=name;opt.textContent=name;
-    sel.insertBefore(opt,sel.lastElementChild);
-    try{
-      const saved=JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');
-      if(!saved.includes(name))saved.push(name);
-      localStorage.setItem(CA_FAMILIES_KEY,JSON.stringify(saved));
-    }catch(e){}
+  // Legacy alias kept for the + button in the export row
+  pmAddFamily();
+}
+function pmAddFamily(){
+  var inp=document.getElementById('pm-new-family');
+  var name=inp?inp.value.trim():'';
+  if(!name){
+    // fallback: prompt if called without the inline input
+    name=(prompt('Nom de la nouvelle famille :')||'').trim();
+    if(!name)return;
   }
-  sel.value=name;
+  var customs=_getCustomFamilies();
+  if(PM_CATS.indexOf(name)>=0){alert('Cette famille existe d\u00e9j\u00e0 (famille int\u00e9gr\u00e9e).');return;}
+  if(customs.indexOf(name)>=0){alert('Cette famille "'+name+'" existe d\u00e9j\u00e0.');return;}
+  customs.push(name);
+  _saveCustomFamilies(customs);
+  if(inp)inp.value='';
+  _restoreCustomFamilies();
+  renderFamilyManager();
+  renderPresetManager();
+}
+function pmStartRename(idx){
+  var lbl=document.getElementById('pm-fam-lbl-'+idx);
+  if(!lbl)return;
+  var customs=_getCustomFamilies();
+  if(idx<0||idx>=customs.length)return;
+  var old=escHTML(customs[idx]);
+  lbl.innerHTML='<input type="text" id="pm-fam-inp-'+idx+'" value="'+old
+    +'" style="width:100%;padding:2px 6px;border:1.5px solid var(--bleu);border-radius:4px;font-size:.82rem;font-family:inherit;background:#fff;color:var(--txt)">'
+    +'<span style="display:flex;gap:4px;margin-top:3px">'
+    +'<button class="btn btn-bleu" style="font-size:.7rem;padding:2px 8px" onclick="pmConfirmRename('+idx+')">\u2714</button>'
+    +'<button class="btn btn-gris" style="font-size:.7rem;padding:2px 8px" onclick="renderFamilyManager()">\u2715</button>'
+    +'</span>';
+  var inp=document.getElementById('pm-fam-inp-'+idx);
+  if(inp){
+    inp.focus();inp.select();
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Enter')pmConfirmRename(idx);
+      if(e.key==='Escape')renderFamilyManager();
+    });
+  }
+}
+function pmConfirmRename(idx){
+  var inp=document.getElementById('pm-fam-inp-'+idx);
+  if(!inp)return;
+  var name=inp.value.trim();
+  if(!name){alert('Le nom ne peut pas \u00eatre vide.');return;}
+  var customs=_getCustomFamilies();
+  if(idx<0||idx>=customs.length)return;
+  var old=customs[idx];
+  if(name===old){renderFamilyManager();return;}
+  if(PM_CATS.indexOf(name)>=0){alert('Ce nom est d\u00e9j\u00e0 utilis\u00e9 (famille int\u00e9gr\u00e9e).');return;}
+  if(customs.indexOf(name)>=0){alert('Une famille "'+name+'" existe d\u00e9j\u00e0.');return;}
+  customs[idx]=name;
+  _saveCustomFamilies(customs);
+  _presetIndex.forEach(function(p){if(p.category===old)p.category=name;});
+  var sel=document.getElementById('preset-export-category');
+  if(sel){
+    var opt=null;
+    Array.from(sel.options).forEach(function(o){if(o.value===old)opt=o;});
+    if(opt){opt.value=name;opt.textContent=name;}
+    else{_restoreCustomFamilies();}
+    if(sel.value===old)sel.value=name;
+  }
+  renderFamilyManager();
+  renderPresetOptions();
+  renderPresetManager();
+}
+function pmDeleteFamily(idx){
+  var customs=_getCustomFamilies();
+  if(idx<0||idx>=customs.length)return;
+  var name=customs[idx];
+  var count=0;
+  _presetIndex.forEach(function(p){if(p.category===name)count++;});
+  var msg='Supprimer la famille "'+name+'" ?';
+  if(count>0)msg+='\n('+count+' pr\u00e9set'+(count>1?'s':'')+' utilisent cette famille)';
+  if(!confirm(msg))return;
+  customs.splice(idx,1);
+  _saveCustomFamilies(customs);
+  var sel=document.getElementById('preset-export-category');
+  if(sel){
+    var opt=null;
+    Array.from(sel.options).forEach(function(o){if(o.value===name)opt=o;});
+    if(opt)sel.removeChild(opt);
+    if(sel.value===name)sel.value=PM_CATS[PM_CATS.length-1];
+  }
+  renderFamilyManager();
+  renderPresetManager();
+}
+function renderFamilyManager(){
+  var el=document.getElementById('pm-families');
+  if(!el)return;
+  var customs=_getCustomFamilies();
+  var html='<div style="margin-bottom:6px">';
+  PM_CATS.forEach(function(fam){
+    html+='<span style="display:inline-block;margin:2px 3px 2px 0;padding:2px 8px;background:var(--fond);border:1px solid var(--brd);border-radius:12px;font-size:.75rem;color:var(--gris)" title="Famille int\u00e9gr\u00e9e">'+escHTML(fam)+'</span>';
+  });
+  html+='</div>';
+  if(customs.length){
+    html+='<table style="width:100%;border-collapse:collapse">';
+    customs.forEach(function(fam,idx){
+      html+='<tr id="pm-fam-row-'+idx+'" style="border-bottom:1px solid var(--brd)">'
+        +'<td style="padding:3px 0;font-size:.82rem" id="pm-fam-lbl-'+idx+'">'+escHTML(fam)+'</td>'
+        +'<td style="padding:3px 0;text-align:right;white-space:nowrap">'
+        +'<button class="btn btn-gris" style="font-size:.7rem;padding:2px 7px;margin-right:4px" onclick="pmStartRename('+idx+')" title="Renommer">\u270f\ufe0f</button>'
+        +'<button class="btn btn-rouge" style="font-size:.7rem;padding:2px 7px" onclick="pmDeleteFamily('+idx+')" title="Supprimer">\ud83d\uddd1\ufe0f</button>'
+        +'</td></tr>';
+    });
+    html+='</table>';
+  } else {
+    html+='<div style="font-size:.78rem;color:var(--gris);font-style:italic;padding:4px 0">Aucune famille personnalis\u00e9e.</div>';
+  }
+  el.innerHTML=html;
 }
 function newInstrument(){
   currentId=null;
@@ -1461,6 +1574,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   _restoreCustomFamilies();
   loadPresetIndex();
+  renderFamilyManager();
   renderVoixPerRow();
   initPicker();renderLibrary();
   const list=DB.all();
@@ -1477,7 +1591,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Close picker when clicking outside it (use computed style so initial '' != 'none' doesn't trick us)
   document.addEventListener('click',e=>{
     const p=document.getElementById('note-picker');
-    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?!e.target.closest('.note-input')&&!e.target.closest('#accords-seuil-note'):false):false)hidePicker();
+    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?(!e.target.closest('.note-input')?!e.target.closest('#accords-seuil-note'):false):false):false)hidePicker();
   });
   // Sync preset-export-label from nom-instrument (presetSel handled by loadPreset)
   const nomInstr=document.getElementById('nom-instrument');
@@ -1751,8 +1865,8 @@ function applyAccordsSeuil(arr){
     const mp=noteToMidi(a.p);
     const mt=noteToMidi(a.t);
     return{
-      p:(mp!==null&&mp>seuilMidi)?midiToFr(mp-12):a.p,
-      t:(mt!==null&&mt>seuilMidi)?midiToFr(mt-12):a.t
+      p:(mp!==null?(mp>seuilMidi):false)?midiToFr(mp-12):a.p,
+      t:(mt!==null?(mt>seuilMidi):false)?midiToFr(mt-12):a.t
     };
   });
 }
@@ -1857,7 +1971,7 @@ function initRowDragDrop(){
     });
     el.addEventListener('dragover',e=>{
       e.preventDefault();e.dataTransfer.dropEffect='move';
-      if(_rowDragSrc&&_rowDragSrc!==el){
+      if(_rowDragSrc?_rowDragSrc!==el:false){
         wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
         el.classList.add('row-drag-over');
       }
@@ -3223,8 +3337,8 @@ function saveAsJSON(){
   const rec=snapshotToDB();
   const labelEl=document.getElementById('preset-export-label');
   const catEl=document.getElementById('preset-export-category');
-  if(labelEl&&labelEl.value.trim())rec.presetLabel=labelEl.value.trim();
-  if(catEl&&catEl.value)rec.presetCategory=catEl.value;
+  if(labelEl?labelEl.value.trim():false)rec.presetLabel=labelEl.value.trim();
+  if(catEl?catEl.value:false)rec.presetCategory=catEl.value;
   const name=(rec.presetLabel||rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_');
   triggerDownload(JSON.stringify(rec,null,2),name+'.json','application/json');
 }
