@@ -1357,7 +1357,7 @@ let CFG={
   configGauche:12,
   lhRows:[{nb:6,offset:0}],
   lhPairsPerRow:2,
-  lhPairedOffset:0,
+  lhPairedOffsets:[],
   lhBassFirst:false,
   notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
@@ -1484,7 +1484,7 @@ function snapshotToDB(){
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
-    lhPairedOffset:CFG.lhPairedOffset||0,
+    lhPairedOffsets:JSON.parse(JSON.stringify(CFG.lhPairedOffsets||[])),
     lhBassFirst:CFG.lhBassFirst||false,
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
@@ -1529,7 +1529,7 @@ function loadFromDB(rec){
   // Restore lhRows — backward compat: default to 1 row covering all basses
   CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes?(rec.notes.basses?rec.notes.basses.length:6):6),offset:0}];
   CFG.lhPairsPerRow=rec.lhPairsPerRow||2;
-  CFG.lhPairedOffset=rec.lhPairedOffset||0;
+  CFG.lhPairedOffsets=rec.lhPairedOffsets?JSON.parse(JSON.stringify(rec.lhPairedOffsets)):[];
   CFG.lhBassFirst=rec.lhBassFirst||false;
   updateLhOrderBtn();
   // ensure terzetto exists
@@ -1875,14 +1875,13 @@ function renderLhRowsCfg(){
   if(!wrap)return;
   const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
   if(isPaired){
+    _syncPairedOffsets();
     const pprow=CFG.lhPairsPerRow||2;
-    const pairedOff=CFG.lhPairedOffset||0;
     const totalDuos=Math.max(1,(CFG.notes?(CFG.notes.basses?CFG.notes.basses.length:false):false)||6);
-    wrap.innerHTML=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+    const nLines=CFG.lhPairedOffsets.length;
+    let pairedHtml=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
       <span style="font-size:.78rem;min-width:80px;" data-i="lhNbDuosTotal">${t('lhNbDuosTotal')} :</span>
-      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos-1})">−</button>
-      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${totalDuos}</span>
-      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos+1})">＋</button>
+      <span style="font-size:.82rem;font-weight:700;color:var(--txt);">${totalDuos}</span>
     </div>
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
       <span style="font-size:.78rem;min-width:80px;" data-i="lhDuosPerRow">${t('lhDuosPerRow')} :</span>
@@ -1890,12 +1889,20 @@ function renderLhRowsCfg(){
       <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pprow}</span>
       <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(${pprow}+1)">＋</button>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;">
-      <span style="font-size:.78rem;min-width:80px;" data-i="lhOffset">${t('lhOffset')} :</span>
-      <button type="button" class="rng-btn" onclick="lhSetPairedOffset(${pairedOff}-1)">−</button>
-      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pairedOff}</span>
-      <button type="button" class="rng-btn" onclick="lhSetPairedOffset(${pairedOff}+1)">＋</button>
-    </div>`;
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+      <span style="font-size:.78rem;min-width:80px;" data-i="lhNbRows">${t('lhNbRows')} :</span>
+      <span style="font-size:.82rem;font-weight:700;color:var(--txt);">${nLines}</span>
+    </div>
+    <div style="font-size:.74rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;" data-i="lhOffset">${t('lhOffset')} :</div>`;
+    CFG.lhPairedOffsets.forEach((off,gi)=>{
+      pairedHtml+=`<div style="display:flex;align-items:center;gap:5px;padding:1px 0;">
+        <span style="font-size:.78rem;min-width:36px;color:var(--gris);">L${gi+1} :</span>
+        <button type="button" class="rng-btn" onclick="lhSetPairedGroupOffset(${gi},${off}-1)">−</button>
+        <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${off}</span>
+        <button type="button" class="rng-btn" onclick="lhSetPairedGroupOffset(${gi},${off}+1)">＋</button>
+      </div>`;
+    });
+    wrap.innerHTML=pairedHtml;
     return;
   }
   // Ensure lhRows is consistent: default to 1 row with all basses if missing
@@ -1950,9 +1957,18 @@ function lhRowChange(ri,field,val){
   onAnyChange();
 }
 
-function lhSetPairedOffset(n){
-  CFG.lhPairedOffset=Math.round(n);
+function lhSetPairedGroupOffset(gi,n){
+  if(!CFG.lhPairedOffsets) CFG.lhPairedOffsets=[];
+  CFG.lhPairedOffsets[gi]=Math.round(n);
   renderLhRowsCfg();onAnyChange();
+}
+function _syncPairedOffsets(){
+  const totalDuos=Math.max(1,(CFG.notes?(CFG.notes.basses?CFG.notes.basses.length:0):0)||1);
+  const pprow=CFG.lhPairsPerRow||2;
+  const nGroups=Math.ceil(totalDuos/pprow);
+  if(!CFG.lhPairedOffsets) CFG.lhPairedOffsets=[];
+  while(CFG.lhPairedOffsets.length<nGroups) CFG.lhPairedOffsets.push(0);
+  CFG.lhPairedOffsets=CFG.lhPairedOffsets.slice(0,nGroups);
 }
 function lhSetPairsPerRow(n){
   CFG.lhPairsPerRow=Math.max(1,Math.floor(n));
@@ -2388,7 +2404,7 @@ function readInputs(){
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
-    lhPairedOffset:CFG.lhPairedOffset||0,
+    lhPairedOffsets:JSON.parse(JSON.stringify(CFG.lhPairedOffsets||[])),
     lhBassFirst:CFG.lhBassFirst||false,
     showMidi:document.getElementById('show-midi')?.checked||false,
     droite,
@@ -2562,14 +2578,16 @@ function buildSVG_Gauche(data,dark){
     const bassLbl=dark?'#5aa0d0':'#1D4ED8';
     const accLbl=dark?'#d09040':'#B45309';
     const gridCol=dark?'#3a3a3a':'#DDD6FE';
-    const _pOff=(data.lhPairedOffset||0)*(HGAP/2);
-    const W=LPAD+nCols*HGAP+Math.abs(_pOff)+MARG;
+    const _pOffsRaw=data.lhPairedOffsets||[];
+    const _pOffPx=_pOffsRaw.map(v=>(v||0)*(HGAP/2));
+    const _maxPOff=_pOffPx.length?Math.max(..._pOffPx,0):0;
+    const W=LPAD+nCols*HGAP+_maxPOff+MARG;
     const H=MARG+HEAD+nDispRows*VGAP+FOOT;
     let s=svg_open(W,H,bg);
     s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
     for(let r=0;r<nDispRows;r++){
       const cy=MARG+HEAD+r*VGAP+VGAP/2;
-      const _rOff=(r%2)*_pOff;
+      const _rOff=(_pOffPx[r]||0);
       s+=`<rect x="${LPAD-4+_rOff}" y="${cy-R-6}" width="${nCols*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${r%2===0?band1:band2}" opacity=".7"/>`;
       if(r>0){const yh=MARG+HEAD+r*VGAP;s+=`<line x1="${LPAD-4}" y1="${yh}" x2="${W-MARG}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
       for(let q=0;q<PPROW;q++){
@@ -2878,7 +2896,7 @@ function buildSVG_Plan(data,dark){
         }
         if(intItems.length){
           const lbl=ppRow===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${c+1}`;
-          lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:(c%2)*(data.lhPairedOffset||0),interleavedTypes:intTypes,interleavedIndices:intIndices});
+          lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:data.lhPairedOffsets?data.lhPairedOffsets[c]||0:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
         }
       }
     }else{
@@ -2895,7 +2913,7 @@ function buildSVG_Plan(data,dark){
           });
         }
         const lbl=nGroups===1?`${t('basses')} / ${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`;
-        lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:(g%2)*(data.lhPairedOffset||0),interleavedTypes:intTypes,interleavedIndices:intIndices});
+        lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:data.lhPairedOffsets?data.lhPairedOffsets[g]||0:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
       }
     }
     if(data.terzetto?data.terzetto.length:false)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
@@ -4011,7 +4029,7 @@ function renderKbdCompare(){
       nbVoixBasses:rec.nbVoixBasses||2,
       lhDisplayMode:rec.lhDisplayMode||'separated',
       lhPairedDir:rec.lhPairedDir||'vertical',
-      lhPairedOffset:rec.lhPairedOffset||0,
+      lhPairedOffsets:rec.lhPairedOffsets?JSON.parse(JSON.stringify(rec.lhPairedOffsets)):[],
       lhRows:rec.lhRows||[{nb:6,offset:0}],
       lhPairsPerRow:rec.lhPairsPerRow||2,
       lhBassFirst:rec.lhBassFirst||false,

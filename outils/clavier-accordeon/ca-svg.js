@@ -182,14 +182,16 @@ function buildSVG_Gauche(data,dark){
     const nDispRows=Math.ceil(nPairs/PPROW);
     const nCols=PPROW*2;
     const gridCol=dark?'#3a3a3a':'#DDD6FE';
-    const _pOff=(data.lhPairedOffset||0)*(HGAP/2);
-    const W=LPAD+nCols*HGAP+Math.abs(_pOff)+MARG;
+    const _pOffsRaw=data.lhPairedOffsets||[];
+    const _pOffPx=_pOffsRaw.map(v=>(v||0)*(HGAP/2));
+    const _maxPOff=_pOffPx.length?Math.max(..._pOffPx,0):0;
+    const W=LPAD+nCols*HGAP+_maxPOff+MARG;
     const H=MARG+HEAD+nDispRows*VGAP+FOOT;
     let s=svg_open(W,H,bg);
     s+=tx(W/2,MARG+16,`${t('svgLH')} — ${escSVG(data.nomInstrument)}`,12,gold,'bold','middle');
     for(let r=0;r<nDispRows;r++){
       const cy=MARG+HEAD+r*VGAP+VGAP/2;
-      const _rOff=(r%2)*_pOff;
+      const _rOff=(_pOffPx[r]||0);
       s+=`<rect x="${LPAD-4+_rOff}" y="${cy-R-6}" width="${nCols*HGAP+8}" height="${(R+6)*2}" rx="4" fill="${r%2===0?band1:band2}" opacity=".7"/>`;
       if(r>0){const yh=MARG+HEAD+r*VGAP;s+=`<line x1="${LPAD-4}" y1="${yh}" x2="${W-MARG}" y2="${yh}" stroke="${gridCol}" stroke-width="1"/>`;}
       for(let q=0;q<PPROW;q++){
@@ -444,7 +446,7 @@ function buildSVG_Plan(data,dark){
         if(intItems.length){
           const _bL=data.lhBassesLabel||t('basses'),_aL=data.lhAccordsLabel||t('accords');
           const lbl=ppRow===1?`${_bL} / ${_aL}`:`${_bL}/${_aL} ${c+1}`;
-          lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:(c%2)*(data.lhPairedOffset||0),interleavedTypes:intTypes,interleavedIndices:intIndices});
+          lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:data.lhPairedOffsets?data.lhPairedOffsets[c]||0:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
         }
       }
     }else{
@@ -462,7 +464,7 @@ function buildSVG_Plan(data,dark){
         }
         const _bL2=data.lhBassesLabel||t('basses'),_aL2=data.lhAccordsLabel||t('accords');
         const lbl=nGroups===1?`${_bL2} / ${_aL2}`:`${_bL2}/${_aL2} ${g+1}`;
-        lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:(g%2)*(data.lhPairedOffset||0),interleavedTypes:intTypes,interleavedIndices:intIndices});
+        lhSecRows.push({nom:lbl,items:intItems,items2:intItems2,offset:data.lhPairedOffsets?data.lhPairedOffsets[g]||0:0,interleavedTypes:intTypes,interleavedIndices:intIndices});
       }
     }
     if(data.terzetto&&data.terzetto.length)lhSecRows.push({nom:t('terzetto'),items:data.terzetto,items2:null,offset:0});
@@ -716,7 +718,7 @@ function presetToSVGData(rec){
     lhPairedDir:rec.lhPairedDir||'vertical',
     lhRows:rec.lhRows||[{nb:lhNb,offset:0}],
     lhPairsPerRow:rec.lhPairsPerRow||2,
-    lhPairedOffset:rec.lhPairedOffset||0,
+    lhPairedOffsets:rec.lhPairedOffsets||[],
     lhBassFirst:rec.lhBassFirst||false,
     lhBassesLabel:rec.lhBassesLabel||'',
     lhAccordsLabel:rec.lhAccordsLabel||'',
