@@ -964,6 +964,7 @@ let CFG={
   configGauche:12,
   lhRows:[{nb:6,offset:0}],
   lhPairsPerRow:2,
+  lhPairedOffset:0,
   lhBassFirst:false,
   notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
@@ -1212,6 +1213,7 @@ function snapshotToDB(){
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhPairedOffset:CFG.lhPairedOffset||0,
     lhBassFirst:CFG.lhBassFirst||false,
     lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
     lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
@@ -1286,6 +1288,7 @@ function loadFromDB(rec){
   // Restore lhRows — backward compat: default to 1 row covering all basses
   CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes?(rec.notes.basses?rec.notes.basses.length:6):6),offset:0}];
   CFG.lhPairsPerRow=rec.lhPairsPerRow||2;
+  CFG.lhPairedOffset=rec.lhPairedOffset||0;
   CFG.lhBassFirst=rec.lhBassFirst||false;
   updateLhOrderBtn();
   // ensure terzetto exists
@@ -1809,6 +1812,7 @@ function renderLhRowsCfg(){
   const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
   if(isPaired){
     const pprow=CFG.lhPairsPerRow||2;
+    const pairedOff=CFG.lhPairedOffset||0;
     const totalDuos=Math.max(1,(CFG.notes?(CFG.notes.basses?CFG.notes.basses.length:false):false)||6);
     wrap.innerHTML=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
       <span style="font-size:.78rem;min-width:80px;" data-i="lhNbDuosTotal">${t('lhNbDuosTotal')} :</span>
@@ -1816,11 +1820,17 @@ function renderLhRowsCfg(){
       <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${totalDuos}</span>
       <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos+1})">＋</button>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
       <span style="font-size:.78rem;min-width:80px;" data-i="lhDuosPerRow">${t('lhDuosPerRow')} :</span>
       <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(Math.max(1,${pprow}-1))">−</button>
       <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pprow}</span>
       <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(${pprow}+1)">＋</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:.78rem;min-width:80px;" data-i="lhOffset">${t('lhOffset')} :</span>
+      <button type="button" class="rng-btn" onclick="lhSetPairedOffset(${pairedOff}-1)">−</button>
+      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pairedOff}</span>
+      <button type="button" class="rng-btn" onclick="lhSetPairedOffset(${pairedOff}+1)">＋</button>
     </div>`;
     return;
   }
@@ -1876,6 +1886,10 @@ function lhRowChange(ri,field,val){
   onAnyChange();
 }
 
+function lhSetPairedOffset(n){
+  CFG.lhPairedOffset=Math.round(n);
+  renderLhRowsCfg();onAnyChange();
+}
 function lhSetPairsPerRow(n){
   CFG.lhPairsPerRow=Math.max(1,Math.floor(n));
   renderLhRowsCfg();
@@ -2386,6 +2400,7 @@ function readInputs(){
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhPairedOffset:CFG.lhPairedOffset||0,
     lhBassFirst:CFG.lhBassFirst||false,
     lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
     lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
@@ -3331,6 +3346,7 @@ function renderKbdCompare(){
       nbVoixBasses:rec.nbVoixBasses||2,
       lhDisplayMode:rec.lhDisplayMode||'separated',
       lhPairedDir:rec.lhPairedDir||'vertical',
+      lhPairedOffset:rec.lhPairedOffset||0,
       lhRows:rec.lhRows||[{nb:6,offset:0}],
       lhPairsPerRow:rec.lhPairsPerRow||2,
       lhBassFirst:rec.lhBassFirst||false,
