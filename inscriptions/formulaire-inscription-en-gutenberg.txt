@@ -1470,7 +1470,7 @@ var STAGE_CONFIG = {
       if (!sel) return;
       var existing = Array.from(sel.options).map(function (o) { return o.value; });
       saved.forEach(function (f) {
-        if (f && existing.indexOf(f) < 0) {
+        if (f ? existing.indexOf(f) < 0 : false) {
           var opt = document.createElement('option');
           opt.value = f; opt.textContent = f;
           sel.appendChild(opt);
@@ -1479,7 +1479,7 @@ var STAGE_CONFIG = {
     } catch (e) {}
   }
   function loadCustomPlanFromFile(event) {
-    var file = event.target.files && event.target.files[0];
+    var file = event.target.files ? event.target.files[0] : null;
     if (!file) return;
     var reader = new FileReader();
     reader.onload = function (e) {
@@ -1856,7 +1856,7 @@ var STAGE_CONFIG = {
           var bgImg = await loadImageElement(bgUrl);
           /* Respect CSS background-size:contain — scale to fit, maintain aspect ratio, center */
           var bW = bgImg.naturalWidth, bH = bgImg.naturalHeight;
-          if (bW > 0 && bH > 0) {
+          if (bW > 0 ? bH > 0 : false) {
             var bScale = Math.min(sw / bW, sh / bH);
             var bDW = bW * bScale, bDH = bH * bScale;
             ctx.drawImage(bgImg, (sw - bDW) / 2, (sh - bDH) / 2, bDW, bDH);
@@ -2046,7 +2046,7 @@ var STAGE_CONFIG = {
     } catch (grilleImgErr) { /* skip grille image if canvas render fails */ }
     if (previewImgData || grilleImgData) {
       sectionTitle('Informal preview (non-binding)');
-      if (previewImgData && grilleImgData) {
+      if (previewImgData ? grilleImgData : false) {
         /* Side-by-side: accordion preview left (~62 %), grille right (~35 %) */
         var sbGap = 5;
         var sbPW = Math.round(CW * 0.62);
