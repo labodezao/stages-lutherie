@@ -1347,17 +1347,19 @@ function _savePresetToServer(rec){
 const CA_FAMILIES_KEY='ca_custom_families';
 function _restoreCustomFamilies(){
   try{
-    const saved=JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');
+    let saved=JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');
+    if(!saved.length){saved=PM_CATS.slice();_saveCustomFamilies(saved);}
     const sel=document.getElementById('preset-export-category');
     if(!sel)return;
-    const existing=Array.from(sel.options).map(o=>o.value);
+    const current=sel.value;
+    sel.innerHTML='';
     saved.forEach(f=>{
-      if(f?!existing.includes(f):false){
-        const opt=document.createElement('option');
-        opt.value=f;opt.textContent=f;
-        sel.insertBefore(opt,sel.lastElementChild);
-      }
+      const opt=document.createElement('option');
+      opt.value=f;opt.textContent=f;
+      sel.appendChild(opt);
     });
+    if(saved.indexOf(current)>=0){sel.value=current;}
+    else if(saved.length){sel.value=saved[saved.length-1];}
   }catch(e){}
 }
 function _getCustomFamilies(){
@@ -1376,11 +1378,10 @@ function pmAddFamily(){
     name=(prompt('Nom de la nouvelle famille :')||'').trim();
     if(!name)return;
   }
-  const customs=_getCustomFamilies();
-  if(PM_CATS.indexOf(name)>=0){alert('Cette famille existe déjà (famille intégrée).');return;}
-  if(customs.indexOf(name)>=0){alert(`Cette famille "${name}" existe déjà.`);return;}
-  customs.push(name);
-  _saveCustomFamilies(customs);
+  const families=_getCustomFamilies();
+  if(families.indexOf(name)>=0){alert(`Cette famille "${name}" existe déjà.`);return;}
+  families.push(name);
+  _saveCustomFamilies(families);
   if(inp)inp.value='';
   _restoreCustomFamilies();
   renderFamilyManager();
@@ -1411,14 +1412,13 @@ function pmConfirmRename(idx){
   if(!inp)return;
   const name=inp.value.trim();
   if(!name){alert('Le nom ne peut pas être vide.');return;}
-  const customs=_getCustomFamilies();
-  if(idx<0||idx>=customs.length)return;
-  const old=customs[idx];
+  const families=_getCustomFamilies();
+  if(idx<0||idx>=families.length)return;
+  const old=families[idx];
   if(name===old){renderFamilyManager();return;}
-  if(PM_CATS.indexOf(name)>=0){alert('Ce nom est déjà utilisé (famille intégrée).');return;}
-  if(customs.indexOf(name)>=0){alert(`Une famille "${name}" existe déjà.`);return;}
-  customs[idx]=name;
-  _saveCustomFamilies(customs);
+  if(families.filter((f,i)=>i!==idx).indexOf(name)>=0){alert(`Une famille "${name}" existe déjà.`);return;}
+  families[idx]=name;
+  _saveCustomFamilies(families);
   _presetIndex.forEach(p=>{if(p.category===old)p.category=name;});
   const sel=document.getElementById('preset-export-category');
   if(sel){
@@ -1432,36 +1432,28 @@ function pmConfirmRename(idx){
   renderPresetManager();
 }
 function pmDeleteFamily(idx){
-  const customs=_getCustomFamilies();
-  if(idx<0||idx>=customs.length)return;
-  const name=customs[idx];
+  const families=_getCustomFamilies();
+  if(idx<0||idx>=families.length)return;
+  if(families.length<=1){alert('Il faut garder au moins une famille.');return;}
+  const name=families[idx];
   const count=_presetIndex.filter(p=>p.category===name).length;
   let msg=`Supprimer la famille "${name}" ?`;
   if(count>0)msg+=`\n(${count} préset${count>1?'s':''} utilisent cette famille)`;
   if(!confirm(msg))return;
-  customs.splice(idx,1);
-  _saveCustomFamilies(customs);
-  const sel=document.getElementById('preset-export-category');
-  if(sel){
-    const opt=Array.from(sel.options).find(o=>o.value===name);
-    if(opt)sel.removeChild(opt);
-    if(sel.value===name)sel.value=PM_CATS[PM_CATS.length-1];
-  }
+  families.splice(idx,1);
+  _saveCustomFamilies(families);
+  _restoreCustomFamilies();
   renderFamilyManager();
   renderPresetManager();
 }
 function renderFamilyManager(){
   const el=document.getElementById('pm-families');
   if(!el)return;
-  const customs=_getCustomFamilies();
-  let html='<div style="margin-bottom:6px">';
-  PM_CATS.forEach(fam=>{
-    html+=`<span style="display:inline-block;margin:2px 3px 2px 0;padding:2px 8px;background:var(--fond);border:1px solid var(--brd);border-radius:12px;font-size:.75rem;color:var(--gris)" title="Famille intégrée">${escHTML(fam)}</span>`;
-  });
-  html+='</div>';
-  if(customs.length){
+  const families=_getCustomFamilies();
+  let html='';
+  if(families.length){
     html+='<table style="width:100%;border-collapse:collapse">';
-    customs.forEach((fam,idx)=>{
+    families.forEach((fam,idx)=>{
       html+=`<tr id="pm-fam-row-${idx}" style="border-bottom:1px solid var(--brd)">`
         +`<td style="padding:3px 0;font-size:.82rem" id="pm-fam-lbl-${idx}">${escHTML(fam)}</td>`
         +`<td style="padding:3px 0;text-align:right;white-space:nowrap">`
@@ -1471,7 +1463,7 @@ function renderFamilyManager(){
     });
     html+='</table>';
   } else {
-    html+='<div style="font-size:.78rem;color:var(--gris);font-style:italic;padding:4px 0">Aucune famille personnalisée.</div>';
+    html+='<div style="font-size:.78rem;color:var(--gris);font-style:italic;padding:4px 0">Aucune famille.</div>';
   }
   el.innerHTML=html;
 }
