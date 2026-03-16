@@ -561,7 +561,23 @@ var STAGE_CONFIG = {
   <!-- Custom JSON (hidden by default) -->
   <div id="planCustomSection" style="display:none;">
     <div class="insc-field" style="margin-top:8px;">
-      <label for="planClavier">Plan de clavier (JSON exporté)</label>
+      <label for="planCustomCategory">Famille</label>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <select id="planCustomCategory" style="flex:1;" onchange="onCustomCategoryChange()">
+          <option value="">— Choisir une famille —</option>
+          <option value="2 rangs 8b">2 rangs 8b</option>
+          <option value="3 rangs 12b">3 rangs 12b</option>
+          <option value="3 rangs 18b">3 rangs 18b</option>
+          <option value="3 rangs 24b">3 rangs 24b</option>
+        </select>
+        <button type="button" onclick="addCustomPlanFamily()" title="Ajouter une nouvelle famille" style="padding:3px 9px;border:1px solid #ccc;border-radius:4px;font-size:.85rem;background:#fff;cursor:pointer;font-weight:700;flex-shrink:0">+</button>
+      </div>
+    </div>
+    <div class="insc-field" style="margin-top:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <label for="planClavier" style="flex:1;margin:0">Plan de clavier (JSON exporté)</label>
+        <label style="cursor:pointer;font-size:.78rem;padding:3px 9px;border:1px solid #ccc;border-radius:4px;background:#fff;white-space:nowrap;" title="Importer un fichier .json">📂 Importer .json<input type="file" accept=".json,application/json" style="display:none;" onchange="loadCustomPlanFromFile(event)"></label>
+      </div>
       <textarea id="planClavier" name="planClavier" rows="4" placeholder="Collez ici le JSON exporté depuis l'outil de plan de clavier…" style="font-family:monospace; font-size:0.82rem;"></textarea>
       <div class="hint">Dans l'outil clavier → bouton « Exporter JSON » → copier → coller ici.</div>
     </div>
@@ -1165,6 +1181,8 @@ var STAGE_CONFIG = {
     if (presetSel) presetSel.value = '';
     var planClavierEl = document.getElementById('planClavier');
     if (planClavierEl) planClavierEl.value = '';
+    var planCustomCatEl = document.getElementById('planCustomCategory');
+    if (planCustomCatEl) planCustomCatEl.value = '';
   }
 
   function setPlanMode(mode) {
@@ -1326,6 +1344,8 @@ var STAGE_CONFIG = {
   }
 
   /* Mapping modèle → catégories de présets compatibles */
+  /* Familles visibles dans le formulaire d'inscription */
+  var VISIBLE_PRESET_CATEGORIES = ['2 rangs 8b', '3 rangs 12b', '3 rangs 18b', '3 rangs 24b'];
   var MODEL_PRESET_CATEGORIES = {
     '21/8b':  ['2 rangs 8b'],
     '33/12b': ['3 rangs 12b', '3 rangs 12 basses'],
@@ -1340,9 +1360,8 @@ var STAGE_CONFIG = {
     if (!sel) return;
     var ph = sel.options[0]; sel.innerHTML = ''; sel.appendChild(ph);
     var allowedCats = MODEL_PRESET_CATEGORIES[modelVal] || null;
-    var list = allowedCats
-      ? allPresets.filter(function (p) { return allowedCats.indexOf(p.category) >= 0; })
-      : allPresets;
+    var activeCats = allowedCats || VISIBLE_PRESET_CATEGORIES;
+    var list = allPresets.filter(function (p) { return activeCats.indexOf(p.category) >= 0; });
     if (hint) hint.style.display = modelVal ? 'none' : 'block';
     var cats = {};
     list.forEach(function (p) {
@@ -1402,6 +1421,8 @@ var STAGE_CONFIG = {
       if (!inst || !inst.rangees) throw new Error('Format invalide');
       planData = inst;
       planLabel = inst.nom || 'Plan personnalis\u00e9';
+      var catSel = document.getElementById('planCustomCategory');
+      planCategory = catSel ? catSel.value : '';
       showPlanPreview(inst, planLabel);
     } catch (e) {
       info.innerHTML = '<span style="color:#c0392b;">\u26a0 JSON invalide \u2014 ' + e.message + '</span>';
@@ -1410,6 +1431,63 @@ var STAGE_CONFIG = {
     }
     updateSummary();
   });
+
+  /* Custom plan family helpers */
+  var CA_CUSTOM_FAMILIES_KEY = 'ca_custom_families';
+  function onCustomCategoryChange() {
+    var sel = document.getElementById('planCustomCategory');
+    planCategory = sel ? sel.value : '';
+    updateSummary();
+  }
+  function addCustomPlanFamily() {
+    var name = (prompt('Nom de la nouvelle famille :') || '').trim();
+    if (!name) return;
+    var sel = document.getElementById('planCustomCategory');
+    if (!sel) return;
+    var existing = Array.from(sel.options).map(function (o) { return o.value; });
+    if (existing.indexOf(name) < 0) {
+      var opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      sel.appendChild(opt);
+      try {
+        var saved = JSON.parse(localStorage.getItem(CA_CUSTOM_FAMILIES_KEY) || '[]');
+        if (saved.indexOf(name) < 0) saved.push(name);
+        localStorage.setItem(CA_CUSTOM_FAMILIES_KEY, JSON.stringify(saved));
+      } catch (e) {}
+    }
+    sel.value = name;
+    planCategory = name;
+    updateSummary();
+  }
+  function _restoreCustomPlanFamilies() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(CA_CUSTOM_FAMILIES_KEY) || '[]');
+      var sel = document.getElementById('planCustomCategory');
+      if (!sel) return;
+      var existing = Array.from(sel.options).map(function (o) { return o.value; });
+      saved.forEach(function (f) {
+        if (f && existing.indexOf(f) < 0) {
+          var opt = document.createElement('option');
+          opt.value = f; opt.textContent = f;
+          sel.appendChild(opt);
+        }
+      });
+    } catch (e) {}
+  }
+  function loadCustomPlanFromFile(event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var textarea = document.getElementById('planClavier');
+      if (textarea) {
+        textarea.value = e.target.result;
+        textarea.dispatchEvent(new Event('input'));
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
 
   /* ── Live Summary Update ── */
 
@@ -1650,6 +1728,7 @@ var STAGE_CONFIG = {
 
   /* Load preset index on page ready */
   loadPresets();
+  _restoreCustomPlanFamilies();
 
   /* Expose inline-handler functions to global scope */
   window.setPlanMode = setPlanMode;

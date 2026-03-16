@@ -490,7 +490,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <option value="Spéciaux">Spéciaux</option>
           <option value="Personnalisés" selected>Personnalisés</option>
         </select>
-        <button type="button" onclick="addPresetFamily()" title="Ajouter une nouvelle famille" style="padding:4px 9px;border:1.5px solid var(--border);border-radius:5px;font-size:.85rem;background:#fff;cursor:pointer;color:var(--dark);font-weight:700;line-height:1;flex-shrink:0">+</button>
+        <button type="button" onclick="addPresetFamily()" title="Ajouter une nouvelle famille" style="padding:4px 9px;border:1.5px solid var(--brd);border-radius:5px;font-size:.85rem;background:#fff;cursor:pointer;color:var(--dark);font-weight:700;line-height:1;flex-shrink:0">+</button>
       </div>
       <div class="btn-group" style="margin-top:13px;">
         <button class="btn btn-primary" onclick="saveCurrentInstrument(true)" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
@@ -961,6 +961,8 @@ function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi
    ╚══════════════════════════════════════════════════════╝ */
 const _presetCache={};  // id → preset data (lazy-loaded)
 let   _presetIndex=[];  // [{id,label,category}]
+let   _pmSortKey='';    // '' | 'label' | 'category'
+let   _pmSortDir=1;     // 1=asc, -1=desc
 
 /* CA_REST_ROOT is injected by presets-api.php when running in WordPress.
    Fallback to '/wp-json/' for local WP dev or when mu-plugin is missing. */
@@ -986,6 +988,11 @@ async function reloadPresets(){
    ╚══════════════════════════════════════════════════════╝ */
 const PM_CATS=['2 rangs 8b','3 rangs 12b','3 rangs 12 basses','3 rangs 18b','3 rangs 24b','Spéciaux','Personnalisés'];
 
+function pmToggleSort(key){
+  if(_pmSortKey===key){_pmSortDir=-_pmSortDir;}else{_pmSortKey=key;_pmSortDir=1;}
+  renderPresetManager();
+}
+
 function renderPresetManager(){
   const list=document.getElementById('pm-list');
   if(!list)return;
@@ -993,18 +1000,24 @@ function renderPresetManager(){
     list.innerHTML='<p style="color:var(--gris);font-style:italic;font-size:.83rem">Aucun préset sur le serveur.</p>';
     return;
   }
-  // Group by category for display
-  const cats={};
-  _presetIndex.forEach(p=>{(cats[p.category]||(cats[p.category]=[])).push(p);});
+  // Build full category list: base + custom (localStorage) + any in index not yet listed
+  const customFams=(()=>{try{return JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');}catch(e){return[];}})();
+  const allCats=PM_CATS.concat(customFams.filter(f=>!PM_CATS.includes(f)));
+  _presetIndex.forEach(p=>{if(p.category&&!allCats.includes(p.category))allCats.push(p.category);});
+  // Sort
+  const sorted=_presetIndex.slice();
+  if(_pmSortKey){sorted.sort((a,b)=>{const va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();return va<vb?-_pmSortDir:va>vb?_pmSortDir:0;});}
+  // Sort indicators
+  const si=(k)=>_pmSortKey===k?(_pmSortDir===1?' ▲':' ▼'):' ↕';
   let html='<table style="width:100%;border-collapse:collapse;font-size:.8rem">'
     +'<thead><tr style="background:var(--fond);color:var(--gris);font-size:.72rem;text-transform:uppercase">'
     +'<th style="text-align:left;padding:5px 6px">Identifiant</th>'
-    +'<th style="text-align:left;padding:5px 6px">Nom affiché</th>'
-    +'<th style="text-align:left;padding:5px 6px">Famille</th>'
+    +'<th style="text-align:left;padding:5px 6px;cursor:pointer;user-select:none" onclick="pmToggleSort(\'label\')">Nom affiché<span style="font-size:.65rem">'+si('label')+'</span></th>'
+    +'<th style="text-align:left;padding:5px 6px;cursor:pointer;user-select:none" onclick="pmToggleSort(\'category\')">Famille<span style="font-size:.65rem">'+si('category')+'</span></th>'
     +'<th style="padding:5px 6px"></th>'
     +'</tr></thead><tbody>';
-  _presetIndex.forEach(p=>{
-    const catOpts=PM_CATS.map(c=>`<option value="${escHTML(c)}"${c===p.category?' selected':''}>${escHTML(c)}</option>`).join('');
+  sorted.forEach(p=>{
+    const catOpts=allCats.map(c=>`<option value="${escHTML(c)}"${c===p.category?' selected':''}>${escHTML(c)}</option>`).join('');
     html+=`<tr id="pm-row-${escHTML(p.id)}" style="border-bottom:1px solid var(--brd)">`
       +`<td style="padding:5px 6px;color:var(--gris);font-size:.75rem;white-space:nowrap">${escHTML(p.id)}</td>`
       +`<td style="padding:4px 6px"><input type="text" value="${escHTML(p.label)}" id="pm-lbl-${escHTML(p.id)}" style="width:100%;padding:3px 6px;border:1.5px solid var(--brd);border-radius:4px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)"></td>`
@@ -2932,6 +2945,21 @@ function convertFlatsToSharps(){
   generateInputGrid();onAnyChange();forcePreview();
 }
 /* ── Shared transposition helper ─────────────────────── */
+function _buildAutoTitle(){
+  const nRangs=CFG.nbRangees||(CFG.rangees||[]).length||2;
+  const keys=[];
+  for(let r=0;r<nRangs;r++){
+    const row=CFG.notes.droite&&CFG.notes.droite[r];
+    if(row&&row.length>0){
+      const first=(row[0].p||row[0].t||'').trim();
+      const k=first.replace(/\d+$/,'').trim();
+      if(k)keys.push(k);
+    }
+  }
+  const nMD=(CFG.rangees||[]).slice(0,nRangs).reduce((s,r)=>s+(r.nb||0),0);
+  const nB=((CFG.notes.basses||[]).length)+((CFG.notes.accords||[]).length);
+  return(keys.length?keys.join('/'):'?')+' '+nMD+'b'+nB+'B';
+}
 function _doTranspose(semi){
   function shiftNoteStr(s){
     if(!s)return s;
@@ -2944,6 +2972,9 @@ function _doTranspose(semi){
   const n=CFG.notes;
   n.droite=(n.droite||[]).map(shiftRow);
   ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=shiftRow(n[k]);});
+  // Auto-update instrument title from transposed notes
+  const titleEl=document.getElementById('nom-instrument');
+  if(titleEl)titleEl.value=_buildAutoTitle();
   generateInputGrid();onAnyChange();forcePreview();
 }
 function transposeAllNotes(semi){
