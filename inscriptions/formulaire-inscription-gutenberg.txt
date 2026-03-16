@@ -1360,8 +1360,14 @@ var STAGE_CONFIG = {
     if (!sel) return;
     var ph = sel.options[0]; sel.innerHTML = ''; sel.appendChild(ph);
     var allowedCats = MODEL_PRESET_CATEGORIES[modelVal] || null;
-    var activeCats = allowedCats || VISIBLE_PRESET_CATEGORIES;
-    var list = allPresets.filter(function (p) { return activeCats.indexOf(p.category) >= 0; });
+    var activeCats = allowedCats || null;
+    var list;
+    if (activeCats) {
+      list = allPresets.filter(function (p) { return activeCats.indexOf(p.category) >= 0; });
+    } else {
+      list = allPresets.filter(function (p) { return VISIBLE_PRESET_CATEGORIES.indexOf(p.category) >= 0; });
+      if (!list.length) list = allPresets; // fallback: show all if no preset has a recognised family
+    }
     if (hint) hint.style.display = modelVal ? 'none' : 'block';
     var cats = {};
     list.forEach(function (p) {
@@ -1733,6 +1739,9 @@ var STAGE_CONFIG = {
   /* Expose inline-handler functions to global scope */
   window.setPlanMode = setPlanMode;
   window.onPresetSelect = onPresetSelect;
+  window.onCustomCategoryChange = onCustomCategoryChange;
+  window.addCustomPlanFamily = addCustomPlanFamily;
+  window.loadCustomPlanFromFile = loadCustomPlanFromFile;
 
   /* ── PDF: load jsPDF 2.5.1 on demand (same version as admin tool) ── */
   function loadScript(url) {

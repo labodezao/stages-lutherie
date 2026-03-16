@@ -971,10 +971,17 @@ const _caRestRoot = window.CA_REST_ROOT || '/wp-json/';
 async function loadPresetIndex(){
   const base=document.querySelector('base')?.href||location.href;
   const url=new URL('presets/index.json',base).href;
-  const r=await fetch(url,{cache:'no-store'});
-  _presetIndex=await r.json();
-  renderPresetOptions();
-  renderPresetManager();
+  try{
+    const r=await fetch(url,{cache:'no-store'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    _presetIndex=await r.json();
+    renderPresetOptions();
+    try{renderPresetManager();}catch(e){console.warn('renderPresetManager error:',e);}
+  }catch(e){
+    console.warn('loadPresetIndex failed:',e);
+    const st=document.getElementById('pm-status');
+    if(st)st.textContent='⚠️ Impossible de charger les présets : '+e.message;
+  }
 }
 
 async function reloadPresets(){
@@ -1094,8 +1101,8 @@ function renderPresetOptions(){
   const cats={};
   _presetIndex.forEach(p=>{(cats[p.category]||(cats[p.category]=[])).push(p);});
   const customOpt=sel.querySelector('option[value="custom"]');
-  // Remove previously inserted options
-  sel.querySelectorAll('option[data-preset]').forEach(o=>o.remove());
+  // Remove previously inserted options AND optgroups
+  sel.querySelectorAll('option[data-preset],optgroup').forEach(o=>o.remove());
   Object.entries(cats).forEach(([cat,items])=>{
     const og=document.createElement('optgroup');og.label=cat;
     items.forEach(p=>{
