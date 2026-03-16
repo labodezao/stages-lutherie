@@ -507,6 +507,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <option value="Spéciaux">Spéciaux</option>
           <option value="Personnalisés" selected>Personnalisés</option>
         </select>
+        <button type="button" onclick="addPresetFamily()" title="Ajouter une nouvelle famille" style="padding:4px 9px;border:1.5px solid var(--brd);border-radius:5px;font-size:.85rem;background:#fff;cursor:pointer;color:var(--dark);font-weight:700;line-height:1;flex-shrink:0">+</button>
       </div>
       <div class="btn-group" style="margin-top:13px;">
         <button class="btn btn-primary" onclick="saveCurrentInstrument(true)" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
@@ -526,6 +527,15 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:11px;flex-wrap:wrap">
         <span id="pm-status" style="font-size:.78rem;color:var(--gris);flex:1"></span>
         <button class="btn btn-bleu" style="font-size:.78rem;padding:4px 11px" onclick="pmRefresh()">🔄 Rafraîchir</button>
+      </div>
+      <!-- Gestionnaire de familles -->
+      <div style="border:1px solid var(--brd);border-radius:6px;padding:10px 12px;margin-bottom:13px">
+        <div style="font-size:.76rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">📂 Familles</div>
+        <div id="pm-families"></div>
+        <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+          <input id="pm-new-family" type="text" placeholder="Nouvelle famille…" style="flex:1;padding:4px 8px;border:1.5px solid var(--brd);border-radius:5px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)" onkeydown="if(event.key==='Enter')pmAddFamily()">
+          <button class="btn btn-bleu" style="font-size:.78rem;padding:4px 11px" onclick="pmAddFamily()">＋ Ajouter</button>
+        </div>
       </div>
       <div id="pm-list"></div>
     </div>
@@ -984,6 +994,8 @@ function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi
    ╚══════════════════════════════════════════════════════╝ */
 const _presetCache={};  // id → preset data (lazy-loaded)
 let   _presetIndex=[];  // [{id,label,category}]
+var   _pmSortKey='category'; // '' | 'label' | 'category'
+var   _pmSortDir=1;          // 1=asc, -1=desc
 
 /* PRESETS_BASE_URL est défini dans le bloc de configuration ci-dessus.
    En mode local (sans ce bloc), on initialise à '' par défaut. */
@@ -998,10 +1010,18 @@ async function loadPresetIndex(){
   const url = PRESETS_BASE_URL
     ? new URL('index.json', PRESETS_BASE_URL.replace(/\/?$/, '/')).href
     : new URL('presets/index.json', base).href;
-  const r=await fetch(url, {cache:'no-store'});
-  _presetIndex=await r.json();
-  renderPresetOptions();
-  renderPresetManager();
+  try{
+    const r=await fetch(url, {cache:'no-store'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    _presetIndex=await r.json();
+    renderPresetOptions();
+    try{renderFamilyManager();}catch(e){console.warn('renderFamilyManager error:',e);}
+    try{renderPresetManager();}catch(e){console.warn('renderPresetManager error:',e);}
+  }catch(e){
+    console.warn('loadPresetIndex failed:',e);
+    var st=document.getElementById('pm-status');
+    if(st)st.textContent='\u26a0\ufe0f Impossible de charger les pr\u00e9sets\u00a0: '+e.message;
+  }
 }
 
 async function reloadPresets(){
@@ -1015,6 +1035,11 @@ async function reloadPresets(){
    ╚══════════════════════════════════════════════════════╝ */
 const PM_CATS=['2 rangs 8b','3 rangs 12b','3 rangs 12 basses','3 rangs 18b','3 rangs 24b','Spéciaux','Personnalisés'];
 
+function pmToggleSort(key){
+  if(_pmSortKey===key){_pmSortDir=-_pmSortDir;}else{_pmSortKey=key;_pmSortDir=1;}
+  renderPresetManager();
+}
+
 function renderPresetManager(){
   const list=document.getElementById('pm-list');
   if(!list)return;
@@ -1022,15 +1047,23 @@ function renderPresetManager(){
     list.innerHTML='<p style="color:var(--gris);font-style:italic;font-size:.83rem">Aucun préset sur le serveur.</p>';
     return;
   }
-  let html='<table style="width:100%;border-collapse:collapse;font-size:.8rem">'
+  // Build full category list from saved families + any extra in preset index
+  var allCats=_getCustomFamilies();
+  _presetIndex.forEach(function(p){if(p.category){if(allCats.indexOf(p.category)<0)allCats.push(p.category);}});
+  // Sort
+  var sorted=_presetIndex.slice();
+  if(_pmSortKey){sorted.sort(function(a,b){var va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();if(va<vb)return -_pmSortDir;if(va>vb)return _pmSortDir;if(_pmSortKey==='category'){var la=(a.label||'').toLowerCase(),lb=(b.label||'').toLowerCase();return la<lb?-1:la>lb?1:0;}return 0;});}
+  // Sort indicators
+  var si=function(k){return _pmSortKey===k?(_pmSortDir===1?' ▲':' ▼'):' ↕';};
+  var html='<table style="width:100%;border-collapse:collapse;font-size:.8rem">'
     +'<thead><tr style="background:var(--fond);color:var(--gris);font-size:.72rem;text-transform:uppercase">'
     +'<th style="text-align:left;padding:5px 6px">Identifiant</th>'
-    +'<th style="text-align:left;padding:5px 6px">Nom affiché</th>'
-    +'<th style="text-align:left;padding:5px 6px">Famille</th>'
+    +'<th style="text-align:left;padding:5px 6px;cursor:pointer;user-select:none" onclick="pmToggleSort(\'label\')">Nom affiché<span style="font-size:.65rem">'+si('label')+'</span></th>'
+    +'<th style="text-align:left;padding:5px 6px;cursor:pointer;user-select:none" onclick="pmToggleSort(\'category\')">Famille<span style="font-size:.65rem">'+si('category')+'</span></th>'
     +'<th style="padding:5px 6px"></th>'
     +'</tr></thead><tbody>';
-  _presetIndex.forEach(function(p){
-    var catOpts=PM_CATS.map(function(c){return '<option value="'+escHTML(c)+'"'+(c===p.category?' selected':'')+'>'+escHTML(c)+'</option>';}).join('');
+  sorted.forEach(function(p){
+    var catOpts=allCats.map(function(c){return '<option value="'+escHTML(c)+'"'+(c===p.category?' selected':'')+'>'+escHTML(c)+'</option>';}).join('');
     html+='<tr id="pm-row-'+escHTML(p.id)+'" style="border-bottom:1px solid var(--brd)">'
       +'<td style="padding:5px 6px;color:var(--gris);font-size:.75rem;white-space:nowrap">'+escHTML(p.id)+'</td>'
       +'<td style="padding:4px 6px"><input type="text" value="'+escHTML(p.label)+'" id="pm-lbl-'+escHTML(p.id)+'" style="width:100%;padding:3px 6px;border:1.5px solid var(--brd);border-radius:4px;font-size:.8rem;font-family:inherit;background:#fff;color:var(--txt)"></td>'
@@ -1108,8 +1141,8 @@ function renderPresetOptions(){
   const cats={};
   _presetIndex.forEach(p=>{(cats[p.category]||(cats[p.category]=[])).push(p);});
   const customOpt=sel.querySelector('option[value="custom"]');
-  // Remove previously inserted options
-  sel.querySelectorAll('option[data-preset]').forEach(o=>o.remove());
+  // Remove previously inserted options AND optgroups
+  sel.querySelectorAll('option[data-preset],optgroup').forEach(o=>o.remove());
   Object.entries(cats).forEach(([cat,items])=>{
     const og=document.createElement('optgroup');og.label=cat;
     items.forEach(p=>{
@@ -1177,6 +1210,10 @@ function snapshotToDB(){
     lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
     lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
     lhShowLabels:document.getElementById('lh-show-labels')?.checked!==false,
+    accordsSeuilEnabled:document.getElementById('accords-seuil-enabled')?.checked||false,
+    accordsSeuilNote:document.getElementById('accords-seuil-note')?.value||'Sol4',
+    accordsSeuilBasEnabled:document.getElementById('accords-seuil-bas-enabled')?.checked||false,
+    accordsSeuilBasNote:document.getElementById('accords-seuil-bas-note')?.value||'Do3',
     notes:JSON.parse(JSON.stringify(CFG.notes)),
     orderSpecs:{
       qty:val('order-qty')||'1',
@@ -1229,6 +1266,14 @@ function loadFromDB(rec){
   if(lhAlEl)lhAlEl.value=rec.lhAccordsLabel||'';
   const lhSlEl=document.getElementById('lh-show-labels');
   if(lhSlEl)lhSlEl.checked=rec.lhShowLabels!==false;
+  const asEl=document.getElementById('accords-seuil-enabled');
+  if(asEl)asEl.checked=rec.accordsSeuilEnabled||false;
+  const asnEl=document.getElementById('accords-seuil-note');
+  if(asnEl)asnEl.value=rec.accordsSeuilNote||'Sol4';
+  const asbEl=document.getElementById('accords-seuil-bas-enabled');
+  if(asbEl)asbEl.checked=rec.accordsSeuilBasEnabled||false;
+  const asbnEl=document.getElementById('accords-seuil-bas-note');
+  if(asbnEl)asbnEl.value=rec.accordsSeuilBasNote||'Do3';
   CFG.nbRangees=rec.nbRangees||2;
   CFG.rangees=JSON.parse(JSON.stringify(rec.rangees));
   CFG.notes=JSON.parse(JSON.stringify(rec.notes));
@@ -1302,6 +1347,10 @@ function _savePresetToServer(rec){
     lhBassesLabel:rec.lhBassesLabel||'',
     lhAccordsLabel:rec.lhAccordsLabel||'',
     lhShowLabels:rec.lhShowLabels!==false,
+    accordsSeuilEnabled:rec.accordsSeuilEnabled||false,
+    accordsSeuilNote:rec.accordsSeuilNote||'Sol4',
+    accordsSeuilBasEnabled:rec.accordsSeuilBasEnabled||false,
+    accordsSeuilBasNote:rec.accordsSeuilBasNote||'Do3',
     nbVoix:rec.nbVoix||2,
     nbVoixAccords:rec.nbVoixAccords||2,
     nbVoixBasses:rec.nbVoixBasses||2,
@@ -1333,6 +1382,134 @@ function _savePresetToServer(rec){
     const el=document.getElementById('save-status');
     if(el){el.textContent='\u26a0\ufe0f Sauvegarde serveur \u00e9chou\u00e9e';el.className='dirty';}
   });
+}
+const CA_FAMILIES_KEY='ca_custom_families';
+function _restoreCustomFamilies(){
+  try{
+    var saved=JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');
+    if(!saved.length){saved=PM_CATS.slice();_saveCustomFamilies(saved);}
+    var sel=document.getElementById('preset-export-category');
+    if(!sel)return;
+    var current=sel.value;
+    sel.innerHTML='';
+    saved.forEach(function(f){
+      var opt=document.createElement('option');
+      opt.value=f;opt.textContent=f;
+      sel.appendChild(opt);
+    });
+    if(saved.indexOf(current)>=0){sel.value=current;}
+    else if(saved.length){sel.value=saved[saved.length-1];}
+  }catch(e){}
+}
+function _getCustomFamilies(){
+  try{return JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');}catch(e){return[];}
+}
+function _saveCustomFamilies(arr){
+  try{localStorage.setItem(CA_FAMILIES_KEY,JSON.stringify(arr));}catch(e){}
+}
+function addPresetFamily(){
+  // Legacy alias kept for the + button in the export row
+  pmAddFamily();
+}
+function pmAddFamily(){
+  var inp=document.getElementById('pm-new-family');
+  var name=inp?inp.value.trim():'';
+  if(!name){
+    // fallback: prompt if called without the inline input
+    name=(prompt('Nom de la nouvelle famille :')||'').trim();
+    if(!name)return;
+  }
+  var families=_getCustomFamilies();
+  if(families.indexOf(name)>=0){alert('Cette famille "'+name+'" existe d\u00e9j\u00e0.');return;}
+  families.push(name);
+  _saveCustomFamilies(families);
+  if(inp)inp.value='';
+  _restoreCustomFamilies();
+  renderFamilyManager();
+  renderPresetManager();
+}
+function pmStartRename(idx){
+  var lbl=document.getElementById('pm-fam-lbl-'+idx);
+  if(!lbl)return;
+  var customs=_getCustomFamilies();
+  if(idx<0||idx>=customs.length)return;
+  var old=escHTML(customs[idx]);
+  lbl.innerHTML='<input type="text" id="pm-fam-inp-'+idx+'" value="'+old
+    +'" style="width:100%;padding:2px 6px;border:1.5px solid var(--bleu);border-radius:4px;font-size:.82rem;font-family:inherit;background:#fff;color:var(--txt)">'
+    +'<span style="display:flex;gap:4px;margin-top:3px">'
+    +'<button class="btn btn-bleu" style="font-size:.7rem;padding:2px 8px" onclick="pmConfirmRename('+idx+')">\u2714</button>'
+    +'<button class="btn btn-gris" style="font-size:.7rem;padding:2px 8px" onclick="renderFamilyManager()">\u2715</button>'
+    +'</span>';
+  var inp=document.getElementById('pm-fam-inp-'+idx);
+  if(inp){
+    inp.focus();inp.select();
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Enter')pmConfirmRename(idx);
+      if(e.key==='Escape')renderFamilyManager();
+    });
+  }
+}
+function pmConfirmRename(idx){
+  var inp=document.getElementById('pm-fam-inp-'+idx);
+  if(!inp)return;
+  var name=inp.value.trim();
+  if(!name){alert('Le nom ne peut pas \u00eatre vide.');return;}
+  var families=_getCustomFamilies();
+  if(idx<0||idx>=families.length)return;
+  var old=families[idx];
+  if(name===old){renderFamilyManager();return;}
+  if(families.filter(function(f,i){return i!==idx;}).indexOf(name)>=0){alert('Une famille "'+name+'" existe d\u00e9j\u00e0.');return;}
+  families[idx]=name;
+  _saveCustomFamilies(families);
+  _presetIndex.forEach(function(p){if(p.category===old)p.category=name;});
+  var sel=document.getElementById('preset-export-category');
+  if(sel){
+    var opt=null;
+    Array.from(sel.options).forEach(function(o){if(o.value===old)opt=o;});
+    if(opt){opt.value=name;opt.textContent=name;}
+    else{_restoreCustomFamilies();}
+    if(sel.value===old)sel.value=name;
+  }
+  renderFamilyManager();
+  renderPresetOptions();
+  renderPresetManager();
+}
+function pmDeleteFamily(idx){
+  var families=_getCustomFamilies();
+  if(idx<0||idx>=families.length)return;
+  if(families.length<=1){alert('Il faut garder au moins une famille.');return;}
+  var name=families[idx];
+  var count=0;
+  _presetIndex.forEach(function(p){if(p.category===name)count++;});
+  var msg='Supprimer la famille "'+name+'" ?';
+  if(count>0)msg+='\n('+count+' pr\u00e9set'+(count>1?'s':'')+' utilisent cette famille)';
+  if(!confirm(msg))return;
+  families.splice(idx,1);
+  _saveCustomFamilies(families);
+  _restoreCustomFamilies();
+  renderFamilyManager();
+  renderPresetManager();
+}
+function renderFamilyManager(){
+  var el=document.getElementById('pm-families');
+  if(!el)return;
+  var families=_getCustomFamilies();
+  var html='';
+  if(families.length){
+    html+='<table style="width:100%;border-collapse:collapse">';
+    families.forEach(function(fam,idx){
+      html+='<tr id="pm-fam-row-'+idx+'" style="border-bottom:1px solid var(--brd)">'
+        +'<td style="padding:3px 0;font-size:.82rem" id="pm-fam-lbl-'+idx+'">'+escHTML(fam)+'</td>'
+        +'<td style="padding:3px 0;text-align:right;white-space:nowrap">'
+        +'<button class="btn btn-gris" style="font-size:.7rem;padding:2px 7px;margin-right:4px" onclick="pmStartRename('+idx+')" title="Renommer">\u270f\ufe0f</button>'
+        +'<button class="btn btn-rouge" style="font-size:.7rem;padding:2px 7px" onclick="pmDeleteFamily('+idx+')" title="Supprimer">\ud83d\uddd1\ufe0f</button>'
+        +'</td></tr>';
+    });
+    html+='</table>';
+  } else {
+    html+='<div style="font-size:.78rem;color:var(--gris);font-style:italic;padding:4px 0">Aucune famille.</div>';
+  }
+  el.innerHTML=html;
 }
 function newInstrument(){
   currentId=null;
@@ -1401,7 +1578,9 @@ function onAnyChange(){
    ╚══════════════════════════════════════════════════════╝ */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
+  _restoreCustomFamilies();
   loadPresetIndex();
+  renderFamilyManager();
   renderVoixPerRow();
   initPicker();renderLibrary();
   const list=DB.all();
@@ -1414,11 +1593,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(inp){e.stopPropagation();showPicker(inp);return;}
     const seuil=e.target.closest('#accords-seuil-note');
     if(seuil){e.stopPropagation();showPicker(seuil);return;}
+    const seuilBas=e.target.closest('#accords-seuil-bas-note');
+    if(seuilBas){e.stopPropagation();showPicker(seuilBas);return;}
   });
   // Close picker when clicking outside it (use computed style so initial '' != 'none' doesn't trick us)
   document.addEventListener('click',e=>{
     const p=document.getElementById('note-picker');
-    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?!e.target.closest('.note-input')&&!e.target.closest('#accords-seuil-note'):false):false)hidePicker();
+    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?(!e.target.closest('.note-input')?(!e.target.closest('#accords-seuil-note')?!e.target.closest('#accords-seuil-bas-note'):false):false):false):false)hidePicker();
   });
   // Sync preset-export-label from nom-instrument (presetSel handled by loadPreset)
   const nomInstr=document.getElementById('nom-instrument');
@@ -1462,6 +1643,14 @@ async function loadPreset(key){
   if(_dw)_dw.style.display=_autoMode==='paired'?'block':'none';
   document.getElementById('nb-rangees').value=p.nbRangees;
   syncGaucheInputs();
+  const _asEl=document.getElementById('accords-seuil-enabled');
+  if(_asEl)_asEl.checked=p.accordsSeuilEnabled||false;
+  const _asnEl=document.getElementById('accords-seuil-note');
+  if(_asnEl)_asnEl.value=p.accordsSeuilNote||'Sol4';
+  const _asbEl=document.getElementById('accords-seuil-bas-enabled');
+  if(_asbEl)_asbEl.checked=p.accordsSeuilBasEnabled||false;
+  const _asbnEl=document.getElementById('accords-seuil-bas-note');
+  if(_asbnEl)_asbnEl.value=p.accordsSeuilBasNote||'Do3';
   renderRangeesCfg();renderLhRowsCfg();generateInputGrid();onAnyChange();
 }
 
@@ -1679,6 +1868,7 @@ function accordsFifthShift(){
   readNoteInputsIntoCFG();
   CFG.notes.accords2=(CFG.notes.accords||[]).map(a=>({p:shiftNote(a.p,7),t:shiftNote(a.t,7)}));
   CFG.notes.accords2=applyAccordsSeuil(CFG.notes.accords2);
+  CFG.notes.accords2=applyAccordsSeuilBas(CFG.notes.accords2);
   generateInputGrid();onAnyChange();
 }
 /* \u2500\u2500 Seuil accords MG \u2014 transpose down one octave any note above the threshold \u2500\u2500 */
@@ -1692,8 +1882,8 @@ function applyAccordsSeuil(arr){
     const mp=noteToMidi(a.p);
     const mt=noteToMidi(a.t);
     return{
-      p:(mp!==null&&mp>seuilMidi)?midiToFr(mp-12):a.p,
-      t:(mt!==null&&mt>seuilMidi)?midiToFr(mt-12):a.t
+      p:(mp!==null?(mp>seuilMidi):false)?midiToFr(mp-12):a.p,
+      t:(mt!==null?(mt>seuilMidi):false)?midiToFr(mt-12):a.t
     };
   });
 }
@@ -1701,6 +1891,30 @@ function applyAccordsSeuilManual(){
   readNoteInputsIntoCFG();
   ['accords','accords2','accords3'].forEach(function(key){
     if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuil(CFG.notes[key]);}}
+  });
+  generateInputGrid();onAnyChange();
+}
+/* ── Seuil bas accords MG — transpose up one octave any note below the threshold (V1 & V2 only) ── */
+function applyAccordsSeuilBas(arr){
+  const chkEl=document.getElementById('accords-seuil-bas-enabled');
+  if(!chkEl){return arr;}
+  if(!chkEl.checked){return arr;}
+  const seuilNote=(document.getElementById('accords-seuil-bas-note')||{}).value||'';
+  const seuilMidi=noteToMidi(seuilNote.trim());
+  if(seuilMidi===null)return arr;
+  return arr.map(function(a){
+    const mp=noteToMidi(a.p);
+    const mt=noteToMidi(a.t);
+    return{
+      p:(mp!==null?(mp<seuilMidi):false)?midiToFr(mp+12):a.p,
+      t:(mt!==null?(mt<seuilMidi):false)?midiToFr(mt+12):a.t
+    };
+  });
+}
+function applyAccordsSeuilBasManual(){
+  readNoteInputsIntoCFG();
+  ['accords','accords2'].forEach(function(key){
+    if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuilBas(CFG.notes[key]);}}
   });
   generateInputGrid();onAnyChange();
 }
@@ -1754,7 +1968,7 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg" draggable="true">
+    html+=`<div class="rangee-cfg">
       <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
       <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
@@ -1786,19 +2000,25 @@ function initRowDragDrop(){
   if(!wrap)return;
   wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
     el.dataset.rowIdx=idx;
+    const handle=el.querySelector('.row-drag-handle');
+    if(handle){
+      handle.addEventListener('mousedown',()=>{el.draggable=true;});
+    }
+    el.addEventListener('mouseup',()=>{el.draggable=false;});
     el.addEventListener('dragstart',e=>{
       _rowDragSrc=el;
       e.dataTransfer.effectAllowed='move';
       setTimeout(()=>el.classList.add('row-dragging'),0);
     });
     el.addEventListener('dragend',()=>{
+      el.draggable=false;
       el.classList.remove('row-dragging');
       wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
       _rowDragSrc=null;
     });
     el.addEventListener('dragover',e=>{
       e.preventDefault();e.dataTransfer.dropEffect='move';
-      if(_rowDragSrc&&_rowDragSrc!==el){
+      if(_rowDragSrc?_rowDragSrc!==el:false){
         wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
         el.classList.add('row-drag-over');
       }
@@ -1846,13 +2066,24 @@ function generateInputGrid(){
   html+=`</div>`;
   // Left hand — voice sections for basses and accords
   html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>
-    <div style="margin:0 0 10px 0;padding:8px 10px;background:#fff8e8;border:1px solid #ead7a3;border-radius:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-      <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
-        <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
-        <span>Seuil accords MG</span>
-      </label>
-      <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
-      <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+    <div style="margin:0 0 10px 0;padding:8px 10px;background:#fff8e8;border:1px solid #ead7a3;border-radius:7px;display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
+          <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
+          <span>Seuil haut accords MG</span>
+        </label>
+        <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil haut accords MG" data-tip="Seuil HAUT pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
+        <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
+          <input type="checkbox" id="accords-seuil-bas-enabled" onchange="onAnyChange()">
+          <span>Seuil bas accords V1+V2</span>
+        </label>
+        <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil bas accords V1+V2" data-tip="Seuil BAS pour les accords main gauche (V1 et V2 seulement).&#10;Quand activ\u00e9 : si une note est sous ce seuil, elle monte d'une octave.&#10;S'applique \u00e0 accords V1 et V2 uniquement (pas basses, pas terzetto).&#10;Exemple : seuil Do3 \u2192 toute note &lt; Do3 monte d'une octave.">&#9432;</span>
+        <input type="text" id="accords-seuil-bas-note" value="Do3" placeholder="Ex: Do3" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+        <button type="button" onclick="applyAccordsSeuilBasManual()" style="padding:2px 8px;font-size:.75rem;border:1px solid #ead7a3;border-radius:4px;background:#fff;cursor:pointer;font-weight:700;color:var(--dark)" title="Appliquer le seuil bas aux accords V1 et V2">&#8679; Appliquer</button>
+      </div>
     </div>`;
   const nbVB=parseInt(document.getElementById('nb-voix-basses')?.value||'2');
   const nbVA=parseInt(document.getElementById('nb-voix-accords')?.value||'2');
@@ -2934,6 +3165,21 @@ function convertFlatsToSharps(){
   generateInputGrid();onAnyChange();forcePreview();
 }
 /* ── Shared transposition helper ─────────────────────── */
+function _buildAutoTitle(){
+  var nRangs=CFG.nbRangees||(CFG.rangees||[]).length||2;
+  var keys=[];
+  for(var r=0;r<nRangs;r++){
+    var row=CFG.notes.droite?CFG.notes.droite[r]:null;
+    if(row?row.length>0:false){
+      var first=(row[0].p||row[0].t||'').trim();
+      var k=first.replace(/\d+$/,'').trim();
+      if(k)keys.push(k);
+    }
+  }
+  var nMD=(CFG.rangees||[]).slice(0,nRangs).reduce(function(s,r){return s+(r.nb||0);},0);
+  var nB=((CFG.notes.basses||[]).length)+((CFG.notes.accords||[]).length);
+  return(keys.length?keys.join('/'):'?')+' '+nMD+'b'+nB+'B';
+}
 function _doTranspose(semi){
   function shiftNoteStr(s){
     if(!s)return s;
@@ -2946,6 +3192,9 @@ function _doTranspose(semi){
   const n=CFG.notes;
   n.droite=(n.droite||[]).map(shiftRow);
   ['basses','basses2','basses3','accords','accords2','accords3','terzetto'].forEach(k=>{n[k]=shiftRow(n[k]);});
+  // Auto-update instrument title from transposed notes
+  const titleEl=document.getElementById('nom-instrument');
+  if(titleEl)titleEl.value=_buildAutoTitle();
   generateInputGrid();onAnyChange();forcePreview();
 }
 function transposeAllNotes(semi){
@@ -3146,8 +3395,8 @@ function saveAsJSON(){
   const rec=snapshotToDB();
   const labelEl=document.getElementById('preset-export-label');
   const catEl=document.getElementById('preset-export-category');
-  if(labelEl&&labelEl.value.trim())rec.presetLabel=labelEl.value.trim();
-  if(catEl&&catEl.value)rec.presetCategory=catEl.value;
+  if(labelEl?labelEl.value.trim():false)rec.presetLabel=labelEl.value.trim();
+  if(catEl?catEl.value:false)rec.presetCategory=catEl.value;
   const name=(rec.presetLabel||rec.nom||'accordeon').replace(/[^a-zA-Z0-9_\-]/g,'_');
   triggerDownload(JSON.stringify(rec,null,2),name+'.json','application/json');
 }
