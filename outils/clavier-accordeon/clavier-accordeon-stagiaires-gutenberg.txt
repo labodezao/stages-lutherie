@@ -1216,6 +1216,10 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
       lhRows: JSON.parse(JSON.stringify(currentPreset.lhRows || [{nb:(currentPreset.notes ? (currentPreset.notes.basses ? currentPreset.notes.basses.length : 6) : 6),offset:0}])),
       lhPairsPerRow: currentPreset.lhPairsPerRow || 2,
       lhBassFirst: currentPreset.lhBassFirst || false,
+      accordsSeuilEnabled: currentPreset.accordsSeuilEnabled || false,
+      accordsSeuilNote: currentPreset.accordsSeuilNote || 'Sol4',
+      accordsSeuilBasEnabled: currentPreset.accordsSeuilBasEnabled || false,
+      accordsSeuilBasNote: currentPreset.accordsSeuilBasNote || 'Do3',
       notes: JSON.parse(JSON.stringify(currentPreset.notes||{}))
     };
   }
