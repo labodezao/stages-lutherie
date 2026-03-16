@@ -905,6 +905,8 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <div class="legend-swatch" style="background:#fffbf0;border:1.5px solid #c8a020;color:#7a5c00;">↑</div>
           <strong data-i="pull">Tiré</strong>
         </div>
+        <button id="btn-undo" class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="undo()" title="Ctrl+Z" disabled data-i-btn="undo">↩ Annuler</button>
+        <button id="btn-redo" class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="redo()" title="Ctrl+Y" disabled data-i-btn="redo">↪ Rétablir</button>
         <button class="btn btn-rouge" style="margin-left:auto;font-size:.76rem;padding:5px 10px;" onclick="clearNotes()" data-i-btn="clearNotes">🗑️ Effacer toutes les notes</button>
         <button class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="convertFlatsToSharps()" data-i-btn="flatToSharp">b→# Bémols → Dièses</button>
         <span style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:.76rem;font-weight:600;color:#555;" data-i="transposeLabel">🎵 Transposer :</span>
@@ -1155,6 +1157,7 @@ fr:{
   compareKbdRH:'MD R',compareKbdLH:'MG',compareKbdPush:'Poussé',compareKbdPull:'Tiré',
   compareKbdEnh:'enharmoniques',
   flatToSharp:'b→# Bémols → Dièses',flatToSharpConfirm:'Convertir tous les bémols en dièses enharmoniques ?\n(Réb→Do#, Mib→Ré#, Solb→Fa#, Lab→Sol#, Sib→La#, Dob→Si)',
+  undo:'↩ Annuler',redo:'↪ Rétablir',
   transposeLabel:'🎵 Transposer :',transposeConfirm:'Transposer toutes les notes de %s demi-ton(s) ?',
   transposeCustom:'⊞',transposeModalTitle:'🎵 Transposer par intervalle',transposeModalDesc:'Choisissez un intervalle (en demi-tons) pour transposer toutes les notes :',transposeModalCustom:'Demi-tons personnalisé :',transposeModalApply:'Transposer',
   downloadSvg:'⬇️ SVG',downloadSvgAlert:'Aucun aperçu disponible. Cliquez sur Actualiser d\'abord.',
@@ -1243,6 +1246,7 @@ en:{
   compareKbdRH:'RH R',compareKbdLH:'LH',compareKbdPush:'Push',compareKbdPull:'Pull',
   compareKbdEnh:'enharmonic',
   flatToSharp:'b→# Flats → Sharps',flatToSharpConfirm:'Convert all flat notes to their enharmonic sharp equivalents?\n(Db→C#, Eb→D#, Gb→F#, Ab→G#, Bb→A#, Cb→B)',
+  undo:'↩ Undo',redo:'↪ Redo',
   transposeLabel:'🎵 Transpose:',transposeConfirm:'Transpose all notes by %s semitone(s)?',
   transposeCustom:'⊞',transposeModalTitle:'🎵 Transpose by interval',transposeModalDesc:'Choose an interval (in semitones) to transpose all notes:',transposeModalCustom:'Custom semitones:',transposeModalApply:'Transpose',
   downloadSvg:'⬇️ SVG',downloadSvgAlert:'No preview available. Click Refresh first.',
@@ -1356,6 +1360,7 @@ let CFG={
   notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
 let rowClipboard=null;
+let undoStack=[];let redoStack=[];let _suppressHistory=false;let historyTimer=null;const MAX_UNDO=50;
 let currentId=null,saveTimer=null,previewTimer=null;
 let pickerInput=null,pickerNote='',pickerOctave='';
 
@@ -1663,6 +1668,46 @@ function onAnyChange(){
   setSaveStatus('dirty');clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{if(currentId)saveCurrentInstrument();},1200);
   scheduleLivePreview();
+  scheduleHistory();
+}
+function pushHistory(){
+  if(_suppressHistory)return;
+  readNoteInputsIntoCFG();
+  const state=JSON.stringify(CFG);
+  if(undoStack.length&&undoStack[undoStack.length-1]===state)return;
+  undoStack.push(state);
+  if(undoStack.length>MAX_UNDO+1)undoStack.shift();
+  redoStack=[];
+  updateUndoRedoButtons();
+}
+function scheduleHistory(){
+  if(_suppressHistory)return;
+  clearTimeout(historyTimer);
+  historyTimer=setTimeout(pushHistory,1000);
+}
+function undo(){
+  if(undoStack.length<=1)return;
+  _suppressHistory=true;
+  redoStack.push(undoStack.pop());
+  CFG=JSON.parse(undoStack[undoStack.length-1]);
+  generateInputGrid();forcePreview();onAnyChange();
+  _suppressHistory=false;
+  updateUndoRedoButtons();
+}
+function redo(){
+  if(!redoStack.length)return;
+  _suppressHistory=true;
+  undoStack.push(redoStack.pop());
+  CFG=JSON.parse(undoStack[undoStack.length-1]);
+  generateInputGrid();forcePreview();onAnyChange();
+  _suppressHistory=false;
+  updateUndoRedoButtons();
+}
+function updateUndoRedoButtons(){
+  const u=document.getElementById('btn-undo');
+  const r=document.getElementById('btn-redo');
+  if(u)u.disabled=undoStack.length<=1;
+  if(r)r.disabled=!redoStack.length;
 }
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -1677,6 +1722,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(list.length){loadFromDB(list[0]);}
   else{loadPreset('GCD33').then(()=>{document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();});}
   scheduleLivePreview();
+  setTimeout(pushHistory,200);
+  // Keyboard shortcuts: Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo
+  document.addEventListener('keydown',e=>{
+    if(e.ctrlKey||e.metaKey){
+      if(!e.shiftKey&&e.key==='z'){e.preventDefault();undo();}
+      if(e.key==='y'||(e.shiftKey&&e.key==='Z')){e.preventDefault();redo();}
+    }
+  });
   // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
   document.getElementById('note-grid').addEventListener('click',e=>{
     const inp=e.target.closest('.note-input');
@@ -3806,6 +3859,7 @@ function copyRow(rwId){
 }
 function pasteRow(rwId){
   if(!rowClipboard)return;
+  pushHistory();
   const wrap=document.getElementById(rwId);if(!wrap)return;
   const cells=wrap.querySelectorAll('.btn-cell');
   const count=Math.min(cells.length,rowClipboard.length);
@@ -3820,16 +3874,20 @@ function pasteRow(rwId){
 }
 function clearNotes(){
   if(!confirm(t('clearConfirm')))return;
+  pushHistory();
   document.querySelectorAll('#note-grid input').forEach(el=>{el.value='';});
   readNoteInputsIntoCFG();onAnyChange();
 }
 function convertFlatsToSharps(){
   if(!confirm(t('flatToSharpConfirm')))return;
+  pushHistory();
   // Flat→Sharp maps (French and English roots)
   const F2S={
     'Réb':'Do#','Mib':'Ré#','Solb':'Fa#','Lab':'Sol#','Sib':'La#','Dob':'Si',
     'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#','Cb':'B'
   };
+  // Case-insensitive lookup map
+  const F2S_lower={};for(const k in F2S)F2S_lower[k.toLowerCase()]=F2S[k];
   function convertNote(s){
     if(!s)return s;
     // Slash-separated notes: convert each part recursively (handles octave in each part)
@@ -3839,8 +3897,8 @@ function convertFlatsToSharps(){
     if(sp>0){const root=s.slice(0,sp),qual=s.slice(sp);return convertNote(root)+qual;}
     // Simple note possibly with octave suffix: "Réb3" → "Do#3"
     const m=s.match(/^(.+?)(\d)$/);
-    if(m){const conv=F2S[m[1]];if(conv!==undefined)return conv+m[2];}
-    return F2S[s]||s;
+    if(m){const conv=F2S_lower[m[1].toLowerCase()];if(conv!==undefined)return conv+m[2];}
+    return F2S_lower[s.toLowerCase()]||s;
   }
   function convertRow(arr){return (arr||[]).map(b=>({p:convertNote(b.p),t:convertNote(b.t)}));}
   const n=CFG.notes;
@@ -3850,6 +3908,7 @@ function convertFlatsToSharps(){
 }
 /* ── Shared transposition helper ─────────────────────── */
 function _doTranspose(semi){
+  pushHistory();
   function shiftNoteStr(s){
     if(!s)return s;
     if(s.includes('/')){return s.split('/').map(p=>shiftNoteStr(p.trim())).join('/');}
