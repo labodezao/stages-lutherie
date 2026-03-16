@@ -490,6 +490,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <option value="Spéciaux">Spéciaux</option>
           <option value="Personnalisés" selected>Personnalisés</option>
         </select>
+        <button type="button" onclick="addPresetFamily()" title="Ajouter une nouvelle famille" style="padding:4px 9px;border:1.5px solid var(--border);border-radius:5px;font-size:.85rem;background:#fff;cursor:pointer;color:var(--dark);font-weight:700;line-height:1;flex-shrink:0">+</button>
       </div>
       <div class="btn-group" style="margin-top:13px;">
         <button class="btn btn-primary" onclick="saveCurrentInstrument(true)" data-i-btn="saveInstrument">💾 Sauvegarder cet accordéon</button>
@@ -1297,6 +1298,40 @@ function _savePresetToServer(rec){
     if(el){el.textContent='\u26a0\ufe0f Server save failed';el.className='dirty';}
   });
 }
+const CA_FAMILIES_KEY='ca_custom_families';
+function _restoreCustomFamilies(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');
+    const sel=document.getElementById('preset-export-category');
+    if(!sel)return;
+    const existing=Array.from(sel.options).map(o=>o.value);
+    saved.forEach(f=>{
+      if(f&&!existing.includes(f)){
+        const opt=document.createElement('option');
+        opt.value=f;opt.textContent=f;
+        sel.insertBefore(opt,sel.lastElementChild);
+      }
+    });
+  }catch(e){}
+}
+function addPresetFamily(){
+  const name=(prompt('Nom de la nouvelle famille :')||'').trim();
+  if(!name)return;
+  const sel=document.getElementById('preset-export-category');
+  if(!sel)return;
+  const existing=Array.from(sel.options).map(o=>o.value);
+  if(!existing.includes(name)){
+    const opt=document.createElement('option');
+    opt.value=name;opt.textContent=name;
+    sel.insertBefore(opt,sel.lastElementChild);
+    try{
+      const saved=JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');
+      if(!saved.includes(name))saved.push(name);
+      localStorage.setItem(CA_FAMILIES_KEY,JSON.stringify(saved));
+    }catch(e){}
+  }
+  sel.value=name;
+}
 function newInstrument(){
   currentId=null;
   document.getElementById('preset-select').value='';
@@ -1364,6 +1399,7 @@ function onAnyChange(){
    ╚══════════════════════════════════════════════════════╝ */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
+  _restoreCustomFamilies();
   loadPresetIndex();
   renderVoixPerRow();
   initPicker();renderLibrary();

@@ -1332,7 +1332,8 @@ var STAGE_CONFIG = {
       });
   }
 
-  /* Mapping modèle → catégories de présets compatibles */
+  /* Familles visibles dans le formulaire d'inscription */
+  var VISIBLE_PRESET_CATEGORIES = ['2 rangs 8b', '3 rangs 12b', '3 rangs 18b', '3 rangs 24b'];
   var MODEL_PRESET_CATEGORIES = {
     '21/8b':  ['2 rangs 8b'],
     '33/12b': ['3 rangs 12b', '3 rangs 12 basses'],
@@ -1347,9 +1348,8 @@ var STAGE_CONFIG = {
     if (!sel) return;
     var ph = sel.options[0]; sel.innerHTML = ''; sel.appendChild(ph);
     var allowedCats = MODEL_PRESET_CATEGORIES[modelVal] || null;
-    var list = allowedCats
-      ? allPresets.filter(function (p) { return allowedCats.indexOf(p.category) >= 0; })
-      : allPresets;
+    var activeCats = allowedCats || VISIBLE_PRESET_CATEGORIES;
+    var list = allPresets.filter(function (p) { return activeCats.indexOf(p.category) >= 0; });
     if (hint) hint.style.display = modelVal ? 'none' : 'block';
     var cats = {};
     list.forEach(function (p) {
