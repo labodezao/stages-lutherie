@@ -970,8 +970,8 @@ function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi
    ╚══════════════════════════════════════════════════════╝ */
 const _presetCache={};  // id → preset data (lazy-loaded)
 let   _presetIndex=[];  // [{id,label,category}]
-let   _pmSortKey='';    // '' | 'label' | 'category'
-let   _pmSortDir=1;     // 1=asc, -1=desc
+let   _pmSortKey='category'; // '' | 'label' | 'category'
+let   _pmSortDir=1;          // 1=asc, -1=desc
 
 /* CA_REST_ROOT is injected by presets-api.php when running in WordPress.
    Fallback to '/wp-json/' for local WP dev or when mu-plugin is missing. */
@@ -1023,7 +1023,7 @@ function renderPresetManager(){
   _presetIndex.forEach(p=>{if(p.category){if(!allCats.includes(p.category))allCats.push(p.category);}});
   // Sort
   const sorted=_presetIndex.slice();
-  if(_pmSortKey){sorted.sort((a,b)=>{const va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();return va<vb?-_pmSortDir:va>vb?_pmSortDir:0;});}
+  if(_pmSortKey){sorted.sort((a,b)=>{const va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();if(va<vb)return -_pmSortDir;if(va>vb)return _pmSortDir;if(_pmSortKey==='category'){const la=(a.label||'').toLowerCase(),lb=(b.label||'').toLowerCase();return la<lb?-1:la>lb?1:0;}return 0;});}
   // Sort indicators
   const si=(k)=>_pmSortKey===k?(_pmSortDir===1?' ▲':' ▼'):' ↕';
   let html='<table style="width:100%;border-collapse:collapse;font-size:.8rem">'

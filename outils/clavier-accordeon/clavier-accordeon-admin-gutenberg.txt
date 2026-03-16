@@ -994,8 +994,8 @@ function shiftNote(n,semi){const m=noteToMidi(n);return m!==null?midiToFr(m+semi
    ╚══════════════════════════════════════════════════════╝ */
 const _presetCache={};  // id → preset data (lazy-loaded)
 let   _presetIndex=[];  // [{id,label,category}]
-var   _pmSortKey='';    // '' | 'label' | 'category'
-var   _pmSortDir=1;     // 1=asc, -1=desc
+var   _pmSortKey='category'; // '' | 'label' | 'category'
+var   _pmSortDir=1;          // 1=asc, -1=desc
 
 /* PRESETS_BASE_URL est défini dans le bloc de configuration ci-dessus.
    En mode local (sans ce bloc), on initialise à '' par défaut. */
@@ -1052,7 +1052,7 @@ function renderPresetManager(){
   _presetIndex.forEach(function(p){if(p.category){if(allCats.indexOf(p.category)<0)allCats.push(p.category);}});
   // Sort
   var sorted=_presetIndex.slice();
-  if(_pmSortKey){sorted.sort(function(a,b){var va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();return va<vb?-_pmSortDir:va>vb?_pmSortDir:0;});}
+  if(_pmSortKey){sorted.sort(function(a,b){var va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();if(va<vb)return -_pmSortDir;if(va>vb)return _pmSortDir;if(_pmSortKey==='category'){var la=(a.label||'').toLowerCase(),lb=(b.label||'').toLowerCase();return la<lb?-1:la>lb?1:0;}return 0;});}
   // Sort indicators
   var si=function(k){return _pmSortKey===k?(_pmSortDir===1?' ▲':' ▼'):' ↕';};
   var html='<table style="width:100%;border-collapse:collapse;font-size:.8rem">'
