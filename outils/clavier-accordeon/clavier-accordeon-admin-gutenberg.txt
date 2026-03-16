@@ -1040,7 +1040,7 @@ function renderPresetManager(){
   // Build full category list: base + custom (localStorage) + any in index not yet listed
   var customFams=(function(){try{return JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');}catch(e){return[];}})();
   var allCats=PM_CATS.concat(customFams.filter(function(f){return PM_CATS.indexOf(f)<0;}));
-  _presetIndex.forEach(function(p){if(p.category&&allCats.indexOf(p.category)<0)allCats.push(p.category);});
+  _presetIndex.forEach(function(p){if(p.category){if(allCats.indexOf(p.category)<0)allCats.push(p.category);}});
   // Sort
   var sorted=_presetIndex.slice();
   if(_pmSortKey){sorted.sort(function(a,b){var va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();return va<vb?-_pmSortDir:va>vb?_pmSortDir:0;});}
@@ -2997,8 +2997,8 @@ function _buildAutoTitle(){
   var nRangs=CFG.nbRangees||(CFG.rangees||[]).length||2;
   var keys=[];
   for(var r=0;r<nRangs;r++){
-    var row=CFG.notes.droite&&CFG.notes.droite[r];
-    if(row&&row.length>0){
+    var row=CFG.notes.droite?CFG.notes.droite[r]:null;
+    if(row?row.length>0:false){
       var first=(row[0].p||row[0].t||'').trim();
       var k=first.replace(/\d+$/,'').trim();
       if(k)keys.push(k);

@@ -1010,7 +1010,7 @@ function renderPresetManager(){
   // Build full category list: base + custom (localStorage) + any in index not yet listed
   const customFams=(()=>{try{return JSON.parse(localStorage.getItem(CA_FAMILIES_KEY)||'[]');}catch(e){return[];}})();
   const allCats=PM_CATS.concat(customFams.filter(f=>!PM_CATS.includes(f)));
-  _presetIndex.forEach(p=>{if(p.category&&!allCats.includes(p.category))allCats.push(p.category);});
+  _presetIndex.forEach(p=>{if(p.category){if(!allCats.includes(p.category))allCats.push(p.category);}});
   // Sort
   const sorted=_presetIndex.slice();
   if(_pmSortKey){sorted.sort((a,b)=>{const va=(a[_pmSortKey]||'').toLowerCase(),vb=(b[_pmSortKey]||'').toLowerCase();return va<vb?-_pmSortDir:va>vb?_pmSortDir:0;});}
@@ -2956,8 +2956,8 @@ function _buildAutoTitle(){
   const nRangs=CFG.nbRangees||(CFG.rangees||[]).length||2;
   const keys=[];
   for(let r=0;r<nRangs;r++){
-    const row=CFG.notes.droite&&CFG.notes.droite[r];
-    if(row&&row.length>0){
+    const row=CFG.notes.droite?CFG.notes.droite[r]:null;
+    if(row?row.length>0:false){
       const first=(row[0].p||row[0].t||'').trim();
       const k=first.replace(/\d+$/,'').trim();
       if(k)keys.push(k);
