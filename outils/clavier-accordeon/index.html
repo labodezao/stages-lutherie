@@ -1802,6 +1802,7 @@ function accordsFifthShift(){
   readNoteInputsIntoCFG();
   CFG.notes.accords2=(CFG.notes.accords||[]).map(a=>({p:shiftNote(a.p,7),t:shiftNote(a.t,7)}));
   CFG.notes.accords2=applyAccordsSeuil(CFG.notes.accords2);
+  CFG.notes.accords2=applyAccordsSeuilBas(CFG.notes.accords2);
   generateInputGrid();onAnyChange();
 }
 /* ── Seuil accords MG — transpose down one octave any note above the threshold ── */
@@ -1879,7 +1880,7 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg" draggable="true">
+    html+=`<div class="rangee-cfg">
       <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
       <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
@@ -1911,12 +1912,18 @@ function initRowDragDrop(){
   if(!wrap)return;
   wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
     el.dataset.rowIdx=idx;
+    const handle=el.querySelector('.row-drag-handle');
+    if(handle){
+      handle.addEventListener('mousedown',()=>{el.draggable=true;});
+    }
+    el.addEventListener('mouseup',()=>{el.draggable=false;});
     el.addEventListener('dragstart',e=>{
       _rowDragSrc=el;
       e.dataTransfer.effectAllowed='move';
       setTimeout(()=>el.classList.add('row-dragging'),0);
     });
     el.addEventListener('dragend',()=>{
+      el.draggable=false;
       el.classList.remove('row-dragging');
       wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
       _rowDragSrc=null;

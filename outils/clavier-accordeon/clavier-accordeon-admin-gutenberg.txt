@@ -1587,11 +1587,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(inp){e.stopPropagation();showPicker(inp);return;}
     const seuil=e.target.closest('#accords-seuil-note');
     if(seuil){e.stopPropagation();showPicker(seuil);return;}
+    const seuilBas=e.target.closest('#accords-seuil-bas-note');
+    if(seuilBas){e.stopPropagation();showPicker(seuilBas);return;}
   });
   // Close picker when clicking outside it (use computed style so initial '' != 'none' doesn't trick us)
   document.addEventListener('click',e=>{
     const p=document.getElementById('note-picker');
-    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?(!e.target.closest('.note-input')?!e.target.closest('#accords-seuil-note'):false):false):false)hidePicker();
+    if(getComputedStyle(p).display!=='none'?(!p.contains(e.target)?(!e.target.closest('.note-input')?(!e.target.closest('#accords-seuil-note')?!e.target.closest('#accords-seuil-bas-note'):false):false):false):false)hidePicker();
   });
   // Sync preset-export-label from nom-instrument (presetSel handled by loadPreset)
   const nomInstr=document.getElementById('nom-instrument');
@@ -1852,6 +1854,7 @@ function accordsFifthShift(){
   readNoteInputsIntoCFG();
   CFG.notes.accords2=(CFG.notes.accords||[]).map(a=>({p:shiftNote(a.p,7),t:shiftNote(a.t,7)}));
   CFG.notes.accords2=applyAccordsSeuil(CFG.notes.accords2);
+  CFG.notes.accords2=applyAccordsSeuilBas(CFG.notes.accords2);
   generateInputGrid();onAnyChange();
 }
 /* \u2500\u2500 Seuil accords MG \u2014 transpose down one octave any note above the threshold \u2500\u2500 */
@@ -1874,6 +1877,30 @@ function applyAccordsSeuilManual(){
   readNoteInputsIntoCFG();
   ['accords','accords2','accords3'].forEach(function(key){
     if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuil(CFG.notes[key]);}}
+  });
+  generateInputGrid();onAnyChange();
+}
+/* ── Seuil bas accords MG — transpose up one octave any note below the threshold (V1 & V2 only) ── */
+function applyAccordsSeuilBas(arr){
+  const chkEl=document.getElementById('accords-seuil-bas-enabled');
+  if(!chkEl){return arr;}
+  if(!chkEl.checked){return arr;}
+  const seuilNote=(document.getElementById('accords-seuil-bas-note')||{}).value||'';
+  const seuilMidi=noteToMidi(seuilNote.trim());
+  if(seuilMidi===null)return arr;
+  return arr.map(function(a){
+    const mp=noteToMidi(a.p);
+    const mt=noteToMidi(a.t);
+    return{
+      p:(mp!==null?(mp<seuilMidi):false)?midiToFr(mp+12):a.p,
+      t:(mt!==null?(mt<seuilMidi):false)?midiToFr(mt+12):a.t
+    };
+  });
+}
+function applyAccordsSeuilBasManual(){
+  readNoteInputsIntoCFG();
+  ['accords','accords2'].forEach(function(key){
+    if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuilBas(CFG.notes[key]);}}
   });
   generateInputGrid();onAnyChange();
 }
@@ -1927,7 +1954,7 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg" draggable="true">
+    html+=`<div class="rangee-cfg">
       <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
       <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
@@ -1959,12 +1986,18 @@ function initRowDragDrop(){
   if(!wrap)return;
   wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
     el.dataset.rowIdx=idx;
+    const handle=el.querySelector('.row-drag-handle');
+    if(handle){
+      handle.addEventListener('mousedown',()=>{el.draggable=true;});
+    }
+    el.addEventListener('mouseup',()=>{el.draggable=false;});
     el.addEventListener('dragstart',e=>{
       _rowDragSrc=el;
       e.dataTransfer.effectAllowed='move';
       setTimeout(()=>el.classList.add('row-dragging'),0);
     });
     el.addEventListener('dragend',()=>{
+      el.draggable=false;
       el.classList.remove('row-dragging');
       wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
       _rowDragSrc=null;
@@ -2019,13 +2052,24 @@ function generateInputGrid(){
   html+=`</div>`;
   // Left hand — voice sections for basses and accords
   html+=`<div class="note-section"><div class="note-section-title">${t('leftHand')}</div>
-    <div style="margin:0 0 10px 0;padding:8px 10px;background:#fff8e8;border:1px solid #ead7a3;border-radius:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-      <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
-        <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
-        <span>Seuil accords MG</span>
-      </label>
-      <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil accords MG" data-tip="Seuil de note pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
-      <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+    <div style="margin:0 0 10px 0;padding:8px 10px;background:#fff8e8;border:1px solid #ead7a3;border-radius:7px;display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
+          <input type="checkbox" id="accords-seuil-enabled" onchange="onAnyChange()">
+          <span>Seuil haut accords MG</span>
+        </label>
+        <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil haut accords MG" data-tip="Seuil HAUT pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
+        <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
+          <input type="checkbox" id="accords-seuil-bas-enabled" onchange="onAnyChange()">
+          <span>Seuil bas accords V1+V2</span>
+        </label>
+        <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil bas accords V1+V2" data-tip="Seuil BAS pour les accords main gauche (V1 et V2 seulement).&#10;Quand activ\u00e9 : si une note est sous ce seuil, elle monte d'une octave.&#10;S'applique \u00e0 accords V1 et V2 uniquement (pas basses, pas terzetto).&#10;Exemple : seuil Do3 \u2192 toute note &lt; Do3 monte d'une octave.">&#9432;</span>
+        <input type="text" id="accords-seuil-bas-note" value="Do3" placeholder="Ex: Do3" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+        <button type="button" onclick="applyAccordsSeuilBasManual()" style="padding:2px 8px;font-size:.75rem;border:1px solid #ead7a3;border-radius:4px;background:#fff;cursor:pointer;font-weight:700;color:var(--dark)" title="Appliquer le seuil bas aux accords V1 et V2">&#8679; Appliquer</button>
+      </div>
     </div>`;
   const nbVB=parseInt(document.getElementById('nb-voix-basses')?.value||'2');
   const nbVA=parseInt(document.getElementById('nb-voix-accords')?.value||'2');
