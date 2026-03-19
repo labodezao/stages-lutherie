@@ -3493,7 +3493,7 @@ async function downloadPDF(which){
             :[['A',data.accords,data.accords2,data.nbVoixAccords||2],['B',data.basses,data.basses2,data.nbVoixBasses||2]];
           seq.forEach(([ty,src,sr2,nv])=>{if(src?src[i]:false){its.push(src[i]);its2.push(nv>1?sr2?sr2[i]||null:null:null);tys.push(ty);ixs.push(i+1);}});
         }
-        if(its.length)lhSecs.push({nom:nG===1?`${t('basses')}/${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`,items:its,items2:its2,offset:0,iTypes:tys,iIdxs:ixs});
+        if(its.length)lhSecs.push({nom:nG===1?`${t('basses')}/${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`,items:its,items2:its2,offset:data.lhPairedOffsets?data.lhPairedOffsets[g]||0:0,iTypes:tys,iIdxs:ixs});
       }
     }else{
       const cfg=(data.lhRows?data.lhRows.length:false)?data.lhRows:[{nb:(data.basses||[]).length||1,offset:0}];
