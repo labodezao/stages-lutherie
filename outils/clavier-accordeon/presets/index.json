@@ -1,192 +1,202 @@
 [
     {
         "id": "GC21",
-        "label": "Sol/Do — 21 boutons",
+        "label": "Sol\/Do — 21 boutons",
         "category": "2 rangs 8b"
     },
     {
         "id": "DG21",
-        "label": "Ré/Sol — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Ré\/Sol — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "CF21",
-        "label": "Do/Fa — 21 boutons",
+        "label": "Do\/Fa — 21 boutons",
         "category": "2 rangs 8b"
     },
     {
         "id": "AD21",
-        "label": "La/Ré — 21 boutons",
+        "label": "La\/Ré — 21 boutons",
         "category": "2 rangs 8b"
     },
     {
         "id": "BE21",
-        "label": "Si/Mi — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Si\/Mi — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "EA21",
-        "label": "Mi/La — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Mi\/La — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "FBb21",
-        "label": "Fa/Sib — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Fa\/Sib — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "EbBb21",
-        "label": "Mib/Sib — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Mib\/Sib — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "ABb21",
-        "label": "La/Sib — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "La\/Sib — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "GDA21",
-        "label": "Sol/Ré/La (2 rangs en La ext.) — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Sol\/Ré\/La (2 rangs en La ext.) — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "FD21",
-        "label": "Fa/Ré — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Fa\/Ré — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "CA21",
-        "label": "Do/La — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Do\/La — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "BC21",
-        "label": "Si/Do (système irlandais) — 21 boutons",
+        "label": "Si\/Do (système irlandais) — 21 boutons",
         "category": "2 rangs 8b"
     },
     {
         "id": "CSharpD21",
-        "label": "Do#/Ré (système irlandais) — 21 boutons",
+        "label": "Do#\/Ré (système irlandais) — 21 boutons",
         "category": "2 rangs 8b"
     },
     {
         "id": "DbEb21",
-        "label": "Réb/Mib (système irlandais) — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Réb\/Mib (système irlandais) — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "EbF21",
-        "label": "Mib/Fa (système irlandais) — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Mib\/Fa (système irlandais) — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "FGb21",
-        "label": "Fa/Solb (système irlandais) — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Fa\/Solb (système irlandais) — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "GAb21",
-        "label": "Sol/Lab (système irlandais) — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "Sol\/Lab (système irlandais) — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "ADb21",
-        "label": "La/Réb (système irlandais) — 21 boutons",
-        "category": "2 rangs 8b"
+        "label": "La\/Réb (système irlandais) — 21 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "GCD33",
-        "label": "Sol/Do/Ré — 33 boutons",
-        "category": "3 rangs 12b"
+        "label": "Sol\/Do\/Ré — 33 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "BbFC33",
-        "label": "Sib/Fa/Do — 33 boutons",
-        "category": "3 rangs 12b"
+        "label": "Sib\/Fa\/Do — 33 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "ADG33",
-        "label": "La/Ré/Sol — 33 boutons",
-        "category": "3 rangs 12b"
+        "label": "La\/Ré\/Sol — 33 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "DGC33",
-        "label": "Ré/Sol/Do — 33 boutons",
-        "category": "3 rangs 12b"
-    },
-    {
-        "id": "CFBb33",
-        "label": "Do/Fa/Sib — 33 boutons",
-        "category": "3 rangs 12b"
+        "label": "Ré\/Sol\/Do — 33 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "EAD33",
-        "label": "Mi/La/Ré — 33 boutons",
-        "category": "3 rangs 12b"
+        "label": "Mi\/La\/Ré — 33 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "BbEbAb33",
-        "label": "Sib/Mib/Lab — 33 boutons",
-        "category": "3 rangs 12b"
+        "label": "Sib\/Mib\/Lab — 33 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "FCG33",
-        "label": "Fa/Do/Sol — 33 boutons",
-        "category": "3 rangs 12b"
+        "label": "Fa\/Do\/Sol — 33 boutons",
+        "category": "Spéciaux"
     },
     {
         "id": "SolDoFa33_12",
-        "label": "Sol/Do/Fa — 33/12 (Continental)",
-        "category": "3 rangs 12b"
+        "label": "Sol\/Do\/Fa — 33\/12 (Continental)",
+        "category": "Spéciaux"
     },
     {
         "id": "LaReSol33_12",
-        "label": "La/Ré/Sol — 33/12",
-        "category": "3 rangs 12b"
+        "label": "La\/Ré\/Sol — 33\/12",
+        "category": "Spéciaux"
     },
     {
         "id": "SibMibLab33_12",
-        "label": "Sib/Mib/Lab — 33/12",
-        "category": "3 rangs 12b"
+        "label": "Sib\/Mib\/Lab — 33\/12",
+        "category": "Spéciaux"
     },
     {
         "id": "SolDo_Corgeron",
-        "label": "Sol/Do Corgeron — 33/8",
-        "category": "3 rangs 12b"
-    },
-    {
-        "id": "SolDo_Heim",
-        "label": "Sol/Do Heim — 33/8",
-        "category": "3 rangs 12b"
+        "label": "Sol\/Do Corgeron — 33\/8",
+        "category": "Spéciaux"
     },
     {
         "id": "SolDoAlts_Bottasso",
-        "label": "Sol/Do/Alts Bottasso — 33/18",
-        "category": "3 rangs 18b"
+        "label": "Sol\/Do\/Alts Bottasso — 33\/18",
+        "category": "Spéciaux"
     },
     {
         "id": "SolDoAlts_JPL",
-        "label": "Sol/Do/Alts JPL — 33/18",
-        "category": "3 rangs 18b"
+        "label": "Sol\/Do\/Alts JPL — 33\/18",
+        "category": "Spéciaux"
     },
     {
         "id": "SolDoAlts_LTL",
-        "label": "Sol/Do/Alts LTL — 33/18",
-        "category": "3 rangs 18b"
+        "label": "Sol\/Do\/Alts LTL — 33\/18",
+        "category": "Spéciaux"
     },
     {
         "id": "SolDoAlts_Gaillard",
-        "label": "Sol/Do/Alts Gaillard — 33/18",
-        "category": "3 rangs 18b"
+        "label": "Sol\/Do\/Alts Gaillard — 33\/18",
+        "category": "Spéciaux"
     },
     {
         "id": "SolDo_Darwin",
-        "label": "Sol/Do — Darwin 33/24 (bisonore)",
+        "label": "Sol\/Do — Darwin 33\/24 (bisonore)",
         "category": "3 rangs 24b"
     },
     {
         "id": "SolDo_Lamarck",
-        "label": "Sol/Do — Lamarck 33/24 (unisonore)",
+        "label": "Sol\/Do — Lamarck 33\/24 (unisonore)",
         "category": "3 rangs 24b"
+    },
+    {
+        "id": "SolDo_Heim12b",
+        "label": "Sol\/Do Heim — 33\/12",
+        "category": "3 rangs 12b"
+    },
+    {
+        "id": "SolDo_MilleretPignol12b",
+        "label": "Sol\/Do Milleret Pignol — 33\/12",
+        "category": "3 rangs 12b"
+    },
+    {
+        "id": "SolDoAlts_milleretPignol18b",
+        "label": "Sol\/Do\/Alts Milleret Pignol — 33\/18",
+        "category": "3 rangs 18b"
+    },
+    {
+        "id": "SolDo_Heim18b",
+        "label": "Sol\/Do Heim — 33\/18",
+        "category": "3 rangs 18b"
     }
 ]
