@@ -1,14 +1,20 @@
 {
-    "nbRangees": 2,
+    "nbRangees": 3,
     "rangees": [
         {
             "nom": "Rangée Sol (intérieure)",
-            "nb": 11,
+            "nb": 12,
             "offset": 0,
             "register": "N"
         },
         {
-            "nom": "Rangée Do (extérieure)",
+            "nom": "Rangée Do (médiane)",
+            "nb": 11,
+            "offset": 1,
+            "register": "N"
+        },
+        {
+            "nom": "Rangée Alts (extérieure)",
             "nb": 10,
             "offset": 1,
             "register": "N"
@@ -23,16 +29,70 @@
             "offset": 0
         }
     ],
-    "lhPairsPerRow": 2,
+    "lhPairsPerRow": 3,
     "lhBassFirst": false,
     "lhBassesLabel": "",
     "lhAccordsLabel": "",
     "lhShowLabels": false,
+    "accordsSeuilEnabled": false,
+    "accordsSeuilNote": "Sol4",
+    "accordsSeuilBasEnabled": false,
+    "accordsSeuilBasNote": "Do3",
     "nbVoix": 2,
     "nbVoixAccords": 2,
     "nbVoixBasses": 2,
     "notes": {
         "droite": [
+            [
+                {
+                    "p": "Do3",
+                    "t": "Si2"
+                },
+                {
+                    "p": "Mi3",
+                    "t": "Ré3"
+                },
+                {
+                    "p": "Fa#3",
+                    "t": "Sol3"
+                },
+                {
+                    "p": "La3",
+                    "t": "Si3"
+                },
+                {
+                    "p": "Do4",
+                    "t": "Ré4"
+                },
+                {
+                    "p": "Mi4",
+                    "t": "Sol4"
+                },
+                {
+                    "p": "Fa#4",
+                    "t": "Si4"
+                },
+                {
+                    "p": "La4",
+                    "t": "Ré5"
+                },
+                {
+                    "p": "Do5",
+                    "t": "Sol5"
+                },
+                {
+                    "p": "Mi5",
+                    "t": "Si5"
+                },
+                {
+                    "p": "Fa#5",
+                    "t": "Ré6"
+                },
+                {
+                    "p": "La5",
+                    "t": "Sol6"
+                }
+            ],
             [
                 {
                     "p": "Si2",
@@ -81,55 +141,63 @@
             ],
             [
                 {
-                    "p": "Mi3",
-                    "t": "La3"
+                    "p": "Sol#3",
+                    "t": "Si♭3"
                 },
                 {
-                    "p": "Sol3",
-                    "t": "Si3"
+                    "p": "La3",
+                    "t": "Do#4"
                 },
                 {
-                    "p": "Do4",
-                    "t": "Ré4"
+                    "p": "Mi♭4",
+                    "t": "Sol4"
                 },
                 {
-                    "p": "Mi4",
-                    "t": "Fa4"
+                    "p": "Sol#4",
+                    "t": "Si♭4"
                 },
                 {
-                    "p": "Sol4",
-                    "t": "La4"
+                    "p": "La4",
+                    "t": "Do#5"
                 },
                 {
-                    "p": "Do5",
-                    "t": "Si5"
+                    "p": "Mi♭5",
+                    "t": "Sol5"
                 },
                 {
-                    "p": "Mi5",
-                    "t": "Ré5"
+                    "p": "Sol#5",
+                    "t": "Si♭5"
                 },
                 {
-                    "p": "Sol5",
-                    "t": "Fa5"
+                    "p": "La5",
+                    "t": "Do#6"
                 },
                 {
-                    "p": "Do6",
-                    "t": "La5"
+                    "p": "Mi♭6",
+                    "t": "Sol6"
                 },
                 {
-                    "p": "Mi6",
-                    "t": "Si6"
+                    "p": "Sol#6",
+                    "t": "Si♭6"
                 }
             ]
         ],
         "basses": [
             {
+                "p": "Ré#2",
+                "t": "La#2"
+            },
+            {
                 "p": "Mi2",
                 "t": "La2"
             },
             {
-                "p": "Fa2",
+                "p": "La2",
                 "t": "Fa2"
+            },
+            {
+                "p": "Si2",
+                "t": "Fa#2"
             },
             {
                 "p": "Sol2",
@@ -142,12 +210,20 @@
         ],
         "accords": [
             {
-                "p": "Mi4",
-                "t": "La4"
+                "p": "Ré#4",
+                "t": "La#3"
             },
             {
-                "p": "Fa4",
+                "p": "Mi4",
+                "t": "La3"
+            },
+            {
+                "p": "La3",
                 "t": "Fa4"
+            },
+            {
+                "p": "Si4",
+                "t": "Fa#4"
             },
             {
                 "p": "Sol4",
@@ -161,12 +237,20 @@
         "terzetto": [],
         "basses2": [
             {
+                "p": "Ré#3",
+                "t": "La#3"
+            },
+            {
                 "p": "Mi3",
                 "t": "La3"
             },
             {
-                "p": "Fa3",
+                "p": "La3",
                 "t": "Fa3"
+            },
+            {
+                "p": "Si3",
+                "t": "Fa#3"
             },
             {
                 "p": "Sol3",
@@ -193,20 +277,36 @@
             {
                 "p": "",
                 "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
             }
         ],
         "accords2": [
             {
-                "p": "Si4",
+                "p": "La#3",
+                "t": "Fa4"
+            },
+            {
+                "p": "Si3",
                 "t": "Mi4"
             },
             {
-                "p": "Do4",
+                "p": "Mi4",
                 "t": "Do4"
             },
             {
+                "p": "Fa#4",
+                "t": "Do#4"
+            },
+            {
                 "p": "Ré4",
-                "t": "La4"
+                "t": "La3"
             },
             {
                 "p": "Sol4",
@@ -214,6 +314,14 @@
             }
         ],
         "accords3": [
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            },
             {
                 "p": "",
                 "t": ""

@@ -89,6 +89,7 @@ select option{background:#fff;color:var(--txt)}
 .btn{padding:7px 14px;border:none;border-radius:6px;font-family:inherit;font-size:.83rem;font-weight:700;
   cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:filter .15s,transform .1s}
 .btn:hover{filter:brightness(.92)}.btn:active{transform:scale(.97)}
+.btn:disabled,.btn[disabled]{opacity:.42;cursor:not-allowed;filter:none;transform:none}
 .btn-primary{background:var(--dark);color:var(--or-c);border:1px solid var(--dark)}
 .btn-or{background:var(--gold);color:#fff;border:1px solid var(--gold-d)}
 .btn-outline{background:#fff;color:var(--dark);border:1.5px solid var(--dark)}
@@ -482,6 +483,8 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <div class="legend-swatch" style="background:#fffbf0;border:1.5px solid #c8a020;color:#7a5c00;">↑</div>
           <strong data-i="pull">Tiré</strong>
         </div>
+        <button id="btn-undo" class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="undo()" title="Ctrl+Z" disabled data-i-btn="undo">↩ Annuler</button>
+        <button id="btn-redo" class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="redo()" title="Ctrl+Y" disabled data-i-btn="redo">↪ Rétablir</button>
         <button class="btn btn-rouge" style="margin-left:auto;font-size:.76rem;padding:5px 10px;" onclick="clearNotes()" data-i-btn="clearNotes">🗑️ Effacer toutes les notes</button>
         <button class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="convertFlatsToSharps()" data-i-btn="flatToSharp">b→# Bémols → Dièses</button>
         <span style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:.76rem;font-weight:600;color:#555;" data-i="transposeLabel">🎵 Transposer :</span>
@@ -762,6 +765,7 @@ fr:{
   compareKbdRH:'MD R',compareKbdLH:'MG',compareKbdPush:'Poussé',compareKbdPull:'Tiré',
   compareKbdEnh:'enharmoniques',
   flatToSharp:'b→# Bémols → Dièses',flatToSharpConfirm:'Convertir tous les bémols en dièses enharmoniques ?\n(Réb→Do#, Mib→Ré#, Solb→Fa#, Lab→Sol#, Sib→La#, Dob→Si)',
+  undo:'↩ Annuler',redo:'↪ Rétablir',
   transposeLabel:'🎵 Transposer :',transposeConfirm:'Transposer toutes les notes de %s demi-ton(s) ?',
   transposeCustom:'⊞',transposeModalTitle:'🎵 Transposer par intervalle',transposeModalDesc:'Choisissez un intervalle (en demi-tons) pour transposer toutes les notes :',transposeModalCustom:'Demi-tons personnalisé :',transposeModalApply:'Transposer',
   downloadSvg:'⬇️ SVG',downloadSvgAlert:'Aucun aperçu disponible. Cliquez sur Actualiser d\'abord.',
@@ -850,6 +854,7 @@ en:{
   compareKbdRH:'RH R',compareKbdLH:'LH',compareKbdPush:'Push',compareKbdPull:'Pull',
   compareKbdEnh:'enharmonic',
   flatToSharp:'b→# Flats → Sharps',flatToSharpConfirm:'Convert all flat notes to their enharmonic sharp equivalents?\n(Db→C#, Eb→D#, Gb→F#, Ab→G#, Bb→A#, Cb→B)',
+  undo:'↩ Undo',redo:'↪ Redo',
   transposeLabel:'🎵 Transpose:',transposeConfirm:'Transpose all notes by %s semitone(s)?',
   transposeCustom:'⊞',transposeModalTitle:'🎵 Transpose by interval',transposeModalDesc:'Choose an interval (in semitones) to transpose all notes:',transposeModalCustom:'Custom semitones:',transposeModalApply:'Transpose',
   downloadSvg:'⬇️ SVG',downloadSvgAlert:'No preview available. Click Refresh first.',
@@ -959,10 +964,12 @@ let CFG={
   configGauche:12,
   lhRows:[{nb:6,offset:0}],
   lhPairsPerRow:2,
+  lhPairedOffsets:[],
   lhBassFirst:false,
   notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
 let rowClipboard=null;
+let undoStack=[];let redoStack=[];let _suppressHistory=false;let historyTimer=null;const MAX_UNDO=50;
 let currentId=null,saveTimer=null,previewTimer=null;
 let pickerInput=null,pickerNote='',pickerOctave='';
 
@@ -1206,6 +1213,7 @@ function snapshotToDB(){
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhPairedOffsets:JSON.parse(JSON.stringify(CFG.lhPairedOffsets||[])),
     lhBassFirst:CFG.lhBassFirst||false,
     lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
     lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
@@ -1280,6 +1288,7 @@ function loadFromDB(rec){
   // Restore lhRows — backward compat: default to 1 row covering all basses
   CFG.lhRows=rec.lhRows?JSON.parse(JSON.stringify(rec.lhRows)):[{nb:(rec.notes?(rec.notes.basses?rec.notes.basses.length:6):6),offset:0}];
   CFG.lhPairsPerRow=rec.lhPairsPerRow||2;
+  CFG.lhPairedOffsets=rec.lhPairedOffsets?JSON.parse(JSON.stringify(rec.lhPairedOffsets)):[];
   CFG.lhBassFirst=rec.lhBassFirst||false;
   updateLhOrderBtn();
   // ensure terzetto exists
@@ -1571,6 +1580,46 @@ function onAnyChange(){
   setSaveStatus('dirty');clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{if(currentId)saveCurrentInstrument();},1200);
   scheduleLivePreview();
+  scheduleHistory();
+}
+function pushHistory(){
+  if(_suppressHistory)return;
+  readNoteInputsIntoCFG();
+  const state=JSON.stringify(CFG);
+  if(undoStack.length){if(undoStack[undoStack.length-1]===state)return;}
+  undoStack.push(state);
+  if(undoStack.length>MAX_UNDO+1)undoStack.shift();
+  redoStack=[];
+  updateUndoRedoButtons();
+}
+function scheduleHistory(){
+  if(_suppressHistory)return;
+  clearTimeout(historyTimer);
+  historyTimer=setTimeout(pushHistory,1000);
+}
+function undo(){
+  if(undoStack.length<=1)return;
+  _suppressHistory=true;
+  redoStack.push(undoStack.pop());
+  CFG=JSON.parse(undoStack[undoStack.length-1]);
+  generateInputGrid();forcePreview();onAnyChange();
+  _suppressHistory=false;
+  updateUndoRedoButtons();
+}
+function redo(){
+  if(!redoStack.length)return;
+  _suppressHistory=true;
+  undoStack.push(redoStack.pop());
+  CFG=JSON.parse(undoStack[undoStack.length-1]);
+  generateInputGrid();forcePreview();onAnyChange();
+  _suppressHistory=false;
+  updateUndoRedoButtons();
+}
+function updateUndoRedoButtons(){
+  const u=document.getElementById('btn-undo');
+  const r=document.getElementById('btn-redo');
+  if(u)u.disabled=undoStack.length<=1;
+  if(r)r.disabled=!redoStack.length;
 }
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -1587,6 +1636,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(list.length){loadFromDB(list[0]);}
   else{loadPreset('GCD33').then(()=>{document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();});}
   scheduleLivePreview();
+  setTimeout(pushHistory,200);
+  // Keyboard shortcuts: Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo
+  document.addEventListener('keydown',function(e){
+    if(e.ctrlKey||e.metaKey){
+      if(!e.shiftKey){if(e.key==='z'){e.preventDefault();undo();}}
+      if(e.key==='y'){e.preventDefault();redo();}
+      if(e.shiftKey){if(e.key==='Z'){e.preventDefault();redo();}}
+    }
+  });
   // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
   document.getElementById('note-grid').addEventListener('click',e=>{
     const inp=e.target.closest('.note-input');
@@ -1753,20 +1811,34 @@ function renderLhRowsCfg(){
   if(!wrap)return;
   const isPaired=document.querySelector('input[name="lh-mode"]:checked')?.value==='paired';
   if(isPaired){
+    _syncPairedOffsets();
     const pprow=CFG.lhPairsPerRow||2;
     const totalDuos=Math.max(1,(CFG.notes?(CFG.notes.basses?CFG.notes.basses.length:false):false)||6);
-    wrap.innerHTML=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+    const nLines=CFG.lhPairedOffsets.length;
+    let pairedHtml=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
       <span style="font-size:.78rem;min-width:80px;" data-i="lhNbDuosTotal">${t('lhNbDuosTotal')} :</span>
-      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos-1})">−</button>
-      <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${totalDuos}</span>
-      <button type="button" class="rng-btn" onclick="lhSetTotalDuos(${totalDuos+1})">＋</button>
+      <span style="font-size:.82rem;font-weight:700;color:var(--txt);">${totalDuos}</span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
       <span style="font-size:.78rem;min-width:80px;" data-i="lhDuosPerRow">${t('lhDuosPerRow')} :</span>
       <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(Math.max(1,${pprow}-1))">−</button>
       <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${pprow}</span>
       <button type="button" class="rng-btn" onclick="lhSetPairsPerRow(${pprow}+1)">＋</button>
-    </div>`;
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+      <span style="font-size:.78rem;min-width:80px;" data-i="lhNbRows">${t('lhNbRows')} :</span>
+      <span style="font-size:.82rem;font-weight:700;color:var(--txt);">${nLines}</span>
+    </div>
+    <div style="font-size:.74rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;" data-i="lhOffset">${t('lhOffset')} :</div>`;
+    CFG.lhPairedOffsets.forEach((off,gi)=>{
+      pairedHtml+=`<div style="display:flex;align-items:center;gap:5px;padding:1px 0;">
+        <span style="font-size:.78rem;min-width:36px;color:var(--gris);">L${gi+1} :</span>
+        <button type="button" class="rng-btn" onclick="lhSetPairedGroupOffset(${gi},${off}-1)">−</button>
+        <span style="font-size:.82rem;font-weight:700;min-width:16px;text-align:center;">${off}</span>
+        <button type="button" class="rng-btn" onclick="lhSetPairedGroupOffset(${gi},${off}+1)">＋</button>
+      </div>`;
+    });
+    wrap.innerHTML=pairedHtml;
     return;
   }
   // Ensure lhRows is consistent: default to 1 row with all basses if missing
@@ -1821,6 +1893,19 @@ function lhRowChange(ri,field,val){
   onAnyChange();
 }
 
+function lhSetPairedGroupOffset(gi,n){
+  if(!CFG.lhPairedOffsets) CFG.lhPairedOffsets=[];
+  CFG.lhPairedOffsets[gi]=Math.round(n);
+  renderLhRowsCfg();onAnyChange();
+}
+function _syncPairedOffsets(){
+  const totalDuos=Math.max(1,(CFG.notes?(CFG.notes.basses?CFG.notes.basses.length:0):0)||1);
+  const pprow=CFG.lhPairsPerRow||2;
+  const nGroups=Math.ceil(totalDuos/pprow);
+  if(!CFG.lhPairedOffsets) CFG.lhPairedOffsets=[];
+  while(CFG.lhPairedOffsets.length<nGroups) CFG.lhPairedOffsets.push(0);
+  CFG.lhPairedOffsets=CFG.lhPairedOffsets.slice(0,nGroups);
+}
 function lhSetPairsPerRow(n){
   CFG.lhPairsPerRow=Math.max(1,Math.floor(n));
   renderLhRowsCfg();
@@ -1872,9 +1957,9 @@ function accordsFifthShift(){
   generateInputGrid();onAnyChange();
 }
 /* \u2500\u2500 Seuil accords MG \u2014 transpose down one octave any note above the threshold \u2500\u2500 */
-function applyAccordsSeuil(arr){
+function applyAccordsSeuil(arr,force){
   const chkEl=document.getElementById('accords-seuil-enabled');
-  if(!chkEl||!chkEl.checked)return arr;
+  if(!force){if(!chkEl||!chkEl.checked)return arr;}
   const seuilNote=(document.getElementById('accords-seuil-note')||{}).value||'';
   const seuilMidi=noteToMidi(seuilNote.trim());
   if(seuilMidi===null)return arr;
@@ -1888,17 +1973,17 @@ function applyAccordsSeuil(arr){
   });
 }
 function applyAccordsSeuilManual(){
+  pushHistory();
   readNoteInputsIntoCFG();
   ['accords','accords2','accords3'].forEach(function(key){
-    if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuil(CFG.notes[key]);}}
+    if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuil(CFG.notes[key],true);}}
   });
   generateInputGrid();onAnyChange();
 }
-/* ── Seuil bas accords MG — transpose up one octave any note below the threshold (V1 & V2 only) ── */
-function applyAccordsSeuilBas(arr){
+/* \u2500\u2500 Seuil bas accords MG \u2014 transpose up one octave any note below the threshold (V1 & V2 only) \u2500\u2500 */
+function applyAccordsSeuilBas(arr,force){
   const chkEl=document.getElementById('accords-seuil-bas-enabled');
-  if(!chkEl){return arr;}
-  if(!chkEl.checked){return arr;}
+  if(!force){if(!chkEl||!chkEl.checked)return arr;}
   const seuilNote=(document.getElementById('accords-seuil-bas-note')||{}).value||'';
   const seuilMidi=noteToMidi(seuilNote.trim());
   if(seuilMidi===null)return arr;
@@ -1912,9 +1997,10 @@ function applyAccordsSeuilBas(arr){
   });
 }
 function applyAccordsSeuilBasManual(){
+  pushHistory();
   readNoteInputsIntoCFG();
   ['accords','accords2'].forEach(function(key){
-    if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuilBas(CFG.notes[key]);}}
+    if(CFG.notes[key]){if(CFG.notes[key].length>0){CFG.notes[key]=applyAccordsSeuilBas(CFG.notes[key],true);}}
   });
   generateInputGrid();onAnyChange();
 }
@@ -2074,6 +2160,7 @@ function generateInputGrid(){
         </label>
         <span class="tip" tabindex="0" role="tooltip" aria-label="Info: Seuil haut accords MG" data-tip="Seuil HAUT pour les accords main gauche.&#10;Quand activ\u00e9 : si une note d\u00e9passe ce seuil, elle est&#10;automatiquement transpos\u00e9e \u00e0 l'octave d'en dessous.&#10;S'applique aussi au bouton \u21915te\u2192V2.&#10;Exemple : seuil Sol4 \u2192 toute note &gt; Sol4 descend d'une octave.">&#9432;</span>
         <input type="text" id="accords-seuil-note" value="Sol4" placeholder="Ex: Sol4" style="width:54px;font-size:.78rem;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;cursor:pointer;" oninput="onAnyChange()">
+        <button type="button" onclick="applyAccordsSeuilManual()" style="padding:2px 8px;font-size:.75rem;border:1px solid #ead7a3;border-radius:4px;background:#fff;cursor:pointer;font-weight:700;color:var(--dark)" title="Appliquer le seuil haut aux accords V1, V2 et V3">&#8681; Appliquer</button>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gris);">
@@ -2329,6 +2416,7 @@ function readInputs(){
     lhPairedDir:document.querySelector('input[name="lh-paired-dir"]:checked')?.value||'vertical',
     lhRows:JSON.parse(JSON.stringify(CFG.lhRows)),
     lhPairsPerRow:CFG.lhPairsPerRow||2,
+    lhPairedOffsets:JSON.parse(JSON.stringify(CFG.lhPairedOffsets||[])),
     lhBassFirst:CFG.lhBassFirst||false,
     lhBassesLabel:document.getElementById('lh-basses-label')?.value||'',
     lhAccordsLabel:document.getElementById('lh-accords-label')?.value||'',
@@ -2720,7 +2808,7 @@ async function downloadPDF(which){
             :[['A',data.accords,data.accords2,data.nbVoixAccords||2],['B',data.basses,data.basses2,data.nbVoixBasses||2]];
           seq.forEach(([ty,src,sr2,nv])=>{if(src?src[i]:false){its.push(src[i]);its2.push(nv>1?sr2?sr2[i]||null:null:null);tys.push(ty);ixs.push(i+1);}});
         }
-        if(its.length)lhSecs.push({nom:nG===1?`${t('basses')}/${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`,items:its,items2:its2,offset:0,iTypes:tys,iIdxs:ixs});
+        if(its.length)lhSecs.push({nom:nG===1?`${t('basses')}/${t('accords')}`:`${t('basses')}/${t('accords')} ${g+1}`,items:its,items2:its2,offset:data.lhPairedOffsets?data.lhPairedOffsets[g]||0:0,iTypes:tys,iIdxs:ixs});
       }
     }else{
       const cfg=(data.lhRows?data.lhRows.length:false)?data.lhRows:[{nb:(data.basses||[]).length||1,offset:0}];
@@ -3122,6 +3210,7 @@ function copyRow(rwId){
 }
 function pasteRow(rwId){
   if(!rowClipboard)return;
+  pushHistory();
   const wrap=document.getElementById(rwId);if(!wrap)return;
   const cells=wrap.querySelectorAll('.btn-cell');
   const count=Math.min(cells.length,rowClipboard.length);
@@ -3136,16 +3225,20 @@ function pasteRow(rwId){
 }
 function clearNotes(){
   if(!confirm(t('clearConfirm')))return;
+  pushHistory();
   document.querySelectorAll('#note-grid input').forEach(el=>{el.value='';});
   readNoteInputsIntoCFG();onAnyChange();
 }
 function convertFlatsToSharps(){
   if(!confirm(t('flatToSharpConfirm')))return;
+  pushHistory();
   // Flat→Sharp maps (French and English roots)
   const F2S={
     'Réb':'Do#','Mib':'Ré#','Solb':'Fa#','Lab':'Sol#','Sib':'La#','Dob':'Si',
     'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#','Cb':'B'
   };
+  // Case-insensitive lookup map
+  const F2S_lower={};for(const k in F2S)F2S_lower[k.toLowerCase()]=F2S[k];
   function convertNote(s){
     if(!s)return s;
     // Slash-separated notes: convert each part recursively (handles octave in each part)
@@ -3155,8 +3248,8 @@ function convertFlatsToSharps(){
     if(sp>0){const root=s.slice(0,sp),qual=s.slice(sp);return convertNote(root)+qual;}
     // Simple note possibly with octave suffix: "Réb3" → "Do#3"
     const m=s.match(/^(.+?)(\d)$/);
-    if(m){const conv=F2S[m[1]];if(conv!==undefined)return conv+m[2];}
-    return F2S[s]||s;
+    if(m){const conv=F2S_lower[m[1].toLowerCase()];if(conv!==undefined)return conv+m[2];}
+    return F2S_lower[s.toLowerCase()]||s;
   }
   function convertRow(arr){return (arr||[]).map(b=>({p:convertNote(b.p),t:convertNote(b.t)}));}
   const n=CFG.notes;
@@ -3181,6 +3274,7 @@ function _buildAutoTitle(){
   return(keys.length?keys.join('/'):'?')+' '+nMD+'b'+nB+'B';
 }
 function _doTranspose(semi){
+  pushHistory();
   function shiftNoteStr(s){
     if(!s)return s;
     if(s.includes('/')){return s.split('/').map(p=>shiftNoteStr(p.trim())).join('/');}
@@ -3268,6 +3362,7 @@ function renderKbdCompare(){
       nbVoixBasses:rec.nbVoixBasses||2,
       lhDisplayMode:rec.lhDisplayMode||'separated',
       lhPairedDir:rec.lhPairedDir||'vertical',
+      lhPairedOffsets:rec.lhPairedOffsets?JSON.parse(JSON.stringify(rec.lhPairedOffsets)):[],
       lhRows:rec.lhRows||[{nb:6,offset:0}],
       lhPairsPerRow:rec.lhPairsPerRow||2,
       lhBassFirst:rec.lhBassFirst||false,
