@@ -375,10 +375,15 @@ endif; // function_exists ca_rest_update_preset_meta
 
 /* ══════════════════════════════════════════════════════
    NONCE + REST ROOT INJECTION (admin/editor only)
-   Injects into footer:
+   Injects into admin footer:
      window.CA_SAVE_NONCE  – wp_rest nonce for X-WP-Nonce header
      window.CA_REST_ROOT   – REST API root URL (e.g. https://site.com/wp-json/)
    Required by the admin widget to call the preset REST endpoints.
+   NOT hooked on wp_footer: public pages must stay untouched so that
+   WP Optimize does not bundle this script and interfere with the
+   Savoy theme's shop/slider scripts.  Inscription forms derive the
+   REST root from <link rel="https://api.w.org/"> (always present in
+   WordPress HTML) as their own fallback.
    ══════════════════════════════════════════════════════ */
 
 if ( ! function_exists( 'ca_output_save_nonce' ) ) :
@@ -391,16 +396,16 @@ function ca_output_save_nonce() {
 			. '</script>' . "\n";
 	}
 }
-add_action( 'wp_footer',    'ca_output_save_nonce', 1 );
 add_action( 'admin_footer', 'ca_output_save_nonce', 1 );
 
 endif; // function_exists ca_output_save_nonce
 
 /* ══════════════════════════════════════════════════════
-   PUBLIC GLOBALS — injects window.CA_SVG_URL on every page
-   so inscription forms can load ca-svg.js as a fallback
-   even when the mu-plugin enqueue fails (file not yet
-   deployed to uploads/presets/).
+   ADMIN GLOBALS — injects window.CA_SVG_URL in admin footer
+   so the admin accordion tool can reference ca-svg.js.
+   NOT hooked on wp_footer: inscription forms use their own
+   STAGE_CONFIG.presetsBaseUrl fallback and do not need this
+   global on public pages.
    ══════════════════════════════════════════════════════ */
 
 if ( ! function_exists( 'ca_output_public_globals' ) ) :
@@ -410,7 +415,6 @@ function ca_output_public_globals() {
 	$svg_url = trailingslashit( $upload['baseurl'] ) . 'presets/ca-svg.js';
 	echo '<script>window.CA_SVG_URL=' . wp_json_encode( $svg_url ) . ';</script>' . "\n";
 }
-add_action( 'wp_footer',    'ca_output_public_globals', 1 );
 add_action( 'admin_footer', 'ca_output_public_globals', 1 );
 
 endif; // function_exists ca_output_public_globals
