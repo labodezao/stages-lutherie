@@ -434,10 +434,14 @@ function ca_enqueue_svg_lib() {
 		trailingslashit( $upload['baseurl'] ) . 'presets/ca-svg.js',
 		array(),
 		$ver,
-		false // load in <head> so it's available before inline blocks run
+		true // load in footer
 	);
 }
-add_action( 'wp_enqueue_scripts',    'ca_enqueue_svg_lib' );
+// Only enqueue on admin pages. Frontend inscription forms load ca-svg.js dynamically
+// via their own fallback (STAGE_CONFIG.presetsBaseUrl + 'ca-svg.js') so that
+// ca-svg.js is NOT injected globally on every WooCommerce / theme page, which
+// would cause WP Optimize to bundle it in the <head> and interfere with the
+// Savoy theme's product and slider detection.
 add_action( 'admin_enqueue_scripts', 'ca_enqueue_svg_lib' );
 
 endif; // function_exists ca_enqueue_svg_lib
