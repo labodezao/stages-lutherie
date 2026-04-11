@@ -413,6 +413,29 @@ textarea.fb-text:focus {
   border-color: rgba(212,160,23,0.4);
 }
 
+textarea.ai-hint-input {
+  width: 100%;
+  background: rgba(212,160,23,0.07);
+  border: 1px solid rgba(212,160,23,0.25);
+  border-radius: 6px;
+  color: #f3f0ec;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.6;
+  padding: 10px 14px;
+  resize: vertical;
+  min-height: 72px;
+  transition: border-color 0.15s;
+}
+textarea.ai-hint-input:focus {
+  outline: none;
+  border-color: rgba(212,160,23,0.6);
+}
+textarea.ai-hint-input::placeholder {
+  color: rgba(255,248,225,0.35);
+  font-style: italic;
+}
+
 /* Export button */
 #export-btn {
   width: 100%;
@@ -774,6 +797,12 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
       <button class="format-pill active" data-fmt="feed">Feed 4:5<br><small style="font-weight:400;opacity:.7">1080×1350</small></button>
       <button class="format-pill" data-fmt="square">Carré<br><small style="font-weight:400;opacity:.7">1080×1080</small></button>
       <button class="format-pill" data-fmt="story">Story 9:16<br><small style="font-weight:400;opacity:.7">1080×1920</small></button>
+    </div>
+
+    <!-- AI hint -->
+    <div class="panel" id="ai-hint-panel">
+      <h3>🤖 Contexte pour l'IA</h3>
+      <textarea id="ai-hint" class="ai-hint-input" placeholder="Précisez ici ce que vous voulez mettre en avant : moment clé du jour, anecdote, émotion, détail technique… L'IA intégrera ces éléments dans sa proposition."></textarea>
     </div>
 
     <!-- FR -->
@@ -1210,6 +1239,7 @@ function emptyState(idx) {
     textOverlayIntensity: 0,
     textFR: '',
     textEN: '',
+    promptHint: '',
     galleryImages: [],
     carouselImages: [],
     filterType: 'none',
@@ -1280,6 +1310,7 @@ const galleryUploadBtn   = document.getElementById('gallery-upload-btn');
 const galleryFileInput   = document.getElementById('gallery-file-input');
 const galleryClearBtn    = document.getElementById('gallery-clear-btn');
 const textareaFR      = document.getElementById('textarea-fr');
+const aiHint          = document.getElementById('ai-hint');
 const textareaEN      = document.getElementById('textarea-en');
 const suggestFR       = document.getElementById('suggest-fr-btn');
 const suggestEN       = document.getElementById('suggest-en-btn');
@@ -1498,6 +1529,7 @@ function readCurrentFields() {
   s.textOverlayIntensity = parseInt(textOverlaySlider.value, 10);
   s.textFR    = textareaFR.value;
   s.textEN    = textareaEN.value;
+  s.promptHint = aiHint.value;
   const filterRadio = document.querySelector('input[name="filter-type"]:checked');
   s.filterType = filterRadio ? filterRadio.value : 'none';
   saveState(currentDay);
@@ -1530,6 +1562,7 @@ function switchDay(idx) {
   // Texts
   textareaFR.value = s.textFR;
   textareaEN.value = s.textEN;
+  aiHint.value     = s.promptHint || '';
   updateCharCount(textareaFR, charCountFR);
   updateCharCount(textareaEN, charCountEN);
 
@@ -1882,6 +1915,7 @@ Object.values(fields).forEach(el => {
 });
 textareaFR.addEventListener('input', () => autoSave());
 textareaEN.addEventListener('input', () => autoSave());
+aiHint.addEventListener('input', () => autoSave());
 
 let saveTimer = null;
 function autoSave() {
@@ -1909,13 +1943,15 @@ function showStatus(msg) {
 async function suggestText(lang) {
   const key = openaiKey.value.trim();
   const idx = currentDay;
+  const hintText = aiHint.value.trim();
+  const hintClause = hintText ? `\nContexte / précisions à intégrer : ${hintText}` : '';
 
   if (key) {
     // Use OpenAI GPT-4
     const isEN = (lang === 'en');
     const prompt = isEN
-      ? `Write a Facebook post for day ${idx + 1} of a 10-day diatonic accordion lutherie workshop in Saint-Nazaire. Tone: sincere, sober, artisanal. 3-5 lines max + hashtags. Not too commercial. Language: English.`
-      : `Écris un texte de publication Facebook pour le jour ${idx + 1} d'un stage de lutherie accordéon diatonique à Saint-Nazaire. Ton : sincère, sobre, artisanal. 3-5 lignes max + hashtags. Pas trop commercial. Langue: FR.`;
+      ? `Write a Facebook post for day ${idx + 1} of a 10-day diatonic accordion lutherie workshop in Saint-Nazaire. Tone: sincere, sober, artisanal. 3-5 lines max + hashtags. Not too commercial. Language: English.${hintClause}`
+      : `Écris un texte de publication Facebook pour le jour ${idx + 1} d'un stage de lutherie accordéon diatonique à Saint-Nazaire. Ton : sincère, sobre, artisanal. 3-5 lignes max + hashtags. Pas trop commercial. Langue: FR.${hintClause}`;
 
     const btn = isEN ? suggestEN : suggestFR;
     btn.textContent = '⏳ Génération…';
