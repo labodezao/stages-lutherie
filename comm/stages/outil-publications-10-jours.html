@@ -1970,9 +1970,9 @@ exportCarouselBtn.addEventListener('click', async () => {
     const ctx = canvas.getContext('2d');
 
     try {
+      const safeSrc2 = await toSafeDataUrl(item.src);
       await new Promise((resolve, reject) => {
         const img2 = new Image();
-        if (item.src.startsWith('http')) img2.crossOrigin = 'anonymous';
         img2.onload = () => {
           const ia = img2.naturalWidth / img2.naturalHeight;
           const ca = W / H;
@@ -1988,7 +1988,7 @@ exportCarouselBtn.addEventListener('click', async () => {
           resolve();
         };
         img2.onerror = reject;
-        img2.src = item.src;
+        img2.src = safeSrc2;
       });
     } catch (err) {
       alert(`Image carrousel ${i + 1} non exportable.`);
@@ -2298,12 +2298,31 @@ function canvasDimensions(fmt) {
   return { W: 1080, H: 1350 }; // feed (default)
 }
 
+async function toSafeDataUrl(src) {
+  if (!src) return src;
+  if (src.startsWith('data:')) return src;
+  // Fetch and convert to data URL to avoid canvas tainting (local or HTTP)
+  try {
+    const resp = await fetch(src, { mode: 'cors' });
+    const blob = await resp.blob();
+    return await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = rej;
+      r.readAsDataURL(blob);
+    });
+  } catch (_) {
+    // If CORS fails, try anonymous mode via Image (may still taint)
+    return src;
+  }
+}
+
 async function drawCard(ctx, W, H, s) {
   // Background
   if (s.bgDataUrl) {
+    const safeSrc = await toSafeDataUrl(s.bgDataUrl);
     await new Promise((resolve, reject) => {
       const img = new Image();
-      if (s.bgDataUrl.startsWith('http')) img.crossOrigin = 'anonymous';
       img.onload = () => {
         const imgAspect = img.naturalWidth / img.naturalHeight;
         const canvasAspect = W / H;
@@ -2320,7 +2339,7 @@ async function drawCard(ctx, W, H, s) {
         resolve();
       };
       img.onerror = reject;
-      img.src = s.bgDataUrl;
+      img.src = safeSrc;
     });
   } else {
     const grad = ctx.createLinearGradient(0, 0, W, H);
