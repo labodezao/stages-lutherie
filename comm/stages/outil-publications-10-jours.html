@@ -542,6 +542,96 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
   #main-layout { grid-template-columns: 1fr; }
   #right-col { max-width: 100%; }
 }
+
+/* ── Format selector ── */
+#format-pills {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.format-pill {
+  flex: 1; min-width: 70px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: #c8b99a; font-size: 12px; font-weight: 600;
+  border-radius: 20px; padding: 7px 10px; cursor: pointer;
+  text-align: center; transition: all 0.15s; white-space: nowrap;
+}
+.format-pill:hover { border-color: var(--gold); color: var(--gold-light); }
+.format-pill.active {
+  background: rgba(212,160,23,0.18);
+  border-color: var(--gold); color: var(--gold-light);
+}
+
+/* ── Character counter ── */
+.char-count {
+  font-size: 11px; color: #7a7060; text-align: right; margin-top: 4px;
+}
+.char-count.warn { color: #e6a040; }
+.char-count.over { color: #e05050; font-weight: 700; }
+
+/* ── Hashtag bank ── */
+details.hashtag-section {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; margin-top: 10px; overflow: hidden;
+}
+details.hashtag-section summary {
+  padding: 9px 14px; font-size: 12px; color: #c8b99a;
+  cursor: pointer; user-select: none; list-style: none;
+  display: flex; align-items: center; gap: 6px;
+}
+details.hashtag-section summary::after {
+  content: '▸'; margin-left: auto; transition: transform 0.15s; font-size: 11px;
+}
+details.hashtag-section[open] summary::after { transform: rotate(90deg); }
+.hashtag-body { padding: 8px 14px 12px; }
+.hashtag-grid {
+  display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0;
+}
+.hashtag-grid label {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: #9a8e7c; cursor: pointer;
+  padding: 3px 9px; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; transition: all 0.12s;
+  user-select: none;
+}
+.hashtag-grid label:has(input:checked) {
+  border-color: rgba(212,160,23,0.5); color: var(--gold-light);
+  background: rgba(212,160,23,0.1);
+}
+.hashtag-grid input[type=checkbox] { accent-color: var(--gold); width: 12px; height: 12px; cursor: pointer; }
+
+/* ── Planning checklist ── */
+details.planning-section {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; margin-top: 10px; overflow: hidden;
+}
+details.planning-section summary {
+  padding: 9px 14px; font-size: 12px; color: #c8b99a;
+  cursor: pointer; user-select: none; list-style: none;
+  display: flex; align-items: center; gap: 6px;
+}
+details.planning-section summary::after {
+  content: '▸'; margin-left: auto; transition: transform 0.15s; font-size: 11px;
+}
+details.planning-section[open] summary::after { transform: rotate(90deg); }
+.planning-body { padding: 8px 14px 12px; }
+.planning-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 5px; margin-top: 8px;
+}
+.day-status {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; color: #9a8e7c; padding: 4px 8px;
+  background: rgba(255,255,255,0.04); border-radius: 6px;
+}
+.day-status strong { color: #c8b99a; min-width: 24px; }
+.ds-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(255,255,255,0.1);
+}
+.ds-dot.ok { background: #7bcf8a; }
+.ds-dot.partial { background: #e6a040; }
 </style>
 </head>
 <body>
@@ -638,32 +728,66 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
   <!-- ── RIGHT COLUMN ── -->
   <div id="right-col">
 
+    <!-- Format export -->
+    <div class="section-label" style="margin-bottom:8px;">📐 Format d'export</div>
+    <div id="format-pills">
+      <button class="format-pill active" data-fmt="feed">Feed 4:5<br><small style="font-weight:400;opacity:.7">1080×1350</small></button>
+      <button class="format-pill" data-fmt="square">Carré<br><small style="font-weight:400;opacity:.7">1080×1080</small></button>
+      <button class="format-pill" data-fmt="story">Story 9:16<br><small style="font-weight:400;opacity:.7">1080×1920</small></button>
+    </div>
+
     <!-- FR -->
     <div class="panel">
-      <h3><span class="flag">🇫🇷</span> Texte Facebook (FR)</h3>
+      <h3><span class="flag">🇫🇷</span> Texte Facebook / Insta (FR)</h3>
       <div class="panel-row">
         <button class="btn" id="suggest-fr-btn">✨ Suggérer IA</button>
       </div>
-      <textarea class="fb-text" id="textarea-fr" placeholder="Texte de publication Facebook en français…"></textarea>
-      <div class="panel-row" style="margin-top:8px; margin-bottom:0;">
-        <button class="btn btn-ghost" id="copy-fr-btn">📋 Copier FR</button>
-      </div>
+      <textarea class="fb-text" id="textarea-fr" placeholder="Texte de publication en français…"></textarea>
+      <div class="char-count" id="char-count-fr">0 / 2200</div>
+
+      <!-- Hashtags FR -->
+      <details class="hashtag-section">
+        <summary>#️⃣ Hashtags FR</summary>
+        <div class="hashtag-body">
+          <div class="hashtag-grid" id="hashtag-grid-fr"></div>
+          <div class="panel-row" style="margin-top:8px; margin-bottom:0; gap:6px;">
+            <button class="btn btn-ghost" id="copy-fr-btn">📋 Copier FR</button>
+            <button class="btn btn-ghost" id="copy-fr-hash-btn">📋 Copier FR + #</button>
+          </div>
+        </div>
+      </details>
     </div>
 
     <!-- EN -->
     <div class="panel">
-      <h3><span class="flag">🇬🇧</span> Facebook Text (EN)</h3>
+      <h3><span class="flag">🇬🇧</span> Facebook / Insta Text (EN)</h3>
       <div class="panel-row">
         <button class="btn" id="suggest-en-btn">✨ Suggest AI</button>
       </div>
-      <textarea class="fb-text" id="textarea-en" placeholder="Facebook post text in English…"></textarea>
-      <div class="panel-row" style="margin-top:8px; margin-bottom:0;">
-        <button class="btn btn-ghost" id="copy-en-btn">📋 Copy EN</button>
-      </div>
+      <textarea class="fb-text" id="textarea-en" placeholder="Facebook / Instagram post text in English…"></textarea>
+      <div class="char-count" id="char-count-en">0 / 2200</div>
+
+      <!-- Hashtags EN -->
+      <details class="hashtag-section">
+        <summary>#️⃣ Hashtags EN</summary>
+        <div class="hashtag-body">
+          <div class="hashtag-grid" id="hashtag-grid-en"></div>
+          <div class="panel-row" style="margin-top:8px; margin-bottom:0; gap:6px;">
+            <button class="btn btn-ghost" id="copy-en-btn">📋 Copy EN</button>
+            <button class="btn btn-ghost" id="copy-en-hash-btn">📋 Copy EN + #</button>
+          </div>
+        </div>
+      </details>
     </div>
 
-    <!-- Export -->
+    <!-- Export principal -->
     <button id="export-btn">⬇ Exporter carte JPG</button>
+
+    <!-- Batch export -->
+    <button class="btn btn-ghost" id="export-all-btn" style="width:100%; margin-top:8px;">⬇ Tout exporter (J1 → Fête)</button>
+
+    <!-- Export carrousel -->
+    <button class="btn btn-ghost" id="export-carousel-btn" style="width:100%; margin-top:8px;">🎠 Exporter carrousel JPG</button>
 
     <!-- JSON Save / Load -->
     <div class="panel-row" style="gap:8px; margin-top:10px;">
@@ -672,8 +796,16 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
     </div>
     <input type="file" id="json-file-input" accept=".json" style="display:none;">
 
-    <!-- Export carrousel -->
-    <button class="btn btn-ghost" id="export-carousel-btn" style="width:100%; margin-top:8px;">🎠 Exporter carrousel JPG</button>
+    <!-- Planning checklist -->
+    <details class="planning-section" id="planning-section">
+      <summary>📋 Planning — état par jour</summary>
+      <div class="planning-body">
+        <div style="font-size:11px; color:#7a7060; margin-bottom:6px;">
+          🟢 image + texte FR + EN &nbsp;|&nbsp; 🟡 partiel &nbsp;|&nbsp; ⚪ vide
+        </div>
+        <div class="planning-grid" id="planning-grid"></div>
+      </div>
+    </details>
 
     <!-- OpenAI -->
     <details class="openai-section">
@@ -1101,9 +1233,15 @@ const suggestFR       = document.getElementById('suggest-fr-btn');
 const suggestEN       = document.getElementById('suggest-en-btn');
 const copyFR          = document.getElementById('copy-fr-btn');
 const copyEN          = document.getElementById('copy-en-btn');
+const copyFRHash      = document.getElementById('copy-fr-hash-btn');
+const copyENHash      = document.getElementById('copy-en-hash-btn');
+const charCountFR     = document.getElementById('char-count-fr');
+const charCountEN     = document.getElementById('char-count-en');
 const exportBtn       = document.getElementById('export-btn');
+const exportAllBtn    = document.getElementById('export-all-btn');
 const openaiKey       = document.getElementById('openai-key');
 const statusBar       = document.getElementById('status-bar');
+const planningGrid    = document.getElementById('planning-grid');
 
 const fields = {
   eyebrow:  document.getElementById('field-eyebrow'),
@@ -1118,6 +1256,51 @@ const subtitlesContainer    = document.getElementById('subtitles-container');
 const subtitlesCountDisplay = document.getElementById('subtitles-count-display');
 const subtitlesAddBtn       = document.getElementById('subtitles-add-btn');
 const subtitlesRemoveBtn    = document.getElementById('subtitles-remove-btn');
+
+// ── Export format ──
+let exportFormat = 'feed'; // 'feed' | 'square' | 'story'
+document.querySelectorAll('.format-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.format-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    exportFormat = pill.dataset.fmt;
+    // Adapt card preview aspect ratio hint
+    const fmtLabel = { feed: '1080 × 1350', square: '1080 × 1080', story: '1080 × 1920' };
+    showStatus(`Format : ${fmtLabel[exportFormat]}`);
+  });
+});
+
+// ── Hashtag data ──
+const HASHTAGS_FR = [
+  '#lutherie','#accordeon','#accordeondiatonique','#stagelutherier','#diato',
+  '#fabricationartisanale','#factureinstrumentale','#saintNazaire','#musique',
+  '#artisanat','#instrument','#musiquesessions','#openDoors','#lutherieOpenDay',
+  '#accordeonFait','#musiquetraditionnelle','#atelier','#boismusique','#diatonique',
+];
+const HASHTAGS_EN = [
+  '#lutherie','#accordion','#diatonicaccordion','#lutherieworkshop','#diato',
+  '#handcrafted','#instrumentmaking','#saintNazaire','#music','#craftsmanship',
+  '#musicworkshop','#accordionmaker','#folkmusic','#openDoors','#woodcraft',
+  '#traditionalmusic','#makemusic','#instrument','#artisan',
+];
+
+function buildHashtagGrid(gridEl, tags) {
+  gridEl.innerHTML = '';
+  tags.forEach(tag => {
+    const label = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = tag; cb.checked = true;
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(' ' + tag));
+    gridEl.appendChild(label);
+  });
+}
+buildHashtagGrid(document.getElementById('hashtag-grid-fr'), HASHTAGS_FR);
+buildHashtagGrid(document.getElementById('hashtag-grid-en'), HASHTAGS_EN);
+
+function getSelectedHashtags(gridEl) {
+  return Array.from(gridEl.querySelectorAll('input:checked')).map(cb => cb.value).join(' ');
+}
 
 // ═══════════════════════════════════════════════════════
 // SCALING
@@ -1176,6 +1359,65 @@ TABS.forEach((label, idx) => {
 });
 
 // ═══════════════════════════════════════════════════════
+// DYNAMIC FACTS + SUBTITLES DOM
+// ═══════════════════════════════════════════════════════
+
+function buildFactsDOM(idx) {
+  const s = getState(idx);
+  const facts = Array.isArray(s.facts) ? s.facts : [];
+  factsContainer.innerHTML = '';
+  facts.forEach((text, i) => {
+    const span = document.createElement('span');
+    span.className = 'fact';
+    span.contentEditable = 'true';
+    span.textContent = text || `Bulle ${i + 1}`;
+    span.addEventListener('input', () => { autoSave(); });
+    factsContainer.appendChild(span);
+  });
+  factsCountDisplay.textContent = facts.length;
+}
+
+function buildSubtitlesDOM(idx) {
+  const s = getState(idx);
+  const subs = Array.isArray(s.subtitles) ? s.subtitles : (s.subtitle ? [s.subtitle] : []);
+  subtitlesContainer.innerHTML = '';
+  subs.forEach((text, i) => {
+    const p = document.createElement('p');
+    p.className = 'card-subtitle';
+    p.contentEditable = 'true';
+    p.textContent = text || '';
+    p.addEventListener('input', () => { autoSave(); });
+    subtitlesContainer.appendChild(p);
+  });
+  subtitlesCountDisplay.textContent = subs.length;
+}
+
+factsAddBtn.addEventListener('click', () => {
+  readCurrentFields();
+  const s = getState(currentDay);
+  s.facts.push('Nouveau');
+  buildFactsDOM(currentDay);
+  autoSave();
+});
+factsRemoveBtn.addEventListener('click', () => {
+  readCurrentFields();
+  const s = getState(currentDay);
+  if (s.facts.length > 0) { s.facts.pop(); buildFactsDOM(currentDay); autoSave(); }
+});
+subtitlesAddBtn.addEventListener('click', () => {
+  readCurrentFields();
+  const s = getState(currentDay);
+  s.subtitles.push('');
+  buildSubtitlesDOM(currentDay);
+  autoSave();
+});
+subtitlesRemoveBtn.addEventListener('click', () => {
+  readCurrentFields();
+  const s = getState(currentDay);
+  if (s.subtitles.length > 0) { s.subtitles.pop(); buildSubtitlesDOM(currentDay); autoSave(); }
+});
+
+// ═══════════════════════════════════════════════════════
 // SWITCH DAY
 // ═══════════════════════════════════════════════════════
 
@@ -1208,8 +1450,8 @@ function switchDay(idx) {
   // Fill fields
   fields.eyebrow.textContent  = s.eyebrow;
   fields.title.textContent    = s.title;
-  fields.subtitle.textContent = s.subtitle;
   buildFactsDOM(idx);
+  buildSubtitlesDOM(idx);
   fields.cta.textContent      = s.ctaText;
 
   // Overlay
@@ -1221,6 +1463,8 @@ function switchDay(idx) {
   // Texts
   textareaFR.value = s.textFR;
   textareaEN.value = s.textEN;
+  updateCharCount(textareaFR, charCountFR);
+  updateCharCount(textareaEN, charCountEN);
 
   // Carousel
   buildCarouselStrip(idx);
@@ -1611,6 +1855,55 @@ function copyBtn(btn, getText) {
 
 copyBtn(copyFR, () => textareaFR.value);
 copyBtn(copyEN, () => textareaEN.value);
+copyBtn(copyFRHash, () => {
+  const tags = getSelectedHashtags(document.getElementById('hashtag-grid-fr'));
+  return textareaFR.value + (tags ? '\n\n' + tags : '');
+});
+copyBtn(copyENHash, () => {
+  const tags = getSelectedHashtags(document.getElementById('hashtag-grid-en'));
+  return textareaEN.value + (tags ? '\n\n' + tags : '');
+});
+
+// ── Character counters ──
+const INSTA_LIMIT = 2200;
+function updateCharCount(textarea, display) {
+  const n = textarea.value.length;
+  display.textContent = `${n} / ${INSTA_LIMIT}`;
+  display.className = 'char-count';
+  if (n > INSTA_LIMIT) display.classList.add('over');
+  else if (n > INSTA_LIMIT * 0.85) display.classList.add('warn');
+}
+textareaFR.addEventListener('input', () => updateCharCount(textareaFR, charCountFR));
+textareaEN.addEventListener('input', () => updateCharCount(textareaEN, charCountEN));
+
+// ── Planning grid ──
+function buildPlanningGrid() {
+  planningGrid.innerHTML = '';
+  TABS.forEach((label, i) => {
+    const s = getState(i);
+    const hasImage  = !!s.bgDataUrl;
+    const hasFR     = !!(s.textFR  && s.textFR.trim());
+    const hasEN     = !!(s.textEN  && s.textEN.trim());
+    const score = [hasImage, hasFR, hasEN].filter(Boolean).length;
+
+    const row = document.createElement('div');
+    row.className = 'day-status';
+    const dot = document.createElement('span');
+    dot.className = 'ds-dot' + (score === 3 ? ' ok' : score > 0 ? ' partial' : '');
+    const lbl = document.createElement('strong');
+    lbl.textContent = label;
+    const info = document.createElement('span');
+    info.textContent = [hasImage ? '🖼' : '⬜', hasFR ? '🇫🇷' : '—', hasEN ? '🇬🇧' : '—'].join(' ');
+    row.appendChild(dot);
+    row.appendChild(lbl);
+    row.appendChild(info);
+    planningGrid.appendChild(row);
+  });
+}
+
+document.getElementById('planning-section').addEventListener('toggle', function() {
+  if (this.open) buildPlanningGrid();
+});
 
 // ═══════════════════════════════════════════════════════
 // CANVAS EXPORT
@@ -1651,54 +1944,41 @@ function roundedPill(ctx, text, x, y, bg, fg, padX, padY, radius) {
   return w;
 }
 
-exportBtn.addEventListener('click', async () => {
-  readCurrentFields();
-  const s = getState(currentDay);
+// ═══════════════════════════════════════════════════════
+// CANVAS EXPORT — shared draw function
+// ═══════════════════════════════════════════════════════
 
-  const W = 1080, H = 1350;
-  const canvas = document.createElement('canvas');
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d');
+function canvasDimensions(fmt) {
+  if (fmt === 'square') return { W: 1080, H: 1080 };
+  if (fmt === 'story')  return { W: 1080, H: 1920 };
+  return { W: 1080, H: 1350 }; // feed (default)
+}
 
-  await document.fonts.ready;
-
-  // Draw background
+async function drawCard(ctx, W, H, s) {
+  // Background
   if (s.bgDataUrl) {
-    try {
-      await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-          // Cover fit
-          const imgAspect = img.naturalWidth / img.naturalHeight;
-          const canvasAspect = W / H;
-          let drawW, drawH, drawX, drawY;
-          if (imgAspect > canvasAspect) {
-            drawH = H; drawW = H * imgAspect;
-            drawX = (W - drawW) / 2; drawY = 0;
-          } else {
-            drawW = W; drawH = W / imgAspect;
-            drawX = 0; drawY = (H - drawH) / 2;
-          }
-          const fc = getFilterCSS(s.filterType || 'none');
-          if (fc !== 'none') ctx.filter = fc;
-          ctx.drawImage(img, drawX, drawY, drawW, drawH);
-          ctx.filter = 'none';
-          resolve();
-        };
-        img.onerror = reject;
-        img.src = s.bgDataUrl;
-      });
-    } catch (e) {
-      // Tainted image — draw dark fallback
-      ctx.fillStyle = '#2c1810';
-      ctx.fillRect(0, 0, W, H);
-      const errMsg = 'Image locale non exportable.\nUtilisez "Changer la photo" (upload) pour l\'export.';
-      alert(errMsg);
-      return;
-    }
+    await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const imgAspect = img.naturalWidth / img.naturalHeight;
+        const canvasAspect = W / H;
+        let drawW, drawH, drawX, drawY;
+        if (imgAspect > canvasAspect) {
+          drawH = H; drawW = H * imgAspect; drawX = (W - drawW) / 2; drawY = 0;
+        } else {
+          drawW = W; drawH = W / imgAspect; drawX = 0; drawY = (H - drawH) / 2;
+        }
+        const fc = getFilterCSS(s.filterType || 'none');
+        if (fc !== 'none') ctx.filter = fc;
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        ctx.filter = 'none';
+        resolve();
+      };
+      img.onerror = reject;
+      img.src = s.bgDataUrl;
+    });
   } else {
-    // Dark wood fallback
     const grad = ctx.createLinearGradient(0, 0, W, H);
     grad.addColorStop(0, '#2c1810');
     grad.addColorStop(0.4, '#1a0a04');
@@ -1707,81 +1987,123 @@ exportBtn.addEventListener('click', async () => {
     ctx.fillRect(0, 0, W, H);
   }
 
-  // Overlay gradient
-  const m = s.overlayIntensity / 100;
+  // Overlay
+  const mv = s.overlayIntensity / 100;
   const ovGrad = ctx.createLinearGradient(0, H, 0, 0);
-  ovGrad.addColorStop(0,    `rgba(15,8,4,${(0.90 * m).toFixed(2)})`);
-  ovGrad.addColorStop(0.25, `rgba(15,8,4,${(0.55 * m).toFixed(2)})`);
-  ovGrad.addColorStop(0.48, `rgba(15,8,4,${(0.12 * m).toFixed(2)})`);
-  ovGrad.addColorStop(1,    `rgba(15,8,4,0)`);
+  ovGrad.addColorStop(0,    `rgba(15,8,4,${(0.90 * mv).toFixed(2)})`);
+  ovGrad.addColorStop(0.25, `rgba(15,8,4,${(0.55 * mv).toFixed(2)})`);
+  ovGrad.addColorStop(0.48, `rgba(15,8,4,${(0.12 * mv).toFixed(2)})`);
+  ovGrad.addColorStop(1,    'rgba(15,8,4,0)');
   ctx.fillStyle = ovGrad;
   ctx.fillRect(0, 0, W, H);
 
-  // Decorative frame
+  // Frame
   ctx.strokeStyle = 'rgba(255,248,225,0.22)';
   ctx.lineWidth = 1.5;
   const fi = 28;
-  ctx.beginPath();
-  ctx.roundRect(fi, fi, W - fi * 2, H - fi * 2, 18);
-  ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(fi, fi, W - fi * 2, H - fi * 2, 18); ctx.stroke();
 
   const PAD_X = 86, PAD_Y_TOP = 82;
 
-  // ── Eyebrow pill ──
+  // Eyebrow
   ctx.font = '700 28px "Open Sans", Arial, sans-serif';
-  const eyebrowText = s.eyebrow;
-  roundedPill(ctx, eyebrowText, PAD_X, PAD_Y_TOP + 28 + 10, '#d4a017', '#2c1810', 32, 12, 40);
+  roundedPill(ctx, s.eyebrow, PAD_X, PAD_Y_TOP + 28 + 10, '#d4a017', '#2c1810', 32, 12, 40);
 
-  // ── Title ──
+  // Title
   ctx.fillStyle = '#fff8e1';
   ctx.font = '900 88px "Playfair Display", Georgia, serif';
   const titleY = PAD_Y_TOP + 28 + 10 + 52 + 88;
-  const titleEndY = wrapText(ctx, s.title, PAD_X, titleY, W - PAD_X * 2, 100);
+  let curY = wrapText(ctx, s.title, PAD_X, titleY, W - PAD_X * 2, 100);
 
-  // ── Subtitle ──
+  // Subtitles (array)
+  const subtitles = Array.isArray(s.subtitles) ? s.subtitles : (s.subtitle ? [s.subtitle] : []);
   ctx.fillStyle = 'rgba(255,248,225,0.88)';
   ctx.font = '400 31px "Open Sans", Arial, sans-serif';
-  wrapText(ctx, s.subtitle, PAD_X, titleEndY + 32 + 31, W - PAD_X * 2, 47);
+  subtitles.forEach(sub => {
+    if (sub) { curY = wrapText(ctx, sub, PAD_X, curY + 32 + 31, W - PAD_X * 2, 47); }
+  });
 
-  // ── Facts ──
+  // Facts (array)
+  const factsArr = Array.isArray(s.facts) ? s.facts : [s.fact1, s.fact2, s.fact3].filter(Boolean);
   const factsY = H - 78 - 60 - 40 - 44;
   ctx.font = '600 26px "Open Sans", Arial, sans-serif';
-  const facts = [s.fact1, s.fact2, s.fact3];
   let fx = PAD_X;
-  facts.forEach(f => {
+  factsArr.forEach(f => {
     if (!f) return;
-    const m2 = ctx.measureText(f);
-    const fw = m2.width + 60;
+    const fw = ctx.measureText(f).width + 60;
     const fh = 50;
-    const fy = factsY;
     ctx.fillStyle = 'rgba(255,248,225,0.13)';
     ctx.strokeStyle = 'rgba(255,248,225,0.28)';
     ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.roundRect(fx, fy, fw, fh, 40);
-    ctx.fill();
-    ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(fx, factsY, fw, fh, 40); ctx.fill(); ctx.stroke();
     ctx.fillStyle = '#fff8e1';
-    ctx.fillText(f, fx + 30, fy + fh / 2 + 9);
+    ctx.fillText(f, fx + 30, factsY + fh / 2 + 9);
     fx += fw + 22;
   });
 
-  // ── Footer ──
+  // Footer
   const footerY = H - 78;
   ctx.font = '800 28px "Open Sans", Arial, sans-serif';
   roundedPill(ctx, s.ctaText, PAD_X, footerY, '#d4a017', '#2c1810', 40, 14, 40);
-
   ctx.fillStyle = 'rgba(255,248,225,0.6)';
   ctx.font = '600 24px "Open Sans", Arial, sans-serif';
   ctx.fillText('ewendaviau.com/stages', W - PAD_X - ctx.measureText('ewendaviau.com/stages').width, footerY);
+}
 
-  // ── Download ──
+exportBtn.addEventListener('click', async () => {
+  readCurrentFields();
+  const s = getState(currentDay);
+  if (!s.bgDataUrl) { /* allow plain bg */ }
+
+  const { W, H } = canvasDimensions(exportFormat);
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  await document.fonts.ready;
+
+  try {
+    await drawCard(ctx, W, H, s);
+  } catch (e) {
+    alert('Image locale non exportable.\nUtilisez "Changer la photo" (upload) pour l\'export.');
+    return;
+  }
+
+  const fmtSuffix = exportFormat === 'feed' ? '' : `-${exportFormat}`;
   const dayLabel = currentDay < 10 ? `j${currentDay + 1}` : (currentDay === 10 ? 'cta' : 'fete');
   const link = document.createElement('a');
-  link.download = `publi-${dayLabel}.jpg`;
+  link.download = `publi-${dayLabel}${fmtSuffix}.jpg`;
   link.href = canvas.toDataURL('image/jpeg', 0.92);
   link.click();
   showStatus('Export JPG téléchargé ✓');
+});
+
+// ── Batch export (all days) ──
+exportAllBtn.addEventListener('click', async () => {
+  readCurrentFields();
+  const { W, H } = canvasDimensions(exportFormat);
+  await document.fonts.ready;
+  showStatus('Export en cours…');
+
+  for (let i = 0; i < TABS.length; i++) {
+    const s = getState(i);
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    try {
+      await drawCard(ctx, W, H, s);
+    } catch (e) {
+      showStatus(`J${i + 1} non exportable, ignoré`);
+      continue;
+    }
+    const fmtSuffix = exportFormat === 'feed' ? '' : `-${exportFormat}`;
+    const dayLabel = i < 10 ? `j${i + 1}` : (i === 10 ? 'cta' : 'fete');
+    const link = document.createElement('a');
+    link.download = `publi-${dayLabel}${fmtSuffix}.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 0.92);
+    link.click();
+    await new Promise(r => setTimeout(r, 400));
+  }
+  showStatus(`${TABS.length} exports JPG téléchargés ✓`);
 });
 
 // ═══════════════════════════════════════════════════════
