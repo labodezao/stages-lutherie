@@ -567,6 +567,8 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
 .carousel-thumb-wrap {
   position: relative;
   flex-shrink: 0;
+  width: 72px;
+  display: flex; flex-direction: column;
 }
 .carousel-thumb-wrap img {
   width: 72px; height: 72px; object-fit: cover;
@@ -578,6 +580,23 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
 }
 .carousel-thumb-wrap img:hover { border-color: var(--gold); transform: scale(1.05); }
 .carousel-thumb-wrap img.active { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+.carousel-filter-row {
+  display: flex; gap: 2px; margin-top: 3px; flex-wrap: wrap; justify-content: center;
+}
+.carousel-filter-btn {
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 3px;
+  color: #a09070;
+  font-size: 9px; font-weight: 600;
+  padding: 1px 4px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: border-color 0.12s, color 0.12s;
+  white-space: nowrap;
+}
+.carousel-filter-btn:hover { border-color: rgba(212,160,23,0.5); color: #d4a017; }
+.carousel-filter-btn.active { border-color: var(--gold); color: var(--gold-light); background: rgba(212,160,23,0.15); }
 .carousel-remove {
   position: absolute; top: -6px; right: -6px;
   background: #c0392b; color: #fff;
@@ -1691,7 +1710,7 @@ function buildGallery(idx) {
   if (!s.carouselImages) s.carouselImages = [];
 
   const allSrcs = [...builtinPaths, ...s.galleryImages];
-  const carouselSet = new Set(s.carouselImages);
+  const carouselSet = new Set((s.carouselImages || []).map(item => (typeof item === 'string' ? item : item.src)));
   const currentSrc = s.bgDataUrl || '';
 
   galleryStrip.innerHTML = '';
@@ -1721,12 +1740,13 @@ function buildGallery(idx) {
       e.stopPropagation();
       const sv = getState(idx);
       if (!sv.carouselImages) sv.carouselImages = [];
-      const pos = sv.carouselImages.indexOf(src);
+      const srcs = sv.carouselImages.map(it => (typeof it === 'string' ? it : it.src));
+      const pos = srcs.indexOf(src);
       if (pos >= 0) {
         sv.carouselImages.splice(pos, 1);
         showStatus('Photo retirée du carrousel');
       } else {
-        sv.carouselImages.push(src);
+        sv.carouselImages.push({ src, filterType: 'none' });
         showStatus('Photo ajoutée au carrousel ✓');
       }
       saveState(idx);
@@ -1770,7 +1790,7 @@ galleryClearBtn.addEventListener('click', () => {
   const s = getState(currentDay);
   s.galleryImages = [];
   // Remove from carousel too those that were uploaded (dataURLs start with data:)
-  s.carouselImages = (s.carouselImages || []).filter(src => !src.startsWith('data:'));
+  s.carouselImages = (s.carouselImages || []).filter(it => !(typeof it === 'string' ? it : it.src).startsWith('data:'));
   saveState(currentDay);
   buildGallery(currentDay);
   buildCarouselStrip(currentDay);
@@ -1824,16 +1844,23 @@ function buildCarouselStrip(idx) {
   }
   carouselEmpty.style.display = 'none';
 
-  s.carouselImages.forEach((src, i) => {
+  s.carouselImages.forEach((rawItem, i) => {
+    // Normalize legacy string items
+    if (typeof rawItem === 'string') {
+      s.carouselImages[i] = { src: rawItem, filterType: 'none' };
+    }
+    const item = s.carouselImages[i];
+
     const wrap  = document.createElement('div');
     wrap.className = 'carousel-thumb-wrap';
 
     const img = document.createElement('img');
-    img.src = src;
+    img.src = item.src;
     img.alt = '';
     img.title = 'Cliquer pour utiliser comme fond de carte';
+    img.style.filter = getFilterCSS(item.filterType || 'none');
     img.addEventListener('click', () => {
-      setBgImage(src);
+      setBgImage(item.src);
       // Sync active state in carousel strip
       carouselStripEl.querySelectorAll('.carousel-thumb-wrap img').forEach(t => t.classList.remove('active'));
       img.classList.add('active');
@@ -1856,16 +1883,36 @@ function buildCarouselStrip(idx) {
       s.carouselImages.splice(i, 1);
       saveState(idx);
       buildCarouselStrip(idx);
-      buildGallery(idx); // sync carousel indicators
+      buildGallery(idx);
       showStatus('Photo supprimée ✓');
     });
 
     // Mark active if this image is the current background
-    if (src === (getState(idx).bgDataUrl || '')) img.classList.add('active');
+    if (item.src === (getState(idx).bgDataUrl || '')) img.classList.add('active');
+
+    // Filter buttons row
+    const filterRow = document.createElement('div');
+    filterRow.className = 'carousel-filter-row';
+    [['—','none'],['B&W','bw'],['Sep','sepia'],['Vint','vintage'],['Ctr+','contrast']].forEach(([label, val]) => {
+      const fb = document.createElement('button');
+      fb.className = 'carousel-filter-btn' + (( item.filterType || 'none') === val ? ' active' : '');
+      fb.textContent = label;
+      fb.title = { none: 'Aucun filtre', bw: 'Noir & Blanc', sepia: 'Sépia', vintage: 'Vintage', contrast: 'Contraste+' }[val];
+      fb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        item.filterType = val;
+        img.style.filter = getFilterCSS(val);
+        filterRow.querySelectorAll('.carousel-filter-btn').forEach(b => b.classList.remove('active'));
+        fb.classList.add('active');
+        saveState(idx);
+      });
+      filterRow.appendChild(fb);
+    });
 
     wrap.appendChild(img);
     wrap.appendChild(order);
     wrap.appendChild(rm);
+    wrap.appendChild(filterRow);
     carouselStripEl.appendChild(wrap);
   });
 }
@@ -1881,7 +1928,7 @@ carouselFileInput.addEventListener('change', () => {
   files.forEach(file => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      s.carouselImages.push(e.target.result);
+      s.carouselImages.push({ src: e.target.result, filterType: 'none' });
       loaded++;
       if (loaded === files.length) {
         saveState(currentDay);
@@ -1909,12 +1956,14 @@ exportCarouselBtn.addEventListener('click', async () => {
   }
 
   const W = 1080, H = 1350;
-  const filterCss = getFilterCSS(s.filterType || 'none');
   const dayLabel  = currentDay < 10 ? `j${currentDay + 1}` : (currentDay === 10 ? 'cta' : 'fete');
 
   await document.fonts.ready;
 
   for (let i = 0; i < images.length; i++) {
+    // Normalize legacy string items
+    const item = (typeof images[i] === 'string') ? { src: images[i], filterType: 'none' } : images[i];
+    const filterCss = getFilterCSS(item.filterType || 'none');
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -1922,7 +1971,7 @@ exportCarouselBtn.addEventListener('click', async () => {
     try {
       await new Promise((resolve, reject) => {
         const img2 = new Image();
-        if (images[i].startsWith('http')) img2.crossOrigin = 'anonymous';
+        if (item.src.startsWith('http')) img2.crossOrigin = 'anonymous';
         img2.onload = () => {
           const ia = img2.naturalWidth / img2.naturalHeight;
           const ca = W / H;
@@ -1938,7 +1987,7 @@ exportCarouselBtn.addEventListener('click', async () => {
           resolve();
         };
         img2.onerror = reject;
-        img2.src = images[i];
+        img2.src = item.src;
       });
     } catch (err) {
       alert(`Image carrousel ${i + 1} non exportable.`);
