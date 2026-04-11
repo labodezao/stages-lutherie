@@ -140,6 +140,7 @@ header p { font-size: 12px; color: var(--wood-light); margin-top: 3px; }
   inset: 0;
   pointer-events: none;
   transition: background 0.2s;
+  z-index: 1;
 }
 
 .card-frame {
@@ -1555,6 +1556,7 @@ function switchDay(idx) {
 
   // Overlay
   applyOverlay(s.overlayIntensity);
+  applyTextOverlay(s.textOverlayIntensity || 0);
 
   // Background image
   setBgImage(s.bgDataUrl || '');
@@ -1903,6 +1905,14 @@ overlaySlider.addEventListener('input', () => {
   overlayVal.textContent = v + '%';
   cardOverlay.style.background = buildGradient(v);
   getState(currentDay).overlayIntensity = v;
+  autoSave();
+});
+
+textOverlaySlider.addEventListener('input', () => {
+  const v = parseInt(textOverlaySlider.value, 10);
+  textOverlayVal.textContent = v + '%';
+  cardTextOverlay.style.background = buildTextGradient(v);
+  getState(currentDay).textOverlayIntensity = v;
   autoSave();
 });
 
