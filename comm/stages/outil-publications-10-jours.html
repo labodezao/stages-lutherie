@@ -558,6 +558,13 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
     <!-- Export -->
     <button id="export-btn">⬇ Exporter carte JPG</button>
 
+    <!-- JSON Save / Load -->
+    <div class="panel-row" style="gap:8px; margin-top:10px;">
+      <button class="btn btn-ghost" id="json-export-btn">💾 Sauvegarder JSON</button>
+      <button class="btn btn-ghost" id="json-import-btn">📂 Charger JSON</button>
+    </div>
+    <input type="file" id="json-file-input" accept=".json" style="display:none;">
+
     <!-- OpenAI -->
     <details class="openai-section">
       <summary>🔑 Clé OpenAI (optionnel — pour générer des textes via GPT-4)</summary>
@@ -1452,12 +1459,68 @@ exportBtn.addEventListener('click', async () => {
   ctx.fillText('ewendaviau.com/stages', W - PAD_X - ctx.measureText('ewendaviau.com/stages').width, footerY);
 
   // ── Download ──
-  const dayLabel = currentDay < 10 ? `j${currentDay + 1}` : 'cta';
+  const dayLabel = currentDay < 10 ? `j${currentDay + 1}` : (currentDay === 10 ? 'cta' : 'fete');
   const link = document.createElement('a');
   link.download = `publi-${dayLabel}.jpg`;
   link.href = canvas.toDataURL('image/jpeg', 0.92);
   link.click();
   showStatus('Export JPG téléchargé ✓');
+});
+
+// ═══════════════════════════════════════════════════════
+// JSON SAVE / LOAD
+// ═══════════════════════════════════════════════════════
+
+const jsonExportBtn = document.getElementById('json-export-btn');
+const jsonImportBtn = document.getElementById('json-import-btn');
+const jsonFileInput = document.getElementById('json-file-input');
+
+function exportAllJSON() {
+  readCurrentFields();
+  // Ensure every tab has a state entry loaded from localStorage
+  TABS.forEach((_, idx) => getState(idx));
+  const payload = {
+    version: 1,
+    exported: new Date().toISOString(),
+    days: dayState,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `publi-stage-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showStatus('JSON exporté ✓');
+}
+
+function importAllJSON(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const payload = JSON.parse(e.target.result);
+      const data = payload.days || payload;
+      Object.keys(data).forEach(key => {
+        const idx = parseInt(key, 10);
+        if (!isNaN(idx)) {
+          dayState[idx] = data[key];
+          saveState(idx);
+        }
+      });
+      switchDay(currentDay);
+      showStatus('Session chargée ✓');
+    } catch (err) {
+      alert('Erreur lecture JSON : ' + err.message);
+    }
+    jsonFileInput.value = '';
+  };
+  reader.readAsText(file);
+}
+
+jsonExportBtn.addEventListener('click', exportAllJSON);
+jsonImportBtn.addEventListener('click', () => jsonFileInput.click());
+jsonFileInput.addEventListener('change', () => {
+  if (jsonFileInput.files[0]) importAllJSON(jsonFileInput.files[0]);
 });
 
 // ═══════════════════════════════════════════════════════
