@@ -1234,6 +1234,8 @@ function getState(idx) {
       }
       // Ensure galleryImages exists
       if (!loaded.galleryImages) loaded.galleryImages = [];
+      // Ensure carouselImages exists
+      if (!loaded.carouselImages) loaded.carouselImages = [];
       dayState[idx] = loaded;
     } else {
       dayState[idx] = emptyState(idx);
@@ -1470,7 +1472,7 @@ function readCurrentFields() {
 }
 
 function switchDay(idx) {
-  readCurrentFields();
+  if (idx !== currentDay) readCurrentFields();
   currentDay = idx;
 
   // Update tabs
