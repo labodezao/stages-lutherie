@@ -997,41 +997,7 @@ const DEFAULT_IMAGES = {
   2: "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 17.36.52.jpeg",
 };
 
-const GALLERY_J1 = [
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (1).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (2).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (3).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (4).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (5).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.18 (1).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.19 (1).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.20 (1).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.21.jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (1).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (2).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (4).jpeg",
-  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (5).jpeg",
-];
-
-const GALLERY_J2 = [
-  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.49 (1).jpeg",
-  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.50 (1).jpeg",
-  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.50 (2).jpeg",
-  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.50.jpeg",
-];
-
-const GALLERY_J3 = [
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 17.36.52.jpeg",
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 21.12.50 (1).jpeg",
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 21.12.51.jpeg",
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 23.14.08.jpeg",
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 23.14.09.jpeg",
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 11.37.20 (1).jpeg",
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 11.37.20 (2).jpeg",
-  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 11.37.20.jpeg",
-];
-
-const GALLERIES = [GALLERY_J1, GALLERY_J2, GALLERY_J3];
+const GALLERIES = [];
 
 const FR_TEMPLATES = [
 `Jour 1. 🪵
@@ -1815,14 +1781,11 @@ galleryFileInput.addEventListener('change', () => {
 });
 
 galleryClearBtn.addEventListener('click', () => {
-  if (!confirm('Vider les photos uploadées de la galerie pour ce jour ?')) return;
+  if (!confirm('Vider les photos de la galerie pour ce jour ?')) return;
   const s = getState(currentDay);
   s.galleryImages = [];
-  // Remove from carousel too those that were uploaded (dataURLs start with data:)
-  s.carouselImages = (s.carouselImages || []).filter(it => !(typeof it === 'string' ? it : it.src).startsWith('data:'));
   saveState(currentDay);
   buildGallery(currentDay);
-  buildCarouselStrip(currentDay);
   showStatus('Galerie vidée');
 });
 
