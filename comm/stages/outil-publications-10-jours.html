@@ -461,6 +461,25 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
 /* Copy success flash */
 .copied { color: #7bcf8a !important; border-color: #7bcf8a !important; }
 
+/* ── Facts count control ── */
+.facts-count-row {
+  display: flex; align-items: center; gap: 8px; margin-top: 8px;
+}
+.facts-count-row span {
+  font-size: 13px; color: #c8b99a; min-width: 20px; text-align: center;
+}
+.btn-sm {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #f3f0ec;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 18px; line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-sm:hover { background: rgba(212,160,23,0.25); border-color: var(--gold); }
+
 /* ── Carousel section ── */
 #carousel-section { margin-top: 14px; }
 #carousel-strip {
@@ -555,11 +574,7 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
             <p class="card-subtitle" id="field-subtitle" contenteditable="true">Dix jours pour construire un accordéon diatonique de A à Z. Le premier geste est toujours le plus hésitant — et le plus beau.</p>
           </div>
           <div class="card-bottom">
-            <div class="facts">
-              <span class="fact" id="field-fact1" contenteditable="true">Saint-Nazaire</span>
-              <span class="fact" id="field-fact2" contenteditable="true">10 jours</span>
-              <span class="fact" id="field-fact3" contenteditable="true">6 stagiaires</span>
-            </div>
+            <div class="facts" id="facts-container"></div>
             <div class="card-footer">
               <span class="cta-badge" id="field-cta" contenteditable="true">Session 2026 →</span>
               <span class="card-url">ewendaviau.com/stages</span>
@@ -576,6 +591,12 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
         <span>Intensité overlay</span>
         <input type="range" id="overlay-slider" min="0" max="100" value="35">
         <span id="overlay-val">35%</span>
+      </div>
+      <div class="facts-count-row">
+        <span>Bulles</span>
+        <button class="btn-sm" id="facts-remove-btn">−</button>
+        <span id="facts-count-display">3</span>
+        <button class="btn-sm" id="facts-add-btn">+</button>
       </div>
     </div>
 
@@ -1004,9 +1025,7 @@ function emptyState(idx) {
     eyebrow: t.eyebrow,
     title: t.title,
     subtitle: t.subtitle,
-    fact1: t.fact1,
-    fact2: t.fact2,
-    fact3: t.fact3,
+    facts: [t.fact1, t.fact2, t.fact3].filter(Boolean),
     ctaText: t.cta,
     bgDataUrl: DEFAULT_IMAGES[idx] || '',
     overlayIntensity: 35,
@@ -1035,7 +1054,17 @@ function saveState(idx) {
 
 function getState(idx) {
   if (!dayState[idx]) {
-    dayState[idx] = loadState(idx) || emptyState(idx);
+    const loaded = loadState(idx);
+    if (loaded) {
+      // Migrate old format (fact1/fact2/fact3) to facts array
+      if (!loaded.facts) {
+        loaded.facts = [loaded.fact1, loaded.fact2, loaded.fact3].filter(Boolean);
+        delete loaded.fact1; delete loaded.fact2; delete loaded.fact3;
+      }
+      dayState[idx] = loaded;
+    } else {
+      dayState[idx] = emptyState(idx);
+    }
   }
   return dayState[idx];
 }
@@ -1069,11 +1098,12 @@ const fields = {
   eyebrow:  document.getElementById('field-eyebrow'),
   title:    document.getElementById('field-title'),
   subtitle: document.getElementById('field-subtitle'),
-  fact1:    document.getElementById('field-fact1'),
-  fact2:    document.getElementById('field-fact2'),
-  fact3:    document.getElementById('field-fact3'),
   cta:      document.getElementById('field-cta'),
 };
+const factsContainer = document.getElementById('facts-container');
+const factsCountDisplay = document.getElementById('facts-count-display');
+const factsAddBtn       = document.getElementById('facts-add-btn');
+const factsRemoveBtn    = document.getElementById('facts-remove-btn');
 
 // ═══════════════════════════════════════════════════════
 // SCALING
@@ -1140,9 +1170,7 @@ function readCurrentFields() {
   s.eyebrow  = fields.eyebrow.textContent;
   s.title    = fields.title.textContent;
   s.subtitle = fields.subtitle.textContent;
-  s.fact1    = fields.fact1.textContent;
-  s.fact2    = fields.fact2.textContent;
-  s.fact3    = fields.fact3.textContent;
+  s.facts    = Array.from(factsContainer.querySelectorAll('.fact')).map(el => el.textContent);
   s.ctaText  = fields.cta.textContent;
   s.overlayIntensity = parseInt(overlaySlider.value, 10);
   s.textFR   = textareaFR.value;
@@ -1167,9 +1195,7 @@ function switchDay(idx) {
   fields.eyebrow.textContent  = s.eyebrow;
   fields.title.textContent    = s.title;
   fields.subtitle.textContent = s.subtitle;
-  fields.fact1.textContent    = s.fact1;
-  fields.fact2.textContent    = s.fact2;
-  fields.fact3.textContent    = s.fact3;
+  buildFactsDOM(idx);
   fields.cta.textContent      = s.ctaText;
 
   // Overlay
