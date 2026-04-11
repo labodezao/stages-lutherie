@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outil Publications — Stage Lutherie Accordéon · 10 Jours</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+  --wood-dark: #2c1810;
+  --wood-medium: #5d4037;
+  --wood-light: #8d6e63;
+  --cream: #fff8e1;
+  --gold: #d4a017;
+  --gold-light: #f5d061;
+  --paper: #fcfbf7;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #111;
+  color: #f3f0ec;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+header {
+  background: linear-gradient(135deg, #1a0f08 0%, #2c1810 60%, #3d2518 100%);
+  border-bottom: 2px solid var(--gold);
+  padding: 18px 28px 14px;
+  display: flex; align-items: center; gap: 18px;
+}
+header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  color: var(--gold-light);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+header p { font-size: 12px; color: var(--wood-light); margin-top: 3px; }
+
+/* ── Tabs ── */
+#tabs-strip {
+  background: #1a1208;
+  border-bottom: 1px solid rgba(212,160,23,0.25);
+  padding: 10px 20px 0;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
+}
+.tab-btn {
+  background: transparent;
+  border: 1px solid rgba(212,160,23,0.18);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: #a09070;
+  cursor: pointer;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 8px 14px;
+  transition: all 0.18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.tab-btn:hover { background: rgba(212,160,23,0.12); color: var(--gold-light); }
+.tab-btn.active {
+  background: var(--gold);
+  color: var(--wood-dark);
+  border-color: var(--gold);
+}
+
+/* ── Main Layout ── */
+#main-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  padding: 24px 24px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* ── Left: Card + Gallery ── */
+#left-col { display: flex; flex-direction: column; gap: 14px; }
+
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+/* Card Wrapper (clips to scaled size) */
+#card-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,160,23,0.2);
+  flex-shrink: 0;
+}
+
+/* Card container: actual 1080×1350, scaled via transform */
+#card-container {
+  width: 1080px;
+  height: 1350px;
+  transform-origin: top left;
+  position: relative;
+  background: var(--wood-dark);
+  overflow: hidden;
+}
+
+#card-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.card-frame {
+  position: absolute;
+  inset: 28px;
+  border: 1px solid rgba(255,248,225,0.22);
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+#card-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 82px 86px 78px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Contenteditable fields */
+[contenteditable="true"] {
+  outline: none;
+  min-width: 20px;
+  cursor: text;
+  transition: box-shadow 0.15s;
+}
+[contenteditable="true"]:hover,
+[contenteditable="true"]:focus {
+  box-shadow: 0 0 0 2px rgba(212,160,23,0.5);
+  border-radius: 3px;
+}
+
+/* Eyebrow */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  background: var(--gold);
+  color: var(--wood-dark);
+  border-radius: 40px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 10px 32px;
+  width: fit-content;
+}
+
+/* Card top/bottom zones */
+.card-top { display: flex; flex-direction: column; gap: 0; }
+.card-bottom { display: flex; flex-direction: column; gap: 40px; }
+
+/* Title */
+.card-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 88px;
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--cream);
+  margin-top: 52px;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.7);
+}
+
+/* Subtitle */
+.card-subtitle {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 31px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255,248,225,0.88);
+  margin-top: 32px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+}
+
+/* Facts row */
+.facts {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.fact {
+  background: rgba(255,248,225,0.13);
+  border: 1px solid rgba(255,248,225,0.28);
+  border-radius: 40px;
+  color: var(--cream);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  padding: 10px 30px;
+  backdrop-filter: blur(4px);
+}
+
+/* Footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cta-badge {
+  background: var(--gold);
+  color: var(--wood-dark);
+  border-radius: 40px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 14px 40px;
+}
+.card-url {
+  color: rgba(255,248,225,0.6);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* No-image fallback */
+#card-no-image {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #2c1810 0%, #1a0a04 40%, #3d2005 100%);
+  z-index: 0;
+}
+
+/* ── Card Controls below card ── */
+#card-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background: rgba(212,160,23,0.15);
+  border: 1px solid rgba(212,160,23,0.4);
+  border-radius: 6px;
+  color: var(--gold-light);
+  cursor: pointer;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  transition: all 0.18s;
+}
+.btn:hover {
+  background: rgba(212,160,23,0.28);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+.btn.btn-primary {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--wood-dark);
+  font-size: 13px;
+  padding: 10px 22px;
+}
+.btn.btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+.btn.btn-ghost {
+  background: transparent;
+  border-color: rgba(255,255,255,0.15);
+  color: #a09070;
+  font-size: 11px;
+}
+.btn.btn-ghost:hover { border-color: rgba(212,160,23,0.4); color: var(--gold-light); }
+
+#file-upload-input { display: none; }
+
+/* Overlay slider */
+.slider-group {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; color: #a09070;
+}
+.slider-group input[type=range] {
+  width: 100px;
+  accent-color: var(--gold);
+}
+
+/* ── Gallery ── */
+#gallery-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
+}
+.gallery-thumb {
+  width: 72px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s, transform 0.15s;
+  opacity: 0.8;
+}
+.gallery-thumb:hover { border-color: var(--gold); transform: scale(1.05); opacity: 1; }
+.gallery-thumb.active { border-color: var(--gold); opacity: 1; }
+
+/* ── Right column ── */
+#right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 300px;
+  max-width: 520px;
+}
+
+.panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+.panel h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel h3 span.flag { font-size: 16px; }
+
+.panel-row { display: flex; gap: 8px; margin-bottom: 10px; }
+
+textarea.fb-text {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  color: #f3f0ec;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.6;
+  padding: 12px 14px;
+  resize: vertical;
+  min-height: 160px;
+  transition: border-color 0.15s;
+}
+textarea.fb-text:focus {
+  outline: none;
+  border-color: rgba(212,160,23,0.4);
+}
+
+/* Export button */
+#export-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--gold) 0%, #b8860b 100%);
+  border: none;
+  border-radius: 8px;
+  color: var(--wood-dark);
+  cursor: pointer;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 14px 24px;
+  transition: all 0.2s;
+  text-align: center;
+}
+#export-btn:hover { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(212,160,23,0.4); }
+
+/* OpenAI section */
+details.openai-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+}
+details.openai-section summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: #a09070;
+  padding: 12px 16px;
+  list-style: none;
+  display: flex; align-items: center; gap: 8px;
+  user-select: none;
+}
+details.openai-section summary::-webkit-details-marker { display: none; }
+details.openai-section summary::before {
+  content: '▶';
+  font-size: 9px;
+  transition: transform 0.2s;
+}
+details.openai-section[open] summary::before { transform: rotate(90deg); }
+.openai-body { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.openai-body input[type=password] {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  color: #f3f0ec;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  padding: 9px 12px;
+}
+.openai-body input[type=password]:focus { outline: none; border-color: rgba(212,160,23,0.4); }
+.openai-hint { font-size: 11px; color: #7a7060; line-height: 1.4; }
+
+/* Status bar */
+#status-bar {
+  position: fixed;
+  bottom: 16px; right: 20px;
+  background: rgba(30,20,10,0.92);
+  border: 1px solid rgba(212,160,23,0.3);
+  border-radius: 8px;
+  color: var(--gold-light);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 1000;
+}
+#status-bar.show { opacity: 1; }
+
+/* Copy success flash */
+.copied { color: #7bcf8a !important; border-color: #7bcf8a !important; }
+
+/* Responsive: if viewport narrow, stack columns */
+@media (max-width: 900px) {
+  #main-layout { grid-template-columns: 1fr; }
+  #right-col { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🪗 Outil Publications — Stage Lutherie · 10 Jours</h1>
+    <p>Ewen Daviau · Saint-Nazaire · Accordéon diatonique · ewendaviau.com/stages</p>
+  </div>
+</header>
+
+<div id="tabs-strip"></div>
+
+<div id="main-layout">
+
+  <!-- ── LEFT COLUMN ── -->
+  <div id="left-col">
+    <div class="section-label">Carte visuelle (1080 × 1350)</div>
+
+    <div id="card-wrapper">
+      <div id="card-container">
+        <div id="card-no-image"></div>
+        <img id="card-bg" src="" alt="" style="display:none;">
+        <div class="card-overlay" id="card-overlay"></div>
+        <div class="card-frame"></div>
+        <div id="card-content">
+          <div class="card-top">
+            <span class="eyebrow" id="field-eyebrow" contenteditable="true">Jour 1 · 9 avril 2026</span>
+            <h2 class="card-title" id="field-title" contenteditable="true">Du bois, des mains, et quelque chose qui commence.</h2>
+            <p class="card-subtitle" id="field-subtitle" contenteditable="true">Dix jours pour construire un accordéon diatonique de A à Z. Le premier geste est toujours le plus hésitant — et le plus beau.</p>
+          </div>
+          <div class="card-bottom">
+            <div class="facts">
+              <span class="fact" id="field-fact1" contenteditable="true">Saint-Nazaire</span>
+              <span class="fact" id="field-fact2" contenteditable="true">10 jours</span>
+              <span class="fact" id="field-fact3" contenteditable="true">6 stagiaires</span>
+            </div>
+            <div class="card-footer">
+              <span class="cta-badge" id="field-cta" contenteditable="true">Session 2026 →</span>
+              <span class="card-url">ewendaviau.com/stages</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="card-controls">
+      <button class="btn" id="upload-btn">📷 Changer la photo</button>
+      <input type="file" id="file-upload-input" accept="image/*">
+      <div class="slider-group">
+        <span>Intensité overlay</span>
+        <input type="range" id="overlay-slider" min="0" max="100" value="35">
+        <span id="overlay-val">35%</span>
+      </div>
+    </div>
+
+    <div id="gallery-container" style="display:none;">
+      <div class="section-label" style="margin-top:4px;">Galerie photos</div>
+      <div id="gallery-strip"></div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT COLUMN ── -->
+  <div id="right-col">
+
+    <!-- FR -->
+    <div class="panel">
+      <h3><span class="flag">🇫🇷</span> Texte Facebook (FR)</h3>
+      <div class="panel-row">
+        <button class="btn" id="suggest-fr-btn">✨ Suggérer IA</button>
+      </div>
+      <textarea class="fb-text" id="textarea-fr" placeholder="Texte de publication Facebook en français…"></textarea>
+      <div class="panel-row" style="margin-top:8px; margin-bottom:0;">
+        <button class="btn btn-ghost" id="copy-fr-btn">📋 Copier FR</button>
+      </div>
+    </div>
+
+    <!-- EN -->
+    <div class="panel">
+      <h3><span class="flag">🇬🇧</span> Facebook Text (EN)</h3>
+      <div class="panel-row">
+        <button class="btn" id="suggest-en-btn">✨ Suggest AI</button>
+      </div>
+      <textarea class="fb-text" id="textarea-en" placeholder="Facebook post text in English…"></textarea>
+      <div class="panel-row" style="margin-top:8px; margin-bottom:0;">
+        <button class="btn btn-ghost" id="copy-en-btn">📋 Copy EN</button>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <button id="export-btn">⬇ Exporter carte JPG</button>
+
+    <!-- OpenAI -->
+    <details class="openai-section">
+      <summary>🔑 Clé OpenAI (optionnel — pour générer des textes via GPT-4)</summary>
+      <div class="openai-body">
+        <input type="password" id="openai-key" placeholder="sk-…">
+        <div class="openai-hint">
+          Votre clé n'est jamais envoyée à un serveur tiers — elle est utilisée directement depuis votre navigateur vers api.openai.com.<br>
+          Sans clé, les boutons ✨ chargent les templates pré-écrits intégrés.
+        </div>
+      </div>
+    </details>
+
+  </div>
+</div>
+
+<div id="status-bar">Enregistré ✓</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+
+const TABS = ['J1','J2','J3','J4','J5','J6','J7','J8','J9','J10','CTA'];
+
+const CARD_TEMPLATES = [
+  { eyebrow: "Jour 1 · 9 avril 2026", title: "Du bois, des mains, et quelque chose qui commence.", subtitle: "Dix jours pour construire un accordéon diatonique de A à Z. Le premier geste est toujours le plus hésitant — et le plus beau.", fact1: "Saint-Nazaire", fact2: "10 jours", fact3: "6 stagiaires", cta: "Session 2026 →" },
+  { eyebrow: "Jour 2 · en plein travail", title: "Les pièces prennent forme.", subtitle: "En deux jours, ce qui était un bloc de bois commence à ressembler à quelque chose. La précision vient vite quand on a une raison de l'apprendre.", fact1: "Rigueur", fact2: "Précision", fact3: "Progression", cta: "Session 2026 →" },
+  { eyebrow: "Jour 3 · dans le vif", title: "Le silence qui dit tout.", subtitle: "Quand l'atelier se tait, ce n'est pas qu'il ne se passe rien. C'est qu'il se passe tout.", fact1: "🔇 silence habité", fact2: "🎶 bois en musique", fact3: "✨ émotions vraies", cta: "Session 2026 →" },
+  { eyebrow: "Jour 4 · le soin du détail", title: "C'est ici que tout se décide.", subtitle: "Le ponçage, les ajustements, les surfaces. Ce qui paraît invisible maintenant décidera du toucher de l'instrument pour toujours.", fact1: "🔧 précision", fact2: "🪵 texture", fact3: "⏱ patience", cta: "Session 2026 →" },
+  { eyebrow: "Jour 5 · mi-parcours", title: "La moitié. Et c'est déjà loin.", subtitle: "Cinq jours de travail — et un regard en arrière sur le chemin parcouru. Les formes sont là, les gestes aussi.", fact1: "⚖️ bilan", fact2: "📐 ajustements", fact3: "🌿 progression", cta: "Session 2026 →" },
+  { eyebrow: "Jour 6 · assemblage", title: "Les pièces se trouvent.", subtitle: "Ce qui était épars devient cohérent. L'assemblage commence — et avec lui, quelque chose qui ressemble enfin à un accordéon.", fact1: "🧩 assemblage", fact2: "🔩 ajustements", fact3: "👁 forme finale", cta: "Session 2026 →" },
+  { eyebrow: "Jour 7 · les soufflets", title: "L'accordéon apprend à respirer.", subtitle: "Les soufflets, pièce maîtresse. C'est eux qui transforment le mouvement en son, le geste en musique.", fact1: "🌬️ soufflets", fact2: "📐 plis précis", fact3: "🎵 vie en devenir", cta: "Session 2026 →" },
+  { eyebrow: "Jour 8 · premières notes", title: "Les premiers sons.", subtitle: "Les anches vibrent. Des sons sortent — les vrais, les premiers. Ce n'est pas encore de la musique, mais ça y ressemble fort.", fact1: "🎵 son", fact2: "🎶 vibration", fact3: "✨ premier souffle", cta: "Session 2026 →" },
+  { eyebrow: "Jour 9 · finitions", title: "La beauté dans les détails.", subtitle: "Vernis, ajustements, derniers détails. C'est là qu'un bel objet devient un bel instrument.", fact1: "✨ vernis", fact2: "🎨 esthétique", fact3: "🔍 perfection", cta: "Session 2026 →" },
+  { eyebrow: "Jour 10 · l'instrument est né", title: "L'accordéon est né.", subtitle: "Dix jours de travail. Un instrument unique, construit de A à Z, qui repart avec son auteur.", fact1: "🎶 musique", fact2: "🤲 artisanat", fact3: "💛 fierté", cta: "Session 2026 →" },
+  { eyebrow: "Stage 2026 · inscriptions ouvertes", title: "Fabriquer son propre accordéon.", subtitle: "10 jours à Saint-Nazaire. Zéro prérequis. Vous repartez avec un instrument que vous avez construit de vos mains.", fact1: "Saint-Nazaire", fact2: "10 jours", fact3: "6 places max", cta: "En savoir plus →" },
+];
+
+const DEFAULT_IMAGES = {
+  0: "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (1).jpeg",
+  1: "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.50.jpeg",
+  2: "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 17.36.52.jpeg",
+};
+
+const GALLERY_J1 = [
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (1).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (2).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (3).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (4).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.17 (5).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.18 (1).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.19 (1).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.20 (1).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.21.jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (1).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (2).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (4).jpeg",
+  "stage avril 2026/jour1/WhatsApp Image 2026-04-09 at 21.18.16 (5).jpeg",
+];
+
+const GALLERY_J2 = [
+  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.49 (1).jpeg",
+  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.50 (1).jpeg",
+  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.50 (2).jpeg",
+  "stage avril 2026/jour2/WhatsApp Image 2026-04-09 at 21.46.50.jpeg",
+];
+
+const GALLERY_J3 = [
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 17.36.52.jpeg",
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 21.12.50 (1).jpeg",
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 21.12.51.jpeg",
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 23.14.08.jpeg",
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 23.14.09.jpeg",
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 11.37.20 (1).jpeg",
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 11.37.20 (2).jpeg",
+  "stage avril 2026/jour3/WhatsApp Image 2026-04-10 at 11.37.20.jpeg",
+];
+
+const GALLERIES = [GALLERY_J1, GALLERY_J2, GALLERY_J3];
+
+const FR_TEMPLATES = [
+`Jour 1. 🪵
+
+Premiers outils en main. On choisit les planches, on prend les mesures. Il y a dans ce moment quelque chose de difficile à décrire — l'instant où on réalise que c'est vraiment parti.
+
+Je partagerai quelques instants du stage au fil des jours.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #artisanat #diato #saintNazaire`,
+
+`Jour 2. ✂️
+
+Les premières pièces se dessinent. Les gestes se précisent, les mains commencent à savoir ce qu'elles font. Il y a ce moment où quelqu'un regarde ce qu'il vient de façonner — et réalise que c'est lui qui l'a fait.
+
+C'est pour ça qu'on fait ça.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #diato #artisanat #saintNazaire`,
+
+`Jour 3. 🔇
+
+Il y a un silence dans l'atelier aujourd'hui. Pas le vide — le plein. Celui de gens entièrement dans ce qu'ils font.
+
+On a entendu plusieurs fois : "J'aurais jamais cru que j'arriverais à faire ça."
+On a juste souri.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #diato #artisanat #saintNazaire`,
+
+`Jour 4. 🔧
+
+Le ponçage. Ce n'est pas spectaculaire, mais c'est là que ça se joue. Chaque surface qu'on affine maintenant décidera du toucher de l'instrument plus tard.
+
+La lutherie, c'est aussi ça : accepter que le temps passé sur les détails n'est jamais du temps perdu.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #artisanat #diato #patience`,
+
+`Jour 5. ⚖️
+
+Mi-parcours. Bonne occasion de prendre du recul — regarder ce qu'on a fait, mesurer le chemin parcouru, ajuster ce qui doit l'être.
+
+Les accordéons commencent à ressembler à des accordéons.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #diato #artisanat #miParcours`,
+
+`Jour 6. 🧩
+
+L'assemblage commence. Les pièces qu'on a travaillées séparément depuis le début se rencontrent. Ça ne ressemble plus à des morceaux de bois — ça ressemble à quelque chose.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #assemblage #artisanat #diato`,
+
+`Jour 7. 🌬️
+
+Les soufflets. Pièce maîtresse — et l'une des plus délicates. C'est eux qui donnent vie à l'instrument, qui transforment le mouvement en son.
+
+Aujourd'hui, l'accordéon apprend à respirer.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #soufflets #artisanat #diato`,
+
+`Jour 8. 🎵
+
+Premières notes. Les anches vibrent, les sons sortent — les premiers, les vrais. Ce n'est pas encore de la musique, mais c'est le début de quelque chose qui en sera.
+
+Les visages quand ils entendent ça pour la première fois...
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #premiereNotes #artisanat #diato`,
+
+`Jour 9. ✨
+
+Finitions. Vernis, ajustements, derniers détails. C'est là qu'un bel objet devient un bel instrument. On prend le temps de bien finir — parce que ça se voit, parce que ça se sent.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #finitions #artisanat #diato`,
+
+`Jour 10. 🎶
+
+L'accordéon est né.
+
+Dix jours de travail. Des mains qui ont appris à connaître le bois, les outils, leurs propres limites — et à les dépasser. Un instrument unique, construit de A à Z, qui repart avec son auteur.
+
+Merci à ce groupe. C'était quelque chose.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #artisanat #diato #saintNazaire #fait`,
+
+`Le stage 2026 vient de se terminer.
+
+Si ces quelques photos vous ont parlé, la prochaine session est ouverte aux inscriptions.
+
+📍 Saint-Nazaire · 10 jours · 6 places maximum
+🔨 Aucun prérequis — on part de rien
+🪵 Vous repartez avec votre propre accordéon diatonique
+
+Toutes les informations et le formulaire d'inscription :
+👉 ewendaviau.com/stages
+
+Des questions ? Écrivez-moi directement.
+
+#accordeondiatonique #lutherie #stagemusique #diato #saintNazaire #inscription`,
+];
+
+const EN_TEMPLATES = [
+`Day 1. 🪵
+
+First tools in hand. We choose the wood, take the measurements. There's something hard to describe in this moment — the instant you realise it's really happening.
+
+I'll share a few glimpses of the workshop over the next days.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #luthier #craftwork #saintNazaire`,
+
+`Day 2. ✂️
+
+The first pieces take shape. Gestures become more confident — hands start to know what they're doing. There's that moment when someone looks at what they've just made and realises: I did that.
+
+That's why we do this.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #handcraft #diato #saintNazaire`,
+
+`Day 3. 🔇
+
+There's a silence in the workshop today. Not emptiness — fullness. The kind that comes from people fully absorbed in what they're doing.
+
+Heard more than once today: "I never thought I'd be able to do that."
+We just smiled.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #handcraft #diato #saintNazaire`,
+
+`Day 4. 🔧
+
+Sanding. Not spectacular — but this is where it matters. Every surface refined now will determine the feel of the instrument later.
+
+Lutherie teaches you this too: time spent on details is never wasted.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #handcraft #diato #patience`,
+
+`Day 5. ⚖️
+
+Halfway. A good moment to step back — look at what's been done, measure the progress, adjust what needs adjusting.
+
+The accordions are starting to look like accordions.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #handcraft #diato #halfway`,
+
+`Day 6. 🧩
+
+Assembly begins. The pieces worked on separately all this time start coming together. It no longer looks like bits of wood — it looks like something.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #assembly #handcraft #diato`,
+
+`Day 7. 🌬️
+
+The bellows. The centrepiece — and one of the most delicate parts. They're what give the instrument life, what transforms movement into sound.
+
+Today, the accordion learns to breathe.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #bellows #handcraft #diato`,
+
+`Day 8. 🎵
+
+First notes. The reeds vibrate, the sounds come out — the real first sounds. Not music yet, but the beginning of something that will be.
+
+The faces when they hear it for the first time...
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #firststeps #handcraft #diato`,
+
+`Day 9. ✨
+
+Finishing. Varnish, adjustments, last details. This is where a beautiful object becomes a beautiful instrument. We take our time — because it shows, because it's felt.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #finishing #handcraft #diato`,
+
+`Day 10. 🎶
+
+The accordion is born.
+
+Ten days of work. Hands that learned to know the wood, the tools, their own limits — and to push past them. A unique instrument, built from scratch, leaving with its maker.
+
+Thank you to this group. It was something.
+
+👉 ewendaviau.com/stages
+
+#lutherie #diatonicaccordion #handcraft #diato #saintNazaire #made`,
+
+`The 2026 workshop just ended.
+
+If these photos spoke to you, the next session is now open for registration.
+
+📍 Saint-Nazaire · 10 days · 6 places maximum
+🔨 No prerequisites — we start from nothing
+🪵 You leave with your own diatonic accordion
+
+All information and registration form:
+👉 ewendaviau.com/stages
+
+Questions? Write to me directly.
+
+#diatonicaccordion #lutherie #musicworkshop #diato #saintNazaire #registration`,
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+
+let currentDay = 0; // 0–10 (0=J1 … 9=J10, 10=CTA)
+
+// Per-day state stored in memory (also persisted to localStorage)
+const dayState = {};
+
+function emptyState(idx) {
+  const t = CARD_TEMPLATES[idx];
+  return {
+    eyebrow: t.eyebrow,
+    title: t.title,
+    subtitle: t.subtitle,
+    fact1: t.fact1,
+    fact2: t.fact2,
+    fact3: t.fact3,
+    ctaText: t.cta,
+    bgDataUrl: DEFAULT_IMAGES[idx] || '',
+    overlayIntensity: 35,
+    textFR: '',
+    textEN: '',
+  };
+}
+
+function lsKey(idx) { return `stluth_publi_j${idx + 1}`; }
+
+function loadState(idx) {
+  try {
+    const raw = localStorage.getItem(lsKey(idx));
+    if (raw) return JSON.parse(raw);
+  } catch (e) { /* ignore */ }
+  return null;
+}
+
+function saveState(idx) {
+  try {
+    localStorage.setItem(lsKey(idx), JSON.stringify(dayState[idx]));
+  } catch (e) { /* ignore */ }
+}
+
+function getState(idx) {
+  if (!dayState[idx]) {
+    dayState[idx] = loadState(idx) || emptyState(idx);
+  }
+  return dayState[idx];
+}
+
+// ═══════════════════════════════════════════════════════
+// DOM REFERENCES
+// ═══════════════════════════════════════════════════════
+
+const cardBg          = document.getElementById('card-bg');
+const cardNoImage     = document.getElementById('card-no-image');
+const cardOverlay     = document.getElementById('card-overlay');
+const cardContainer   = document.getElementById('card-container');
+const cardWrapper     = document.getElementById('card-wrapper');
+const overlaySlider   = document.getElementById('overlay-slider');
+const overlayVal      = document.getElementById('overlay-val');
+const uploadBtn       = document.getElementById('upload-btn');
+const fileInput       = document.getElementById('file-upload-input');
+const galleryContainer = document.getElementById('gallery-container');
+const galleryStrip    = document.getElementById('gallery-strip');
+const textareaFR      = document.getElementById('textarea-fr');
+const textareaEN      = document.getElementById('textarea-en');
+const suggestFR       = document.getElementById('suggest-fr-btn');
+const suggestEN       = document.getElementById('suggest-en-btn');
+const copyFR          = document.getElementById('copy-fr-btn');
+const copyEN          = document.getElementById('copy-en-btn');
+const exportBtn       = document.getElementById('export-btn');
+const openaiKey       = document.getElementById('openai-key');
+const statusBar       = document.getElementById('status-bar');
+
+const fields = {
+  eyebrow:  document.getElementById('field-eyebrow'),
+  title:    document.getElementById('field-title'),
+  subtitle: document.getElementById('field-subtitle'),
+  fact1:    document.getElementById('field-fact1'),
+  fact2:    document.getElementById('field-fact2'),
+  fact3:    document.getElementById('field-fact3'),
+  cta:      document.getElementById('field-cta'),
+};
+
+// ═══════════════════════════════════════════════════════
+// SCALING
+// ═══════════════════════════════════════════════════════
+
+function computeScale() {
+  const availH = window.innerHeight - 180;
+  const availW = Math.min(window.innerWidth * 0.48, 520);
+  const scaleH = availH / 1350;
+  const scaleW = availW / 1080;
+  return Math.min(scaleH, scaleW, 0.46);
+}
+
+function applyScale() {
+  const s = computeScale();
+  cardContainer.style.transform = `scale(${s})`;
+  cardWrapper.style.width  = Math.round(1080 * s) + 'px';
+  cardWrapper.style.height = Math.round(1350 * s) + 'px';
+}
+
+window.addEventListener('resize', applyScale);
+applyScale();
+
+// ═══════════════════════════════════════════════════════
+// OVERLAY GRADIENT
+// ═══════════════════════════════════════════════════════
+
+function buildGradient(intensity) {
+  // intensity 0–100 → alpha multiplier 0–1
+  const m = intensity / 100;
+  const a0  = (0.90 * m).toFixed(2);
+  const a25 = (0.55 * m).toFixed(2);
+  const a48 = (0.12 * m).toFixed(2);
+  return `linear-gradient(to top, rgba(15,8,4,${a0}) 0%, rgba(15,8,4,${a25}) 25%, rgba(15,8,4,${a48}) 48%, rgba(15,8,4,0.00) 100%)`;
+}
+
+function applyOverlay(intensity) {
+  cardOverlay.style.background = buildGradient(intensity);
+  overlaySlider.value = intensity;
+  overlayVal.textContent = intensity + '%';
+}
+
+// ═══════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════
+
+const tabsStrip = document.getElementById('tabs-strip');
+
+TABS.forEach((label, idx) => {
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+  btn.textContent = label;
+  btn.dataset.idx = idx;
+  btn.addEventListener('click', () => switchDay(idx));
+  tabsStrip.appendChild(btn);
+});
+
+// ═══════════════════════════════════════════════════════
+// SWITCH DAY
+// ═══════════════════════════════════════════════════════
+
+function readCurrentFields() {
+  const s = getState(currentDay);
+  s.eyebrow  = fields.eyebrow.textContent;
+  s.title    = fields.title.textContent;
+  s.subtitle = fields.subtitle.textContent;
+  s.fact1    = fields.fact1.textContent;
+  s.fact2    = fields.fact2.textContent;
+  s.fact3    = fields.fact3.textContent;
+  s.ctaText  = fields.cta.textContent;
+  s.overlayIntensity = parseInt(overlaySlider.value, 10);
+  s.textFR   = textareaFR.value;
+  s.textEN   = textareaEN.value;
+  saveState(currentDay);
+}
+
+function switchDay(idx) {
+  readCurrentFields();
+  currentDay = idx;
+
+  // Update tabs
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+
+  const s = getState(idx);
+
+  // Fill fields
+  fields.eyebrow.textContent  = s.eyebrow;
+  fields.title.textContent    = s.title;
+  fields.subtitle.textContent = s.subtitle;
+  fields.fact1.textContent    = s.fact1;
+  fields.fact2.textContent    = s.fact2;
+  fields.fact3.textContent    = s.fact3;
+  fields.cta.textContent      = s.ctaText;
+
+  // Overlay
+  applyOverlay(s.overlayIntensity);
+
+  // Background image
+  setBgImage(s.bgDataUrl || '');
+
+  // Texts
+  textareaFR.value = s.textFR;
+  textareaEN.value = s.textEN;
+
+  // Gallery
+  buildGallery(idx);
+}
+
+// ═══════════════════════════════════════════════════════
+// BACKGROUND IMAGE
+// ═══════════════════════════════════════════════════════
+
+function setBgImage(src) {
+  if (src) {
+    cardBg.src = src;
+    cardBg.style.display = 'block';
+    cardNoImage.style.display = 'none';
+  } else {
+    cardBg.src = '';
+    cardBg.style.display = 'none';
+    cardNoImage.style.display = 'block';
+  }
+  getState(currentDay).bgDataUrl = src;
+}
+
+// ═══════════════════════════════════════════════════════
+// GALLERY
+// ═══════════════════════════════════════════════════════
+
+function buildGallery(idx) {
+  const gallery = GALLERIES[idx]; // undefined for J4+
+  galleryStrip.innerHTML = '';
+
+  if (gallery && gallery.length > 0) {
+    galleryContainer.style.display = 'block';
+    const currentSrc = getState(idx).bgDataUrl || '';
+    gallery.forEach(path => {
+      const img = document.createElement('img');
+      img.className = 'gallery-thumb';
+      img.src = path;
+      img.alt = '';
+      if (currentSrc === path) img.classList.add('active');
+      img.addEventListener('click', () => {
+        setBgImage(path);
+        galleryStrip.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+        img.classList.add('active');
+        autoSave();
+      });
+      galleryStrip.appendChild(img);
+    });
+  } else {
+    galleryContainer.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════════════════════
+
+uploadBtn.addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    setBgImage(dataUrl);
+    // Clear gallery active state
+    galleryStrip.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+    autoSave();
+    showStatus('Photo chargée ✓');
+  };
+  reader.readAsDataURL(file);
+  fileInput.value = '';
+});
+
+// ═══════════════════════════════════════════════════════
+// OVERLAY SLIDER
+// ═══════════════════════════════════════════════════════
+
+overlaySlider.addEventListener('input', () => {
+  const v = parseInt(overlaySlider.value, 10);
+  overlayVal.textContent = v + '%';
+  cardOverlay.style.background = buildGradient(v);
+  getState(currentDay).overlayIntensity = v;
+  autoSave();
+});
+
+// ═══════════════════════════════════════════════════════
+// CONTENTEDITABLE AUTO-SAVE
+// ═══════════════════════════════════════════════════════
+
+Object.values(fields).forEach(el => {
+  el.addEventListener('input', () => autoSave());
+});
+textareaFR.addEventListener('input', () => autoSave());
+textareaEN.addEventListener('input', () => autoSave());
+
+let saveTimer = null;
+function autoSave() {
+  readCurrentFields();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => showStatus('Enregistré ✓'), 800);
+}
+
+// ═══════════════════════════════════════════════════════
+// STATUS BAR
+// ═══════════════════════════════════════════════════════
+
+let statusTimer = null;
+function showStatus(msg) {
+  statusBar.textContent = msg;
+  statusBar.classList.add('show');
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(() => statusBar.classList.remove('show'), 2000);
+}
+
+// ═══════════════════════════════════════════════════════
+// SUGGEST AI / TEMPLATES
+// ═══════════════════════════════════════════════════════
+
+async function suggestText(lang) {
+  const key = openaiKey.value.trim();
+  const idx = currentDay;
+
+  if (key) {
+    // Use OpenAI GPT-4
+    const isEN = (lang === 'en');
+    const prompt = isEN
+      ? `Write a Facebook post for day ${idx + 1} of a 10-day diatonic accordion lutherie workshop in Saint-Nazaire. Tone: sincere, sober, artisanal. 3-5 lines max + hashtags. Not too commercial. Language: English.`
+      : `Écris un texte de publication Facebook pour le jour ${idx + 1} d'un stage de lutherie accordéon diatonique à Saint-Nazaire. Ton : sincère, sobre, artisanal. 3-5 lignes max + hashtags. Pas trop commercial. Langue: FR.`;
+
+    const btn = isEN ? suggestEN : suggestFR;
+    btn.textContent = '⏳ Génération…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${key}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 300,
+          temperature: 0.75,
+        }),
+      });
+      if (!res.ok) throw new Error(`API error ${res.status}`);
+      const data = await res.json();
+      const text = data.choices[0].message.content.trim();
+      if (isEN) {
+        textareaEN.value = text;
+        getState(currentDay).textEN = text;
+      } else {
+        textareaFR.value = text;
+        getState(currentDay).textFR = text;
+      }
+      saveState(currentDay);
+      showStatus('Texte généré ✓');
+    } catch (err) {
+      alert('Erreur API OpenAI : ' + err.message);
+    } finally {
+      btn.textContent = isEN ? '✨ Suggest AI' : '✨ Suggérer IA';
+      btn.disabled = false;
+    }
+  } else {
+    // Use built-in template
+    if (lang === 'fr') {
+      textareaFR.value = FR_TEMPLATES[idx] || '';
+      getState(currentDay).textFR = textareaFR.value;
+    } else {
+      textareaEN.value = EN_TEMPLATES[idx] || '';
+      getState(currentDay).textEN = textareaEN.value;
+    }
+    saveState(currentDay);
+    showStatus('Template chargé ✓');
+  }
+}
+
+suggestFR.addEventListener('click', () => suggestText('fr'));
+suggestEN.addEventListener('click', () => suggestText('en'));
+
+// ═══════════════════════════════════════════════════════
+// COPY BUTTONS
+// ═══════════════════════════════════════════════════════
+
+function copyBtn(btn, getText) {
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(getText());
+      const orig = btn.textContent;
+      btn.textContent = '✅ Copié !';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+    } catch (e) {
+      alert('Erreur copie : ' + e.message);
+    }
+  });
+}
+
+copyBtn(copyFR, () => textareaFR.value);
+copyBtn(copyEN, () => textareaEN.value);
+
+// ═══════════════════════════════════════════════════════
+// CANVAS EXPORT
+// ═══════════════════════════════════════════════════════
+
+function wrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split(' ');
+  let line = '';
+  let yPos = y;
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line + words[i] + ' ';
+    const m = ctx.measureText(testLine);
+    if (m.width > maxW && i > 0) {
+      ctx.fillText(line.trim(), x, yPos);
+      line = words[i] + ' ';
+      yPos += lineH;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line.trim(), x, yPos);
+  return yPos;
+}
+
+function roundedPill(ctx, text, x, y, bg, fg, padX, padY, radius) {
+  const m = ctx.measureText(text);
+  const w = m.width + padX * 2;
+  const h = (ctx.measureText('M').actualBoundingBoxAscent + ctx.measureText('M').actualBoundingBoxDescent || 28) + padY * 2;
+  const rx = x, ry = y - h + padY;
+
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  ctx.roundRect(rx, ry, w, h, radius);
+  ctx.fill();
+
+  ctx.fillStyle = fg;
+  ctx.fillText(text, rx + padX, y);
+  return w;
+}
+
+exportBtn.addEventListener('click', async () => {
+  readCurrentFields();
+  const s = getState(currentDay);
+
+  const W = 1080, H = 1350;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  await document.fonts.ready;
+
+  // Draw background
+  if (s.bgDataUrl) {
+    try {
+      await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          // Cover fit
+          const imgAspect = img.naturalWidth / img.naturalHeight;
+          const canvasAspect = W / H;
+          let drawW, drawH, drawX, drawY;
+          if (imgAspect > canvasAspect) {
+            drawH = H; drawW = H * imgAspect;
+            drawX = (W - drawW) / 2; drawY = 0;
+          } else {
+            drawW = W; drawH = W / imgAspect;
+            drawX = 0; drawY = (H - drawH) / 2;
+          }
+          ctx.drawImage(img, drawX, drawY, drawW, drawH);
+          resolve();
+        };
+        img.onerror = reject;
+        img.src = s.bgDataUrl;
+      });
+    } catch (e) {
+      // Tainted image — draw dark fallback
+      ctx.fillStyle = '#2c1810';
+      ctx.fillRect(0, 0, W, H);
+      const errMsg = 'Image locale non exportable.\nUtilisez "Changer la photo" (upload) pour l\'export.';
+      alert(errMsg);
+      return;
+    }
+  } else {
+    // Dark wood fallback
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#2c1810');
+    grad.addColorStop(0.4, '#1a0a04');
+    grad.addColorStop(1, '#3d2005');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Overlay gradient
+  const m = s.overlayIntensity / 100;
+  const ovGrad = ctx.createLinearGradient(0, H, 0, 0);
+  ovGrad.addColorStop(0,    `rgba(15,8,4,${(0.90 * m).toFixed(2)})`);
+  ovGrad.addColorStop(0.25, `rgba(15,8,4,${(0.55 * m).toFixed(2)})`);
+  ovGrad.addColorStop(0.48, `rgba(15,8,4,${(0.12 * m).toFixed(2)})`);
+  ovGrad.addColorStop(1,    `rgba(15,8,4,0)`);
+  ctx.fillStyle = ovGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Decorative frame
+  ctx.strokeStyle = 'rgba(255,248,225,0.22)';
+  ctx.lineWidth = 1.5;
+  const fi = 28;
+  ctx.beginPath();
+  ctx.roundRect(fi, fi, W - fi * 2, H - fi * 2, 18);
+  ctx.stroke();
+
+  const PAD_X = 86, PAD_Y_TOP = 82;
+
+  // ── Eyebrow pill ──
+  ctx.font = '700 28px "Open Sans", Arial, sans-serif';
+  const eyebrowText = s.eyebrow;
+  roundedPill(ctx, eyebrowText, PAD_X, PAD_Y_TOP + 28 + 10, '#d4a017', '#2c1810', 32, 12, 40);
+
+  // ── Title ──
+  ctx.fillStyle = '#fff8e1';
+  ctx.font = '900 88px "Playfair Display", Georgia, serif';
+  const titleY = PAD_Y_TOP + 28 + 10 + 52 + 88;
+  const titleEndY = wrapText(ctx, s.title, PAD_X, titleY, W - PAD_X * 2, 100);
+
+  // ── Subtitle ──
+  ctx.fillStyle = 'rgba(255,248,225,0.88)';
+  ctx.font = '400 31px "Open Sans", Arial, sans-serif';
+  wrapText(ctx, s.subtitle, PAD_X, titleEndY + 32 + 31, W - PAD_X * 2, 47);
+
+  // ── Facts ──
+  const factsY = H - 78 - 60 - 40 - 44;
+  ctx.font = '600 26px "Open Sans", Arial, sans-serif';
+  const facts = [s.fact1, s.fact2, s.fact3];
+  let fx = PAD_X;
+  facts.forEach(f => {
+    if (!f) return;
+    const m2 = ctx.measureText(f);
+    const fw = m2.width + 60;
+    const fh = 50;
+    const fy = factsY;
+    ctx.fillStyle = 'rgba(255,248,225,0.13)';
+    ctx.strokeStyle = 'rgba(255,248,225,0.28)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(fx, fy, fw, fh, 40);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#fff8e1';
+    ctx.fillText(f, fx + 30, fy + fh / 2 + 9);
+    fx += fw + 22;
+  });
+
+  // ── Footer ──
+  const footerY = H - 78;
+  ctx.font = '800 28px "Open Sans", Arial, sans-serif';
+  roundedPill(ctx, s.ctaText, PAD_X, footerY, '#d4a017', '#2c1810', 40, 14, 40);
+
+  ctx.fillStyle = 'rgba(255,248,225,0.6)';
+  ctx.font = '600 24px "Open Sans", Arial, sans-serif';
+  ctx.fillText('ewendaviau.com/stages', W - PAD_X - ctx.measureText('ewendaviau.com/stages').width, footerY);
+
+  // ── Download ──
+  const dayLabel = currentDay < 10 ? `j${currentDay + 1}` : 'cta';
+  const link = document.createElement('a');
+  link.download = `publi-${dayLabel}.jpg`;
+  link.href = canvas.toDataURL('image/jpeg', 0.92);
+  link.click();
+  showStatus('Export JPG téléchargé ✓');
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+
+switchDay(0);
+</script>
+</body>
+</html>
