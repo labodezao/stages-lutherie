@@ -2301,20 +2301,17 @@ function canvasDimensions(fmt) {
 async function toSafeDataUrl(src) {
   if (!src) return src;
   if (src.startsWith('data:')) return src;
-  // Fetch and convert to data URL to avoid canvas tainting (local or HTTP)
-  try {
-    const resp = await fetch(src, { mode: 'cors' });
-    const blob = await resp.blob();
-    return await new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result);
-      r.onerror = rej;
-      r.readAsDataURL(blob);
-    });
-  } catch (_) {
-    // If CORS fails, try anonymous mode via Image (may still taint)
-    return src;
-  }
+  // Fetch and convert to data URL to avoid canvas tainting.
+  // encodeURI handles spaces and special chars in relative paths.
+  const encoded = src.startsWith('http') ? src : encodeURI(src);
+  const resp = await fetch(encoded);
+  const blob = await resp.blob();
+  return await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
 }
 
 async function drawCard(ctx, W, H, s) {
