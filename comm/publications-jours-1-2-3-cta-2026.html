@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications Facebook – Jours 1·2·3 du stage + inscription 2026</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@400;600;700;800&display=swap');
+
+    :root {
+      --wood-dark: #2c1810;
+      --wood-medium: #5d4037;
+      --wood-light: #8d6e63;
+      --cream: #fff8e1;
+      --gold: #d4a017;
+      --gold-light: #f5d061;
+      --paper: #fcfbf7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: #151515;
+      color: #f3f0ec;
+      padding: 32px;
+    }
+
+    h1, h2, h3 { margin: 0; }
+
+    .page-header {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+    }
+
+    .page-header p,
+    .export-note {
+      color: #d7cec8;
+      line-height: 1.6;
+      max-width: 900px;
+    }
+
+    .grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      gap: 34px;
+    }
+
+    .entry {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 24px;
+      padding: 26px;
+      display: grid;
+      grid-template-columns: minmax(320px, 1080px) minmax(280px, 1fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .post-card {
+      width: 1080px;
+      height: 1350px;
+      max-width: 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      background-color: var(--wood-dark);
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .post-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(20, 10, 6, 0.12) 0%, rgba(20, 10, 6, 0.5) 42%, rgba(20, 10, 6, 0.92) 100%),
+        linear-gradient(120deg, rgba(44, 24, 16, 0.72), rgba(62, 39, 35, 0.18));
+    }
+
+    .post-card::after {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border: 1px solid rgba(255, 248, 225, 0.22);
+      border-radius: 18px;
+    }
+
+    .card-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 82px 86px 78px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-self: flex-start;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-size: 22px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 88px;
+      line-height: 1.04;
+      color: #fffef9;
+      max-width: 780px;
+      text-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
+    }
+
+    .card-subtitle {
+      margin-top: 24px;
+      max-width: 760px;
+      font-size: 31px;
+      line-height: 1.45;
+      color: rgba(255, 248, 225, 0.95);
+    }
+
+    .facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .fact {
+      background: rgba(255, 248, 225, 0.11);
+      color: #fff8e1;
+      border: 1px solid rgba(255, 248, 225, 0.18);
+      padding: 13px 20px;
+      border-radius: 999px;
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      color: #fff8e1;
+    }
+
+    .cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      padding: 16px 30px;
+      border-radius: 999px;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .footer-text {
+      font-size: 24px;
+      line-height: 1.5;
+      color: rgba(255, 248, 225, 0.9);
+      max-width: 460px;
+      text-align: right;
+    }
+
+    /* ── Colonne texte Facebook ── */
+    .copy-box {
+      background: var(--paper);
+      color: var(--wood-dark);
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      position: sticky;
+      top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .copy-box h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.55rem;
+      margin-bottom: 6px;
+    }
+
+    .copy-box .angle {
+      font-size: 0.93rem;
+      color: var(--wood-light);
+      margin-bottom: 18px;
+    }
+
+    .copy-box .angle strong { color: var(--wood-medium); }
+
+    /* Photo à joindre */
+    .photo-hint {
+      display: inline-block;
+      background: #f3ede3;
+      border: 1px dashed var(--wood-light);
+      color: var(--wood-medium);
+      font-size: 0.88rem;
+      border-radius: 10px;
+      padding: 9px 14px;
+      margin-bottom: 18px;
+    }
+
+    .photo-hint strong { color: var(--wood-dark); }
+
+    /* Le texte FB lui-même */
+    .fb-text {
+      background: #fff;
+      border: 2px solid #e8dfd4;
+      border-radius: 14px;
+      padding: 20px 20px 14px;
+      position: relative;
+    }
+
+    .fb-text-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #1877f2;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .fb-text-label::before {
+      content: 'f';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #1877f2;
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      font-family: Georgia, serif;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .copy-btn:hover { background: var(--gold-light); }
+    .copy-btn.copied { background: #4caf50; color: #fff; }
+
+    .fb-text pre {
+      white-space: pre-wrap;
+      margin: 0;
+      font-family: inherit;
+      font-size: 0.97rem;
+      line-height: 1.75;
+      color: var(--wood-dark);
+    }
+
+    @media (max-width: 1320px) {
+      .entry {
+        grid-template-columns: 1fr;
+      }
+      .copy-box {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Publications Facebook – Jours 1 · 2 · 3 + inscription 2026</h1>
+    <p>4 publications prêtes à poster. Chaque texte est mis en page pour être copié-collé directement dans Facebook — émojis, sauts de ligne et hashtags inclus. La photo à joindre est indiquée pour chaque post.</p>
+    <p class="export-note">Lien d'inscription : <strong>https://ewendaviau.com/stages/</strong></p>
+  </header>
+
+  <main class="grid">
+
+    <!-- ═══════════════ JOUR 1 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card" style="background-image:url('./Jour 1 (13).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 1 · en direct</div>
+            <h2 class="card-title">C'est parti — le stage est lancé !</h2>
+            <p class="card-subtitle">Établis occupés, premiers gestes, bois qui prend forme. Dix jours pour fabriquer un accordéon diatonique de A à Z.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Saint-Nazaire</span>
+              <span class="fact">10 jours</span>
+              <span class="fact">6 stagiaires</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Stage 2026 →</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Jour 1</h3>
+        <p class="angle"><strong>Angle :</strong> lancement du stage en direct, créer l'envie pour 2026.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>Jour 1 (13).jpg</strong> — ou toute photo du premier matin</div>
+        <div class="fb-text" id="fb1">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb1', this)">Copier</button>
+          <pre id="fb1-pre">Le stage a commencé ce matin à l'atelier 🎉
+
+Les établis sont pris, les outils sont sortis, les premières planches choisies. Dix jours pour transformer du bois en accordéon diatonique — et l'aventure est lancée.
+
+Je vais partager quelques moments au fil de la semaine, pour vous donner à voir ce qui se passe ici, jour après jour.
+
+Et si ça vous donne envie de vivre ça à votre tour en 2026…
+👉 ewendaviau.com/stages
+
+#accordeondiatonique #lutherie #stagemusique #diato #balfolk #artisanat #saintNazaire</pre>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ═══════════════ JOUR 2 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card" style="background-image:url('./Jour 2 (38).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 2 · immersion</div>
+            <h2 class="card-title">24 h, et les mains sont déjà dans le bois</h2>
+            <p class="card-subtitle">Pas le temps de trop réfléchir : au deuxième jour on façonne déjà les premières pièces. La progression est rapide — et vraiment visible.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Rigueur</span>
+              <span class="fact">Précision</span>
+              <span class="fact">Curiosité</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">S'inscrire 2026</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Jour 2</h3>
+        <p class="angle"><strong>Angle :</strong> montrer la rapidité de la progression, nourrir l'envie.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>Jour 2 (38).jpg</strong> — ou toute photo de travail en cours</div>
+        <div class="fb-text" id="fb2">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb2', this)">Copier</button>
+          <pre id="fb2-pre">Deuxième jour de stage — et déjà bien dans le travail ✂️🪵
+
+Les premières pièces se dessinent. On voit les gestes se préciser, les questions arriver, et l'accordéon commencer à exister par fragments.
+
+C'est une des choses que j'aime dans ce format : la progression est rapide et vraiment visible. En dix jours on parcourt énormément de chemin.
+
+La prochaine session, c'est en 2026.
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #diato #artisanat #balfolk #stagemusique</pre>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ═══════════════ JOUR 3 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card" style="background-image:url('./FB jour 3 bis.jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 3 · concentration</div>
+            <h2 class="card-title">Le silence de l'atelier, ça dit tout</h2>
+            <p class="card-subtitle">Pas de bavardage inutile : quand le bois demande de l'attention, la concentration vient naturellement. Un apprentissage physique autant que mental.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Patience</span>
+              <span class="fact">Précision</span>
+              <span class="fact">Satisfaction</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Rejoindre 2026</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Jour 3</h3>
+        <p class="angle"><strong>Angle :</strong> ambiance atelier, montrer l'immersion, donner envie de vivre ça.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>FB jour 3 bis.jpg</strong> — ou toute photo de concentration en atelier</div>
+        <div class="fb-text" id="fb3">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb3', this)">Copier</button>
+          <pre id="fb3-pre">Jour 3 — et il y a des moments comme celui-là, où tout le monde travaille en silence 🪵
+
+Pas parce que c'est imposé. Juste parce que la concentration est là naturellement.
+
+Le bois demande de l'attention, le geste demande de la précision, et quelque chose de calme s'installe dans l'atelier.
+
+C'est quelque chose qui ne s'explique pas vraiment — ça se vit.
+
+Si vous voulez vivre ça en 2026 :
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #stagemusique #artisanat #diato</pre>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ═══════════════ CTA 2026 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card" style="background-image:url('./Jour 1 (4).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Stage 2026 · inscriptions ouvertes</div>
+            <h2 class="card-title">La prochaine session, c'est en 2026</h2>
+            <p class="card-subtitle">10 jours pour fabriquer votre accordéon diatonique de A à Z, dans l'atelier de Saint-Nazaire. Aucun prérequis — accompagnement complet inclus.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Saint-Nazaire</span>
+              <span class="fact">10 jours</span>
+              <span class="fact">6 places max</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">S'inscrire maintenant</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Appel à action — Stage 2026</h3>
+        <p class="angle"><strong>Angle :</strong> clôture de la série, CTA direct, lien d'inscription.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>Jour 1 (4).jpg</strong> — ou toute belle photo d'atelier / instrument en cours</div>
+        <div class="fb-text" id="fb4">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb4', this)">Copier</button>
+          <pre id="fb4-pre">Depuis quelques jours je vous partage des moments du stage en cours.
+
+Si en regardant ces photos vous vous êtes dit "moi aussi je voudrais vivre ça"… c'est exactement le bon signe 😊
+
+J'ouvre les inscriptions pour la session 2026 :
+
+📍 Atelier à Saint-Nazaire
+🗓 10 jours de fabrication complète
+🔨 Aucun prérequis requis
+👥 6 places maximum
+🪵 Vous repartez avec votre propre accordéon diatonique
+
+Toutes les infos et le formulaire d'inscription ici :
+👉 ewendaviau.com/stages
+
+Des questions ? Écrivez-moi directement, je réponds toujours personnellement.
+
+#accordeondiatonique #lutherie #stagemusique #diato #balfolk #artisanat #saintNazaire #inscription2026</pre>
+        </div>
+      </aside>
+    </section>
+
+  </main>
+
+  <script>
+    function copyText(id, btn) {
+      var pre = document.getElementById(id + '-pre');
+      var text = pre.innerText;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '✓ Copié !';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copier';
+          btn.classList.remove('copied');
+        }, 2200);
+      });
+    }
+  </script>
+</body>
+</html>
