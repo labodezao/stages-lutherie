@@ -861,6 +861,7 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
       </div>
       <textarea class="fb-text" id="textarea-fr" placeholder="Texte de publication en français…"></textarea>
       <div class="char-count" id="char-count-fr">0 / 2200</div>
+      <button class="btn btn-ghost" id="copy-fr-direct-btn" style="width:100%;margin-top:6px;">📋 Copier le texte FR</button>
 
       <!-- Hashtags FR -->
       <details class="hashtag-section">
@@ -883,6 +884,7 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
       </div>
       <textarea class="fb-text" id="textarea-en" placeholder="Facebook / Instagram post text in English…"></textarea>
       <div class="char-count" id="char-count-en">0 / 2200</div>
+      <button class="btn btn-ghost" id="copy-en-direct-btn" style="width:100%;margin-top:6px;">📋 Copy EN text</button>
 
       <!-- Hashtags EN -->
       <details class="hashtag-section">
@@ -1392,6 +1394,8 @@ const copyFR          = document.getElementById('copy-fr-btn');
 const copyEN          = document.getElementById('copy-en-btn');
 const copyFRHash      = document.getElementById('copy-fr-hash-btn');
 const copyENHash      = document.getElementById('copy-en-hash-btn');
+const copyFRDirect    = document.getElementById('copy-fr-direct-btn');
+const copyENDirect    = document.getElementById('copy-en-direct-btn');
 const charCountFR     = document.getElementById('char-count-fr');
 const charCountEN     = document.getElementById('char-count-en');
 const exportBtn       = document.getElementById('export-btn');
@@ -2238,6 +2242,8 @@ function copyBtn(btn, getText) {
 
 copyBtn(copyFR, () => textareaFR.value);
 copyBtn(copyEN, () => textareaEN.value);
+copyBtn(copyFRDirect, () => textareaFR.value);
+copyBtn(copyENDirect, () => textareaEN.value);
 copyBtn(copyFRHash, () => {
   const tags = getSelectedHashtags(document.getElementById('hashtag-grid-fr'));
   return textareaFR.value + (tags ? '\n\n' + tags : '');
