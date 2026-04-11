@@ -950,6 +950,11 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
           <label id="ai-key-label">Clé OpenAI (sk-…)</label>
           <input type="password" id="openai-key" placeholder="sk-…">
         </div>
+        <div class="ai-key-row" id="openrouter-model-row" style="display:none">
+          <label>Modèle OpenRouter</label>
+          <input type="text" id="openrouter-model" placeholder="ex: google/gemma-3-12b-it:free" style="background:rgba(255,255,255,0.05);border:1px solid rgba(212,160,23,0.2);border-radius:6px;padding:7px 10px;color:#e8dcc8;font-size:12px;outline:none;">
+          <div style="font-size:10px;color:#7a7060;line-height:1.4">Modèles gratuits : <code style="color:#a09070">google/gemma-3-12b-it:free</code> · <code style="color:#a09070">mistralai/mistral-7b-instruct:free</code> · <code style="color:#a09070">meta-llama/llama-3.3-70b-instruct:free</code><br>Voir <a href="https://openrouter.ai/models?order=top-weekly&supported_parameters=free" target="_blank" style="color:#c8a832">openrouter.ai/models</a> (filtrer "free")</div>
+        </div>
         <div class="openai-hint" id="ai-hint-text">
           Clés utilisées directement depuis votre navigateur — jamais envoyées à un serveur tiers.<br>
           Sans clé, les boutons ✨ chargent les templates pré-écrits.
