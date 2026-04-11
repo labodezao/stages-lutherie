@@ -549,7 +549,11 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
   border-radius: 6px;
   border: 2px solid rgba(255,255,255,0.15);
   display: block;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
 }
+.carousel-thumb-wrap img:hover { border-color: var(--gold); transform: scale(1.05); }
+.carousel-thumb-wrap img.active { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
 .carousel-remove {
   position: absolute; top: -6px; right: -6px;
   background: #c0392b; color: #fff;
@@ -1753,6 +1757,17 @@ function buildCarouselStrip(idx) {
     const img = document.createElement('img');
     img.src = src;
     img.alt = '';
+    img.title = 'Cliquer pour utiliser comme fond de carte';
+    img.addEventListener('click', () => {
+      setBgImage(src);
+      // Sync active state in carousel strip
+      carouselStripEl.querySelectorAll('.carousel-thumb-wrap img').forEach(t => t.classList.remove('active'));
+      img.classList.add('active');
+      // Sync gallery active state
+      galleryStrip.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+      autoSave();
+      showStatus('Photo définie comme fond de carte ✓');
+    });
 
     const order = document.createElement('span');
     order.className = 'carousel-order';
@@ -1762,13 +1777,17 @@ function buildCarouselStrip(idx) {
     rm.className = 'carousel-remove';
     rm.title = 'Supprimer';
     rm.textContent = '×';
-    rm.addEventListener('click', () => {
+    rm.addEventListener('click', (e) => {
+      e.stopPropagation();
       s.carouselImages.splice(i, 1);
       saveState(idx);
       buildCarouselStrip(idx);
       buildGallery(idx); // sync carousel indicators
       showStatus('Photo supprimée ✓');
     });
+
+    // Mark active if this image is the current background
+    if (src === (getState(idx).bgDataUrl || '')) img.classList.add('active');
 
     wrap.appendChild(img);
     wrap.appendChild(order);
