@@ -580,7 +580,7 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
 // DATA
 // ═══════════════════════════════════════════════════════
 
-const TABS = ['J1','J2','J3','J4','J5','J6','J7','J8','J9','J10','CTA'];
+const TABS = ['J1','J2','J3','J4','J5','J6','J7','J8','J9','J10','CTA','🎉 Fête'];
 
 const CARD_TEMPLATES = [
   { eyebrow: "Jour 1 · 9 avril 2026", title: "Du bois, des mains, et quelque chose qui commence.", subtitle: "Dix jours pour construire un accordéon diatonique de A à Z. Le premier geste est toujours le plus hésitant — et le plus beau.", fact1: "Saint-Nazaire", fact2: "10 jours", fact3: "6 stagiaires", cta: "Session 2026 →" },
@@ -594,6 +594,7 @@ const CARD_TEMPLATES = [
   { eyebrow: "Jour 9 · finitions", title: "La beauté dans les détails.", subtitle: "Vernis, ajustements, derniers détails. C'est là qu'un bel objet devient un bel instrument.", fact1: "✨ vernis", fact2: "🎨 esthétique", fact3: "🔍 perfection", cta: "Session 2026 →" },
   { eyebrow: "Jour 10 · l'instrument est né", title: "L'accordéon est né.", subtitle: "Dix jours de travail. Un instrument unique, construit de A à Z, qui repart avec son auteur.", fact1: "🎶 musique", fact2: "🤲 artisanat", fact3: "💛 fierté", cta: "Session 2026 →" },
   { eyebrow: "Stage 2026 · inscriptions ouvertes", title: "Fabriquer son propre accordéon.", subtitle: "10 jours à Saint-Nazaire. Zéro prérequis. Vous repartez avec un instrument que vous avez construit de vos mains.", fact1: "Saint-Nazaire", fact2: "10 jours", fact3: "6 places max", cta: "En savoir plus →" },
+  { eyebrow: "Fête de la Lutherie · porte ouverte", title: "Venez voir, toucher, écouter.", subtitle: "Le dernier jour du stage, l'atelier ouvre ses portes. Les accordéons sont finis — leurs auteurs sont là. Une fête simple, entre bois et musique.", fact1: "🎉 porte ouverte", fact2: "🎶 musique live", fact3: "🪵 instruments à voir", cta: "Entrée libre →" },
 ];
 
 const DEFAULT_IMAGES = {
@@ -752,6 +753,20 @@ Toutes les informations et le formulaire d'inscription :
 Des questions ? Écrivez-moi directement.
 
 #accordeondiatonique #lutherie #stagemusique #diato #saintNazaire #inscription`,
+
+`🎉 Fête de la Lutherie — porte ouverte.
+
+Aujourd'hui, l'atelier accueille tout le monde.
+
+Les stagiaires ont fini leurs accordéons. Ils jouent. On peut les voir, les toucher, leur parler. Il y a du bois qui sent encore le vernis frais, et de la musique qui n'existait pas il y a dix jours.
+
+📍 Atelier d'Ewen Daviau · Saint-Nazaire
+🕐 À partir de [heure]
+🎶 Entrée libre
+
+👉 ewendaviau.com/stages
+
+#feteDeLaLutherie #accordeondiatonique #porteOuverte #lutherie #diato #saintNazaire`,
 ];
 
 const EN_TEMPLATES = [
@@ -868,13 +883,27 @@ All information and registration form:
 Questions? Write to me directly.
 
 #diatonicaccordion #lutherie #musicworkshop #diato #saintNazaire #registration`,
+
+`🎉 Luthierie Open Day.
+
+Today the workshop opens its doors to everyone.
+
+The participants have finished their accordions. They're playing. You can see them, touch them, talk to the people who built them. There's wood that still smells of fresh varnish, and music that didn't exist ten days ago.
+
+📍 Ewen Daviau's workshop · Saint-Nazaire
+🕐 From [time]
+🎶 Free entry
+
+👉 ewendaviau.com/stages
+
+#lutherieOpenDay #diatonicaccordion #openDoors #lutherie #diato #saintNazaire`,
 ];
 
 // ═══════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════
 
-let currentDay = 0; // 0–10 (0=J1 … 9=J10, 10=CTA)
+let currentDay = 0; // 0–11 (0=J1 … 9=J10, 10=CTA, 11=Fête)
 
 // Per-day state stored in memory (also persisted to localStorage)
 const dayState = {};
