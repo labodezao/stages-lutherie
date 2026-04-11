@@ -192,8 +192,8 @@ header p { font-size: 12px; color: var(--wood-light); margin-top: 3px; }
 }
 
 /* Card top/bottom zones */
-.card-top { display: flex; flex-direction: column; gap: 0; }
-.card-bottom { display: flex; flex-direction: column; gap: 40px; }
+.card-top { display: flex; flex-direction: column; gap: 0; border-radius: 12px; padding: 0; transition: background 0.2s, padding 0.2s; }
+.card-bottom { display: flex; flex-direction: column; gap: 40px; border-radius: 12px; padding: 0; transition: background 0.2s, padding 0.2s; }
 
 /* Title */
 .card-title {
@@ -1525,17 +1525,18 @@ function applyOverlay(intensity) {
   overlayVal.textContent = intensity + '%';
 }
 
-function buildTextGradient(intensity) {
-  const m = intensity / 100;
-  const a0  = (0.80 * m).toFixed(2);
-  const a50 = (0.40 * m).toFixed(2);
-  return `linear-gradient(to top, rgba(15,8,4,${a0}) 0%, rgba(15,8,4,${a50}) 50%, rgba(15,8,4,0.00) 100%)`;
-}
-
 function applyTextOverlay(intensity) {
-  cardTextOverlay.style.background = buildTextGradient(intensity);
+  const a = (intensity / 100 * 0.72).toFixed(2);
+  const pad = intensity > 0 ? '14px 18px' : '0';
+  const bg = intensity > 0 ? `rgba(15,8,4,${a})` : 'transparent';
+  const cardTop    = document.getElementById('card-content').querySelector('.card-top');
+  const cardBottom = document.getElementById('card-content').querySelector('.card-bottom');
+  if (cardTop)    { cardTop.style.background    = bg; cardTop.style.padding    = pad; cardTop.style.borderRadius    = '12px'; }
+  if (cardBottom) { cardBottom.style.background = bg; cardBottom.style.padding = pad; cardBottom.style.borderRadius = '12px'; }
   textOverlaySlider.value = intensity;
   textOverlayVal.textContent = intensity + '%';
+  // hide the old overlay layer entirely
+  cardTextOverlay.style.background = 'transparent';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2053,8 +2054,8 @@ overlaySlider.addEventListener('input', () => {
 textOverlaySlider.addEventListener('input', () => {
   const v = parseInt(textOverlaySlider.value, 10);
   textOverlayVal.textContent = v + '%';
-  cardTextOverlay.style.background = buildTextGradient(v);
   getState(currentDay).textOverlayIntensity = v;
+  applyTextOverlay(v);
   autoSave();
 });
 
@@ -2340,15 +2341,20 @@ async function drawCard(ctx, W, H, s) {
   ctx.fillStyle = ovGrad;
   ctx.fillRect(0, 0, W, H);
 
-  // Text readability backdrop
+  // Text readability backdrop — rectangles behind text zones, not full-width gradients
   if (s.textOverlayIntensity) {
     const tv = s.textOverlayIntensity / 100;
-    const tvGrad = ctx.createLinearGradient(0, H, 0, H * 0.35);
-    tvGrad.addColorStop(0, `rgba(15,8,4,${(0.80 * tv).toFixed(2)})`);
-    tvGrad.addColorStop(0.5, `rgba(15,8,4,${(0.40 * tv).toFixed(2)})`);
-    tvGrad.addColorStop(1, 'rgba(15,8,4,0.00)');
-    ctx.fillStyle = tvGrad;
-    ctx.fillRect(0, H * 0.35, W, H * 0.65);
+    const bgA = (0.72 * tv).toFixed(2);
+    const PAD = 86, PAD_V = 82, padBox = 14;
+    ctx.fillStyle = `rgba(15,8,4,${bgA})`;
+    ctx.beginPath();
+    // Top zone: eyebrow + title (~top 40% of content)
+    ctx.roundRect(PAD - padBox, PAD_V - padBox, W - (PAD - padBox) * 2, H * 0.44, 16);
+    ctx.fill();
+    ctx.beginPath();
+    // Bottom zone: facts + footer (~bottom 28% of content)
+    ctx.roundRect(PAD - padBox, H * 0.70, W - (PAD - padBox) * 2, H * 0.22, 16);
+    ctx.fill();
   }
 
   // Frame
