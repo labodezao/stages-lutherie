@@ -1394,9 +1394,9 @@
 <style>
 .stluth-stage-news-popup[hidden]{display:none !important}
 body.stluth-stage-news-popup-open{overflow:hidden}
-.stluth-stage-news-popup{position:fixed;inset:0;z-index:9999}
+.stluth-stage-news-popup{position:fixed;inset:0;z-index:9999;padding:20px;display:flex;align-items:center;justify-content:center}
 .stluth-stage-news-popup__backdrop{position:absolute;inset:0;background:rgba(44,24,16,0.56)}
-.stluth-stage-news-popup__dialog{position:relative;z-index:1;max-width:460px;margin:clamp(24px,8vh,90px) auto 24px;background:#FFF8E1;color:#3E2723;border-radius:22px;padding:1.5rem 1.5rem 1.35rem;box-shadow:0 26px 70px rgba(44,24,16,0.3)}
+.stluth-stage-news-popup__dialog{position:relative;z-index:1;width:min(100%,460px);max-height:min(88vh,760px);overflow:auto;background:#FFF8E1;color:#3E2723;border-radius:22px;padding:1.5rem 1.5rem 1.35rem;box-shadow:0 26px 70px rgba(44,24,16,0.3)}
 .stluth-stage-news-popup__close{position:absolute;top:12px;right:12px;width:40px;height:40px;border:0;border-radius:999px;background:#fff;color:#6D4C41;font-size:1.6rem;line-height:1;cursor:pointer}
 .stluth-stage-news-popup__eyebrow{margin:0 0 .5rem;color:#D4A017;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
 .stluth-stage-news-popup__dialog h3{margin:0 0 .6rem;font-size:1.75rem;line-height:1.2;color:#3E2723}
@@ -1413,9 +1413,13 @@ body.stluth-stage-news-popup-open{overflow:hidden}
 .stluth-stage-news-popup__note{margin:1rem 0 0;color:#8D6E63;font-size:.88rem;line-height:1.5}
 .stluth-stage-news-popup__hp{position:absolute;left:-9999px;opacity:0;pointer-events:none}
 @media (max-width: 640px){
-  .stluth-stage-news-popup__dialog{margin:18px 14px;padding:1.25rem 1rem 1.1rem}
-  .stluth-stage-news-popup__dialog h3{font-size:1.45rem;padding-right:2.25rem}
-  .stluth-stage-news-popup__footer{align-items:flex-start}
+  .stluth-stage-news-popup{padding:0;align-items:flex-end}
+  .stluth-stage-news-popup__dialog{width:100%;max-height:min(86vh,720px);border-radius:24px 24px 0 0;padding:1.1rem 1rem calc(1rem + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(44,24,16,0.28)}
+  .stluth-stage-news-popup__dialog h3{font-size:1.4rem;padding-right:2.25rem}
+  .stluth-stage-news-popup__text{font-size:.98rem;line-height:1.55}
+  .stluth-stage-news-popup__footer{align-items:stretch;flex-direction:column}
+  .stluth-stage-news-popup__link,.stluth-stage-news-popup__later{text-align:center}
+  .stluth-stage-news-popup__submit,.stluth-stage-news-popup__input{font-size:16px}
 }
 </style>
 
