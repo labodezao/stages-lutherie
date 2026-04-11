@@ -571,7 +571,7 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
           <div class="card-top">
             <span class="eyebrow" id="field-eyebrow" contenteditable="true">Jour 1 · 9 avril 2026</span>
             <h2 class="card-title" id="field-title" contenteditable="true">Du bois, des mains, et quelque chose qui commence.</h2>
-            <p class="card-subtitle" id="field-subtitle" contenteditable="true">Dix jours pour construire un accordéon diatonique de A à Z. Le premier geste est toujours le plus hésitant — et le plus beau.</p>
+            <div id="subtitles-container"></div>
           </div>
           <div class="card-bottom">
             <div class="facts" id="facts-container"></div>
@@ -597,6 +597,12 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
         <button class="btn-sm" id="facts-remove-btn">−</button>
         <span id="facts-count-display">3</span>
         <button class="btn-sm" id="facts-add-btn">+</button>
+      </div>
+      <div class="facts-count-row">
+        <span>Sous-titres</span>
+        <button class="btn-sm" id="subtitles-remove-btn">−</button>
+        <span id="subtitles-count-display">1</span>
+        <button class="btn-sm" id="subtitles-add-btn">+</button>
       </div>
     </div>
 
@@ -1024,7 +1030,7 @@ function emptyState(idx) {
   return {
     eyebrow: t.eyebrow,
     title: t.title,
-    subtitle: t.subtitle,
+    subtitles: t.subtitle ? [t.subtitle] : [],
     facts: [t.fact1, t.fact2, t.fact3].filter(Boolean),
     ctaText: t.cta,
     bgDataUrl: DEFAULT_IMAGES[idx] || '',
@@ -1056,10 +1062,15 @@ function getState(idx) {
   if (!dayState[idx]) {
     const loaded = loadState(idx);
     if (loaded) {
-      // Migrate old format (fact1/fact2/fact3) to facts array
+      // Migrate facts: old format (fact1/fact2/fact3) → array
       if (!loaded.facts) {
         loaded.facts = [loaded.fact1, loaded.fact2, loaded.fact3].filter(Boolean);
         delete loaded.fact1; delete loaded.fact2; delete loaded.fact3;
+      }
+      // Migrate subtitles: old string → array
+      if (!loaded.subtitles) {
+        loaded.subtitles = loaded.subtitle ? [loaded.subtitle] : [];
+        delete loaded.subtitle;
       }
       dayState[idx] = loaded;
     } else {
@@ -1097,13 +1108,16 @@ const statusBar       = document.getElementById('status-bar');
 const fields = {
   eyebrow:  document.getElementById('field-eyebrow'),
   title:    document.getElementById('field-title'),
-  subtitle: document.getElementById('field-subtitle'),
   cta:      document.getElementById('field-cta'),
 };
-const factsContainer = document.getElementById('facts-container');
-const factsCountDisplay = document.getElementById('facts-count-display');
-const factsAddBtn       = document.getElementById('facts-add-btn');
-const factsRemoveBtn    = document.getElementById('facts-remove-btn');
+const factsContainer        = document.getElementById('facts-container');
+const factsCountDisplay     = document.getElementById('facts-count-display');
+const factsAddBtn           = document.getElementById('facts-add-btn');
+const factsRemoveBtn        = document.getElementById('facts-remove-btn');
+const subtitlesContainer    = document.getElementById('subtitles-container');
+const subtitlesCountDisplay = document.getElementById('subtitles-count-display');
+const subtitlesAddBtn       = document.getElementById('subtitles-add-btn');
+const subtitlesRemoveBtn    = document.getElementById('subtitles-remove-btn');
 
 // ═══════════════════════════════════════════════════════
 // SCALING
@@ -1167,14 +1181,14 @@ TABS.forEach((label, idx) => {
 
 function readCurrentFields() {
   const s = getState(currentDay);
-  s.eyebrow  = fields.eyebrow.textContent;
-  s.title    = fields.title.textContent;
-  s.subtitle = fields.subtitle.textContent;
-  s.facts    = Array.from(factsContainer.querySelectorAll('.fact')).map(el => el.textContent);
-  s.ctaText  = fields.cta.textContent;
+  s.eyebrow   = fields.eyebrow.textContent;
+  s.title     = fields.title.textContent;
+  s.subtitles = Array.from(subtitlesContainer.querySelectorAll('.card-subtitle')).map(el => el.textContent);
+  s.facts     = Array.from(factsContainer.querySelectorAll('.fact')).map(el => el.textContent);
+  s.ctaText   = fields.cta.textContent;
   s.overlayIntensity = parseInt(overlaySlider.value, 10);
-  s.textFR   = textareaFR.value;
-  s.textEN   = textareaEN.value;
+  s.textFR    = textareaFR.value;
+  s.textEN    = textareaEN.value;
   const filterRadio = document.querySelector('input[name="filter-type"]:checked');
   s.filterType = filterRadio ? filterRadio.value : 'none';
   saveState(currentDay);
