@@ -461,6 +461,63 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
 /* Copy success flash */
 .copied { color: #7bcf8a !important; border-color: #7bcf8a !important; }
 
+/* ── Carousel section ── */
+#carousel-section { margin-top: 14px; }
+#carousel-strip {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 8px 0 10px;
+  min-height: 36px;
+}
+.carousel-thumb-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.carousel-thumb-wrap img {
+  width: 72px; height: 72px; object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid rgba(255,255,255,0.15);
+  display: block;
+}
+.carousel-remove {
+  position: absolute; top: -6px; right: -6px;
+  background: #c0392b; color: #fff;
+  border: none; border-radius: 50%;
+  width: 18px; height: 18px; font-size: 13px; line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.carousel-order {
+  position: absolute; bottom: 3px; left: 5px;
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  pointer-events: none;
+}
+#carousel-empty {
+  font-size: 12px; color: #7a7060; font-style: italic; padding: 4px 0;
+}
+
+/* ── Filter section ── */
+#filter-section { margin-top: 14px; }
+#filter-options {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px;
+}
+#filter-options label {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: #c8b99a;
+  cursor: pointer;
+  padding: 5px 11px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  transition: border-color 0.15s, color 0.15s;
+  user-select: none;
+}
+#filter-options input[type=radio] { accent-color: var(--gold); cursor: pointer; }
+#filter-options label:has(input:checked) {
+  border-color: var(--gold); color: var(--gold-light);
+}
+
 /* Responsive: if viewport narrow, stack columns */
 @media (max-width: 900px) {
   #main-layout { grid-template-columns: 1fr; }
@@ -526,6 +583,29 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
       <div class="section-label" style="margin-top:4px;">Galerie photos</div>
       <div id="gallery-strip"></div>
     </div>
+
+    <!-- ── Carousel photos ── -->
+    <div id="carousel-section">
+      <div class="section-label" style="margin-top:14px;">🎠 Photos Carrousel</div>
+      <div id="carousel-strip"><span id="carousel-empty">Aucune photo — cliquez pour en ajouter</span></div>
+      <div class="panel-row">
+        <button class="btn" id="carousel-upload-btn">➕ Ajouter photos</button>
+      </div>
+      <input type="file" id="carousel-file-input" accept="image/*" multiple style="display:none;">
+    </div>
+
+    <!-- ── Filtre image ── -->
+    <div id="filter-section">
+      <div class="section-label" style="margin-top:14px;">🎨 Filtre image</div>
+      <div id="filter-options">
+        <label><input type="radio" name="filter-type" value="none" checked> Aucun</label>
+        <label><input type="radio" name="filter-type" value="bw"> Noir &amp; Blanc</label>
+        <label><input type="radio" name="filter-type" value="sepia"> Sépia</label>
+        <label><input type="radio" name="filter-type" value="vintage"> Vintage</label>
+        <label><input type="radio" name="filter-type" value="contrast"> Contraste+</label>
+      </div>
+    </div>
+
   </div>
 
   <!-- ── RIGHT COLUMN ── -->
@@ -564,6 +644,9 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
       <button class="btn btn-ghost" id="json-import-btn">📂 Charger JSON</button>
     </div>
     <input type="file" id="json-file-input" accept=".json" style="display:none;">
+
+    <!-- Export carrousel -->
+    <button class="btn btn-ghost" id="export-carousel-btn" style="width:100%; margin-top:8px;">🎠 Exporter carrousel JPG</button>
 
     <!-- OpenAI -->
     <details class="openai-section">
@@ -929,6 +1012,8 @@ function emptyState(idx) {
     overlayIntensity: 35,
     textFR: '',
     textEN: '',
+    carouselImages: [],
+    filterType: 'none',
   };
 }
 
@@ -1062,6 +1147,8 @@ function readCurrentFields() {
   s.overlayIntensity = parseInt(overlaySlider.value, 10);
   s.textFR   = textareaFR.value;
   s.textEN   = textareaEN.value;
+  const filterRadio = document.querySelector('input[name="filter-type"]:checked');
+  s.filterType = filterRadio ? filterRadio.value : 'none';
   saveState(currentDay);
 }
 
@@ -1095,6 +1182,16 @@ function switchDay(idx) {
   textareaFR.value = s.textFR;
   textareaEN.value = s.textEN;
 
+  // Carousel
+  buildCarouselStrip(idx);
+
+  // Filter radio + live preview
+  const ft = s.filterType || 'none';
+  document.querySelectorAll('input[name="filter-type"]').forEach(r => {
+    r.checked = (r.value === ft);
+  });
+  applyFilterPreview(ft);
+
   // Gallery
   buildGallery(idx);
 }
@@ -1114,6 +1211,9 @@ function setBgImage(src) {
     cardNoImage.style.display = 'block';
   }
   getState(currentDay).bgDataUrl = src;
+  // Keep filter preview in sync
+  const s = getState(currentDay);
+  applyFilterPreview(s.filterType || 'none');
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1145,6 +1245,180 @@ function buildGallery(idx) {
     galleryContainer.style.display = 'none';
   }
 }
+
+// ═══════════════════════════════════════════════════════
+// FILTER HELPER
+// ═══════════════════════════════════════════════════════
+
+function getFilterCSS(type) {
+  switch (type) {
+    case 'bw':       return 'grayscale(100%)';
+    case 'sepia':    return 'sepia(80%)';
+    case 'vintage':  return 'sepia(40%) contrast(1.1) brightness(0.9)';
+    case 'contrast': return 'contrast(130%) brightness(1.05)';
+    default:         return 'none';
+  }
+}
+
+function applyFilterPreview(type) {
+  cardBg.style.filter = getFilterCSS(type);
+}
+
+// Filter radio listeners
+document.querySelectorAll('input[name="filter-type"]').forEach(r => {
+  r.addEventListener('change', () => {
+    applyFilterPreview(r.value);
+    autoSave();
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+// CAROUSEL
+// ═══════════════════════════════════════════════════════
+
+const carouselUploadBtn = document.getElementById('carousel-upload-btn');
+const carouselFileInput = document.getElementById('carousel-file-input');
+const carouselStripEl   = document.getElementById('carousel-strip');
+const carouselEmpty     = document.getElementById('carousel-empty');
+
+function buildCarouselStrip(idx) {
+  const s = getState(idx);
+  if (!s.carouselImages) s.carouselImages = [];
+  carouselStripEl.innerHTML = '';
+
+  if (s.carouselImages.length === 0) {
+    carouselEmpty.style.display = 'block';
+    carouselStripEl.appendChild(carouselEmpty);
+    return;
+  }
+  carouselEmpty.style.display = 'none';
+
+  s.carouselImages.forEach((src, i) => {
+    const wrap  = document.createElement('div');
+    wrap.className = 'carousel-thumb-wrap';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = '';
+
+    const order = document.createElement('span');
+    order.className = 'carousel-order';
+    order.textContent = i + 1;
+
+    const rm = document.createElement('button');
+    rm.className = 'carousel-remove';
+    rm.title = 'Supprimer';
+    rm.textContent = '×';
+    rm.addEventListener('click', () => {
+      s.carouselImages.splice(i, 1);
+      saveState(idx);
+      buildCarouselStrip(idx);
+      showStatus('Photo supprimée ✓');
+    });
+
+    wrap.appendChild(img);
+    wrap.appendChild(order);
+    wrap.appendChild(rm);
+    carouselStripEl.appendChild(wrap);
+  });
+}
+
+carouselUploadBtn.addEventListener('click', () => carouselFileInput.click());
+
+carouselFileInput.addEventListener('change', () => {
+  const files = Array.from(carouselFileInput.files);
+  if (!files.length) return;
+  const s = getState(currentDay);
+  if (!s.carouselImages) s.carouselImages = [];
+  let loaded = 0;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      s.carouselImages.push(e.target.result);
+      loaded++;
+      if (loaded === files.length) {
+        saveState(currentDay);
+        buildCarouselStrip(currentDay);
+        showStatus(`${files.length} photo(s) ajoutée(s) au carrousel ✓`);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  carouselFileInput.value = '';
+});
+
+// ── Carousel export ──
+
+const exportCarouselBtn = document.getElementById('export-carousel-btn');
+
+exportCarouselBtn.addEventListener('click', async () => {
+  readCurrentFields();
+  const s = getState(currentDay);
+  const images = s.carouselImages || [];
+
+  if (!images.length) {
+    alert('Aucune photo dans le carrousel pour ce jour.\nAjoutez des photos via "➕ Ajouter photos".');
+    return;
+  }
+
+  const W = 1080, H = 1350;
+  const filterCss = getFilterCSS(s.filterType || 'none');
+  const dayLabel  = currentDay < 10 ? `j${currentDay + 1}` : (currentDay === 10 ? 'cta' : 'fete');
+
+  await document.fonts.ready;
+
+  for (let i = 0; i < images.length; i++) {
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    try {
+      await new Promise((resolve, reject) => {
+        const img2 = new Image();
+        img2.crossOrigin = 'anonymous';
+        img2.onload = () => {
+          const ia = img2.naturalWidth / img2.naturalHeight;
+          const ca = W / H;
+          let dw, dh, dx, dy;
+          if (ia > ca) {
+            dh = H; dw = H * ia; dx = (W - dw) / 2; dy = 0;
+          } else {
+            dw = W; dh = W / ia; dx = 0; dy = (H - dh) / 2;
+          }
+          if (filterCss !== 'none') ctx.filter = filterCss;
+          ctx.drawImage(img2, dx, dy, dw, dh);
+          ctx.filter = 'none';
+          resolve();
+        };
+        img2.onerror = reject;
+        img2.src = images[i];
+      });
+    } catch (err) {
+      alert(`Image carrousel ${i + 1} non exportable.`);
+      continue;
+    }
+
+    // Gradient overlay
+    const mv = s.overlayIntensity / 100;
+    const og = ctx.createLinearGradient(0, H, 0, 0);
+    og.addColorStop(0,    `rgba(15,8,4,${(0.90 * mv).toFixed(2)})`);
+    og.addColorStop(0.25, `rgba(15,8,4,${(0.55 * mv).toFixed(2)})`);
+    og.addColorStop(0.48, `rgba(15,8,4,${(0.12 * mv).toFixed(2)})`);
+    og.addColorStop(1,    `rgba(15,8,4,0)`);
+    ctx.fillStyle = og;
+    ctx.fillRect(0, 0, W, H);
+
+    const link2 = document.createElement('a');
+    link2.download = `carrousel-${dayLabel}-${i + 1}.jpg`;
+    link2.href = canvas.toDataURL('image/jpeg', 0.92);
+    link2.click();
+
+    // Small delay to avoid browser blocking multiple downloads
+    await new Promise(r => setTimeout(r, 350));
+  }
+
+  showStatus(`${images.length} image(s) carrousel exportée(s) ✓`);
+});
 
 // ═══════════════════════════════════════════════════════
 // FILE UPLOAD
@@ -1366,7 +1640,10 @@ exportBtn.addEventListener('click', async () => {
             drawW = W; drawH = W / imgAspect;
             drawX = 0; drawY = (H - drawH) / 2;
           }
+          const fc = getFilterCSS(s.filterType || 'none');
+          if (fc !== 'none') ctx.filter = fc;
           ctx.drawImage(img, drawX, drawY, drawW, drawH);
+          ctx.filter = 'none';
           resolve();
         };
         img.onerror = reject;
