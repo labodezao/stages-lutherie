@@ -331,9 +331,31 @@ header p { font-size: 12px; color: var(--wood-light); margin-top: 3px; }
   flex-shrink: 0;
   transition: border-color 0.15s, transform 0.15s;
   opacity: 0.8;
+  display: block;
 }
 .gallery-thumb:hover { border-color: var(--gold); transform: scale(1.05); opacity: 1; }
 .gallery-thumb.active { border-color: var(--gold); opacity: 1; }
+/* Gallery thumb wrap + carousel-add badge */
+.gallery-thumb-wrap {
+  position: relative; display: inline-block;
+  flex-shrink: 0;
+}
+.gallery-add-btn {
+  position: absolute; top: -5px; right: -5px;
+  background: #2c2015; border: 1px solid rgba(255,255,255,0.22);
+  color: #c8b99a; border-radius: 50%;
+  width: 22px; height: 22px; font-size: 12px; line-height: 1;
+  cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.15s;
+  z-index: 2;
+}
+.gallery-thumb-wrap:hover .gallery-add-btn { opacity: 1; }
+.gallery-add-btn.in-carousel {
+  opacity: 1; background: rgba(212,160,23,0.28);
+  border-color: var(--gold); color: var(--gold-light);
+}
+
 
 /* ── Right column ── */
 #right-col {
@@ -696,9 +718,14 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
       </div>
     </div>
 
-    <div id="gallery-container" style="display:none;">
-      <div class="section-label" style="margin-top:4px;">Galerie photos</div>
+    <div id="gallery-container">
+      <div class="section-label" style="margin-top:14px;">📷 Photos du jour</div>
       <div id="gallery-strip"></div>
+      <div class="panel-row" style="margin-top:6px; gap:6px;">
+        <button class="btn btn-ghost" id="gallery-upload-btn">📂 Ajouter photos</button>
+        <button class="btn btn-ghost" id="gallery-clear-btn">🗑 Vider</button>
+      </div>
+      <input type="file" id="gallery-file-input" multiple accept="image/*" style="display:none;">
     </div>
 
     <!-- ── Carousel photos ── -->
@@ -1169,6 +1196,7 @@ function emptyState(idx) {
     overlayIntensity: 35,
     textFR: '',
     textEN: '',
+    galleryImages: [],
     carouselImages: [],
     filterType: 'none',
   };
@@ -1204,6 +1232,8 @@ function getState(idx) {
         loaded.subtitles = loaded.subtitle ? [loaded.subtitle] : [];
         delete loaded.subtitle;
       }
+      // Ensure galleryImages exists
+      if (!loaded.galleryImages) loaded.galleryImages = [];
       dayState[idx] = loaded;
     } else {
       dayState[idx] = emptyState(idx);
@@ -1225,8 +1255,11 @@ const overlaySlider   = document.getElementById('overlay-slider');
 const overlayVal      = document.getElementById('overlay-val');
 const uploadBtn       = document.getElementById('upload-btn');
 const fileInput       = document.getElementById('file-upload-input');
-const galleryContainer = document.getElementById('gallery-container');
-const galleryStrip    = document.getElementById('gallery-strip');
+const galleryContainer   = document.getElementById('gallery-container');
+const galleryStrip       = document.getElementById('gallery-strip');
+const galleryUploadBtn   = document.getElementById('gallery-upload-btn');
+const galleryFileInput   = document.getElementById('gallery-file-input');
+const galleryClearBtn    = document.getElementById('gallery-clear-btn');
 const textareaFR      = document.getElementById('textarea-fr');
 const textareaEN      = document.getElementById('textarea-en');
 const suggestFR       = document.getElementById('suggest-fr-btn');
@@ -1505,30 +1538,97 @@ function setBgImage(src) {
 // ═══════════════════════════════════════════════════════
 
 function buildGallery(idx) {
-  const gallery = GALLERIES[idx]; // undefined for J4+
+  const builtinPaths = GALLERIES[idx] || [];
+  const s = getState(idx);
+  if (!s.galleryImages) s.galleryImages = [];
+  if (!s.carouselImages) s.carouselImages = [];
+
+  const allSrcs = [...builtinPaths, ...s.galleryImages];
+  const carouselSet = new Set(s.carouselImages);
+  const currentSrc = s.bgDataUrl || '';
+
   galleryStrip.innerHTML = '';
 
-  if (gallery && gallery.length > 0) {
-    galleryContainer.style.display = 'block';
-    const currentSrc = getState(idx).bgDataUrl || '';
-    gallery.forEach(path => {
-      const img = document.createElement('img');
-      img.className = 'gallery-thumb';
-      img.src = path;
-      img.alt = '';
-      if (currentSrc === path) img.classList.add('active');
-      img.addEventListener('click', () => {
-        setBgImage(path);
-        galleryStrip.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-        img.classList.add('active');
-        autoSave();
-      });
-      galleryStrip.appendChild(img);
+  allSrcs.forEach(src => {
+    const wrap = document.createElement('div');
+    wrap.className = 'gallery-thumb-wrap';
+
+    const img = document.createElement('img');
+    img.className = 'gallery-thumb' + (currentSrc === src ? ' active' : '');
+    img.src = src;
+    img.alt = '';
+    img.addEventListener('click', () => {
+      setBgImage(src);
+      galleryStrip.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+      img.classList.add('active');
+      autoSave();
     });
-  } else {
-    galleryContainer.style.display = 'none';
-  }
+
+    // Carousel toggle badge
+    const addBtn = document.createElement('button');
+    const inCar = carouselSet.has(src);
+    addBtn.className = 'gallery-add-btn' + (inCar ? ' in-carousel' : '');
+    addBtn.title = inCar ? 'Retirer du carrousel' : 'Ajouter au carrousel';
+    addBtn.textContent = inCar ? '✓' : '🎠';
+    addBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const sv = getState(idx);
+      if (!sv.carouselImages) sv.carouselImages = [];
+      const pos = sv.carouselImages.indexOf(src);
+      if (pos >= 0) {
+        sv.carouselImages.splice(pos, 1);
+        showStatus('Photo retirée du carrousel');
+      } else {
+        sv.carouselImages.push(src);
+        showStatus('Photo ajoutée au carrousel ✓');
+      }
+      saveState(idx);
+      buildCarouselStrip(idx);
+      buildGallery(idx);
+    });
+
+    wrap.appendChild(img);
+    wrap.appendChild(addBtn);
+    galleryStrip.appendChild(wrap);
+  });
 }
+
+// ── Gallery upload / clear handlers ──
+galleryUploadBtn.addEventListener('click', () => galleryFileInput.click());
+
+galleryFileInput.addEventListener('change', () => {
+  const files = Array.from(galleryFileInput.files);
+  if (!files.length) return;
+  const s = getState(currentDay);
+  if (!s.galleryImages) s.galleryImages = [];
+  let loaded = 0;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      s.galleryImages.push(e.target.result);
+      loaded++;
+      if (loaded === files.length) {
+        saveState(currentDay);
+        buildGallery(currentDay);
+        showStatus(`${files.length} photo(s) ajoutée(s) à la galerie ✓`);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  galleryFileInput.value = '';
+});
+
+galleryClearBtn.addEventListener('click', () => {
+  if (!confirm('Vider les photos uploadées de la galerie pour ce jour ?')) return;
+  const s = getState(currentDay);
+  s.galleryImages = [];
+  // Remove from carousel too those that were uploaded (dataURLs start with data:)
+  s.carouselImages = (s.carouselImages || []).filter(src => !src.startsWith('data:'));
+  saveState(currentDay);
+  buildGallery(currentDay);
+  buildCarouselStrip(currentDay);
+  showStatus('Galerie vidée');
+});
 
 // ═══════════════════════════════════════════════════════
 // FILTER HELPER
@@ -1597,6 +1697,7 @@ function buildCarouselStrip(idx) {
       s.carouselImages.splice(i, 1);
       saveState(idx);
       buildCarouselStrip(idx);
+      buildGallery(idx); // sync carousel indicators
       showStatus('Photo supprimée ✓');
     });
 
