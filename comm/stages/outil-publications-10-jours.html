@@ -137,7 +137,8 @@ header p { font-size: 12px; color: var(--wood-light); margin-top: 3px; }
 
 .card-text-overlay {
   position: absolute;
-  inset: 0;
+  left: 0; right: 0; bottom: 0;
+  height: 65%;
   pointer-events: none;
   transition: background 0.2s;
   z-index: 1;
@@ -492,6 +493,29 @@ details.openai-section[open] summary::before { transform: rotate(90deg); }
 .openai-body input[type=password]:focus { outline: none; border-color: rgba(212,160,23,0.4); }
 .openai-hint { font-size: 11px; color: #7a7060; line-height: 1.4; }
 
+/* ── AI providers ── */
+.ai-provider-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;
+}
+.ai-provider-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 7px;
+  color: #c8b99a;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 11px; font-weight: 600;
+  padding: 8px 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.ai-provider-btn:hover { border-color: rgba(212,160,23,0.4); background: rgba(255,255,255,0.08); }
+.ai-provider-btn.active { border-color: var(--gold); background: rgba(212,160,23,0.12); color: var(--gold-light); }
+.ai-provider-btn small { display: block; font-weight: 400; opacity: 0.7; font-size: 10px; margin-top: 1px; }
+.ai-key-row { display: flex; flex-direction: column; gap: 6px; }
+.ai-key-row label { font-size: 11px; color: #a09070; }
+
 /* Status bar */
 #status-bar {
   position: fixed;
@@ -741,7 +765,7 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
         <span id="overlay-val">35%</span>
       </div>
       <div class="slider-group">
-        <span>Overlay textes</span>
+        <span>Lisibilité textes</span>
         <input type="range" id="text-overlay-slider" min="0" max="100" value="0">
         <span id="text-overlay-val">0%</span>
       </div>
@@ -882,13 +906,31 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
     </details>
 
     <!-- OpenAI -->
+    <!-- AI providers -->
     <details class="openai-section">
-      <summary>🔑 Clé OpenAI (optionnel — pour générer des textes via GPT-4)</summary>
+      <summary>🤖 Providers IA (optionnel — génération de textes)</summary>
       <div class="openai-body">
-        <input type="password" id="openai-key" placeholder="sk-…">
-        <div class="openai-hint">
-          Votre clé n'est jamais envoyée à un serveur tiers — elle est utilisée directement depuis votre navigateur vers api.openai.com.<br>
-          Sans clé, les boutons ✨ chargent les templates pré-écrits intégrés.
+        <div class="ai-provider-grid">
+          <button class="ai-provider-btn active" data-provider="openai">
+            🧠 OpenAI<small>GPT-4o-mini</small>
+          </button>
+          <button class="ai-provider-btn" data-provider="grok">
+            ⚡ Grok<small>xAI · grok-3-mini</small>
+          </button>
+          <button class="ai-provider-btn" data-provider="gemini">
+            💎 Gemini<small>Google · Flash 2.0</small>
+          </button>
+          <button class="ai-provider-btn" data-provider="groq">
+            🚀 Groq<small>Llama 3.3 · gratuit</small>
+          </button>
+        </div>
+        <div class="ai-key-row">
+          <label id="ai-key-label">Clé OpenAI (sk-…)</label>
+          <input type="password" id="openai-key" placeholder="sk-…">
+        </div>
+        <div class="openai-hint" id="ai-hint-text">
+          Clés utilisées directement depuis votre navigateur — jamais envoyées à un serveur tiers.<br>
+          Sans clé, les boutons ✨ chargent les templates pré-écrits.
         </div>
       </div>
     </details>
@@ -1328,6 +1370,39 @@ const charCountEN     = document.getElementById('char-count-en');
 const exportBtn       = document.getElementById('export-btn');
 const exportAllBtn    = document.getElementById('export-all-btn');
 const openaiKey       = document.getElementById('openai-key');
+let   currentProvider = 'openai';
+
+const AI_PROVIDERS = {
+  openai: { label: 'Clé OpenAI (sk-…)',        placeholder: 'sk-…',                   hint: 'api.openai.com — GPT-4o-mini' },
+  grok:   { label: 'Clé xAI Grok',             placeholder: 'xai-…',                  hint: 'api.x.ai — grok-3-mini (gratuit via xAI console)' },
+  gemini: { label: 'Clé Google AI Studio',     placeholder: 'AIza…',                  hint: 'aistudio.google.com — Gemini 2.0 Flash (gratuit)' },
+  groq:   { label: 'Clé Groq Cloud',           placeholder: 'gsk_…',                  hint: 'console.groq.com — Llama 3.3 70B (gratuit)' },
+};
+
+document.querySelectorAll('.ai-provider-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentProvider = btn.dataset.provider;
+    document.querySelectorAll('.ai-provider-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const p = AI_PROVIDERS[currentProvider];
+    document.getElementById('ai-key-label').textContent = p.label;
+    openaiKey.placeholder = p.placeholder;
+    document.getElementById('ai-hint-text').textContent = p.hint + ' — clé jamais envoyée à un tiers.';
+    // Restore saved key for this provider
+    openaiKey.value = localStorage.getItem('ai_key_' + currentProvider) || '';
+  });
+});
+
+openaiKey.addEventListener('input', () => {
+  localStorage.setItem('ai_key_' + currentProvider, openaiKey.value.trim());
+});
+
+// Restore last provider
+(function() {
+  const saved = localStorage.getItem('ai_provider') || 'openai';
+  const btn = document.querySelector(`.ai-provider-btn[data-provider="${saved}"]`);
+  if (btn) btn.click();
+})();
 const statusBar       = document.getElementById('status-bar');
 const planningGrid    = document.getElementById('planning-grid');
 
@@ -1433,10 +1508,9 @@ function applyOverlay(intensity) {
 
 function buildTextGradient(intensity) {
   const m = intensity / 100;
-  const a0  = (0.75 * m).toFixed(2);
-  const a35 = (0.45 * m).toFixed(2);
-  const a60 = (0.10 * m).toFixed(2);
-  return `linear-gradient(to bottom, rgba(15,8,4,${a0}) 0%, rgba(15,8,4,${a35}) 35%, rgba(15,8,4,${a60}) 60%, rgba(15,8,4,0.00) 100%)`;
+  const a0  = (0.80 * m).toFixed(2);
+  const a50 = (0.40 * m).toFixed(2);
+  return `linear-gradient(to top, rgba(15,8,4,${a0}) 0%, rgba(15,8,4,${a50}) 50%, rgba(15,8,4,0.00) 100%)`;
 }
 
 function applyTextOverlay(intensity) {
@@ -1848,7 +1922,7 @@ exportCarouselBtn.addEventListener('click', async () => {
     try {
       await new Promise((resolve, reject) => {
         const img2 = new Image();
-        img2.crossOrigin = 'anonymous';
+        if (images[i].startsWith('http')) img2.crossOrigin = 'anonymous';
         img2.onload = () => {
           const ia = img2.naturalWidth / img2.naturalHeight;
           const ca = W / H;
@@ -1973,62 +2047,82 @@ async function suggestText(lang) {
   const key = openaiKey.value.trim();
   const idx = currentDay;
   const hintText = aiHint.value.trim();
-  const hintClause = hintText ? `\nContexte / précisions à intégrer : ${hintText}` : '';
+  const hintClause = hintText ? `\nContexte / précisions : ${hintText}` : '';
+  const isEN = (lang === 'en');
+  const btn = isEN ? suggestEN : suggestFR;
 
-  if (key) {
-    // Use OpenAI GPT-4
-    const isEN = (lang === 'en');
-    const prompt = isEN
-      ? `Write a Facebook post for day ${idx + 1} of a 10-day diatonic accordion lutherie workshop in Saint-Nazaire. Tone: sincere, sober, artisanal. 3-5 lines max + hashtags. Not too commercial. Language: English.${hintClause}`
-      : `Écris un texte de publication Facebook pour le jour ${idx + 1} d'un stage de lutherie accordéon diatonique à Saint-Nazaire. Ton : sincère, sobre, artisanal. 3-5 lignes max + hashtags. Pas trop commercial. Langue: FR.${hintClause}`;
+  const prompt = isEN
+    ? `Write a Facebook/Instagram post for day ${idx + 1} of a 10-day diatonic accordion lutherie workshop in Saint-Nazaire, France. Tone: sincere, sober, artisanal. 3-5 lines max + relevant hashtags. Not too commercial.${hintClause}`
+    : `Écris un texte de publication Facebook/Instagram pour le jour ${idx + 1} d'un stage de lutherie accordéon diatonique à Saint-Nazaire. Ton : sincère, sobre, artisanal. 3-5 lignes max + hashtags pertinents. Pas trop commercial.${hintClause}`;
 
-    const btn = isEN ? suggestEN : suggestFR;
-    btn.textContent = '⏳ Génération…';
-    btn.disabled = true;
-
-    try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${key}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4',
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: 300,
-          temperature: 0.75,
-        }),
-      });
-      if (!res.ok) throw new Error(`API error ${res.status}`);
-      const data = await res.json();
-      const text = data.choices[0].message.content.trim();
-      if (isEN) {
-        textareaEN.value = text;
-        getState(currentDay).textEN = text;
-      } else {
-        textareaFR.value = text;
-        getState(currentDay).textFR = text;
-      }
-      saveState(currentDay);
-      showStatus('Texte généré ✓');
-    } catch (err) {
-      alert('Erreur API OpenAI : ' + err.message);
-    } finally {
-      btn.textContent = isEN ? '✨ Suggest AI' : '✨ Suggérer IA';
-      btn.disabled = false;
-    }
-  } else {
+  if (!key) {
     // Use built-in template
-    if (lang === 'fr') {
-      textareaFR.value = FR_TEMPLATES[idx] || '';
-      getState(currentDay).textFR = textareaFR.value;
-    } else {
-      textareaEN.value = EN_TEMPLATES[idx] || '';
-      getState(currentDay).textEN = textareaEN.value;
-    }
+    if (!isEN) { textareaFR.value = FR_TEMPLATES[idx] || ''; getState(currentDay).textFR = textareaFR.value; }
+    else        { textareaEN.value = EN_TEMPLATES[idx] || ''; getState(currentDay).textEN = textareaEN.value; }
     saveState(currentDay);
     showStatus('Template chargé ✓');
+    return;
+  }
+
+  btn.textContent = '⏳ Génération…';
+  btn.disabled = true;
+
+  try {
+    let text = '';
+
+    if (currentProvider === 'gemini') {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 350, temperature: 0.75 } }),
+      });
+      if (!res.ok) throw new Error(`Gemini API error ${res.status}`);
+      const d = await res.json();
+      text = d.candidates[0].content.parts[0].text.trim();
+
+    } else if (currentProvider === 'groq') {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 350, temperature: 0.75 }),
+      });
+      if (!res.ok) throw new Error(`Groq API error ${res.status}`);
+      const d = await res.json();
+      text = d.choices[0].message.content.trim();
+
+    } else if (currentProvider === 'grok') {
+      const res = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'grok-3-mini', messages: [{ role: 'user', content: prompt }], max_tokens: 350, temperature: 0.75 }),
+      });
+      if (!res.ok) throw new Error(`Grok API error ${res.status}`);
+      const d = await res.json();
+      text = d.choices[0].message.content.trim();
+
+    } else {
+      // OpenAI
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], max_tokens: 350, temperature: 0.75 }),
+      });
+      if (!res.ok) throw new Error(`OpenAI API error ${res.status}`);
+      const d = await res.json();
+      text = d.choices[0].message.content.trim();
+    }
+
+    if (!isEN) { textareaFR.value = text; getState(currentDay).textFR = text; }
+    else        { textareaEN.value = text; getState(currentDay).textEN = text; }
+    saveState(currentDay);
+    showStatus('Texte généré ✓');
+    localStorage.setItem('ai_provider', currentProvider);
+
+  } catch (err) {
+    alert('Erreur API ' + currentProvider + ' : ' + err.message);
+  } finally {
+    btn.textContent = isEN ? '✨ Suggest AI' : '✨ Suggérer IA';
+    btn.disabled = false;
   }
 }
 
@@ -2159,7 +2253,7 @@ async function drawCard(ctx, W, H, s) {
   if (s.bgDataUrl) {
     await new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      if (s.bgDataUrl.startsWith('http')) img.crossOrigin = 'anonymous';
       img.onload = () => {
         const imgAspect = img.naturalWidth / img.naturalHeight;
         const canvasAspect = W / H;
@@ -2196,6 +2290,17 @@ async function drawCard(ctx, W, H, s) {
   ovGrad.addColorStop(1,    'rgba(15,8,4,0)');
   ctx.fillStyle = ovGrad;
   ctx.fillRect(0, 0, W, H);
+
+  // Text readability backdrop
+  if (s.textOverlayIntensity) {
+    const tv = s.textOverlayIntensity / 100;
+    const tvGrad = ctx.createLinearGradient(0, H, 0, H * 0.35);
+    tvGrad.addColorStop(0, `rgba(15,8,4,${(0.80 * tv).toFixed(2)})`);
+    tvGrad.addColorStop(0.5, `rgba(15,8,4,${(0.40 * tv).toFixed(2)})`);
+    tvGrad.addColorStop(1, 'rgba(15,8,4,0.00)');
+    ctx.fillStyle = tvGrad;
+    ctx.fillRect(0, H * 0.35, W, H * 0.65);
+  }
 
   // Frame
   ctx.strokeStyle = 'rgba(255,248,225,0.22)';
@@ -2272,7 +2377,10 @@ exportBtn.addEventListener('click', async () => {
   const dayLabel = currentDay < 10 ? `j${currentDay + 1}` : (currentDay === 10 ? 'cta' : 'fete');
   const link = document.createElement('a');
   link.download = `publi-${dayLabel}${fmtSuffix}.jpg`;
-  link.href = canvas.toDataURL('image/jpeg', 0.92);
+  let exportDataUrl;
+  try { exportDataUrl = canvas.toDataURL('image/jpeg', 0.92); }
+  catch(e) { alert('Export impossible : image locale protégée. Utilisez "Changer la photo" (upload) pour exporter.'); return; }
+  link.href = exportDataUrl;
   link.click();
   showStatus('Export JPG téléchargé ✓');
 });
@@ -2299,7 +2407,10 @@ exportAllBtn.addEventListener('click', async () => {
     const dayLabel = i < 10 ? `j${i + 1}` : (i === 10 ? 'cta' : 'fete');
     const link = document.createElement('a');
     link.download = `publi-${dayLabel}${fmtSuffix}.jpg`;
-    link.href = canvas.toDataURL('image/jpeg', 0.92);
+    let batchDataUrl;
+    try { batchDataUrl = canvas.toDataURL('image/jpeg', 0.92); }
+    catch(e) { showStatus('J' + (i+1) + ' ignoré (image protégée)'); continue; }
+    link.href = batchDataUrl;
     link.click();
     await new Promise(r => setTimeout(r, 400));
   }
