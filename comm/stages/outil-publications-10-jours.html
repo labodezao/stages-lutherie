@@ -942,6 +942,9 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
           <button class="ai-provider-btn" data-provider="groq">
             🚀 Groq<small>Llama 3.3 · gratuit</small>
           </button>
+          <button class="ai-provider-btn" data-provider="openrouter">
+            🔀 OpenRouter<small>multi-modèles</small>
+          </button>
         </div>
         <div class="ai-key-row">
           <label id="ai-key-label">Clé OpenAI (sk-…)</label>
@@ -1396,6 +1399,7 @@ const AI_PROVIDERS = {
   grok:   { label: 'Clé xAI Grok',             placeholder: 'xai-…',                  hint: 'api.x.ai — grok-3-mini (gratuit via xAI console)' },
   gemini: { label: 'Clé Google AI Studio',     placeholder: 'AIza…',                  hint: 'aistudio.google.com — Gemini 2.0 Flash (gratuit)' },
   groq:   { label: 'Clé Groq Cloud',           placeholder: 'gsk_…',                  hint: 'console.groq.com — Llama 3.3 70B (gratuit)' },
+  openrouter: { label: 'Clé OpenRouter',       placeholder: 'sk-or-…',                hint: 'openrouter.ai — accès multi-modèles (gratuit avec crédit offert)' },
 };
 
 document.querySelectorAll('.ai-provider-btn').forEach(btn => {
@@ -2147,6 +2151,16 @@ async function suggestText(lang) {
         body: JSON.stringify({ model: 'grok-3-mini', messages: [{ role: 'user', content: prompt }], max_tokens: 350, temperature: 0.75 }),
       });
       if (!res.ok) throw new Error(`Grok API error ${res.status}`);
+      const d = await res.json();
+      text = d.choices[0].message.content.trim();
+
+    } else if (currentProvider === 'openrouter') {
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'meta-llama/llama-3.3-70b-instruct:free', messages: [{ role: 'user', content: prompt }], max_tokens: 350, temperature: 0.75 }),
+      });
+      if (!res.ok) throw new Error(`OpenRouter API error ${res.status}`);
       const d = await res.json();
       text = d.choices[0].message.content.trim();
 
