@@ -135,6 +135,13 @@ header p { font-size: 12px; color: var(--wood-light); margin-top: 3px; }
   transition: opacity 0.2s;
 }
 
+.card-text-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.2s;
+}
+
 .card-frame {
   position: absolute;
   inset: 28px;
@@ -678,6 +685,7 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
         <div id="card-no-image"></div>
         <img id="card-bg" src="" alt="" style="display:none;">
         <div class="card-overlay" id="card-overlay"></div>
+        <div class="card-text-overlay" id="card-text-overlay"></div>
         <div class="card-frame"></div>
         <div id="card-content">
           <div class="card-top">
@@ -703,6 +711,11 @@ details.planning-section[open] summary::after { transform: rotate(90deg); }
         <span>Intensité overlay</span>
         <input type="range" id="overlay-slider" min="0" max="100" value="35">
         <span id="overlay-val">35%</span>
+      </div>
+      <div class="slider-group">
+        <span>Overlay textes</span>
+        <input type="range" id="text-overlay-slider" min="0" max="100" value="0">
+        <span id="text-overlay-val">0%</span>
       </div>
       <div class="facts-count-row">
         <span>Bulles</span>
@@ -1194,6 +1207,7 @@ function emptyState(idx) {
     ctaText: t.cta,
     bgDataUrl: DEFAULT_IMAGES[idx] || '',
     overlayIntensity: 35,
+    textOverlayIntensity: 0,
     textFR: '',
     textEN: '',
     galleryImages: [],
@@ -1251,10 +1265,13 @@ function getState(idx) {
 const cardBg          = document.getElementById('card-bg');
 const cardNoImage     = document.getElementById('card-no-image');
 const cardOverlay     = document.getElementById('card-overlay');
+const cardTextOverlay = document.getElementById('card-text-overlay');
 const cardContainer   = document.getElementById('card-container');
 const cardWrapper     = document.getElementById('card-wrapper');
 const overlaySlider   = document.getElementById('overlay-slider');
 const overlayVal      = document.getElementById('overlay-val');
+const textOverlaySlider = document.getElementById('text-overlay-slider');
+const textOverlayVal    = document.getElementById('text-overlay-val');
 const uploadBtn       = document.getElementById('upload-btn');
 const fileInput       = document.getElementById('file-upload-input');
 const galleryContainer   = document.getElementById('gallery-container');
@@ -1378,6 +1395,20 @@ function applyOverlay(intensity) {
   overlayVal.textContent = intensity + '%';
 }
 
+function buildTextGradient(intensity) {
+  const m = intensity / 100;
+  const a0  = (0.75 * m).toFixed(2);
+  const a35 = (0.45 * m).toFixed(2);
+  const a60 = (0.10 * m).toFixed(2);
+  return `linear-gradient(to bottom, rgba(15,8,4,${a0}) 0%, rgba(15,8,4,${a35}) 35%, rgba(15,8,4,${a60}) 60%, rgba(15,8,4,0.00) 100%)`;
+}
+
+function applyTextOverlay(intensity) {
+  cardTextOverlay.style.background = buildTextGradient(intensity);
+  textOverlaySlider.value = intensity;
+  textOverlayVal.textContent = intensity + '%';
+}
+
 // ═══════════════════════════════════════════════════════
 // TABS
 // ═══════════════════════════════════════════════════════
@@ -1464,6 +1495,7 @@ function readCurrentFields() {
   s.facts     = Array.from(factsContainer.querySelectorAll('.fact')).map(el => el.textContent);
   s.ctaText   = fields.cta.textContent;
   s.overlayIntensity = parseInt(overlaySlider.value, 10);
+  s.textOverlayIntensity = parseInt(textOverlaySlider.value, 10);
   s.textFR    = textareaFR.value;
   s.textEN    = textareaEN.value;
   const filterRadio = document.querySelector('input[name="filter-type"]:checked');
