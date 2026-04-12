@@ -1,3 +1,7 @@
+<!-- wp:paragraph {"align":"right","style":{"color":{"text":"#8D6E63"},"spacing":{"padding":{"top":"8px","bottom":"0","right":"1.5rem"}},"typography":{"fontSize":"0.85rem"}}} -->
+<p class="has-text-align-right has-text-color" style="color:#8D6E63;padding-top:8px;padding-right:1.5rem;padding-bottom:0;font-size:0.85rem"><a href="https://ewendaviau.com/stages-accordion-workshop/" style="color:#8D6E63;">🇬🇧 English version</a></p>
+<!-- /wp:paragraph -->
+
 <!-- wp:cover {"url":"https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg","alt":"Stage de fabrication d'accordéon diatonique","dimRatio":60,"customOverlayColor":"#2C1810","minHeight":550,"minHeightUnit":"px"} -->
 <div class="wp-block-cover" style="min-height:550px"><img class="wp-block-cover__image-background" alt="Stage de fabrication d'accordéon diatonique" src="https://ewendaviau.com/wp-content/uploads/2026/02/Collage_20220426_192041-scaled.jpg" data-object-fit="cover"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-60 has-background-dim" style="background-color:#2C1810"></span><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"25px"},"spacing":{"padding":{"top":"8px","bottom":"8px","left":"24px","right":"24px"}},"typography":{"fontSize":"0.75rem","fontWeight":"800","letterSpacing":"3px","textTransform":"uppercase"}}} -->
 <p class="has-text-align-center has-text-color has-background" style="border-radius:25px;color:#3E2723;background-color:#D4A017;padding-top:8px;padding-right:24px;padding-bottom:8px;padding-left:24px;font-size:0.75rem;font-weight:800;letter-spacing:3px;text-transform:uppercase">✦ Expérience unique · Depuis 2021 ✦</p>
@@ -22,6 +26,10 @@
 
 <!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"30px","color":"rgba(255,255,255,0.6)","width":"1px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
 <div class="wp-block-button"><a class="wp-block-button__link has-text-color has-border-color wp-element-button" href="#catalogue" style="border-color:rgba(255,255,255,0.6);border-width:1px;border-radius:30px;color:#FAFAFA;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">📄 Brochure PDF</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button {"style":{"color":{"text":"#F5D061"},"border":{"radius":"30px","color":"rgba(245,208,97,0.5)","width":"1px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-border-color wp-element-button" href="https://ewendaviau.com/stages-accordion-workshop/" style="border-color:rgba(245,208,97,0.5);border-width:1px;border-radius:30px;color:#F5D061;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">🇬🇧 English version</a></div>
 <!-- /wp:button --></div>
 <!-- /wp:buttons -->
 
