@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications Facebook – Jours 1·2·3 du stage + inscription 2026</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@400;600;700;800&display=swap');
+
+    :root {
+      --wood-dark: #2c1810;
+      --wood-medium: #5d4037;
+      --wood-light: #8d6e63;
+      --cream: #fff8e1;
+      --gold: #d4a017;
+      --gold-light: #f5d061;
+      --paper: #fcfbf7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: #151515;
+      color: #f3f0ec;
+      padding: 32px;
+    }
+
+    h1, h2, h3 { margin: 0; }
+
+    .page-header {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+    }
+
+    .page-header p,
+    .export-note {
+      color: #d7cec8;
+      line-height: 1.6;
+      max-width: 900px;
+    }
+
+    .grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      gap: 34px;
+    }
+
+    .entry {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 24px;
+      padding: 26px;
+      display: grid;
+      grid-template-columns: minmax(320px, 1080px) minmax(280px, 1fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .post-card {
+      width: 1080px;
+      height: 1350px;
+      max-width: 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      background-color: var(--wood-dark);
+      background-size: cover;
+      background-position: var(--card-position, center);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+      isolation: isolate;
+    }
+
+    .post-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(245, 208, 97, var(--gold-halo, 0.10)) 0%, rgba(245, 208, 97, 0) 36%),
+        linear-gradient(180deg,
+          rgba(20, 10, 6, var(--overlay-top, 0.08)) 0%,
+          rgba(20, 10, 6, var(--overlay-mid, 0.30)) 42%,
+          rgba(20, 10, 6, var(--overlay-bottom, 0.78)) 100%
+        ),
+        linear-gradient(120deg,
+          rgba(44, 24, 16, var(--overlay-warm, 0.34)),
+          rgba(62, 39, 35, var(--overlay-cool, 0.08))
+        );
+    }
+
+    .post-card::after {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border: 1px solid rgba(255, 248, 225, var(--frame-opacity, 0.22));
+      border-radius: 18px;
+      box-shadow: inset 0 0 0 1px rgba(212, 160, 23, var(--frame-glow, 0.04));
+    }
+
+    .post-card--jour1 {
+      background-image: url('stage%20avril%202026/jour1/WhatsApp%20Image%202026-04-09%20at%2021.18.17%20%281%29.jpeg');
+      --card-position: center 44%;
+      --overlay-top: 0.02;
+      --overlay-mid: 0.12;
+      --overlay-bottom: 0.48;
+      --overlay-warm: 0.14;
+      --overlay-cool: 0.02;
+      --gold-halo: 0.12;
+      --frame-opacity: 0.24;
+      --frame-glow: 0.06;
+      --fact-bg: 0.14;
+    }
+
+    .post-card--jour2 {
+      background-image: url('stage%20avril%202026/jour2/WhatsApp%20Image%202026-04-09%20at%2021.46.50.jpeg');
+      --card-position: center 42%;
+      --overlay-top: 0.03;
+      --overlay-mid: 0.13;
+      --overlay-bottom: 0.50;
+      --overlay-warm: 0.12;
+      --overlay-cool: 0.03;
+      --gold-halo: 0.09;
+      --frame-opacity: 0.20;
+      --fact-bg: 0.14;
+    }
+
+    .post-card--jour3 {
+      background-image: url('stage%20avril%202026/jour3/WhatsApp%20Image%202026-04-10%20at%2017.36.52.jpeg');
+      --card-position: center 52%;
+      --overlay-top: 0.05;
+      --overlay-mid: 0.18;
+      --overlay-bottom: 0.55;
+      --overlay-warm: 0.18;
+      --overlay-cool: 0.06;
+      --gold-halo: 0.05;
+      --frame-opacity: 0.20;
+      --fact-bg: 0.14;
+      --fact-border: 0.22;
+    }
+
+    .post-card--cta {
+      background-image: url('stage%20avril%202026/WhatsApp%20Image%202026-04-10%20at%2017.35.13.jpeg');
+      --card-position: center 36%;
+      --overlay-top: 0.02;
+      --overlay-mid: 0.11;
+      --overlay-bottom: 0.46;
+      --overlay-warm: 0.12;
+      --overlay-cool: 0.02;
+      --gold-halo: 0.11;
+      --frame-opacity: 0.24;
+      --frame-glow: 0.06;
+      --fact-bg: 0.14;
+    }
+
+    .card-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 82px 86px 78px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-self: flex-start;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-size: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 88px;
+      line-height: 1.04;
+      color: #fffef9;
+      max-width: 780px;
+      text-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
+    }
+
+    .card-subtitle {
+      margin-top: 24px;
+      max-width: 760px;
+      font-size: 31px;
+      line-height: 1.45;
+      color: rgba(255, 248, 225, 0.95);
+    }
+
+    .facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .fact {
+      background: rgba(255, 248, 225, var(--fact-bg, 0.11));
+      color: #fff8e1;
+      border: 1px solid rgba(255, 248, 225, var(--fact-border, 0.18));
+      padding: 13px 20px;
+      border-radius: 999px;
+      font-size: 21px;
+      font-weight: 700;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      color: #fff8e1;
+    }
+
+    .cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      padding: 16px 30px;
+      border-radius: 999px;
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: 0 14px 28px rgba(212, 160, 23, 0.22);
+    }
+
+    .footer-text {
+      font-size: 24px;
+      line-height: 1.5;
+      color: rgba(255, 248, 225, 0.9);
+      max-width: 460px;
+      text-align: right;
+    }
+
+    /* ── Colonne texte Facebook ── */
+    .copy-box {
+      background: var(--paper);
+      color: var(--wood-dark);
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      position: sticky;
+      top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .copy-box h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.55rem;
+      margin-bottom: 6px;
+    }
+
+    .copy-box .angle {
+      font-size: 0.93rem;
+      color: var(--wood-light);
+      margin-bottom: 18px;
+    }
+
+    .copy-box .angle strong { color: var(--wood-medium); }
+
+    /* Photo à joindre */
+    .photo-hint {
+      display: inline-block;
+      background: #f3ede3;
+      border: 1px dashed var(--wood-light);
+      color: var(--wood-medium);
+      font-size: 0.88rem;
+      border-radius: 10px;
+      padding: 9px 14px;
+      margin-bottom: 18px;
+    }
+
+    .photo-hint strong { color: var(--wood-dark); }
+
+    /* Le texte FB lui-même */
+    .fb-text {
+      background: #fff;
+      border: 2px solid #e8dfd4;
+      border-radius: 14px;
+      padding: 20px 20px 14px;
+      position: relative;
+    }
+
+    .fb-text-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #1877f2;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .fb-text-label::before {
+      content: 'f';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #1877f2;
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      font-family: Georgia, serif;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--gold);
+      color: var(--wood-dark);
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .copy-btn:hover { background: var(--gold-light); }
+    .copy-btn.copied { background: #4caf50; color: #fff; }
+
+    .fb-text pre {
+      white-space: pre-wrap;
+      margin: 0;
+      font-family: inherit;
+      font-size: 0.97rem;
+      line-height: 1.75;
+      color: var(--wood-dark);
+    }
+
+    @media (max-width: 1320px) {
+      .entry {
+        grid-template-columns: 1fr;
+      }
+      .copy-box {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Publications Facebook – Jours 1 · 2 · 3 + inscription 2026</h1>
+    <p>4 publications prêtes à poster. Chaque texte est mis en page pour être copié-collé directement dans Facebook — émojis, sauts de ligne et hashtags inclus. La photo à joindre est indiquée pour chaque post.</p>
+    <p class="export-note">Lien d'inscription : <strong>https://ewendaviau.com/stages/</strong></p>
+  </header>
+
+  <main class="grid">
+
+    <!-- ═══════════════ JOUR 1 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card post-card--jour1">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 1 · 9 avril 2026</div>
+            <h2 class="card-title">Du bois, des mains, et quelque chose qui commence.</h2>
+            <p class="card-subtitle">Dix jours pour construire un accordéon diatonique de A à Z. Le premier geste est toujours le plus hésitant — et le plus beau.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Saint-Nazaire</span>
+              <span class="fact">10 jours</span>
+              <span class="fact">6 stagiaires</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Session 2026 →</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Jour 1</h3>
+        <p class="angle"><strong>Angle :</strong> lancement — six personnes, premiers gestes sur le bois, le frisson du départ.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>export-facebook/jour1/carousel-01.jpg</strong> (portrait) + carousel-02 (atelier)</div>
+        <div class="fb-text" id="fb1">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb1', this)">Copier</button>
+          <pre id="fb1-pre">Jour 1. 🪵
+
+Six personnes qui n'avaient jamais fait de lutherie hier. Six personnes qui taillent du bois aujourd'hui.
+
+On choisit les planches, on trace les premières lignes. Il y a dans ces premiers gestes quelque chose qu'on ne peut pas vraiment décrire — juste ressentir.
+
+Je partagerai quelques instants du stage au fil des dix jours.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #artisanat #diato #saintNazaire</pre>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ═══════════════ JOUR 2 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card post-card--jour2">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 2 · en plein travail</div>
+            <h2 class="card-title">Les pièces prennent forme.</h2>
+            <p class="card-subtitle">En deux jours, ce qui était un bloc de bois commence à ressembler à quelque chose. La précision vient vite quand on a une raison de l'apprendre.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Rigueur</span>
+              <span class="fact">Précision</span>
+              <span class="fact">Progression</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Session 2026 →</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Jour 2</h3>
+        <p class="angle"><strong>Angle :</strong> les mains apprennent avant la tête — fierté du geste, le moment où on réalise qu'on est capable.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>export-facebook/jour2/carousel-01.jpg</strong> (ou carousel-02, toutes les 4 sont bonnes)</div>
+        <div class="fb-text" id="fb2">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb2', this)">Copier</button>
+          <pre id="fb2-pre">Jour 2. ✂️
+
+Les premières pièces sont découpées. Les mains commencent à comprendre — pas la tête, les mains.
+
+Quelqu'un a levé les yeux sur ce qu'il venait de tailler et a dit : "C'est moi qui ai fait ça ?"
+
+C'est exactement pour ça qu'on fait ça.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #diato #artisanat #saintNazaire</pre>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ═══════════════ JOUR 3 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card post-card--jour3">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 3 · dans le vif</div>
+            <h2 class="card-title">Le silence qui dit tout.</h2>
+            <p class="card-subtitle">Quand l'atelier se tait, ce n'est pas qu'il ne se passe rien. C'est qu'il se passe tout.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">🤫 silence habité</span>
+              <span class="fact">🎶 bois en musique</span>
+              <span class="fact">�� émotions vraies</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Session 2026 →</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Jour 3</h3>
+        <p class="angle"><strong>Angle :</strong> concentration totale dans l'atelier — le silence qui n'est pas le vide, la confidence qui vient.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>export-facebook/jour3/carousel-01.jpg</strong> (portrait) ou carousel-03 (mains au travail)</div>
+        <div class="fb-text" id="fb3">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb3', this)">Copier</button>
+          <pre id="fb3-pre">Jour 3. 🔇
+
+Il y a un silence dans l'atelier aujourd'hui. Pas le vide — le plein. Celui de gens qui ne regardent plus leurs mains en se demandant s'ils font bien. Ils font, c'est tout.
+
+"J'aurais jamais cru que j'arriverais à faire ça."
+Entendu plusieurs fois. On a juste souri.
+
+👉 ewendaviau.com/stages
+
+#lutherie #accordeondiatonique #diato #artisanat #saintNazaire</pre>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ═══════════════ CTA 2026 ═══════════════ -->
+    <section class="entry">
+      <div class="post-card post-card--cta">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Stage 2026 · inscriptions ouvertes</div>
+            <h2 class="card-title">Fabriquer son propre accordéon.</h2>
+            <p class="card-subtitle">10 jours à Saint-Nazaire. Zéro prérequis. Vous repartez avec un instrument que vous avez construit de vos mains.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Saint-Nazaire</span>
+              <span class="fact">10 jours</span>
+              <span class="fact">6 places max</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">En savoir plus →</div>
+              <div class="footer-text">ewendaviau.com/stages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="copy-box">
+        <h3>Publication Appel à action — Stage 2026</h3>
+        <p class="angle"><strong>Angle :</strong> invitation directe et chaude — pas de vente, juste une porte ouverte pour ceux que ça touche.</p>
+        <div class="photo-hint">📎 Photo à joindre : <strong>export-facebook/jour3/carousel-04.jpg</strong> (atelier) ou carousel-05 (groupe)</div>
+        <div class="fb-text" id="fb4">
+          <div class="fb-text-label">Texte Facebook – copier-coller</div>
+          <button class="copy-btn" onclick="copyText('fb4', this)">Copier</button>
+          <pre id="fb4-pre">Le stage se termine dans quelques jours.
+
+Si ces photos vous ont donné envie de faire pareil — il y a de la place pour vous.
+
+📍 Saint-Nazaire
+⏱ 10 jours
+🔨 Aucun prérequis, aucun outil nécessaire
+🪵 Vous repartez avec votre propre accordéon diatonique, construit de vos mains
+
+Toutes les informations et le formulaire d'inscription :
+👉 ewendaviau.com/stages
+
+Des questions ? Écrivez-moi directement, je réponds à tout.
+
+#accordeondiatonique #lutherie #stagemusique #diato #saintNazaire #inscription2026</pre>
+        </div>
+      </aside>
+    </section>
+
+  </main>
+
+  <script>
+    function copyText(id, btn) {
+      var pre = document.getElementById(id + '-pre');
+      var text = pre.innerText;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '✓ Copié !';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copier';
+          btn.classList.remove('copied');
+        }, 2200);
+      });
+    }
+  </script>
+</body>
+</html>

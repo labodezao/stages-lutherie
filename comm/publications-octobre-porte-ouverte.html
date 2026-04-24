@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pack réseaux sociaux – Stage d’octobre & porte ouverte</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@400;600;700;800&display=swap');
+
+    :root {
+      --wood-dark: #2c1810;
+      --wood-medium: #5d4037;
+      --wood-light: #8d6e63;
+      --cream: #fff8e1;
+      --gold: #d4a017;
+      --gold-light: #f5d061;
+      --paper: #fcfbf7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: #151515;
+      color: #f3f0ec;
+      padding: 32px;
+    }
+
+    h1, h2, h3 { margin: 0; }
+
+    .page-header {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+    }
+
+    .page-header p,
+    .export-note {
+      color: #d7cec8;
+      line-height: 1.6;
+      max-width: 900px;
+    }
+
+    .grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      gap: 34px;
+    }
+
+    .entry {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 24px;
+      padding: 26px;
+      display: grid;
+      grid-template-columns: minmax(320px, 1080px) minmax(280px, 1fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .post-card {
+      width: 1080px;
+      height: 1350px;
+      max-width: 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      background-color: var(--wood-dark);
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .post-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(20, 10, 6, 0.12) 0%, rgba(20, 10, 6, 0.5) 42%, rgba(20, 10, 6, 0.92) 100%),
+        linear-gradient(120deg, rgba(44, 24, 16, 0.72), rgba(62, 39, 35, 0.18));
+    }
+
+    .post-card::after {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border: 1px solid rgba(255, 248, 225, 0.22);
+      border-radius: 18px;
+    }
+
+    .card-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 82px 86px 78px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-self: flex-start;
+      background: var(--gold);
+      color: var(--wood-dark);
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-size: 22px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 88px;
+      line-height: 1.04;
+      color: #fffef9;
+      max-width: 780px;
+      text-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
+    }
+
+    .card-subtitle {
+      margin-top: 24px;
+      max-width: 760px;
+      font-size: 31px;
+      line-height: 1.45;
+      color: rgba(255, 248, 225, 0.95);
+    }
+
+    .facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .fact {
+      background: rgba(255, 248, 225, 0.11);
+      color: #fff8e1;
+      border: 1px solid rgba(255, 248, 225, 0.18);
+      padding: 13px 20px;
+      border-radius: 999px;
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      color: #fff8e1;
+    }
+
+    .cta {
+      background: var(--gold);
+      color: var(--wood-dark);
+      padding: 16px 30px;
+      border-radius: 999px;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .footer-text {
+      font-size: 24px;
+      line-height: 1.5;
+      color: rgba(255, 248, 225, 0.9);
+      max-width: 460px;
+      text-align: right;
+    }
+
+    .copy-box {
+      background: var(--paper);
+      color: var(--wood-dark);
+      border-radius: 20px;
+      padding: 24px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .copy-box h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+
+    .copy-box p {
+      margin: 0 0 12px;
+      line-height: 1.6;
+      color: var(--wood-medium);
+    }
+
+    .copy-box pre {
+      white-space: pre-wrap;
+      margin: 0;
+      font: inherit;
+      line-height: 1.7;
+      color: var(--wood-dark);
+    }
+
+    .copy-box strong {
+      color: var(--wood-dark);
+    }
+
+    .mini-note {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      color: var(--wood-light);
+    }
+
+    @media (max-width: 1320px) {
+      .entry {
+        grid-template-columns: 1fr;
+      }
+
+      .copy-box {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Pack réseaux sociaux – remplir la session d’octobre</h1>
+    <p>7 publications prêtes à poster, basées sur le stage en cours pour créer de la preuve sociale et pousser la session d’octobre. À la fin, un visuel supplémentaire pour annoncer une porte ouverte / mini-conférence / repas partagé le vendredi 18.</p>
+    <p class="export-note">Format recommandé : ouvrir ce fichier dans un navigateur, puis exporter chaque bloc en JPEG. Les aperçus JPEG correspondants sont aussi générés à côté de ce fichier.</p>
+  </header>
+
+  <main class="grid">
+    <section class="entry">
+      <div id="jour-1" class="post-card" style="background-image:url('./Jour 1 (21).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 1 · preuve sociale</div>
+            <h2 class="card-title">Le stage a commencé… la prochaine session, c’est en octobre</h2>
+            <p class="card-subtitle">Les établis sont lancés, les outils sortis, les premiers gestes sont là. Si vous voulez vivre la prochaine aventure, c’est maintenant qu’il faut réserver.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Saint-Nazaire</span>
+              <span class="fact">10 jours</span>
+              <span class="fact">6 places max</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Réserver octobre</div>
+              <div class="footer-text">stages.ewendaviau.com<br>contact@ewendaviau.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication 1</h3>
+        <p><strong>Angle :</strong> démarrage du stage actuel = urgence douce pour octobre.</p>
+        <pre>Le stage a commencé à l’atelier 🔨
+
+L’ambiance est lancée, les établis sont occupés… et ça me rappelle qu’il ne faut jamais attendre trop longtemps pour réserver la prochaine session.
+
+🍂 La prochaine session de fabrication d’accordéon diatonique aura lieu en octobre.
+✅ 10 jours d’atelier
+✅ aucun prérequis
+✅ petit groupe
+✅ accompagnement pas à pas
+
+Si ça vous appelle, c’est le bon moment pour me contacter.
+
+→ stages.ewendaviau.com
+→ contact@ewendaviau.com
+
+#accordeondiatonique #diato #lutherie #stagemusique #balfolk #artisanat</pre>
+      </aside>
+    </section>
+
+    <section class="entry">
+      <div id="jour-2" class="post-card" style="background-image:url('./Jour 2 (51).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 2 · transformation</div>
+            <h2 class="card-title">En 10 jours, on passe du bois à un vrai instrument</h2>
+            <p class="card-subtitle">Pas un stage “démonstration”. Vous fabriquez, vous assemblez, vous comprenez, et vous repartez avec votre accordéon.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Vous fabriquez</span>
+              <span class="fact">Vous jouez</span>
+              <span class="fact">Vous repartez avec</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Session d’octobre</div>
+              <div class="footer-text">Fabrication complète<br>guidée pas à pas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication 2</h3>
+        <p><strong>Angle :</strong> montrer le résultat concret, pas seulement l’ambiance.</p>
+        <pre>Ce que j’aime dans ce stage, c’est qu’on ne “visite” pas la lutherie : on la vit.
+
+En 10 jours, les stagiaires fabriquent leur accordéon diatonique étape après étape.
+
+On part du bois, on traverse les réglages, l’assemblage, les détails, et à la fin il y a un instrument bien réel entre les mains.
+
+🍂 La prochaine session aura lieu en octobre.
+Les places sont limitées.
+
+→ stages.ewendaviau.com
+→ contact@ewendaviau.com</pre>
+      </aside>
+    </section>
+
+    <section class="entry">
+      <div id="jour-3" class="post-card" style="background-image:url('./Jour 4 (8).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 3 · rassurer</div>
+            <h2 class="card-title">Pas besoin d’être bricoleur pour venir</h2>
+            <p class="card-subtitle">Le stage est pensé pour guider pas à pas. Débutant·e, musicien·ne curieux·se ou artisan en reconversion : tout le monde avance à son rythme.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Aucun prérequis</span>
+              <span class="fact">Petit groupe</span>
+              <span class="fact">Cadre rassurant</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Osez octobre</div>
+              <div class="footer-text">Vous n’avez pas besoin de déjà savoir faire.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication 3</h3>
+        <p><strong>Angle :</strong> lever l’objection principale “je ne suis pas assez manuel”.</p>
+        <pre>Petit rappel important : il n’y a pas besoin d’être déjà bricoleur ou luthier pour participer.
+
+Le stage est justement là pour accompagner, transmettre et rendre ce savoir-faire accessible.
+
+Si vous êtes curieux, amoureux du son, du bois, de l’accordéon diatonique, ça suffit pour commencer.
+
+🍂 La prochaine session est en octobre.
+Si vous hésitez, écrivez-moi : je pourrai vous dire si ce stage est fait pour vous.
+
+contact@ewendaviau.com</pre>
+      </aside>
+    </section>
+
+    <section class="entry">
+      <div id="jour-4" class="post-card" style="background-image:url('./Jour 5 (35).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 4 · rareté</div>
+            <h2 class="card-title">6 places max, pour garder du vrai temps d’accompagnement</h2>
+            <p class="card-subtitle">Pas de production à la chaîne. Le format reste volontairement intime pour pouvoir suivre chaque étape, chaque question et chaque instrument.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">6 places</span>
+              <span class="fact">Temps individuel</span>
+              <span class="fact">Qualité d’atelier</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Places limitées</div>
+              <div class="footer-text">Quand c’est complet, il faut attendre la session suivante.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication 4</h3>
+        <p><strong>Angle :</strong> rareté justifiée par la qualité, pas par la pression.</p>
+        <pre>Pourquoi il y a peu de places ?
+
+Parce que je tiens à garder un vrai accompagnement, du temps pour chaque personne et un cadre d’atelier agréable.
+
+Le stage fonctionne en petit groupe — 6 places maximum — et c’est aussi ce qui fait sa qualité.
+
+🍂 Si vous visez la session d’octobre, ne tardez pas trop.
+
+→ stages.ewendaviau.com</pre>
+      </aside>
+    </section>
+
+    <section class="entry">
+      <div id="jour-5" class="post-card" style="background-image:url('./cherrywood.png')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 5 · désir</div>
+            <h2 class="card-title">Merisier, noyer, érable : votre accordéon commence aussi par un choix sensible</h2>
+            <p class="card-subtitle">Chaque essence a sa présence, sa couleur, son toucher. Le stage d’octobre, c’est aussi l’occasion de penser l’instrument qui vous ressemble.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Merisier</span>
+              <span class="fact">Noyer</span>
+              <span class="fact">Érable</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Choisir son bois</div>
+              <div class="footer-text">Un instrument à fabriquer… et à imaginer.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication 5</h3>
+        <p><strong>Angle :</strong> nourrir l’imaginaire autour du futur instrument.</p>
+        <pre>Dans le stage, il y a la technique… mais il y a aussi le plaisir du choix.
+
+Merisier, noyer, érable : chaque bois raconte une présence différente.
+
+Fabriquer son accordéon, c’est aussi imaginer quel compagnon musical on a envie de faire naître.
+
+🍂 Session d’octobre ouverte.
+Pour recevoir les infos ou réserver : contact@ewendaviau.com</pre>
+      </aside>
+    </section>
+
+    <section class="entry">
+      <div id="jour-6" class="post-card" style="background-image:url('./Jour 8 (43).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 6 · ambiance</div>
+            <h2 class="card-title">Un stage intense, oui. Mais aussi une aventure humaine</h2>
+            <p class="card-subtitle">On apprend, on fabrique, on doute parfois, on rit beaucoup, et à la fin il y a un instrument… mais aussi une vraie histoire partagée.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Transmission</span>
+              <span class="fact">Concentration</span>
+              <span class="fact">Convivialité</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Vivre l’atelier</div>
+              <div class="footer-text">Le stage d’octobre, c’est aussi une ambiance rare.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication 6</h3>
+        <p><strong>Angle :</strong> vendre l’expérience humaine, pas seulement l’objet final.</p>
+        <pre>Au-delà de l’accordéon, ce stage crée une atmosphère très particulière.
+
+On travaille sérieusement, on se concentre, on apprend beaucoup… et il y a aussi les échanges, les pauses, l’énergie du groupe.
+
+Si vous cherchez une expérience forte autant qu’un apprentissage concret, la session d’octobre pourrait bien vous parler.
+
+→ stages.ewendaviau.com</pre>
+      </aside>
+    </section>
+
+    <section class="entry">
+      <div id="jour-7" class="post-card" style="background-image:url('./Jour 10 (50).jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Jour 7 · appel à l’action</div>
+            <h2 class="card-title">Octobre se remplit maintenant, pas la veille</h2>
+            <p class="card-subtitle">Si vous voulez votre place, le bon réflexe est simple : écrire maintenant, poser vos questions, et sécuriser votre session avant qu’elle ne se remplisse.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Questions bienvenues</span>
+              <span class="fact">Réservation ouverte</span>
+              <span class="fact">Réponse directe</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Écrire maintenant</div>
+              <div class="footer-text">contact@ewendaviau.com<br>stages.ewendaviau.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication 7</h3>
+        <p><strong>Angle :</strong> clôture de la série avec CTA direct et simple.</p>
+        <pre>Je termine cette série avec un message tout simple :
+
+si vous sentez que le stage d’octobre vous appelle, le mieux est de m’écrire maintenant.
+
+Vous pouvez poser vos questions, parler du modèle qui vous intéresse, voir si le stage vous correspond — sans pression, simplement pour avancer.
+
+📩 contact@ewendaviau.com
+🌐 stages.ewendaviau.com</pre>
+      </aside>
+    </section>
+
+    <section class="entry">
+      <div id="porte-ouverte" class="post-card" style="background-image:url('./FB jour 9.jpg')">
+        <div class="card-content">
+          <div>
+            <div class="eyebrow">Vendredi 18 · invitation</div>
+            <h2 class="card-title">Porte ouverte de fin de stage</h2>
+            <p class="card-subtitle">Mini-conférence, découverte de l’atelier, instruments en fin de fabrication et repas partagé pour célébrer la fin du stage dans une ambiance simple et chaleureuse.</p>
+          </div>
+          <div>
+            <div class="facts">
+              <span class="fact">Porte ouverte</span>
+              <span class="fact">Mini-conférence</span>
+              <span class="fact">Repas partagé</span>
+            </div>
+            <div class="card-footer">
+              <div class="cta">Vendredi 18</div>
+              <div class="footer-text">Atelier d’Ewen Daviau<br>Saint-Nazaire</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="copy-box">
+        <h3>Publication bonus – porte ouverte</h3>
+        <p><strong>Usage :</strong> visuel d’annonce ou image de couverture pour le post Facebook de fin de stage.</p>
+        <pre>Vendredi 18, j’ouvre l’atelier pour une fin de stage festive 🎉
+
+Au programme :
+• porte ouverte
+• mini-conférence autour de la fabrication de l’accordéon diatonique
+• temps d’échange avec les stagiaires
+• repas partagé dans la foulée
+
+Si vous êtes curieux de voir le travail en cours, de découvrir l’atelier ou simplement de passer un moment convivial, vous êtes les bienvenus.
+
+📍 Saint-Nazaire
+📩 contact@ewendaviau.com</pre>
+        <p class="mini-note">Le texte long Facebook est fourni dans le fichier <code>article-facebook-porte-ouverte-vendredi-18.md</code>.</p>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>

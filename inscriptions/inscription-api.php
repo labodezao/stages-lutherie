@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '2.4' );
+define( 'STLUTH_API_VERSION', '2.5' );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -505,7 +505,6 @@ function stluth_default_payment_confirmed_html() {
     <td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
 
-        <!-- EN-TÊTE -->
         <tr>
           <td style="background-color:#3E2723;padding:32px 40px;text-align:center;">
             <p style="margin:0 0 4px 0;font-family:Georgia,serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D4A017;">✦ Stage de lutherie · 2026 ✦</p>
@@ -514,28 +513,25 @@ function stluth_default_payment_confirmed_html() {
           </td>
         </tr>
 
-        <!-- BANDEAU TITRE -->
         <tr>
           <td style="background-color:#2e7d32;padding:12px 40px;text-align:center;">
             <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-weight:bold;">✅ Inscription confirmée</p>
           </td>
         </tr>
 
-        <!-- SALUTATION -->
         <tr>
           <td style="padding:36px 40px 20px 40px;">
             <p style="margin:0 0 16px 0;font-size:16px;color:#2c2c2c;line-height:1.6;">Bonjour <strong>{nom}</strong>,</p>
             <p style="margin:0 0 16px 0;font-size:15px;color:#2c2c2c;line-height:1.7;">
-              Votre paiement a bien été reçu — merci&nbsp;!
-              Votre inscription au stage de fabrication d\'accordéon diatonique est désormais <strong>confirmée et définitive</strong>.
+              Votre paiement a bien été reçu — merci&nbsp;! Votre inscription au stage est maintenant
+              <strong>confirmée</strong>. Voici un récapitulatif pratique pour préparer sereinement votre venue à l\'atelier.
             </p>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                   style="background-color:#e8f5e9;border-left:4px solid #2e7d32;border-radius:0 4px 4px 0;margin-bottom:0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#e8f5e9;border-left:4px solid #2e7d32;border-radius:0 4px 4px 0;margin-bottom:0;">
               <tr>
                 <td style="padding:14px 18px;">
                   <p style="margin:0;font-size:14px;color:#1b5e20;line-height:1.7;">
-                    🎉 <strong>Votre place est réservée&nbsp;!</strong><br>
-                    Nous vous attendons avec impatience à l\'atelier pour construire votre accordéon.
+                    🎉 <strong>Votre place est réservée.</strong><br>
+                    Le stage se déroule à l\'atelier situé au <strong>9 rue Fernand de Magellan, 44600 Saint-Nazaire</strong>.
                   </p>
                 </td>
               </tr>
@@ -543,11 +539,9 @@ function stluth_default_payment_confirmed_html() {
           </td>
         </tr>
 
-        <!-- RÉCAPITULATIF -->
         <tr>
           <td style="padding:0 40px 28px 40px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                   style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
               <tr>
                 <td style="background-color:#3E2723;padding:10px 20px;">
                   <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">Récapitulatif</p>
@@ -569,6 +563,10 @@ function stluth_default_payment_confirmed_html() {
                       <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{email}</td>
                     </tr>
                     <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Téléphone</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{telephone}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
                       <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Statut</td>
                       <td style="font-size:14px;color:#2e7d32;font-weight:bold;padding-top:10px;vertical-align:top;">✅ Paiement reçu · Inscription confirmée</td>
                     </tr>
@@ -579,26 +577,24 @@ function stluth_default_payment_confirmed_html() {
           </td>
         </tr>
 
-        <!-- INFORMATIONS PRATIQUES -->
         <tr>
           <td style="padding:0 40px 28px 40px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                   style="background-color:#f0ece6;border-radius:4px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0ece6;border-radius:4px;overflow:hidden;">
               <tr>
-                <td style="background-color:#3E2723;padding:10px 20px;border-radius:4px 4px 0 0;">
-                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🎵 Votre accordéon</p>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">📍 Atelier & horaires</p>
                 </td>
               </tr>
               <tr>
                 <td style="padding:16px 20px;">
-                  <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-                    Pendant ces 10 jours, vous fabriquerez votre accordéon diatonique de A à Z&nbsp;:
-                    découpe et assemblage de la caisse, montage du sommier et du mécanisme,
-                    pose et réglage des anches, fabrication du soufflet, et finitions.
-                    Vous repartez avec <strong>votre propre instrument</strong>.
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    <strong>Adresse&nbsp;:</strong> 9 rue Fernand de Magellan, 44600 Saint-Nazaire<br>
+                    <strong>Horaires&nbsp;:</strong> 9h30 – 12h30 · 14h00 – 18h30<br>
+                    <strong>Infos stage&nbsp;:</strong> <a href="http://stages.ewendaviau.com/" style="color:#D4A017;text-decoration:none;">stages.ewendaviau.com</a>
                   </p>
                   <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-                    Aucun prérequis en menuiserie n\'est nécessaire — juste de la curiosité et de la motivation&nbsp;!
+                    L\'atelier est dans un quartier calme de Saint-Nazaire, avec l\'océan à environ 20 minutes à pied,
+                    le centre-ville accessible en bus ou à pied, et des commerces utiles tout proches.
                   </p>
                 </td>
               </tr>
@@ -606,17 +602,107 @@ function stluth_default_payment_confirmed_html() {
           </td>
         </tr>
 
-        <!-- TEXTE INFO -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#fdf8ee;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#fff4d8;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#7a5a12;font-family:Georgia,serif;">🧰 À apporter</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.8;">
+                    • <strong>EPI fournis sur place</strong>&nbsp;: lunettes de sécurité, gants, protections auditives, masques anti-poussière<br>
+                    • <strong>À prévoir</strong>&nbsp;: chaussons, vêtements confortables / de travail, vêtements de pluie, vêtements pour beau temps et temps changeant<br>
+                    • <strong>En plus</strong>&nbsp;: maillot de bain pour la mer, gourde, éventuels médicaments personnels
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🍽️ Repas & commerces</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Les repas ne sont pas inclus. <strong>Le midi seulement</strong>, il sera possible de cuisiner ou réchauffer un repas ensemble selon l\'organisation du groupe.
+                    Le soir, chacun s\'organise librement.
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Boulangeries, supérettes et restaurants se trouvent à <strong>5 à 10 minutes à pied</strong> de l\'atelier.
+                    Vous pouvez aussi apporter votre pique-nique.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0ece6;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🏠 Hébergement conseillé</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    <strong>Airbnb</strong> est souvent la solution la plus simple&nbsp;: chambres chez l\'habitant à partir d\'environ <strong>17 à 40&nbsp;€/nuit</strong>,
+                    studios ou petits appartements autour de <strong>50 à 80&nbsp;€/nuit</strong>.
+                  </p>
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Quartiers pratiques&nbsp;: <strong>centre-ville</strong>, <strong>proche plage</strong> ou <strong>quartier de l\'atelier</strong>.
+                    Les hôtels budget sont aussi une bonne option si vous préférez quelque chose de plus simple.
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Si vous venez à plusieurs, partager un appartement peut être une très bonne solution.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#fdf8ee;border-left:4px solid #D4A017;border-radius:0 4px 4px 0;">
+              <tr>
+                <td style="padding:18px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#7a6a55;font-family:Georgia,serif;">🌊 Sorties & agenda de Saint-Nazaire</p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.8;">
+                    Selon les dates et l\'énergie du groupe, il peut y avoir des sorties, concerts ou bals trad le soir.
+                    Vous pouvez surveiller l\'agenda culturel de Saint-Nazaire, l\'office de tourisme et les agendas trad locaux.
+                    La mer reste aussi une très belle option pour une pause ou une baignade si la météo s\'y prête.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
         <tr>
           <td style="padding:0 40px 32px 40px;">
             <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-              N\'hésitez pas à me contacter pour toute question pratique concernant le stage&nbsp;:
-              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a>
+              Le PDF récapitulatif de votre inscription reste joint à cet email pour retrouver facilement toutes vos informations.
+            </p>
+            <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+              Si vous avez la moindre question pratique avant le stage, écrivez-moi à
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a>.
             </p>
           </td>
         </tr>
 
-        <!-- SIGNATURE -->
         <tr>
           <td style="padding:0 40px 36px 40px;border-top:1px solid #e0d4c4;">
             <p style="margin:24px 0 4px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">À très bientôt à l\'atelier&nbsp;!</p>
@@ -629,7 +715,6 @@ function stluth_default_payment_confirmed_html() {
           </td>
         </tr>
 
-        <!-- PIED DE PAGE -->
         <tr>
           <td style="background-color:#f0e8dc;padding:16px 40px;text-align:center;border-top:1px solid #e0d4c4;">
             <p style="margin:0;font-size:11px;color:#a09080;line-height:1.6;">
@@ -666,7 +751,6 @@ function stluth_default_payment_confirmed_html_en() {
     <td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
 
-        <!-- HEADER -->
         <tr>
           <td style="background-color:#3E2723;padding:32px 40px;text-align:center;">
             <p style="margin:0 0 4px 0;font-family:Georgia,serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D4A017;">✦ Lutherie workshop · 2026 ✦</p>
@@ -675,28 +759,25 @@ function stluth_default_payment_confirmed_html_en() {
           </td>
         </tr>
 
-        <!-- TITLE BANNER -->
         <tr>
           <td style="background-color:#2e7d32;padding:12px 40px;text-align:center;">
             <p style="margin:0;font-family:Georgia,serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-weight:bold;">✅ Registration confirmed</p>
           </td>
         </tr>
 
-        <!-- GREETING -->
         <tr>
           <td style="padding:36px 40px 20px 40px;">
             <p style="margin:0 0 16px 0;font-size:16px;color:#2c2c2c;line-height:1.6;">Hello <strong>{nom}</strong>,</p>
             <p style="margin:0 0 16px 0;font-size:15px;color:#2c2c2c;line-height:1.7;">
-              Your payment has been received — thank you&nbsp;!
-              Your registration for the diatonic accordion building workshop is now <strong>confirmed and definitive</strong>.
+              Your payment has been received — thank you. Your registration is now <strong>fully confirmed</strong>.
+              Here is a practical summary to help you prepare for your stay in Saint-Nazaire.
             </p>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                   style="background-color:#e8f5e9;border-left:4px solid #2e7d32;border-radius:0 4px 4px 0;margin-bottom:0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#e8f5e9;border-left:4px solid #2e7d32;border-radius:0 4px 4px 0;margin-bottom:0;">
               <tr>
                 <td style="padding:14px 18px;">
                   <p style="margin:0;font-size:14px;color:#1b5e20;line-height:1.7;">
-                    🎉 <strong>Your place is reserved&nbsp;!</strong><br>
-                    We are looking forward to welcoming you at the workshop to build your accordion.
+                    🎉 <strong>Your place is reserved.</strong><br>
+                    The workshop takes place at <strong>9 rue Fernand de Magellan, 44600 Saint-Nazaire, France</strong>.
                   </p>
                 </td>
               </tr>
@@ -704,11 +785,9 @@ function stluth_default_payment_confirmed_html_en() {
           </td>
         </tr>
 
-        <!-- SUMMARY -->
         <tr>
           <td style="padding:0 40px 28px 40px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                   style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
               <tr>
                 <td style="background-color:#3E2723;padding:10px 20px;">
                   <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">Summary</p>
@@ -718,7 +797,7 @@ function stluth_default_payment_confirmed_html_en() {
                 <td style="padding:20px;">
                   <table role="presentation" width="100%" cellpadding="6" cellspacing="0">
                     <tr>
-                      <td style="width:46%;font-size:13px;color:#7a6a55;font-family:Georgia,serif;vertical-align:top;">Chosen&nbsp;model</td>
+                      <td style="width:46%;font-size:13px;color:#7a6a55;font-family:Georgia,serif;vertical-align:top;">Chosen model</td>
                       <td style="font-size:14px;color:#2c2c2c;font-weight:bold;vertical-align:top;">{modele}</td>
                     </tr>
                     <tr style="border-top:1px solid #e0d4c4;">
@@ -728,6 +807,10 @@ function stluth_default_payment_confirmed_html_en() {
                     <tr style="border-top:1px solid #e0d4c4;">
                       <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Email</td>
                       <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{email}</td>
+                    </tr>
+                    <tr style="border-top:1px solid #e0d4c4;">
+                      <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Phone</td>
+                      <td style="font-size:14px;color:#2c2c2c;font-weight:bold;padding-top:10px;vertical-align:top;">{telephone}</td>
                     </tr>
                     <tr style="border-top:1px solid #e0d4c4;">
                       <td style="font-size:13px;color:#7a6a55;font-family:Georgia,serif;padding-top:10px;vertical-align:top;">Status</td>
@@ -740,26 +823,24 @@ function stluth_default_payment_confirmed_html_en() {
           </td>
         </tr>
 
-        <!-- YOUR ACCORDION -->
         <tr>
           <td style="padding:0 40px 28px 40px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                   style="background-color:#f0ece6;border-radius:4px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0ece6;border-radius:4px;overflow:hidden;">
               <tr>
-                <td style="background-color:#3E2723;padding:10px 20px;border-radius:4px 4px 0 0;">
-                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🎵 Your accordion</p>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">📍 Workshop & opening hours</p>
                 </td>
               </tr>
               <tr>
                 <td style="padding:16px 20px;">
-                  <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-                    During these 10 days, you will build your diatonic accordion from A to Z&nbsp;:
-                    cutting and assembling the case, mounting the reed block and mechanism,
-                    installing and tuning the reeds, making the bellows, and finishing touches.
-                    You leave with <strong>your own instrument</strong>.
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    <strong>Address:</strong> 9 rue Fernand de Magellan, 44600 Saint-Nazaire, France<br>
+                    <strong>Hours:</strong> 9:30am – 12:30pm · 2:00pm – 6:30pm<br>
+                    <strong>Workshop info:</strong> <a href="http://stages.ewendaviau.com/" style="color:#D4A017;text-decoration:none;">stages.ewendaviau.com</a>
                   </p>
                   <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-                    No woodworking experience is required — just curiosity and motivation&nbsp;!
+                    The workshop is in a quiet residential area, with the sea about 20 minutes away on foot,
+                    city-centre shops accessible by bus or by walking, and useful local shops close by.
                   </p>
                 </td>
               </tr>
@@ -767,30 +848,119 @@ function stluth_default_payment_confirmed_html_en() {
           </td>
         </tr>
 
-        <!-- INFO TEXT -->
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#fdf8ee;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#fff4d8;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#7a5a12;font-family:Georgia,serif;">🧰 What to bring</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#2c2c2c;line-height:1.8;">
+                    • <strong>PPE provided on site:</strong> safety glasses, gloves, hearing protection, dust masks<br>
+                    • <strong>Please bring:</strong> slippers, comfortable / work clothes, rainwear, and clothes for sunny but changeable weather<br>
+                    • <strong>Also useful:</strong> swimsuit for the sea, water bottle, any personal medication
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf7f3;border:1px solid #e0d4c4;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🍽️ Meals & nearby shops</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Meals are not included. <strong>At lunchtime only</strong>, it may be possible to cook or warm food together,
+                    depending on the group\'s organisation. Evenings are free and everyone arranges dinner independently.
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Bakeries, grocery stores and restaurants are within <strong>5 to 10 minutes on foot</strong> from the workshop.
+                    You can also bring your own picnic lunch.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0ece6;border-radius:4px;overflow:hidden;">
+              <tr>
+                <td style="background-color:#3E2723;padding:10px 20px;">
+                  <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#D4A017;font-family:Georgia,serif;">🏠 Accommodation</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    <strong>Airbnb</strong> is often the easiest option: private rooms from around <strong>€17–40/night</strong>,
+                    and studios or small flats around <strong>€50–80/night</strong>.
+                  </p>
+                  <p style="margin:0 0 10px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    Practical areas: <strong>city centre</strong>, <strong>near the beach</strong>, or <strong>close to the workshop</strong>.
+                    Budget hotels are also a good alternative.
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+                    If you are coming with friends or other trainees, sharing an apartment can work very well.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 28px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#fdf8ee;border-left:4px solid #D4A017;border-radius:0 4px 4px 0;">
+              <tr>
+                <td style="padding:18px 20px;">
+                  <p style="margin:0 0 8px 0;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#7a6a55;font-family:Georgia,serif;">🌊 Local outings & Saint-Nazaire events</p>
+                  <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.8;">
+                    Depending on the dates and the group\'s energy, there may be evening outings, concerts or folk events.
+                    You can keep an eye on Saint-Nazaire\'s cultural agenda, the tourist office, and local folk event listings.
+                    The sea is also a lovely option for a walk or a swim if the weather is good.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
         <tr>
           <td style="padding:0 40px 32px 40px;">
             <p style="margin:0 0 12px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">
-              Feel free to contact me for any practical questions about the workshop&nbsp;:
-              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a>
+              The PDF summary of your registration remains attached to this email for easy reference.
+            </p>
+            <p style="margin:0;font-size:14px;color:#2c2c2c;line-height:1.7;">
+              If you have any practical questions before the workshop, feel free to write to
+              <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a>.
             </p>
           </td>
         </tr>
 
-        <!-- SIGNATURE -->
         <tr>
           <td style="padding:0 40px 36px 40px;border-top:1px solid #e0d4c4;">
-            <p style="margin:24px 0 4px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">See you soon at the workshop&nbsp;!</p>
+            <p style="margin:24px 0 4px 0;font-size:14px;color:#2c2c2c;line-height:1.7;">See you soon at the workshop.</p>
             <p style="margin:0 0 4px 0;font-size:15px;color:#3E2723;font-family:Georgia,serif;font-weight:bold;">Ewen Daviau</p>
             <p style="margin:0;font-size:13px;color:#7a6a55;line-height:1.7;">
-              9 rue Fernand de Magellan — 44600 Saint-Nazaire<br>
+              9 rue Fernand de Magellan — 44600 Saint-Nazaire, France<br>
               <a href="mailto:contact@ewendaviau.com" style="color:#D4A017;text-decoration:none;">contact@ewendaviau.com</a> —
               <a href="https://ewendaviau.com" style="color:#D4A017;text-decoration:none;">ewendaviau.com</a>
             </p>
           </td>
         </tr>
 
-        <!-- FOOTER -->
         <tr>
           <td style="background-color:#f0e8dc;padding:16px 40px;text-align:center;border-top:1px solid #e0d4c4;">
             <p style="margin:0;font-size:11px;color:#a09080;line-height:1.6;">
@@ -1513,6 +1683,26 @@ function stluth_version_migration() {
 		}
 	}
 
+	/* v2.5 — Refresh the default payment-confirmed templates with practical travel/stay info
+	   and use them for the automatic validation email. Reset only templates that still
+	   look like the previous built-in defaults. */
+	if ( version_compare( $db_version, '2.5', '<' ) ) {
+		$stored_pc = get_option( 'stluth_payment_confirmed_body', '' );
+		if ( function_exists( 'stluth_default_payment_confirmed_html' ) ) {
+			if ( empty( $stored_pc ) || ( strpos( $stored_pc, '🎵 Votre accordéon' ) !== false && strpos( $stored_pc, '🧰 À apporter' ) === false ) ) {
+				update_option( 'stluth_payment_confirmed_body', stluth_default_payment_confirmed_html() );
+				error_log( '[Stages Lutherie] v2.5 migration: refreshed French payment-confirmed email template.' );
+			}
+		}
+		$stored_pc_en = get_option( 'stluth_payment_confirmed_body_en', '' );
+		if ( function_exists( 'stluth_default_payment_confirmed_html_en' ) ) {
+			if ( empty( $stored_pc_en ) || ( strpos( $stored_pc_en, '🎵 Your accordion' ) !== false && strpos( $stored_pc_en, '🧰 What to bring' ) === false ) ) {
+				update_option( 'stluth_payment_confirmed_body_en', stluth_default_payment_confirmed_html_en() );
+				error_log( '[Stages Lutherie] v2.5 migration: refreshed English payment-confirmed email template.' );
+			}
+		}
+	}
+
 	update_option( 'stluth_api_version', STLUTH_API_VERSION );
 	error_log( '[Stages Lutherie] Migrated to v' . STLUTH_API_VERSION );
 }
@@ -1850,7 +2040,7 @@ function stluth_render_settings_page() {
 
 		<hr style="margin:32px 0 24px;">
 		<h2 style="font-size:1.1rem;">💳 Email de confirmation de paiement &amp; validation finale</h2>
-		<p style="color:#555;margin-bottom:8px;">Cet email est envoyé manuellement par le luthier au stagiaire <strong>dès réception du paiement</strong>, pour confirmer que la place est définitivement réservée.</p>
+		<p style="color:#555;margin-bottom:8px;">Cet email est envoyé automatiquement au stagiaire dès que l'inscription passe au statut <strong>Validée</strong> / paiement reçu.</p>
 		<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
 			<small style="color:#555;">Variables disponibles :
 			<code>{nom}</code>, <code>{modele}</code>, <code>{session}</code>,
@@ -1869,7 +2059,7 @@ function stluth_render_settings_page() {
 					$pc_for_display = ! empty( $current_pc ) ? $current_pc : ( function_exists( 'stluth_default_payment_confirmed_html' ) ? stluth_default_payment_confirmed_html() : '' );
 					?>
 					<textarea name="stluth_payment_confirmed_body" rows="30" class="large-text code" style="font-family:monospace;font-size:12px;"><?php echo esc_textarea( $pc_for_display ); ?></textarea>
-					<p class="description">HTML complet de l'email de confirmation de paiement envoyé au stagiaire une fois le paiement reçu.</p>
+					<p class="description">HTML complet de l'email de validation finale envoyé automatiquement au stagiaire quand l'inscription devient validée.</p>
 				</td>
 			</tr>
 			<tr>
@@ -1884,7 +2074,7 @@ function stluth_render_settings_page() {
 					$pc_en_for_display = ! empty( $current_pc_en ) ? $current_pc_en : ( function_exists( 'stluth_default_payment_confirmed_html_en' ) ? stluth_default_payment_confirmed_html_en() : '' );
 					?>
 					<textarea name="stluth_payment_confirmed_body_en" rows="30" class="large-text code" style="font-family:monospace;font-size:12px;"><?php echo esc_textarea( $pc_en_for_display ); ?></textarea>
-					<p class="description">Full HTML email sent to English-speaking trainees upon payment confirmation.</p>
+					<p class="description">Full HTML email sent automatically to English-speaking trainees when the registration is marked as confirmed / paid.</p>
 				</td>
 			</tr>
 		</table>
@@ -2017,6 +2207,26 @@ endif; // function_exists stluth_render_settings_page
    admin to review, validate, edit, and download PDFs.
    ══════════════════════════════════════════════════════ */
 
+/* ── One-time rewrite rules flush after CPT/status registration ──
+   WordPress needs to regenerate its rewrite rules when a new mu-plugin
+   registers a custom post type for the first time, otherwise the URL
+   routing cache can conflict with WooCommerce's shop page detection
+   and cause the product loop to return zero results.
+   The flushed version is stored in a wp-option so this only runs once
+   per API version upgrade. */
+if ( ! function_exists( 'stluth_maybe_flush_rewrites' ) ) :
+
+add_action( 'init', 'stluth_maybe_flush_rewrites', 999 );
+
+function stluth_maybe_flush_rewrites() {
+	if ( get_option( 'stluth_rewrite_version' ) !== STLUTH_API_VERSION ) {
+		flush_rewrite_rules( false );
+		update_option( 'stluth_rewrite_version', STLUTH_API_VERSION );
+	}
+}
+
+endif; // function_exists stluth_maybe_flush_rewrites
+
 if ( ! function_exists( 'stluth_register_cpt' ) ) :
 
 add_action( 'init', 'stluth_register_cpt' );
@@ -2119,7 +2329,7 @@ function stluth_save_registration( $fields, $pdf_path = '', $plan_json = '' ) {
 	/* Store every form field as post-meta */
 	$meta_fields = array(
 		'nom', 'email', 'telephone', 'dateNaissance', 'adresse', 'cp', 'ville',
-		'session', 'modele', 'acompte', 'ancheAMano', 'upgrade2V',
+		'session', 'modele', 'acompte', 'lang', 'ancheAMano', 'upgrade2V',
 		'tonalite', 'disposition', 'voix1', 'voix2', 'accordage',
 		'boutonsMD', 'boisClavier', 'boisGrille', 'numGrille', 'marquageMD',
 		'remarquesMD', 'nbBoutonsMG', 'couleurSangles', 'remarquesMG',
@@ -2176,6 +2386,110 @@ function stluth_save_registration( $fields, $pdf_path = '', $plan_json = '' ) {
 }
 
 endif; // function_exists stluth_save_registration
+
+
+if ( ! function_exists( 'stluth_send_payment_confirmed_email' ) ) :
+
+function stluth_send_payment_confirmed_email( $post_id ) {
+	if ( ! $post_id || 'stluth_inscription' !== get_post_type( $post_id ) ) {
+		return false;
+	}
+
+	$email = sanitize_email( (string) get_post_meta( $post_id, '_stluth_email', true ) );
+	if ( empty( $email ) ) {
+		error_log( '[Stages Lutherie] Payment-confirmed email skipped: missing trainee email for post #' . $post_id );
+		return false;
+	}
+
+	$lang = sanitize_text_field( (string) get_post_meta( $post_id, '_stluth_lang', true ) );
+	if ( 'en' !== $lang ) {
+		$lang = 'fr';
+	}
+
+	$luthier_email = sanitize_email( get_option( 'stluth_luthier_email', 'contact@ewendaviau.com' ) );
+	$luthier_name  = sanitize_text_field( get_option( 'stluth_luthier_name', 'Ewen Daviau' ) );
+
+	$replacements = array(
+		'{nom}'       => sanitize_text_field( (string) get_post_meta( $post_id, '_stluth_nom', true ) ),
+		'{email}'     => $email,
+		'{telephone}' => sanitize_text_field( (string) get_post_meta( $post_id, '_stluth_telephone', true ) ),
+		'{modele}'    => sanitize_text_field( (string) get_post_meta( $post_id, '_stluth_modele', true ) ),
+		'{session}'   => sanitize_text_field( (string) get_post_meta( $post_id, '_stluth_session', true ) ),
+	);
+
+	if ( 'en' === $lang ) {
+		$subject = get_option( 'stluth_payment_confirmed_subject_en', 'Your registration is confirmed — Diatonic accordion building workshop' );
+		$body    = get_option( 'stluth_payment_confirmed_body_en', '' );
+		if ( empty( $body ) && function_exists( 'stluth_default_payment_confirmed_html_en' ) ) {
+			$body = stluth_default_payment_confirmed_html_en();
+		}
+	} else {
+		$subject = get_option( 'stluth_payment_confirmed_subject', 'Votre inscription est confirmée — Stage de fabrication d\'accordéon' );
+		$body    = get_option( 'stluth_payment_confirmed_body', '' );
+		if ( empty( $body ) && function_exists( 'stluth_default_payment_confirmed_html' ) ) {
+			$body = stluth_default_payment_confirmed_html();
+		}
+	}
+
+	if ( stripos( $body, 'style=' ) === false ) {
+		$body = ( 'en' === $lang && function_exists( 'stluth_default_payment_confirmed_html_en' ) )
+			? stluth_default_payment_confirmed_html_en()
+			: stluth_default_payment_confirmed_html();
+	}
+
+	$html_replacements = array();
+	foreach ( $replacements as $key => $value ) {
+		$html_replacements[ $key ] = esc_html( $value );
+	}
+
+	$subject_filled = str_replace( array_keys( $replacements ), array_values( $replacements ), $subject );
+	$body_filled    = str_replace( array_keys( $html_replacements ), array_values( $html_replacements ), $body );
+	if ( function_exists( 'stluth_strip_mso_conditionals' ) ) {
+		$body_filled = stluth_strip_mso_conditionals( $body_filled );
+	}
+
+	$attachments = array();
+	$pdf_path    = (string) get_post_meta( $post_id, '_stluth_pdf_path', true );
+	if ( ! empty( $pdf_path ) && file_exists( $pdf_path ) ) {
+		$attachments[] = $pdf_path;
+	}
+
+	$headers = array(
+		'From: ' . $luthier_name . ' <' . $luthier_email . '>',
+		'Reply-To: ' . $luthier_email,
+	);
+
+	$sent = stluth_send_html_mail( $email, $subject_filled, $body_filled, $headers, $attachments );
+	if ( $sent ) {
+		update_post_meta( $post_id, '_stluth_payment_confirmed_sent_at', current_time( 'mysql' ) );
+		error_log( '[Stages Lutherie] Payment-confirmed email sent to ' . $email . ' for post #' . $post_id );
+	} else {
+		error_log( '[Stages Lutherie] FAILED payment-confirmed email to ' . $email . ' for post #' . $post_id );
+	}
+
+	return $sent;
+}
+
+endif; // function_exists stluth_send_payment_confirmed_email
+
+if ( ! function_exists( 'stluth_maybe_send_payment_confirmed_email' ) ) :
+
+add_action( 'transition_post_status', 'stluth_maybe_send_payment_confirmed_email', 10, 3 );
+
+function stluth_maybe_send_payment_confirmed_email( $new_status, $old_status, $post ) {
+	if ( ! $post || 'stluth_inscription' !== get_post_type( $post ) ) {
+		return;
+	}
+	if ( 'stluth_paid' !== $new_status || 'stluth_paid' === $old_status ) {
+		return;
+	}
+	if ( function_exists( 'wp_is_post_revision' ) && wp_is_post_revision( $post ) ) {
+		return;
+	}
+	stluth_send_payment_confirmed_email( $post->ID );
+}
+
+endif; // function_exists stluth_maybe_send_payment_confirmed_email
 
 /* ── Delete associated files when an inscription is permanently deleted ── */
 
@@ -2578,7 +2892,7 @@ function stluth_save_meta_boxes( $post_id, $post ) {
 	/* Update editable meta fields */
 	$meta_fields = array(
 		'nom', 'email', 'telephone', 'dateNaissance', 'adresse', 'cp', 'ville',
-		'session', 'modele', 'acompte', 'ancheAMano', 'upgrade2V',
+		'session', 'modele', 'acompte', 'lang', 'ancheAMano', 'upgrade2V',
 		'tonalite', 'disposition', 'voix1', 'voix2', 'accordage',
 		'boutonsMD', 'boisClavier', 'boisGrille', 'numGrille', 'marquageMD',
 		'remarquesMD', 'nbBoutonsMG', 'couleurSangles', 'remarquesMG',
