@@ -2207,6 +2207,26 @@ endif; // function_exists stluth_render_settings_page
    admin to review, validate, edit, and download PDFs.
    ══════════════════════════════════════════════════════ */
 
+/* ── One-time rewrite rules flush after CPT/status registration ──
+   WordPress needs to regenerate its rewrite rules when a new mu-plugin
+   registers a custom post type for the first time, otherwise the URL
+   routing cache can conflict with WooCommerce's shop page detection
+   and cause the product loop to return zero results.
+   The flushed version is stored in a wp-option so this only runs once
+   per API version upgrade. */
+if ( ! function_exists( 'stluth_maybe_flush_rewrites' ) ) :
+
+add_action( 'init', 'stluth_maybe_flush_rewrites', 999 );
+
+function stluth_maybe_flush_rewrites() {
+	if ( get_option( 'stluth_rewrite_version' ) !== STLUTH_API_VERSION ) {
+		flush_rewrite_rules( false );
+		update_option( 'stluth_rewrite_version', STLUTH_API_VERSION );
+	}
+}
+
+endif; // function_exists stluth_maybe_flush_rewrites
+
 if ( ! function_exists( 'stluth_register_cpt' ) ) :
 
 add_action( 'init', 'stluth_register_cpt' );
