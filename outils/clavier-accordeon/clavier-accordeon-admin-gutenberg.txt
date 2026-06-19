@@ -1008,6 +1008,13 @@ var   _pmSortDir=1;          // 1=asc, -1=desc
    En mode local (sans ce bloc), on initialise à '' par défaut. */
 window.PRESETS_BASE_URL = window.PRESETS_BASE_URL || '';
 
+/* Charger ca-svg.js dynamiquement si non disponible (pages front-end) */
+(function(){
+  if(typeof window.buildSVG_Plan === 'function') return;
+  var u = window.CA_SVG_URL || (window.PRESETS_BASE_URL ? window.PRESETS_BASE_URL.replace(/\/?$/, '/') + 'ca-svg.js' : '');
+  if(u){ var s = document.createElement('script'); s.src = u; document.head.appendChild(s); }
+})();
+
 /* CA_REST_ROOT est injecté par presets-api.php (window.CA_REST_ROOT = rest_url()).
    Fallback sur '/wp-json/' pour compatibilité. */
 const _caRestRoot = window.CA_REST_ROOT || '/wp-json/';

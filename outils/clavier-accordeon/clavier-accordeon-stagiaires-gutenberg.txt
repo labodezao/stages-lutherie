@@ -559,6 +559,13 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
      ═══════════════════════════════════════════════════ */
   var PRESETS_BASE_URL = (window.PRESETS_BASE_URL !== undefined) ? window.PRESETS_BASE_URL : '';
 
+  /* Charger ca-svg.js dynamiquement si non disponible (pages front-end) */
+  (function(){
+    if(typeof window.buildSVG_Plan === 'function') return;
+    var u = window.CA_SVG_URL || (PRESETS_BASE_URL ? PRESETS_BASE_URL.replace(/\/?$/, '/') + 'ca-svg.js' : '');
+    if(u){ var s = document.createElement('script'); s.src = u; document.head.appendChild(s); }
+  })();
+
   function _remotePresetUrl(path){
     return PRESETS_BASE_URL.replace(/\/?$/, '/') + path;
   }
@@ -908,7 +915,8 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
      ═══════════════════════════════════════════════════ */
   async function loadPreset(id){
     if(!id){ currentPreset = null; currentData = null; renderAll(); return; }
-    var raw = PRESETS_DATA[id];
+    // Quand un serveur est configuré, préférer ses données (toujours à jour) aux données inline
+    var raw = PRESETS_BASE_URL ? null : PRESETS_DATA[id];
     if(!raw && PRESETS_BASE_URL){
       raw = await fetchRemotePreset(id);
       if(raw) PRESETS_DATA[id] = raw; // mise en cache locale
@@ -945,18 +953,28 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
       $('cw-rows-cfg').innerHTML = '';
       return;
     }
-    currentData = presetToSVGData(currentPreset);
+    if(typeof window.presetToSVGData !== 'function'){ setTimeout(function(){ renderAll(); }, 400); return; }
+    currentData = window.presetToSVGData(currentPreset);
     currentData.nomJoueur = $('cw-nom-joueur').value.trim();
     var nomI = $('cw-nom-instrument').value.trim();
     if(nomI) currentData.nomInstrument = nomI;
 
-    // SVG preview
-    try {
-      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
-      bindSVGEditing();
-    } catch(e){
-      $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+e.message+'</p>';
+    // SVG preview — retry si ca-svg.js pas encore chargé
+    var _svgTries = 0;
+    function _renderSVGNow(){
+      if(typeof window.buildSVG_Plan !== 'function'){
+        if(++_svgTries < 6){ setTimeout(_renderSVGNow, 400); return; }
+        $('cw-svg-wrap').innerHTML = '<p style="color:#999;font-size:.85rem;">Bibliothèque SVG indisponible.</p>';
+        return;
+      }
+      try {
+        $('cw-svg-wrap').innerHTML = window.buildSVG_Plan(currentData, darkMode);
+        bindSVGEditing();
+      } catch(e){
+        $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+e.message+'</p>';
+      }
     }
+    _renderSVGNow();
 
     renderRowsCfg();
     renderRHTables();
@@ -968,10 +986,11 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
      ═══════════════════════════════════════════════════ */
   function refreshSVG(){
     if(!currentPreset)return;
-    currentData=presetToSVGData(currentPreset);
+    if(typeof window.presetToSVGData!=='function')return;
+    currentData=window.presetToSVGData(currentPreset);
     currentData.nomJoueur=$('cw-nom-joueur').value.trim();
     var nomI=$('cw-nom-instrument').value.trim();if(nomI)currentData.nomInstrument=nomI;
-    try{$('cw-svg-wrap').innerHTML=buildSVG_Plan(currentData,darkMode);bindSVGEditing();}catch(e){}
+    try{$('cw-svg-wrap').innerHTML=window.buildSVG_Plan(currentData,darkMode);bindSVGEditing();}catch(e){}
   }
 
   function renderRowsCfg(){
@@ -1155,12 +1174,13 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
     }
     // Re-render SVG only (not the tables, to keep focus)
     applyUIToPreset();
-    currentData = presetToSVGData(currentPreset);
+    if(typeof window.presetToSVGData !== 'function') return;
+    currentData = window.presetToSVGData(currentPreset);
     currentData.nomJoueur = $('cw-nom-joueur').value.trim();
     var nomI = $('cw-nom-instrument').value.trim();
     if(nomI) currentData.nomInstrument = nomI;
     try {
-      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+      $('cw-svg-wrap').innerHTML = window.buildSVG_Plan(currentData, darkMode);
       bindSVGEditing();
     } catch(err){
       $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+err.message+'</p>';
