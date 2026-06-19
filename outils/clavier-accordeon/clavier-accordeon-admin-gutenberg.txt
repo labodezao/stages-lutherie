@@ -197,6 +197,31 @@ select option{background:#fff;color:var(--txt)}
 #visual-output{overflow-x:auto}
 #visual-output svg{display:block;margin:0 auto;max-width:100%}
 
+/* ── Instrument tab bar ── */
+#instr-tab-bar{display:flex;align-items:flex-end;gap:2px;padding:8px 14px 0;
+  background:#e8e8e6;border-bottom:2px solid var(--brd);overflow-x:auto;
+  min-height:43px;flex-shrink:0;scrollbar-width:thin}
+.instr-tab{display:inline-flex;align-items:center;gap:6px;padding:6px 11px 7px;
+  border:1.5px solid var(--brd);border-bottom:none;border-radius:6px 6px 0 0;
+  background:#d8d8d6;cursor:pointer;font-size:.79rem;font-weight:700;color:var(--gris);
+  white-space:nowrap;font-family:inherit;user-select:none;
+  transition:background .12s,color .12s,border-color .12s;flex-shrink:0;max-width:210px}
+.instr-tab:hover{color:var(--dark);background:#f0f0ee;border-color:#bbb}
+.instr-tab.it-active{background:#fff;color:var(--dark);border-color:var(--dark);
+  box-shadow:0 -2px 0 0 var(--gold);z-index:1;position:relative}
+.instr-tab .it-lbl{overflow:hidden;text-overflow:ellipsis;max-width:150px;white-space:nowrap}
+.instr-tab .it-x{flex-shrink:0;width:17px;height:17px;border:none;background:none;
+  cursor:pointer;font-size:1.05rem;color:#aaa;padding:0;line-height:1;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;font-family:inherit;
+  transition:background .12s,color .12s}
+.instr-tab .it-x:hover{background:rgba(184,49,42,.15);color:#b8312a}
+.it-new-btn{display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border:1.5px dashed #bbb;border-bottom:none;
+  border-radius:6px 6px 0 0;background:transparent;cursor:pointer;
+  font-size:1.1rem;color:var(--gris);font-family:inherit;flex-shrink:0;
+  transition:border-color .12s,color .12s;user-select:none}
+.it-new-btn:hover{border-color:var(--gold);color:var(--gold)}
+
 
 
 /* ── Modal ── */
@@ -288,6 +313,7 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   <div id="lib-cards"><div class="lib-empty" data-i="noSaved">Aucun instrument sauvegardé.</div></div>
 </div>
 
+<div id="instr-tab-bar" class="no-print"></div>
 
 <div class="container">
 
@@ -971,6 +997,7 @@ let CFG={
 let rowClipboard=null;
 let undoStack=[];let redoStack=[];let _suppressHistory=false;let historyTimer=null;const MAX_UNDO=50;
 let currentId=null,saveTimer=null,previewTimer=null;
+var _tabs=[],_tabIdx=-1;
 let pickerInput=null,pickerNote='',pickerOctave='';
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -1333,7 +1360,9 @@ function saveCurrentInstrument(publishToServer){
   const rec=snapshotToDB();
   if(currentId?DB.get(currentId):false){DB.update(currentId,rec);}
   else{currentId=rec.id;DB.add(rec);}
-  renderLibrary();setSaveStatus('saved');
+  // Sync active tab with saved id and snapshot
+  if(_tabIdx>=0&&_tabs[_tabIdx]){_tabs[_tabIdx].id=currentId;_tabs[_tabIdx].snap=rec;}
+  renderLibrary();renderInstrumentTabs();setSaveStatus('saved');
   // Sauvegarde sur le serveur uniquement sur clic explicite du bouton
   if(publishToServer){_savePresetToServer(rec);}
 }
@@ -1527,33 +1556,85 @@ function renderFamilyManager(){
   }
   el.innerHTML=html;
 }
-function newInstrument(){
-  currentId=null;
-  document.getElementById('preset-select').value='';
-  const eid=document.getElementById('preset-export-id');
-  if(eid){eid.value='';}
-  const elbl=document.getElementById('preset-export-label');
-  if(elbl){elbl.value='';delete elbl.dataset.userEdited;}
+/* ╔══════════════════════════════════════════════════════╗
+   ║  MULTI-INSTRUMENT TABS                               ║
+   ╚══════════════════════════════════════════════════════╝ */
+function _snapTab(){readNoteInputsIntoCFG();var s=snapshotToDB();return{id:currentId,snap:s};}
+function renderInstrumentTabs(){
+  var bar=document.getElementById('instr-tab-bar');if(!bar)return;
+  var liveLabel=val('nom-instrument')||'Sans titre';
+  var html=_tabs.map(function(tab,i){
+    var active=i===_tabIdx?' it-active':'';
+    var lbl=i===_tabIdx?liveLabel:(tab.snap?(tab.snap.nom||'Sans titre'):'Nouveau…');
+    return '<div class="instr-tab'+active+'" onclick="switchToTab('+i+')" role="tab" tabindex="0">'
+      +'<span class="it-lbl">🪗 '+escHTML(lbl)+'</span>'
+      +'<span class="it-x" onclick="closeTab('+i+',event)" role="button" tabindex="0" title="Fermer">×</span>'
+      +'</div>';
+  }).join('');
+  html+='<div class="it-new-btn" onclick="openNewTab()" role="button" tabindex="0" title="Nouvel instrument">＋</div>';
+  bar.innerHTML=html;
+}
+function switchToTab(idx){
+  if(idx===_tabIdx)return;
+  if(_tabIdx>=0&&_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();
+  _tabIdx=idx;
+  var tab=_tabs[idx];currentId=tab.id;
+  if(tab.snap)loadFromDB(tab.snap);
+  renderInstrumentTabs();renderLibrary();scheduleLivePreview();
+}
+function closeTab(idx,e){
+  if(e)e.stopPropagation();
+  _tabs.splice(idx,1);
+  if(!_tabs.length){openNewTab();return;}
+  if(_tabIdx>=_tabs.length)_tabIdx=_tabs.length-1;
+  else if(idx<_tabIdx)_tabIdx--;
+  else if(idx===_tabIdx&&idx===_tabs.length)_tabIdx=_tabs.length-1;
+  var tab=_tabs[_tabIdx];currentId=tab.id;
+  if(tab.snap)loadFromDB(tab.snap);
+  renderInstrumentTabs();renderLibrary();scheduleLivePreview();
+}
+function openNewTab(){
+  if(_tabIdx>=0&&_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();
+  _tabs.push({id:null,snap:null});_tabIdx=_tabs.length-1;currentId=null;
+  renderInstrumentTabs();
+  var psel=document.getElementById('preset-select');if(psel)psel.value='';
+  var eid=document.getElementById('preset-export-id');if(eid)eid.value='';
+  var elbl=document.getElementById('preset-export-label');if(elbl){elbl.value='';delete elbl.dataset.userEdited;}
   document.getElementById('nom-instrument').value='';
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
-  document.getElementById('nb-voix').value='2';
-  renderVoixPerRow();
-  (function(){const d=['B','N'];for(let i=0;i<2;i++){const s=document.getElementById('voix-v'+i);if(s)s.value=d[i];}})();
-  document.getElementById('nb-voix-accords').value='2';
-  document.getElementById('nb-voix-basses').value='2';
-  document.getElementById('lh-separated').checked=true;
-  const _nlBlEl=document.getElementById('lh-basses-label');if(_nlBlEl)_nlBlEl.value='';
-  const _nlAlEl=document.getElementById('lh-accords-label');if(_nlAlEl)_nlAlEl.value='';
-  const _nlSlEl=document.getElementById('lh-show-labels');if(_nlSlEl)_nlSlEl.checked=true;
+  document.getElementById('nb-voix').value='2';renderVoixPerRow();
+  (function(){var d=['B','N'];for(var i=0;i<2;i++){var s=document.getElementById('voix-v'+i);if(s)s.value=d[i];}})();
+  document.getElementById('nb-voix-accords').value='2';document.getElementById('nb-voix-basses').value='2';
+  var lhsep=document.getElementById('lh-separated');if(lhsep)lhsep.checked=true;
+  var lb=document.getElementById('lh-basses-label');if(lb)lb.value='';
+  var la=document.getElementById('lh-accords-label');if(la)la.value='';
+  var ls=document.getElementById('lh-show-labels');if(ls)ls.checked=true;
   CFG.lhRows=[{nb:6,offset:0}];
-  loadPreset('GCD33');
-  document.getElementById('preset-select').value='GCD33';
-  renderLhRowsCfg();
-  renderLibrary();setSaveStatus('dirty');
-  window.scrollTo({top:0,behavior:'smooth'});
+  loadPreset('GCD33').then(function(){
+    var ps=document.getElementById('preset-select');if(ps)ps.value='GCD33';
+    renderLhRowsCfg();
+    _tabs[_tabIdx]=_snapTab();renderInstrumentTabs();
+  });
+  setSaveStatus('dirty');window.scrollTo({top:0,behavior:'smooth'});
+}
+function openInstrumentTab(id){
+  for(var i=0;i<_tabs.length;i++){if(_tabs[i].id===id&&id!==null){switchToTab(i);return;}}
+  if(_tabIdx>=0&&_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();
+  var r=DB.get(id);if(!r)return;
+  _tabs.push({id:id,snap:r});_tabIdx=_tabs.length-1;currentId=id;
+  loadFromDB(r);renderInstrumentTabs();renderLibrary();scheduleLivePreview();
+  document.querySelector('.container').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function _refreshActiveTabLabel(){
+  if(_tabIdx<0)return;
+  var tabs=document.querySelectorAll('#instr-tab-bar .instr-tab');
+  var t=tabs[_tabIdx];if(!t)return;
+  var lbl=t.querySelector('.it-lbl');
+  if(lbl)lbl.textContent='🪗 '+(val('nom-instrument')||'Sans titre');
 }
 
+function newInstrument(){openNewTab();}
 /* ── Library ── */
 function renderLibrary(){
   const list=DB.all(),wrap=document.getElementById('lib-cards');
@@ -1574,9 +1655,9 @@ function renderLibrary(){
       </div></div>`;
   }).join('');
 }
-function editInstrument(id){const r=DB.get(id);if(!r)return;loadFromDB(r);renderLibrary();document.querySelector('.container').scrollIntoView({behavior:'smooth',block:'start'});scheduleLivePreview();}
+function editInstrument(id){openInstrumentTab(id);}
 function duplicateInstrument(id){const nid=DB.duplicate(id);renderLibrary();if(nid)editInstrument(nid);}
-function deleteInstrument(id){const r=DB.get(id);if(!r)return;if(!confirm(t('deleteConfirm')(r.nom)))return;DB.delete(id);if(currentId===id){currentId=null;setSaveStatus('dirty');}renderLibrary();}
+function deleteInstrument(id){const r=DB.get(id);if(!r)return;if(!confirm(t('deleteConfirm')(r.nom)))return;DB.delete(id);_tabs.forEach(function(tab){if(tab.id===id)tab.id=null;});if(currentId===id){currentId=null;setSaveStatus('dirty');}renderLibrary();renderInstrumentTabs();}
 
 /* ── Save status ── */
 function setSaveStatus(state){
@@ -1588,6 +1669,7 @@ function onAnyChange(){
   saveTimer=setTimeout(()=>{if(currentId)saveCurrentInstrument();},1200);
   scheduleLivePreview();
   scheduleHistory();
+  _refreshActiveTabLabel();
 }
 function pushHistory(){
   if(_suppressHistory)return;
@@ -1640,8 +1722,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderVoixPerRow();
   initPicker();renderLibrary();
   const list=DB.all();
-  if(list.length){loadFromDB(list[0]);}
-  else{loadPreset('GCD33').then(()=>{document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();});}
+  if(list.length){
+    _tabs=[{id:list[0].id,snap:list[0]}];_tabIdx=0;
+    loadFromDB(list[0]);
+  } else {
+    _tabs=[{id:null,snap:null}];_tabIdx=0;
+    loadPreset('GCD33').then(()=>{
+      document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();
+      _tabs[0]=_snapTab();renderInstrumentTabs();
+    });
+  }
+  renderInstrumentTabs();
   scheduleLivePreview();
   setTimeout(pushHistory,200);
   // Keyboard shortcuts: Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo
