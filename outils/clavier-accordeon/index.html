@@ -90,7 +90,7 @@ select option{background:#fff;color:var(--txt)}
 /* ── Row config ── */
 .rangees-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
 .rangee-cfg{display:flex;flex-direction:column;gap:3px;background:#f8f8f6;border:1.5px solid var(--brd);
-  border-radius:6px;padding:7px 9px;min-width:160px;user-select:none}
+  border-radius:6px;padding:7px 9px;min-width:160px}
 .rangee-cfg label{font-size:.7rem;font-weight:700;color:#666}
 .rng-ctrl{display:flex;align-items:center;gap:5px}
 
@@ -1943,7 +1943,7 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg" draggable="true">
+    html+=`<div class="rangee-cfg">
       <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
       <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
@@ -1975,33 +1975,35 @@ function initRowDragDrop(){
   if(!wrap)return;
   wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
     el.dataset.rowIdx=idx;
-    el.addEventListener('dragstart',e=>{
-      _rowDragSrc=el;
-      e.dataTransfer.effectAllowed='move';
-      e.dataTransfer.setData('text/plain',String(idx));
-      setTimeout(()=>el.classList.add('row-dragging'),0);
-    });
-    el.addEventListener('dragend',()=>{
-      el.classList.remove('row-dragging');
-      wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
-      _rowDragSrc=null;
-    });
-    el.addEventListener('dragover',e=>{
+    const handle=el.querySelector('.row-drag-handle');
+    if(handle){
+      handle.setAttribute('draggable','true');
+      handle.addEventListener('dragstart',function(e){
+        _rowDragSrc=el;
+        e.dataTransfer.effectAllowed='move';
+        e.dataTransfer.setData('text/plain',String(idx));
+        setTimeout(function(){el.classList.add('row-dragging');},0);
+      });
+      handle.addEventListener('dragend',function(){
+        el.classList.remove('row-dragging');
+        wrap.querySelectorAll('.rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
+        _rowDragSrc=null;
+      });
+    }
+    el.addEventListener('dragover',function(e){
       e.preventDefault();e.dataTransfer.dropEffect='move';
-      if(_rowDragSrc?_rowDragSrc!==el:false){
-        wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+      if(_rowDragSrc){if(_rowDragSrc!==el){
+        wrap.querySelectorAll('.rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
         el.classList.add('row-drag-over');
-      }
+      }}
     });
-    el.addEventListener('dragleave',()=>el.classList.remove('row-drag-over'));
-    el.addEventListener('drop',e=>{
+    el.addEventListener('dragleave',function(){el.classList.remove('row-drag-over');});
+    el.addEventListener('drop',function(e){
       e.preventDefault();
       if(!_rowDragSrc||_rowDragSrc===el)return;
       const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
       if(isNaN(si)||isNaN(ti)||si===ti)return;
-      // Reorder CFG.rangees
       const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
-      // Reorder CFG.notes.droite
       const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
       renderRangeesCfg();generateInputGrid();onAnyChange();
     });
