@@ -1943,7 +1943,7 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg" draggable="true" ondragstart="rowDragStart(event,this,${r})" ondragend="rowDragEnd(this)" ondragover="rowDragOver(event,this)" ondragleave="rowDragLeave(event,this)" ondrop="rowDrop(event,this,${r})">
+    html+=`<div class="rangee-cfg">
       <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
       <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
@@ -1969,41 +1969,48 @@ function renderRangeesCfg(){
 }
 
 /* ── Row drag-and-drop to reorder right-hand rows ── */
-var _rowDragSrcIdx=null;
-function rowDragStart(e,el,idx){
-  _rowDragSrcIdx=idx;
-  e.dataTransfer.effectAllowed='move';
-  e.dataTransfer.setData('text/plain',String(idx));
-  setTimeout(function(){el.classList.add('row-dragging');},0);
+let _rowDragSrc=null;
+function initRowDragDrop(){
+  const wrap=document.getElementById('rangees-cfg');
+  if(!wrap)return;
+  wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
+    el.dataset.rowIdx=idx;
+    const handle=el.querySelector('.row-drag-handle');
+    if(handle){
+      handle.addEventListener('mousedown',()=>{el.draggable=true;});
+    }
+    el.addEventListener('mouseup',()=>{el.draggable=false;});
+    el.addEventListener('dragstart',e=>{
+      _rowDragSrc=el;
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',idx.toString());
+      setTimeout(()=>el.classList.add('row-dragging'),0);
+    });
+    el.addEventListener('dragend',()=>{
+      el.draggable=false;
+      el.classList.remove('row-dragging');
+      wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+      _rowDragSrc=null;
+    });
+    el.addEventListener('dragover',e=>{
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      if(_rowDragSrc&&_rowDragSrc!==el){
+        wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+        el.classList.add('row-drag-over');
+      }
+    });
+    el.addEventListener('dragleave',()=>el.classList.remove('row-drag-over'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!_rowDragSrc||_rowDragSrc===el)return;
+      const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
+      if(isNaN(si)||isNaN(ti)||si===ti)return;
+      const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
+      const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
+      renderRangeesCfg();generateInputGrid();onAnyChange();
+    });
+  });
 }
-function rowDragEnd(el){
-  el.classList.remove('row-dragging');
-  document.querySelectorAll('#rangees-cfg .rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
-  _rowDragSrcIdx=null;
-}
-function rowDragOver(e,el){
-  if(_rowDragSrcIdx===null){return;}
-  e.preventDefault();
-  e.dataTransfer.dropEffect='move';
-  document.querySelectorAll('#rangees-cfg .rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
-  el.classList.add('row-drag-over');
-}
-function rowDragLeave(e,el){
-  var rt=e.relatedTarget;
-  if(rt){if(el.contains(rt)){return;}}
-  el.classList.remove('row-drag-over');
-}
-function rowDrop(e,el,ti){
-  e.preventDefault();
-  if(_rowDragSrcIdx===null){return;}
-  if(_rowDragSrcIdx===ti){return;}
-  var si=_rowDragSrcIdx;
-  _rowDragSrcIdx=null;
-  var rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
-  var nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
-  renderRangeesCfg();generateInputGrid();onAnyChange();
-}
-function initRowDragDrop(){}
 
 /* ── Generate note input grid ── */
 function generateInputGrid(){
@@ -2019,7 +2026,7 @@ function generateInputGrid(){
       <span class="sec-label">${esc(rc.nom)}</span>
       <button type="button" class="rng-btn" onclick="swapPushPull('rw-d-${r}')" title="${t('swapRowTitle')}">⇅</button>
       <button type="button" class="rng-btn" onclick="mirrorRow('rw-d-${r}')" title="${t('mirrorRowTitle')}">⇆</button>
-      <button type="button" class="rng-btn" onclick="copyRow('rw-d-${r}')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-d-${r}',this)" title="${t('copyRowTitle')}">📋</button>
       <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-d-${r}')" title="${t('pasteRowTitle')}">⬆</button>
     </div><div class="btn-grid">`;
     for(let b=0;b<nb;b++){
@@ -2060,7 +2067,7 @@ function generateInputGrid(){
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
-        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}',this)" title="${t('copyRowTitle')}">📋</button>
         <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
       for(let b=0;b<_bCount;b++){
@@ -2084,7 +2091,7 @@ function generateInputGrid(){
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:4px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
-        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}',this)" title="${t('copyRowTitle')}">📋</button>
         <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
       for(let b=0;b<_aCount;b++){
@@ -2106,7 +2113,7 @@ function generateInputGrid(){
       <button type="button" class="rng-btn" onclick="addGaucheBtn('terzetto')" title="＋">＋</button>
       <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-terzetto')" title="${t('swapRowTitle')}">⇅</button>
       <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-terzetto')" title="${t('mirrorRowTitle')}">⇆</button>
-      <button type="button" class="rng-btn" onclick="copyRow('rw-g-terzetto')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-g-terzetto',this)" title="${t('copyRowTitle')}">📋</button>
       <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-terzetto')" title="${t('pasteRowTitle')}">⬆</button>
     </div><div class="btn-grid">`;
     for(let b=0;b<count;b++){
@@ -3067,7 +3074,7 @@ function mirrorRow(rwId){
   });
   readNoteInputsIntoCFG();onAnyChange();
 }
-function copyRow(rwId){
+function copyRow(rwId,btn){
   const wrap=document.getElementById(rwId);if(!wrap)return;
   rowClipboard=[];
   wrap.querySelectorAll('.btn-cell').forEach(function(cell){
@@ -3076,6 +3083,7 @@ function copyRow(rwId){
     rowClipboard.push({p:p?p.value:'',t:ti?ti.value:''});
   });
   document.querySelectorAll('.row-paste-btn').forEach(function(b){b.classList.add('has-clip');});
+  if(btn){var _t=btn.textContent;btn.textContent='✓';setTimeout(function(){btn.textContent=_t;},700);}
 }
 function pasteRow(rwId){
   if(!rowClipboard)return;
