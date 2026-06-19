@@ -103,7 +103,7 @@ select option{background:#fff;color:var(--txt)}
 /* ── Row config ── */
 .rangees-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
 .rangee-cfg{display:flex;flex-direction:column;gap:3px;background:#f8f8f6;border:1.5px solid var(--brd);
-  border-radius:6px;padding:7px 9px;min-width:160px}
+  border-radius:6px;padding:7px 9px;min-width:160px;user-select:none}
 .rangee-cfg label{font-size:.7rem;font-weight:700;color:#666}
 .row-cfg-hd{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--brd);padding-bottom:4px;margin-bottom:4px}
 .row-drag-handle{cursor:grab;font-size:1.1rem;color:var(--gris);user-select:none;line-height:1;padding:0 2px;opacity:.55;transition:opacity .12s}
@@ -2066,7 +2066,7 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg">
+    html+=`<div class="rangee-cfg" draggable="true">
       <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
       <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
