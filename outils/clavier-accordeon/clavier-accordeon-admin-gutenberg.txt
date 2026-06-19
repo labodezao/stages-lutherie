@@ -2094,7 +2094,6 @@ function renderRangeesCfg(){
 /* ── Row drag-and-drop to reorder right-hand rows ── */
 var _rowDragSrcIdx=null;
 function rowDragStart(e,el,idx){
-  if(!e.target.classList.contains('row-drag-handle')){e.preventDefault();return;}
   _rowDragSrcIdx=idx;
   e.dataTransfer.effectAllowed='move';
   e.dataTransfer.setData('text/plain',String(idx));
