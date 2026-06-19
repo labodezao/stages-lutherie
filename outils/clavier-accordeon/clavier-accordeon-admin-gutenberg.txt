@@ -1790,7 +1790,7 @@ async function loadPreset(key){
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
   // Fallback: nom-instrument depuis p.nom si non rempli par l'index (chargement asynchrone)
   const enom=document.getElementById('nom-instrument');
-  if(enom&&!enom.value)enom.value=p.nom||key;
+  if(enom){if(!enom.value)enom.value=p.nom||key;}
   // Restaurer la config main gauche depuis le preset
   const _nBas=CFG.notes.basses?CFG.notes.basses.length:0;
   CFG.lhRows=p.lhRows?JSON.parse(JSON.stringify(p.lhRows)):[{nb:Math.max(1,_nBas),offset:0}];
