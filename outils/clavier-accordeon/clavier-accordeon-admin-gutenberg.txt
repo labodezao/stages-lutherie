@@ -1361,7 +1361,7 @@ function saveCurrentInstrument(publishToServer){
   if(currentId?DB.get(currentId):false){DB.update(currentId,rec);}
   else{currentId=rec.id;DB.add(rec);}
   // Sync active tab with saved id and snapshot
-  if(_tabIdx>=0&&_tabs[_tabIdx]){_tabs[_tabIdx].id=currentId;_tabs[_tabIdx].snap=rec;}
+  if(_tabIdx>=0){if(_tabs[_tabIdx]){_tabs[_tabIdx].id=currentId;_tabs[_tabIdx].snap=rec;}}
   renderLibrary();renderInstrumentTabs();setSaveStatus('saved');
   // Sauvegarde sur le serveur uniquement sur clic explicite du bouton
   if(publishToServer){_savePresetToServer(rec);}
@@ -1576,7 +1576,7 @@ function renderInstrumentTabs(){
 }
 function switchToTab(idx){
   if(idx===_tabIdx)return;
-  if(_tabIdx>=0&&_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();
+  if(_tabIdx>=0){if(_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();}
   _tabIdx=idx;
   var tab=_tabs[idx];currentId=tab.id;
   if(tab.snap)loadFromDB(tab.snap);
@@ -1588,13 +1588,13 @@ function closeTab(idx,e){
   if(!_tabs.length){openNewTab();return;}
   if(_tabIdx>=_tabs.length)_tabIdx=_tabs.length-1;
   else if(idx<_tabIdx)_tabIdx--;
-  else if(idx===_tabIdx&&idx===_tabs.length)_tabIdx=_tabs.length-1;
+  else if(idx===_tabIdx){if(idx===_tabs.length)_tabIdx=_tabs.length-1;}
   var tab=_tabs[_tabIdx];currentId=tab.id;
   if(tab.snap)loadFromDB(tab.snap);
   renderInstrumentTabs();renderLibrary();scheduleLivePreview();
 }
 function openNewTab(){
-  if(_tabIdx>=0&&_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();
+  if(_tabIdx>=0){if(_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();}
   _tabs.push({id:null,snap:null});_tabIdx=_tabs.length-1;currentId=null;
   renderInstrumentTabs();
   var psel=document.getElementById('preset-select');if(psel)psel.value='';
@@ -1619,8 +1619,8 @@ function openNewTab(){
   setSaveStatus('dirty');window.scrollTo({top:0,behavior:'smooth'});
 }
 function openInstrumentTab(id){
-  for(var i=0;i<_tabs.length;i++){if(_tabs[i].id===id&&id!==null){switchToTab(i);return;}}
-  if(_tabIdx>=0&&_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();
+  for(var i=0;i<_tabs.length;i++){if(_tabs[i].id===id){if(id!==null){switchToTab(i);return;}}}
+  if(_tabIdx>=0){if(_tabs[_tabIdx])_tabs[_tabIdx]=_snapTab();}
   var r=DB.get(id);if(!r)return;
   _tabs.push({id:id,snap:r});_tabIdx=_tabs.length-1;currentId=id;
   loadFromDB(r);renderInstrumentTabs();renderLibrary();scheduleLivePreview();
