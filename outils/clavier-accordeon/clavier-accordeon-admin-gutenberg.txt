@@ -2066,7 +2066,7 @@ function renderRangeesCfg(){
   for(let r=0;r<CFG.nbRangees;r++){
     const rc=CFG.rangees[r]||{nom:`Rangée ${r+1}`,nb:11,register:'N'};
     const reg=rc.register||'N';
-    html+=`<div class="rangee-cfg">
+    html+=`<div class="rangee-cfg" draggable="true" ondragstart="rowDragStart(event,this,${r})" ondragend="rowDragEnd(this)" ondragover="rowDragOver(event,this)" ondragleave="rowDragLeave(event,this)" ondrop="rowDrop(event,this,${r})">
       <div class="row-cfg-hd"><span class="row-drag-handle" title="${lang==='en'?'Drag to reorder rows':'Glisser pour réordonner les rangées'}">⠿</span><strong style="font-size:.75rem;color:var(--dark)">R${r+1}</strong></div>
       <label>Nom</label>
       <input type="text" id="rnom-${r}" value="${esc(rc.nom)}" style="font-size:.76rem;padding:3px 6px;" onchange="CFG.rangees[${r}].nom=this.value;onAnyChange()">
@@ -2092,46 +2092,42 @@ function renderRangeesCfg(){
 }
 
 /* ── Row drag-and-drop to reorder right-hand rows ── */
-let _rowDragSrc=null;
-function initRowDragDrop(){
-  const wrap=document.getElementById('rangees-cfg');
-  if(!wrap)return;
-  wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
-    el.dataset.rowIdx=idx;
-    const handle=el.querySelector('.row-drag-handle');
-    if(handle){
-      handle.setAttribute('draggable','true');
-      handle.addEventListener('dragstart',e=>{
-        _rowDragSrc=el;
-        e.dataTransfer.effectAllowed='move';
-        e.dataTransfer.setData('text/plain',String(idx));
-        setTimeout(function(){el.classList.add('row-dragging');},0);
-      });
-      handle.addEventListener('dragend',function(){
-        el.classList.remove('row-dragging');
-        wrap.querySelectorAll('.rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
-        _rowDragSrc=null;
-      });
-    }
-    el.addEventListener('dragover',function(e){
-      e.preventDefault();e.dataTransfer.dropEffect='move';
-      if(_rowDragSrc){if(_rowDragSrc!==el){
-        wrap.querySelectorAll('.rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
-        el.classList.add('row-drag-over');
-      }}
-    });
-    el.addEventListener('dragleave',function(){el.classList.remove('row-drag-over');});
-    el.addEventListener('drop',function(e){
-      e.preventDefault();
-      if(!_rowDragSrc||_rowDragSrc===el)return;
-      const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
-      if(isNaN(si)||isNaN(ti)||si===ti)return;
-      const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
-      const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
-      renderRangeesCfg();generateInputGrid();onAnyChange();
-    });
-  });
+var _rowDragSrcIdx=null;
+function rowDragStart(e,el,idx){
+  if(!e.target.classList.contains('row-drag-handle')){e.preventDefault();return;}
+  _rowDragSrcIdx=idx;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',String(idx));
+  setTimeout(function(){el.classList.add('row-dragging');},0);
 }
+function rowDragEnd(el){
+  el.classList.remove('row-dragging');
+  document.querySelectorAll('#rangees-cfg .rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
+  _rowDragSrcIdx=null;
+}
+function rowDragOver(e,el){
+  if(_rowDragSrcIdx===null){return;}
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('#rangees-cfg .rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
+  el.classList.add('row-drag-over');
+}
+function rowDragLeave(e,el){
+  var rt=e.relatedTarget;
+  if(rt){if(el.contains(rt)){return;}}
+  el.classList.remove('row-drag-over');
+}
+function rowDrop(e,el,ti){
+  e.preventDefault();
+  if(_rowDragSrcIdx===null){return;}
+  if(_rowDragSrcIdx===ti){return;}
+  var si=_rowDragSrcIdx;
+  _rowDragSrcIdx=null;
+  var rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
+  var nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
+  renderRangeesCfg();generateInputGrid();onAnyChange();
+}
+function initRowDragDrop(){}
 
 /* ── Generate note input grid ── */
 function generateInputGrid(){
