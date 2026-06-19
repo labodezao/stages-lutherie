@@ -1542,10 +1542,11 @@ function newInstrument(){
   var la=document.getElementById('lh-accords-label');if(la)la.value='';
   var ls=document.getElementById('lh-show-labels');if(ls)ls.checked=true;
   CFG.lhRows=[{nb:6,offset:0}];
-  loadPreset('GCD33');
-  document.getElementById('preset-select').value='GCD33';
-  renderLhRowsCfg();
-  renderLibrary();setSaveStatus('dirty');
+  loadPreset('GCD33').then(function(){
+    document.getElementById('preset-select').value='GCD33';
+    renderLhRowsCfg();
+    saveCurrentInstrument(false);
+  });
   window.scrollTo({top:0,behavior:'smooth'});
 }
 /* ── Library ── */

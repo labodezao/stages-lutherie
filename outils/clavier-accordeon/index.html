@@ -1493,10 +1493,11 @@ function newInstrument(){
   const _nlAlEl=document.getElementById('lh-accords-label');if(_nlAlEl)_nlAlEl.value='';
   const _nlSlEl=document.getElementById('lh-show-labels');if(_nlSlEl)_nlSlEl.checked=true;
   CFG.lhRows=[{nb:6,offset:0}];
-  loadPreset('GCD33');
-  document.getElementById('preset-select').value='GCD33';
-  renderLhRowsCfg();
-  renderLibrary();setSaveStatus('dirty');
+  loadPreset('GCD33').then(function(){
+    document.getElementById('preset-select').value='GCD33';
+    renderLhRowsCfg();
+    saveCurrentInstrument(false);
+  });
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
