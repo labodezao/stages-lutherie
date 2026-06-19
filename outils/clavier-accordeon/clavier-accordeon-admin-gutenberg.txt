@@ -2098,11 +2098,7 @@ function initRowDragDrop(){
   if(!wrap)return;
   wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
     el.dataset.rowIdx=idx;
-    const handle=el.querySelector('.row-drag-handle');
-    if(handle){
-      handle.addEventListener('mousedown',()=>{el.draggable=true;});
-    }
-    el.addEventListener('mouseup',()=>{el.draggable=false;});
+    el.draggable=true;
     el.addEventListener('dragstart',e=>{
       _rowDragSrc=el;
       e.dataTransfer.effectAllowed='move';
@@ -2110,7 +2106,6 @@ function initRowDragDrop(){
       setTimeout(()=>el.classList.add('row-dragging'),0);
     });
     el.addEventListener('dragend',()=>{
-      el.draggable=false;
       el.classList.remove('row-dragging');
       wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
       _rowDragSrc=null;
