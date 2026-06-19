@@ -918,6 +918,8 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
     var cat = PRESET_CATALOG.find(function(p){ return p.id === id; });
     if(cat) json.label = cat.label;
     currentPreset = json;
+    $('cw-nom-instrument').value = json.nom || json.label || '';
+    $('cw-nom-joueur').value = json.joueur || '';
     applyUIToPreset();
     renderAll();
   }
@@ -1508,6 +1510,9 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
       }
     });
     initNotePicker();
+    // Charger le premier preset pour afficher un aperçu d'emblée
+    var _firstId = $('cw-preset-sel').value;
+    if(_firstId) loadPreset(_firstId);
   }
 
   // Run init when DOM is ready
