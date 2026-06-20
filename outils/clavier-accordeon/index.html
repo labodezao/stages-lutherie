@@ -3300,6 +3300,7 @@ function clearNotes(){
 function convertFlatsToSharps(){
   if(!confirm(t('flatToSharpConfirm')))return;
   pushHistory();
+  readNoteInputsIntoCFG();
   // Flat→Sharp maps (French and English roots)
   const F2S={
     'Réb':'Do#','Mib':'Ré#','Solb':'Fa#','Lab':'Sol#','Sib':'La#','Dob':'Si',
