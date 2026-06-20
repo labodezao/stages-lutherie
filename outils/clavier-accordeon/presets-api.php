@@ -375,15 +375,14 @@ endif; // function_exists ca_rest_update_preset_meta
 
 /* ══════════════════════════════════════════════════════
    NONCE + REST ROOT INJECTION (admin/editor only)
-   Injects into admin footer:
+   Injects into admin footer AND wp_footer for logged-in editors/admins:
      window.CA_SAVE_NONCE  – wp_rest nonce for X-WP-Nonce header
      window.CA_REST_ROOT   – REST API root URL (e.g. https://site.com/wp-json/)
    Required by the admin widget to call the preset REST endpoints.
-   NOT hooked on wp_footer: public pages must stay untouched so that
-   WP Optimize does not bundle this script and interfere with the
-   Savoy theme's shop/slider scripts.  Inscription forms derive the
-   REST root from <link rel="https://api.w.org/"> (always present in
-   WordPress HTML) as their own fallback.
+   wp_footer hook is limited to upload_files users so WP Optimize never
+   caches this output (WP Optimize bypasses logged-in users by default).
+   Inscription forms derive the REST root from <link rel="https://api.w.org/">
+   (always present in WordPress HTML) as their own fallback.
    ══════════════════════════════════════════════════════ */
 
 if ( ! function_exists( 'ca_output_save_nonce' ) ) :
@@ -397,15 +396,18 @@ function ca_output_save_nonce() {
 	}
 }
 add_action( 'admin_footer', 'ca_output_save_nonce', 1 );
+// Also inject on frontend pages so the admin accordion tool works when
+// viewed as a published WordPress page (not just in the WP backend).
+add_action( 'wp_footer', 'ca_output_save_nonce', 1 );
 
 endif; // function_exists ca_output_save_nonce
 
 /* ══════════════════════════════════════════════════════
    ADMIN GLOBALS — injects window.CA_SVG_URL in admin footer
-   so the admin accordion tool can reference ca-svg.js.
-   NOT hooked on wp_footer: inscription forms use their own
-   STAGE_CONFIG.presetsBaseUrl fallback and do not need this
-   global on public pages.
+   AND wp_footer (for logged-in editors viewing the frontend
+   admin accordion page) so the tool can reference ca-svg.js.
+   Inscription forms use their own STAGE_CONFIG.presetsBaseUrl
+   fallback and do not need this global on public pages.
    ══════════════════════════════════════════════════════ */
 
 if ( ! function_exists( 'ca_output_public_globals' ) ) :
@@ -416,6 +418,10 @@ function ca_output_public_globals() {
 	echo '<script>window.CA_SVG_URL=' . wp_json_encode( $svg_url ) . ';</script>' . "\n";
 }
 add_action( 'admin_footer', 'ca_output_public_globals', 1 );
+// Also inject on frontend for logged-in users (guarded inside the function
+// only by is-admin check would exclude frontend — we always inject the SVG
+// URL since it is not sensitive and stagiaires pages need it too).
+add_action( 'wp_footer', 'ca_output_public_globals', 20 );
 
 endif; // function_exists ca_output_public_globals
 

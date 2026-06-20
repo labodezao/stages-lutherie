@@ -672,6 +672,9 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
 
 <script>
 function escHTML(s){if(!s)return'';const d=document.createElement('div');d.appendChild(document.createTextNode(String(s)));return d.innerHTML;}
+/* esc/escSVG: defined inline so generateInputGrid() works even before ca-svg.js loads */
+function esc(s){if(!s)return'';return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escSVG(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 /* ╔══════════════════════════════════════════════════════╗
    ║  LANGUAGES                                           ║
    ╚══════════════════════════════════════════════════════╝ */
