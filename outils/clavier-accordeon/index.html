@@ -3174,6 +3174,8 @@ function convertFlatsToSharps(){
     'Réb':'Do#','Mib':'Ré#','Solb':'Fa#','Lab':'Sol#','Sib':'La#','Dob':'Si',
     'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#','Cb':'B'
   };
+  // Case-insensitive lookup map
+  const F2S_lower={};for(const k in F2S)F2S_lower[k.toLowerCase()]=F2S[k];
   function convertNote(s){
     if(!s)return s;
     // Slash-separated notes: convert each part recursively (handles octave in each part)
@@ -3183,8 +3185,8 @@ function convertFlatsToSharps(){
     if(sp>0){const root=s.slice(0,sp),qual=s.slice(sp);return convertNote(root)+qual;}
     // Simple note possibly with octave suffix: "Réb3" → "Do#3"
     const m=s.match(/^(.+?)(\d)$/);
-    if(m){const conv=F2S[m[1]];if(conv!==undefined)return conv+m[2];}
-    return F2S[s]||s;
+    if(m){const conv=F2S_lower[m[1].toLowerCase()];if(conv!==undefined)return conv+m[2];}
+    return F2S_lower[s.toLowerCase()]||s;
   }
   function convertRow(arr){return (arr||[]).map(b=>({p:convertNote(b.p),t:convertNote(b.t)}));}
   const n=CFG.notes;

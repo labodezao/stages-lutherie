@@ -40,8 +40,12 @@ function tx(x,y,text,size,fill,weight,anchor){return`<text x="${x}" y="${y}" fon
 function esc(s){if(!s)return'';return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function escSVG(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmtDate(d){if(!d)return new Date().toLocaleDateString('fr-FR');try{return new Date(d).toLocaleDateString('fr-FR');}catch(e){return d;}}
-/* Note display — uses displayNote() if defined (admin), else passes note as-is */
-function _dispNote(note){if(typeof displayNote==='function')return displayNote(note);return note||'';}
+/* Note display — uses displayNote() if defined (admin), else passes note as-is.
+   ASCII flat "b" (e.g. "Mib5") is replaced with Unicode ♭ for correct SVG rendering. */
+function _dispNote(note){
+  const s=(typeof displayNote==='function')?displayNote(note):(note||'');
+  return s.replace(/([A-Za-zÀ-ÿ])b(\d|$)/g,'$1♭$2');
+}
 function dn(note){return escSVG(_dispNote(note));}  // display note in current lang
 /* Render a button value (single note OR "N1/N2/N3") as SVG text centred at (cx,baseY).
    For multi-note values the notes are stacked vertically (tspan lines). */
