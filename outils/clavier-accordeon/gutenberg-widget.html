@@ -1295,6 +1295,9 @@
     var cat = PRESET_CATALOG.find(function(p){ return p.id === id; });
     if(cat) json.label = cat.label;
     currentPreset = json;
+    // Peupler les champs nom/joueur depuis le preset
+    $('cw-nom-instrument').value = json.nom || json.label || '';
+    $('cw-nom-joueur').value = json.joueur || '';
     applyUIToPreset();
     renderAll();
   }
@@ -1881,6 +1884,9 @@
       }
     });
     initNotePicker();
+    // Charger le premier preset pour afficher un apercu d'emblee
+    var _firstId = $('cw-preset-sel').value;
+    if(_firstId) loadPreset(_firstId);
   }
 
   // Run init when DOM is ready

@@ -559,6 +559,13 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
      ═══════════════════════════════════════════════════ */
   var PRESETS_BASE_URL = (window.PRESETS_BASE_URL !== undefined) ? window.PRESETS_BASE_URL : '';
 
+  /* Charger ca-svg.js dynamiquement si non disponible (pages front-end) */
+  (function(){
+    if(typeof window.buildSVG_Plan === 'function') return;
+    var u = window.CA_SVG_URL || (PRESETS_BASE_URL ? PRESETS_BASE_URL.replace(/\/?$/, '/') + 'ca-svg.js' : '');
+    if(u){ var s = document.createElement('script'); s.src = u; document.head.appendChild(s); }
+  })();
+
   function _remotePresetUrl(path){
     return PRESETS_BASE_URL.replace(/\/?$/, '/') + path;
   }
@@ -630,8 +637,8 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
     if(!snap){ showToast('Aucun modèle chargé.'); return; }
     var labelInput = $('cw-preset-label-input');
     var catSel = $('cw-preset-category-sel');
-    var userLabel = (labelInput && labelInput.value.trim()) || snap.nom || 'Pr\u00e9set personnalis\u00e9';
-    var userCategory = (catSel && catSel.value) || 'Personnalis\u00e9s';
+    var userLabel = (labelInput ? labelInput.value.trim() : '') || snap.nom || 'Pr\u00e9set personnalis\u00e9';
+    var userCategory = (catSel ? catSel.value : '') || 'Personnalis\u00e9s';
     var rawId = (userLabel.replace(/\s+/g,'_').replace(/[^A-Za-z0-9_\-]/g,'').substring(0,40)) || ('preset_' + Date.now());
     var entry = [{
       id: rawId,
@@ -769,14 +776,14 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
     _cwNote = n;
     if(_cwEdit){ if(_cwEdit.slot === 'push') _cwEdit.pushNote = n; else _cwEdit.pullNote = n; }
     cwPickerHL(); cwPickerUpdatePreview();
-    if(_cwNote && _cwOct) cwPickerAutoApplySlot();
+    if(_cwNote){ if(_cwOct) cwPickerAutoApplySlot(); }
   }
 
   function cwPickerSetOctave(o){
     _cwOct = o;
     if(_cwEdit){ if(_cwEdit.slot === 'push') _cwEdit.pushOct = o; else _cwEdit.pullOct = o; }
     cwPickerHL(); cwPickerUpdatePreview();
-    if(_cwNote && _cwOct) cwPickerAutoApplySlot();
+    if(_cwNote){ if(_cwOct) cwPickerAutoApplySlot(); }
   }
 
   /* Auto-apply current slot and switch to the other slot if it is empty */
@@ -814,8 +821,8 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
   function cwPickerApply(){
     if(!_cwEdit || !currentPreset) return;
     /* Use note+oct only when both components are present, otherwise fall back to stored value */
-    var p = (_cwEdit.pushNote && _cwEdit.pushOct) ? (_cwEdit.pushNote + _cwEdit.pushOct) : (_cwEdit.pushVal || '');
-    var t = (_cwEdit.pullNote && _cwEdit.pullOct) ? (_cwEdit.pullNote + _cwEdit.pullOct) : (_cwEdit.pullVal || '');
+    var p = _cwEdit.pushNote ? (_cwEdit.pushOct ? _cwEdit.pushNote + _cwEdit.pushOct : _cwEdit.pushVal || '') : (_cwEdit.pushVal || '');
+    var t = _cwEdit.pullNote ? (_cwEdit.pullOct ? _cwEdit.pullNote + _cwEdit.pullOct : _cwEdit.pullVal || '') : (_cwEdit.pullVal || '');
     var notes = currentPreset.notes;
     if(!notes) { notes = {}; currentPreset.notes = notes; }
     var eid = _cwEdit.editId;
@@ -908,16 +915,19 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
      ═══════════════════════════════════════════════════ */
   async function loadPreset(id){
     if(!id){ currentPreset = null; currentData = null; renderAll(); return; }
-    var raw = PRESETS_DATA[id];
-    if(!raw && PRESETS_BASE_URL){
+    // Quand un serveur est configuré, préférer ses données (toujours à jour) aux données inline
+    var raw = PRESETS_BASE_URL ? null : PRESETS_DATA[id];
+    if(!raw){ if(PRESETS_BASE_URL){
       raw = await fetchRemotePreset(id);
       if(raw) PRESETS_DATA[id] = raw; // mise en cache locale
-    }
+    }}
     if(!raw){ $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Preset introuvable : ' + id + '</p>'; return; }
     var json = JSON.parse(JSON.stringify(raw)); // deep clone
     var cat = PRESET_CATALOG.find(function(p){ return p.id === id; });
     if(cat) json.label = cat.label;
     currentPreset = json;
+    $('cw-nom-instrument').value = json.nom || json.label || '';
+    $('cw-nom-joueur').value = json.joueur || '';
     applyUIToPreset();
     renderAll();
   }
@@ -943,18 +953,28 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
       $('cw-rows-cfg').innerHTML = '';
       return;
     }
-    currentData = presetToSVGData(currentPreset);
+    if(typeof window.presetToSVGData !== 'function'){ setTimeout(function(){ renderAll(); }, 400); return; }
+    currentData = window.presetToSVGData(currentPreset);
     currentData.nomJoueur = $('cw-nom-joueur').value.trim();
     var nomI = $('cw-nom-instrument').value.trim();
     if(nomI) currentData.nomInstrument = nomI;
 
-    // SVG preview
-    try {
-      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
-      bindSVGEditing();
-    } catch(e){
-      $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+e.message+'</p>';
+    // SVG preview — retry si ca-svg.js pas encore chargé
+    var _svgTries = 0;
+    function _renderSVGNow(){
+      if(typeof window.buildSVG_Plan !== 'function'){
+        if(++_svgTries < 6){ setTimeout(_renderSVGNow, 400); return; }
+        $('cw-svg-wrap').innerHTML = '<p style="color:#999;font-size:.85rem;">Bibliothèque SVG indisponible.</p>';
+        return;
+      }
+      try {
+        $('cw-svg-wrap').innerHTML = window.buildSVG_Plan(currentData, darkMode);
+        bindSVGEditing();
+      } catch(e){
+        $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+e.message+'</p>';
+      }
     }
+    _renderSVGNow();
 
     renderRowsCfg();
     renderRHTables();
@@ -966,10 +986,11 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
      ═══════════════════════════════════════════════════ */
   function refreshSVG(){
     if(!currentPreset)return;
-    currentData=presetToSVGData(currentPreset);
+    if(typeof window.presetToSVGData!=='function')return;
+    currentData=window.presetToSVGData(currentPreset);
     currentData.nomJoueur=$('cw-nom-joueur').value.trim();
     var nomI=$('cw-nom-instrument').value.trim();if(nomI)currentData.nomInstrument=nomI;
-    try{$('cw-svg-wrap').innerHTML=buildSVG_Plan(currentData,darkMode);bindSVGEditing();}catch(e){}
+    try{$('cw-svg-wrap').innerHTML=window.buildSVG_Plan(currentData,darkMode);bindSVGEditing();}catch(e){}
   }
 
   function renderRowsCfg(){
@@ -1153,12 +1174,13 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
     }
     // Re-render SVG only (not the tables, to keep focus)
     applyUIToPreset();
-    currentData = presetToSVGData(currentPreset);
+    if(typeof window.presetToSVGData !== 'function') return;
+    currentData = window.presetToSVGData(currentPreset);
     currentData.nomJoueur = $('cw-nom-joueur').value.trim();
     var nomI = $('cw-nom-instrument').value.trim();
     if(nomI) currentData.nomInstrument = nomI;
     try {
-      $('cw-svg-wrap').innerHTML = buildSVG_Plan(currentData, darkMode);
+      $('cw-svg-wrap').innerHTML = window.buildSVG_Plan(currentData, darkMode);
       bindSVGEditing();
     } catch(err){
       $('cw-svg-wrap').innerHTML = '<p style="color:#c0392b;padding:12px;">Erreur de rendu : '+err.message+'</p>';
@@ -1478,36 +1500,41 @@ window.PRESETS_BASE_URL = 'https://ewendaviau.com/wp-content/uploads/presets/';
     // Click-outside: close picker (inspired by offline tool — check style.display, not class)
     document.addEventListener('click', function(ev){
       var picker = $('cw-note-picker');
-      if(picker && picker.style.display === 'block'){
+      if(picker){ if(picker.style.display === 'block'){
         if(!picker.contains(ev.target)){
-          if(!ev.target.closest('.cw-edit-btn') && !ev.target.closest('input[data-section]')){
-            closeNotePicker();
+          if(!ev.target.closest('.cw-edit-btn')){
+            if(!ev.target.closest('input[data-section]')){
+              closeNotePicker();
+            }
           }
         }
-      }
+      }}
     });
     // Note table inputs → open picker on click (inspired by offline tool)
     $('cw-rh-tables').addEventListener('click', function(e){
       var inp = e.target.closest('input[data-section="rh"]');
-      if(inp && currentPreset){
+      if(inp){ if(currentPreset){
         var ri = parseInt(inp.getAttribute('data-row'), 10);
         var bi = parseInt(inp.getAttribute('data-btn'), 10);
         var dir = inp.getAttribute('data-dir');
         e.stopPropagation();
         openNotePicker('rh:'+ri+':'+bi, e, dir === 'p' ? 'push' : 'pull');
-      }
+      }}
     });
     $('cw-lh-tables').addEventListener('click', function(e){
       var inp = e.target.closest('input[data-section]');
-      if(inp && currentPreset){
+      if(inp){ if(currentPreset){
         var sec = inp.getAttribute('data-section');
         var bi  = parseInt(inp.getAttribute('data-btn'), 10);
         var dir = inp.getAttribute('data-dir');
         e.stopPropagation();
         openNotePicker(sec+':'+bi, e, dir === 'p' ? 'push' : 'pull');
-      }
+      }}
     });
     initNotePicker();
+    // Charger le premier preset pour afficher un aperçu d'emblée
+    var _firstId = $('cw-preset-sel').value;
+    if(_firstId) loadPreset(_firstId);
   }
 
   // Run init when DOM is ready

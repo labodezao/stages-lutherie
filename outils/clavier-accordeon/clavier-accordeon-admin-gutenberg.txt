@@ -198,7 +198,6 @@ select option{background:#fff;color:var(--txt)}
 #visual-output svg{display:block;margin:0 auto;max-width:100%}
 
 
-
 /* ── Modal ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);
   z-index:500;align-items:center;justify-content:center}
@@ -287,7 +286,6 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
   </div>
   <div id="lib-cards"><div class="lib-empty" data-i="noSaved">Aucun instrument sauvegardé.</div></div>
 </div>
-
 
 <div class="container">
 
@@ -1008,6 +1006,13 @@ var   _pmSortDir=1;          // 1=asc, -1=desc
    En mode local (sans ce bloc), on initialise à '' par défaut. */
 window.PRESETS_BASE_URL = window.PRESETS_BASE_URL || '';
 
+/* Charger ca-svg.js dynamiquement si non disponible (pages front-end) */
+(function(){
+  if(typeof window.buildSVG_Plan === 'function') return;
+  var u = window.CA_SVG_URL || (window.PRESETS_BASE_URL ? window.PRESETS_BASE_URL.replace(/\/?$/, '/') + 'ca-svg.js' : '');
+  if(u){ var s = document.createElement('script'); s.src = u; document.head.appendChild(s); }
+})();
+
 /* CA_REST_ROOT est injecté par presets-api.php (window.CA_REST_ROOT = rest_url()).
    Fallback sur '/wp-json/' pour compatibilité. */
 const _caRestRoot = window.CA_REST_ROOT || '/wp-json/';
@@ -1327,7 +1332,6 @@ function saveCurrentInstrument(publishToServer){
   if(currentId?DB.get(currentId):false){DB.update(currentId,rec);}
   else{currentId=rec.id;DB.add(rec);}
   renderLibrary();setSaveStatus('saved');
-  // Sauvegarde sur le serveur uniquement sur clic explicite du bouton
   if(publishToServer){_savePresetToServer(rec);}
 }
 
@@ -1522,31 +1526,29 @@ function renderFamilyManager(){
 }
 function newInstrument(){
   currentId=null;
-  document.getElementById('preset-select').value='';
-  const eid=document.getElementById('preset-export-id');
-  if(eid){eid.value='';}
-  const elbl=document.getElementById('preset-export-label');
-  if(elbl){elbl.value='';delete elbl.dataset.userEdited;}
+  var psel=document.getElementById('preset-select');if(psel)psel.value='';
+  var eid=document.getElementById('preset-export-id');if(eid)eid.value='';
+  var elbl=document.getElementById('preset-export-label');if(elbl){elbl.value='';delete elbl.dataset.userEdited;}
   document.getElementById('nom-instrument').value='';
   document.getElementById('nom-joueur').value='';
   document.getElementById('date-creation').value=new Date().toISOString().slice(0,10);
   document.getElementById('nb-voix').value='2';
   renderVoixPerRow();
-  (function(){const d=['B','N'];for(let i=0;i<2;i++){const s=document.getElementById('voix-v'+i);if(s)s.value=d[i];}})();
+  (function(){var d=['B','N'];for(var i=0;i<2;i++){var s=document.getElementById('voix-v'+i);if(s)s.value=d[i];}})();
   document.getElementById('nb-voix-accords').value='2';
   document.getElementById('nb-voix-basses').value='2';
-  document.getElementById('lh-separated').checked=true;
-  const _nlBlEl=document.getElementById('lh-basses-label');if(_nlBlEl)_nlBlEl.value='';
-  const _nlAlEl=document.getElementById('lh-accords-label');if(_nlAlEl)_nlAlEl.value='';
-  const _nlSlEl=document.getElementById('lh-show-labels');if(_nlSlEl)_nlSlEl.checked=true;
+  var lhsep=document.getElementById('lh-separated');if(lhsep)lhsep.checked=true;
+  var lb=document.getElementById('lh-basses-label');if(lb)lb.value='';
+  var la=document.getElementById('lh-accords-label');if(la)la.value='';
+  var ls=document.getElementById('lh-show-labels');if(ls)ls.checked=true;
   CFG.lhRows=[{nb:6,offset:0}];
-  loadPreset('GCD33');
-  document.getElementById('preset-select').value='GCD33';
-  renderLhRowsCfg();
-  renderLibrary();setSaveStatus('dirty');
+  loadPreset('GCD33').then(function(){
+    document.getElementById('preset-select').value='GCD33';
+    renderLhRowsCfg();
+    saveCurrentInstrument(false);
+  });
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
 /* ── Library ── */
 function renderLibrary(){
   const list=DB.all(),wrap=document.getElementById('lib-cards');
@@ -1690,15 +1692,25 @@ async function loadPreset(key){
   CFG.nbRangees=p.nbRangees;CFG.rangees=p.rangees.map(r=>({nom:r.nom,nb:r.nb,offset:r.offset||0}));
   CFG.notes=JSON.parse(JSON.stringify(p.notes));
   if(!CFG.notes.terzetto)CFG.notes.terzetto=[];
-  // Reset lhRows to 1 row matching bass count
-  CFG.lhRows=[{nb:Math.max(1,CFG.notes.basses.length),offset:0}];
-  // Auto-set display mode: paired (alterné) for ≤18 basses, separated for 24+
+  // Fallback: nom-instrument depuis p.nom si non rempli par l'index (chargement asynchrone)
+  const enom=document.getElementById('nom-instrument');
+  if(enom){if(!enom.value)enom.value=p.nom||key;}
+  // Restaurer la config main gauche depuis le preset
   const _nBas=CFG.notes.basses?CFG.notes.basses.length:0;
-  const _autoMode=_nBas<=18?'paired':'separated';
-  const _autoEl=document.getElementById('lh-'+_autoMode);
+  CFG.lhRows=p.lhRows?JSON.parse(JSON.stringify(p.lhRows)):[{nb:Math.max(1,_nBas),offset:0}];
+  CFG.lhPairsPerRow=p.lhPairsPerRow||2;
+  CFG.lhPairedOffsets=p.lhPairedOffsets?JSON.parse(JSON.stringify(p.lhPairedOffsets)):[];
+  CFG.lhBassFirst=p.lhBassFirst||false;
+  const _mode=p.lhDisplayMode||(_nBas<=18?'paired':'separated');
+  const _autoEl=document.getElementById('lh-'+_mode);
   if(_autoEl)_autoEl.checked=true;
   const _dw=document.getElementById('lh-paired-dir-wrap');
-  if(_dw)_dw.style.display=_autoMode==='paired'?'block':'none';
+  if(_dw)_dw.style.display=_mode==='paired'?'block':'none';
+  if(p.lhPairedDir){const _lhpdEl=document.getElementById('lh-paired-dir-'+(p.lhPairedDir==='horizontal'?'h':'v'));if(_lhpdEl)_lhpdEl.checked=true;}
+  const _lhBlEl=document.getElementById('lh-basses-label');if(_lhBlEl)_lhBlEl.value=p.lhBassesLabel||'';
+  const _lhAlEl=document.getElementById('lh-accords-label');if(_lhAlEl)_lhAlEl.value=p.lhAccordsLabel||'';
+  const _lhSlEl=document.getElementById('lh-show-labels');if(_lhSlEl)_lhSlEl.checked=p.lhShowLabels!==false;
+  updateLhOrderBtn();
   document.getElementById('nb-rangees').value=p.nbRangees;
   syncGaucheInputs();
   const _asEl=document.getElementById('accords-seuil-enabled');
@@ -2080,43 +2092,45 @@ function renderRangeesCfg(){
 }
 
 /* ── Row drag-and-drop to reorder right-hand rows ── */
-let _rowDragSrc=null;
+var _rowDragSrc=null;
 function initRowDragDrop(){
-  const wrap=document.getElementById('rangees-cfg');
+  var wrap=document.getElementById('rangees-cfg');
   if(!wrap)return;
-  wrap.querySelectorAll('.rangee-cfg').forEach((el,idx)=>{
+  wrap.querySelectorAll('.rangee-cfg').forEach(function(el,idx){
     el.dataset.rowIdx=idx;
-    const handle=el.querySelector('.row-drag-handle');
+    var handle=el.querySelector('.row-drag-handle');
     if(handle){
-      handle.addEventListener('mousedown',()=>{el.draggable=true;});
+      handle.addEventListener('mousedown',function(){el.draggable=true;});
     }
-    el.addEventListener('mouseup',()=>{el.draggable=false;});
-    el.addEventListener('dragstart',e=>{
+    el.addEventListener('mouseup',function(){el.draggable=false;});
+    el.addEventListener('dragstart',function(e){
       _rowDragSrc=el;
       e.dataTransfer.effectAllowed='move';
-      setTimeout(()=>el.classList.add('row-dragging'),0);
+      e.dataTransfer.setData('text/plain',idx.toString());
+      setTimeout(function(){el.classList.add('row-dragging');},0);
     });
-    el.addEventListener('dragend',()=>{
+    el.addEventListener('dragend',function(){
       el.draggable=false;
       el.classList.remove('row-dragging');
-      wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+      wrap.querySelectorAll('.rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
       _rowDragSrc=null;
     });
-    el.addEventListener('dragover',e=>{
+    el.addEventListener('dragover',function(e){
       e.preventDefault();e.dataTransfer.dropEffect='move';
       if(_rowDragSrc?_rowDragSrc!==el:false){
-        wrap.querySelectorAll('.rangee-cfg').forEach(c=>c.classList.remove('row-drag-over'));
+        wrap.querySelectorAll('.rangee-cfg').forEach(function(c){c.classList.remove('row-drag-over');});
         el.classList.add('row-drag-over');
       }
     });
-    el.addEventListener('dragleave',()=>el.classList.remove('row-drag-over'));
-    el.addEventListener('drop',e=>{
+    el.addEventListener('dragleave',function(){el.classList.remove('row-drag-over');});
+    el.addEventListener('drop',function(e){
       e.preventDefault();
       if(!_rowDragSrc||_rowDragSrc===el)return;
-      const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
+      var si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
       if(isNaN(si)||isNaN(ti)||si===ti)return;
-      const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
-      const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
+      pushHistory();
+      var rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
+      var nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
       renderRangeesCfg();generateInputGrid();onAnyChange();
     });
   });
@@ -2136,7 +2150,7 @@ function generateInputGrid(){
       <span class="sec-label">${esc(rc.nom)}</span>
       <button type="button" class="rng-btn" onclick="swapPushPull('rw-d-${r}')" title="${t('swapRowTitle')}">⇅</button>
       <button type="button" class="rng-btn" onclick="mirrorRow('rw-d-${r}')" title="${t('mirrorRowTitle')}">⇆</button>
-      <button type="button" class="rng-btn" onclick="copyRow('rw-d-${r}')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-d-${r}',this)" title="${t('copyRowTitle')}">📋</button>
       <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-d-${r}')" title="${t('pasteRowTitle')}">⬆</button>
     </div><div class="btn-grid">`;
     for(let b=0;b<nb;b++){
@@ -2189,7 +2203,7 @@ function generateInputGrid(){
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('basses')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('basses')" title="＋">＋</button>${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="bassesOctaveShift()" title="Copier V1 → V2 et V2 → V3, chacune à l'octave supérieure">↑8va→V2/V3</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
-        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}',this)" title="${t('copyRowTitle')}">📋</button>
         <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
       for(let b=0;b<_bCount;b++){
@@ -2213,7 +2227,7 @@ function generateInputGrid(){
         ${v===0?`<button type="button" class="rng-btn" onclick="removeGaucheBtn('accords')" title="−">−</button><button type="button" class="rng-btn" onclick="addGaucheBtn('accords')" title="＋">＋</button>${nbVA>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:6px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#e8f5e3;color:#1d6b23;" onclick="accordsFifthShift()" title="Copier Accords V1 → V2 à la quinte juste supérieure (+7 demi-tons)">↑5te→V2</button>`:''}${nbVB>1?`<button type="button" class="rng-btn" style="width:auto;height:auto;margin-left:4px;font-size:.7rem;padding:2px 6px;white-space:nowrap;background:#fff3cd;color:#856404;" onclick="basseV2ToAccordV1Shift()" title="Copier Basses V2 → Accords V1 à l'octave supérieure">B2+8va→A1</button>`:''}`:''}
         <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-${vkey}')" title="${t('swapRowTitle')}">⇅</button>
         <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-${vkey}')" title="${t('mirrorRowTitle')}">⇆</button>
-        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}')" title="${t('copyRowTitle')}">📋</button>
+        <button type="button" class="rng-btn" onclick="copyRow('rw-g-${vkey}',this)" title="${t('copyRowTitle')}">📋</button>
         <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-${vkey}')" title="${t('pasteRowTitle')}">⬆</button>
       </div><div class="btn-grid">`;
       for(let b=0;b<_aCount;b++){
@@ -2235,7 +2249,7 @@ function generateInputGrid(){
       <button type="button" class="rng-btn" onclick="addGaucheBtn('terzetto')" title="＋">＋</button>
       <button type="button" class="rng-btn" onclick="swapPushPull('rw-g-terzetto')" title="${t('swapRowTitle')}">⇅</button>
       <button type="button" class="rng-btn" onclick="mirrorRow('rw-g-terzetto')" title="${t('mirrorRowTitle')}">⇆</button>
-      <button type="button" class="rng-btn" onclick="copyRow('rw-g-terzetto')" title="${t('copyRowTitle')}">📋</button>
+      <button type="button" class="rng-btn" onclick="copyRow('rw-g-terzetto',this)" title="${t('copyRowTitle')}">📋</button>
       <button type="button" class="rng-btn row-paste-btn${clip}" onclick="pasteRow('rw-g-terzetto')" title="${t('pasteRowTitle')}">⬆</button>
     </div><div class="btn-grid">`;
     for(let b=0;b<count;b++){
@@ -2285,15 +2299,20 @@ function initBtnCellDragDrop(){
         const cells=[...grid.querySelectorAll('.btn-cell')];
         const si=cells.indexOf(_dragSrc),ti=cells.indexOf(cell);
         if(si<0||ti<0||si===ti)return;
-        // Get the note key from the row-wrap id (e.g. "rw-g-basses" → "basses")
+        // Resolve the target array: left hand (rw-g-<key>) vs right hand (rw-d-<r>)
         const rowWrap=grid.closest('.row-wrap');
         const rowId=rowWrap?rowWrap.id:'';
-        const keyMatch=rowId.match(/^rw-g-(.+)$/);
-        if(!keyMatch)return;
-        const key=keyMatch[1];
-        if(!CFG.notes[key])return;
+        let arr=null;
+        const gMatch=rowId.match(/^rw-g-(.+)$/);
+        const dMatch=rowId.match(/^rw-d-(\d+)$/);
+        if(gMatch){
+          if(CFG.notes[gMatch[1]])arr=CFG.notes[gMatch[1]];
+        }else if(dMatch){
+          const ri=parseInt(dMatch[1],10);
+          if(CFG.notes.droite?CFG.notes.droite[ri]:false)arr=CFG.notes.droite[ri];
+        }
+        if(!arr)return;
         // Swap in CFG
-        const arr=CFG.notes[key];
         if(si<arr.length?ti<arr.length:false){
           const tmp=arr[si];arr[si]=arr[ti];arr[ti]=tmp;
         }
@@ -2592,16 +2611,116 @@ function buildLhSommierSections(data){
   if(data.terzetto?data.terzetto.length:false)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
   return lhSections;
 }
+function noteToStaffStep(note){
+  if(!note)return null;
+  const DFR={Do:0,Re:1,Ré:1,Mi:2,Fa:3,Sol:4,La:5,Si:6};
+  const DEN={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+  let m=note.match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)[#b♭]?(\d+)$/);
+  if(m)return parseInt(m[2])*7+DFR[m[1]];
+  m=note.match(/^([A-G])[#b♭]?(\d+)$/);
+  if(m)return parseInt(m[2])*7+DEN[m[1]];
+  return null;
+}
+function buildPorteeSVG(title,rows,clefRef,dark){
+  const LS=7,HS=3.5,BW=26;
+  let sMin=0,sMax=8;
+  rows.forEach(function(row){(row.boutons||row.items||[]).forEach(function(btn){
+    [btn.p||'',btn.t||''].forEach(function(note){
+      const a=noteToStaffStep(note);
+      if(a!==null){const st=a-clefRef;sMin=Math.min(sMin,st);sMax=Math.max(sMax,st);}
+    });
+  });});
+  sMin-=3;sMax+=3;
+  const ZONE_H=(sMax-sMin)*HS;
+  const LABEL_H=22;
+  const ROW_H=ZONE_H+LABEL_H;
+  const VGAP=ROW_H+12;
+  const MARG=10,HEAD=42;
+  const maxNameLen=Math.max.apply(null,rows.map(function(r){return(r.nom||r.label||'').length;}).concat([0]));
+  const ROWLBL_W=Math.min(170,Math.max(58,Math.ceil(maxNameLen*4.4)+6));
+  const PITCH_W=22;
+  const LPAD=ROWLBL_W+PITCH_W;
+  const gold=dark?'#c9a227':'#1a5c1a';
+  const bg=dark?'#111':'#fff';
+  const pushCol=dark?'#6fcf5a':'#1a5c1a';
+  const pullCol=dark?'#e8b840':'#8b6914';
+  const lineCol=dark?'#666':'#444';
+  const ledgeCol=dark?'#888':'#aaa';
+  const numCol=dark?'rgba(200,162,39,.4)':'rgba(0,0,0,.28)';
+  const octCol=dark?'rgba(100,200,100,.12)':'rgba(0,140,60,.07)';
+  const octLbl=dark?'rgba(150,220,150,.55)':'rgba(0,100,40,.45)';
+  const sepCol=dark?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+  const maxBtns=Math.max.apply(null,rows.map(function(r){return(r.boutons||r.items||[]).length;}).concat([1]));
+  const W=LPAD+maxBtns*BW+MARG;
+  const H=MARG+HEAD+rows.length*VGAP+MARG;
+  let s=svg_open(W,H,bg);
+  s+=tx(W/2,MARG+13,escSVG(title),11,gold,'bold','middle');
+  s+=`<ellipse cx="${LPAD+5}" cy="${MARG+27}" rx="4" ry="3" fill="${pushCol}"/>`;
+  s+=tx(LPAD+12,MARG+31,t('svgPush'),7,dark?'#ccc':'#444','normal','start');
+  s+=`<ellipse cx="${LPAD+82}" cy="${MARG+27}" rx="4" ry="3" fill="none" stroke="${pullCol}" stroke-width="1.2"/>`;
+  s+=tx(LPAD+89,MARG+31,t('svgPull'),7,dark?'#ccc':'#444','normal','start');
+  rows.forEach(function(row,ri){
+    const rowY=MARG+HEAD+ri*VGAP;
+    const items=row.boutons||row.items||[];
+    const nom=row.nom||(row.label||`R${ri+1}`);
+    const staffW=maxBtns*BW;
+    const base=rowY+sMax*HS;
+    s+=tx(ROWLBL_W,rowY+ZONE_H/2+3,escSVG(nom),8,gold,'bold','end');
+    for(let oct=0;oct<=8;oct++){
+      const cSt=oct*7-clefRef;
+      if(cSt<sMin||cSt>sMax)continue;
+      const cy=base-cSt*HS;
+      s+=`<rect x="${LPAD}" y="${cy-HS/2}" width="${staffW}" height="${HS}" fill="${octCol}"/>`;
+      s+=tx(LPAD-3,cy+2.5,dn('Do'+oct),5.5,octLbl,'normal','end');
+    }
+    for(let li=0;li<5;li++){
+      const ly=base-li*LS;
+      s+=`<line x1="${LPAD}" y1="${ly}" x2="${LPAD+staffW}" y2="${ly}" stroke="${lineCol}" stroke-width=".7"/>`;
+    }
+    const nameY1=rowY+ZONE_H+8;
+    const nameY2=rowY+ZONE_H+15;
+    const numY=rowY+ZONE_H+21;
+    items.forEach(function(btn,bi){
+      const cx=LPAD+bi*BW+BW/2;
+      if(bi>0)s+=`<line x1="${LPAD+bi*BW}" y1="${rowY-2}" x2="${LPAD+bi*BW}" y2="${numY+2}" stroke="${sepCol}" stroke-width=".5"/>`;
+      s+=tx(cx,numY,bi+1,5.5,numCol,'normal','middle');
+      const heads=[{note:btn.p||'',off:-2.6,fill:true,col:pushCol,nameY:nameY1},
+                   {note:btn.t||'',off:2.6,fill:false,col:pullCol,nameY:nameY2}];
+      heads.forEach(function(h){
+        const note=h.note,off=h.off,fill=h.fill,col=h.col,nameY=h.nameY;
+        if(!note)return;
+        s+=tx(cx,nameY,dn(note),6,col,'bold','middle');
+        const absS=noteToStaffStep(note);
+        if(absS===null)return;
+        const step=absS-clefRef;
+        if(step<sMin||step>sMax)return;
+        const ny=base-step*HS;
+        const ncx=cx+off;
+        if(step<0)for(let l=-2;l>=step;l-=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
+        if(step>8)for(let l=10;l<=step;l+=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
+        if(fill){s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="${col}"/>`;}
+        else{s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="none" stroke="${col}" stroke-width="1.2"/>`;}
+      });
+    });
+  });
+  s+=svg_close();
+  return s;
+}
 function buildSommierSVG(data,dark){
   const rhTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
   const lhTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
   const lhSections=buildLhSommierSections(data);
-  const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),dark);
+  const rhRows=expandVoicesForSommier(data.droite,data.voixPerRow||['N']);
+  const svgD=buildSommierSection(rhTitle,rhRows,dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
+  const porteeD=buildPorteeSVG('Portées — '+t('svgRH'),rhRows,30,dark);
+  const porteeG=lhSections.length?buildPorteeSVG('Portées — '+t('svgLH'),lhSections,18,dark):'';
   const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
   const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
   return `<h3 style="${dark?h3dstyle:h3style}">${t('svgRH')}</h3>${svgD}
-    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}`;
+    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}
+    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">Portées — ${t('svgRH')}</h3>${porteeD}
+    ${lhSections.length?`<h3 style="${dark?h3dstyle:h3style};margin-top:18px;">Portées — ${t('svgLH')}</h3>${porteeG}`:''}`;
 }
 
 
@@ -3142,9 +3261,15 @@ async function downloadPDF(which){
     // ── Sommier (suite directe, sans saut de page forcé) ──────────────
     const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
     const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
-    addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
+    const rhRowsSom=expandVoicesForSommier(data.droite,data.voixPerRow||['N']);
+    addSommierTable(rhRowsSom,rhSomTitle);
     const lhSecs=buildLhSommierSections(data);
     if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
+
+    // ── Portées (vérification visuelle des octaves) ──────────────────
+    pdf.addPage();yPos=MT;
+    await addSvgImg(buildPorteeSVG('Portées — '+t('svgRH'),rhRowsSom,30,false),null,null,false);
+    if(lhSecs.length)await addSvgImg(buildPorteeSVG('Portées — '+t('svgLH'),lhSecs,18,false),null,null,false);
   }
 
   // ══════════════════════════════════════════════════
@@ -3198,7 +3323,7 @@ function mirrorRow(rwId){
   });
   readNoteInputsIntoCFG();onAnyChange();
 }
-function copyRow(rwId){
+function copyRow(rwId,btn){
   const wrap=document.getElementById(rwId);if(!wrap)return;
   rowClipboard=[];
   wrap.querySelectorAll('.btn-cell').forEach(function(cell){
@@ -3207,6 +3332,7 @@ function copyRow(rwId){
     rowClipboard.push({p:p?p.value:'',t:ti?ti.value:''});
   });
   document.querySelectorAll('.row-paste-btn').forEach(function(b){b.classList.add('has-clip');});
+  if(btn){var _t=btn.textContent;btn.textContent='✓';setTimeout(function(){btn.textContent=_t;},700);}
 }
 function pasteRow(rwId){
   if(!rowClipboard)return;
@@ -3232,6 +3358,7 @@ function clearNotes(){
 function convertFlatsToSharps(){
   if(!confirm(t('flatToSharpConfirm')))return;
   pushHistory();
+  readNoteInputsIntoCFG();
   // Flat→Sharp maps (French and English roots)
   const F2S={
     'Réb':'Do#','Mib':'Ré#','Solb':'Fa#','Lab':'Sol#','Sib':'La#','Dob':'Si',
@@ -3294,7 +3421,7 @@ function _doTranspose(semi){
 function transposeAllNotes(semi){
   const label=semi>0?`+${semi}`:String(semi);
   if(!confirm(t('transposeConfirm').replace('%s',label)))return;
-  _doTranspose(semi);
+  pushHistory();_doTranspose(semi);
 }
 /* ── Custom transposition modal ─────────────────────── */
 function setTransposeSemitones(n){document.getElementById('transpose-semitones').value=n;}
