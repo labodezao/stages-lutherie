@@ -2611,16 +2611,116 @@ function buildLhSommierSections(data){
   if(data.terzetto?data.terzetto.length:false)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
   return lhSections;
 }
+function noteToStaffStep(note){
+  if(!note)return null;
+  const DFR={Do:0,Re:1,Ré:1,Mi:2,Fa:3,Sol:4,La:5,Si:6};
+  const DEN={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+  let m=note.match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)[#b♭]?(\d+)$/);
+  if(m)return parseInt(m[2])*7+DFR[m[1]];
+  m=note.match(/^([A-G])[#b♭]?(\d+)$/);
+  if(m)return parseInt(m[2])*7+DEN[m[1]];
+  return null;
+}
+function buildPorteeSVG(title,rows,clefRef,dark){
+  const LS=7,HS=3.5,BW=26;
+  let sMin=0,sMax=8;
+  rows.forEach(function(row){(row.boutons||row.items||[]).forEach(function(btn){
+    [btn.p||'',btn.t||''].forEach(function(note){
+      const a=noteToStaffStep(note);
+      if(a!==null){const st=a-clefRef;sMin=Math.min(sMin,st);sMax=Math.max(sMax,st);}
+    });
+  });});
+  sMin-=3;sMax+=3;
+  const ZONE_H=(sMax-sMin)*HS;
+  const LABEL_H=22;
+  const ROW_H=ZONE_H+LABEL_H;
+  const VGAP=ROW_H+12;
+  const MARG=10,HEAD=42;
+  const maxNameLen=Math.max.apply(null,rows.map(function(r){return(r.nom||r.label||'').length;}).concat([0]));
+  const ROWLBL_W=Math.min(170,Math.max(58,Math.ceil(maxNameLen*4.4)+6));
+  const PITCH_W=22;
+  const LPAD=ROWLBL_W+PITCH_W;
+  const gold=dark?'#c9a227':'#1a5c1a';
+  const bg=dark?'#111':'#fff';
+  const pushCol=dark?'#6fcf5a':'#1a5c1a';
+  const pullCol=dark?'#e8b840':'#8b6914';
+  const lineCol=dark?'#666':'#444';
+  const ledgeCol=dark?'#888':'#aaa';
+  const numCol=dark?'rgba(200,162,39,.4)':'rgba(0,0,0,.28)';
+  const octCol=dark?'rgba(100,200,100,.12)':'rgba(0,140,60,.07)';
+  const octLbl=dark?'rgba(150,220,150,.55)':'rgba(0,100,40,.45)';
+  const sepCol=dark?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+  const maxBtns=Math.max.apply(null,rows.map(function(r){return(r.boutons||r.items||[]).length;}).concat([1]));
+  const W=LPAD+maxBtns*BW+MARG;
+  const H=MARG+HEAD+rows.length*VGAP+MARG;
+  let s=svg_open(W,H,bg);
+  s+=tx(W/2,MARG+13,escSVG(title),11,gold,'bold','middle');
+  s+=`<ellipse cx="${LPAD+5}" cy="${MARG+27}" rx="4" ry="3" fill="${pushCol}"/>`;
+  s+=tx(LPAD+12,MARG+31,t('svgPush'),7,dark?'#ccc':'#444','normal','start');
+  s+=`<ellipse cx="${LPAD+82}" cy="${MARG+27}" rx="4" ry="3" fill="none" stroke="${pullCol}" stroke-width="1.2"/>`;
+  s+=tx(LPAD+89,MARG+31,t('svgPull'),7,dark?'#ccc':'#444','normal','start');
+  rows.forEach(function(row,ri){
+    const rowY=MARG+HEAD+ri*VGAP;
+    const items=row.boutons||row.items||[];
+    const nom=row.nom||(row.label||`R${ri+1}`);
+    const staffW=maxBtns*BW;
+    const base=rowY+sMax*HS;
+    s+=tx(ROWLBL_W,rowY+ZONE_H/2+3,escSVG(nom),8,gold,'bold','end');
+    for(let oct=0;oct<=8;oct++){
+      const cSt=oct*7-clefRef;
+      if(cSt<sMin||cSt>sMax)continue;
+      const cy=base-cSt*HS;
+      s+=`<rect x="${LPAD}" y="${cy-HS/2}" width="${staffW}" height="${HS}" fill="${octCol}"/>`;
+      s+=tx(LPAD-3,cy+2.5,dn('Do'+oct),5.5,octLbl,'normal','end');
+    }
+    for(let li=0;li<5;li++){
+      const ly=base-li*LS;
+      s+=`<line x1="${LPAD}" y1="${ly}" x2="${LPAD+staffW}" y2="${ly}" stroke="${lineCol}" stroke-width=".7"/>`;
+    }
+    const nameY1=rowY+ZONE_H+8;
+    const nameY2=rowY+ZONE_H+15;
+    const numY=rowY+ZONE_H+21;
+    items.forEach(function(btn,bi){
+      const cx=LPAD+bi*BW+BW/2;
+      if(bi>0)s+=`<line x1="${LPAD+bi*BW}" y1="${rowY-2}" x2="${LPAD+bi*BW}" y2="${numY+2}" stroke="${sepCol}" stroke-width=".5"/>`;
+      s+=tx(cx,numY,bi+1,5.5,numCol,'normal','middle');
+      const heads=[{note:btn.p||'',off:-2.6,fill:true,col:pushCol,nameY:nameY1},
+                   {note:btn.t||'',off:2.6,fill:false,col:pullCol,nameY:nameY2}];
+      heads.forEach(function(h){
+        const note=h.note,off=h.off,fill=h.fill,col=h.col,nameY=h.nameY;
+        if(!note)return;
+        s+=tx(cx,nameY,dn(note),6,col,'bold','middle');
+        const absS=noteToStaffStep(note);
+        if(absS===null)return;
+        const step=absS-clefRef;
+        if(step<sMin||step>sMax)return;
+        const ny=base-step*HS;
+        const ncx=cx+off;
+        if(step<0)for(let l=-2;l>=step;l-=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
+        if(step>8)for(let l=10;l<=step;l+=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
+        if(fill){s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="${col}"/>`;}
+        else{s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="none" stroke="${col}" stroke-width="1.2"/>`;}
+      });
+    });
+  });
+  s+=svg_close();
+  return s;
+}
 function buildSommierSVG(data,dark){
   const rhTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
   const lhTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
   const lhSections=buildLhSommierSections(data);
-  const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),dark);
+  const rhRows=expandVoicesForSommier(data.droite,data.voixPerRow||['N']);
+  const svgD=buildSommierSection(rhTitle,rhRows,dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
+  const porteeD=buildPorteeSVG('Portées — '+t('svgRH'),rhRows,30,dark);
+  const porteeG=lhSections.length?buildPorteeSVG('Portées — '+t('svgLH'),lhSections,18,dark):'';
   const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
   const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
   return `<h3 style="${dark?h3dstyle:h3style}">${t('svgRH')}</h3>${svgD}
-    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}`;
+    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}
+    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">Portées — ${t('svgRH')}</h3>${porteeD}
+    ${lhSections.length?`<h3 style="${dark?h3dstyle:h3style};margin-top:18px;">Portées — ${t('svgLH')}</h3>${porteeG}`:''}`;
 }
 
 
@@ -3161,9 +3261,15 @@ async function downloadPDF(which){
     // ── Sommier (suite directe, sans saut de page forcé) ──────────────
     const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
     const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
-    addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
+    const rhRowsSom=expandVoicesForSommier(data.droite,data.voixPerRow||['N']);
+    addSommierTable(rhRowsSom,rhSomTitle);
     const lhSecs=buildLhSommierSections(data);
     if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
+
+    // ── Portées (vérification visuelle des octaves) ──────────────────
+    pdf.addPage();yPos=MT;
+    await addSvgImg(buildPorteeSVG('Portées — '+t('svgRH'),rhRowsSom,30,false),null,null,false);
+    if(lhSecs.length)await addSvgImg(buildPorteeSVG('Portées — '+t('svgLH'),lhSecs,18,false),null,null,false);
   }
 
   // ══════════════════════════════════════════════════
