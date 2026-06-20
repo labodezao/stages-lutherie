@@ -466,6 +466,8 @@ hr.divider{border:none;border-top:1px solid var(--brd);margin:14px 0}
           <div class="legend-swatch" style="background:#fffbf0;border:1.5px solid #c8a020;color:#7a5c00;">↑</div>
           <strong data-i="pull">Tiré</strong>
         </div>
+        <button id="btn-undo" class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="undo()" title="Ctrl+Z" disabled data-i-btn="undo">↩ Annuler</button>
+        <button id="btn-redo" class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="redo()" title="Ctrl+Y" disabled data-i-btn="redo">↪ Rétablir</button>
         <button class="btn btn-rouge" style="margin-left:auto;font-size:.76rem;padding:5px 10px;" onclick="clearNotes()" data-i-btn="clearNotes">🗑️ Effacer toutes les notes</button>
         <button class="btn btn-outline" style="font-size:.76rem;padding:5px 10px;" onclick="convertFlatsToSharps()" data-i-btn="flatToSharp">b→# Bémols → Dièses</button>
         <span style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:.76rem;font-weight:600;color:#555;" data-i="transposeLabel">🎵 Transposer :</span>
@@ -672,7 +674,7 @@ fr:{
   rowConfig:'Configuration des rangées (nom & boutons)',
   clickToOpen:'<strong>Cliquez</strong> sur un champ <span style="color:#1d6b23;font-weight:700;">vert</span> (poussé) ou <span style="color:#b8860b;font-weight:700;">ambré</span> (tiré) pour ouvrir le sélecteur de notes.',
   rightHand:'🎵 Main Droite',leftHand:'🎹 Main Gauche',push:'Poussé',pull:'Tiré',
-  clearNotes:'🗑️ Effacer toutes les notes',saveInstrument:'💾 Sauvegarder cet accordéon',
+  clearNotes:'🗑️ Effacer toutes les notes',undo:'↩ Annuler',redo:'↪ Rétablir',saveInstrument:'💾 Sauvegarder cet accordéon',
   clientVisual:'🎹 Clavier client',manufacturerTable:'📋 Fabricant anches',
   pdfClientVisual:'🖨️ PDF plan clavier',pdfManufacturer:'🖨️ PDF fabricant',
   listView:'📋 Vue liste',sommierView:'🪗 Vue sommier',refresh:'🔄 Actualiser',
@@ -758,7 +760,7 @@ en:{
   rowConfig:'Row configuration (name & button count)',
   clickToOpen:'<strong>Click</strong> a <span style="color:#1d6b23;font-weight:700;">green</span> (push) or <span style="color:#b8860b;font-weight:700;">amber</span> (pull) field to open the note picker.',
   rightHand:'🎵 Right Hand',leftHand:'🎹 Left Hand',push:'Push',pull:'Pull',
-  clearNotes:'🗑️ Clear all notes',saveInstrument:'💾 Save this accordion',
+  clearNotes:'🗑️ Clear all notes',undo:'↩ Undo',redo:'↪ Redo',saveInstrument:'💾 Save this accordion',
   clientVisual:'🎹 Client keyboard',manufacturerTable:'📋 Reed manufacturer',
   pdfClientVisual:'🖨️ PDF keyboard plan',pdfManufacturer:'🖨️ PDF manufacturer',
   listView:'📋 List view',sommierView:'🪗 Reed plate view',refresh:'🔄 Refresh',
@@ -941,6 +943,7 @@ let CFG={
   notes:{droite:[],basses:[],basses2:[],basses3:[],accords:[],accords2:[],accords3:[],terzetto:[]}
 };
 let rowClipboard=null;
+let undoStack=[];let redoStack=[];let _suppressHistory=false;let historyTimer=null;const MAX_UNDO=50;
 let currentId=null,saveTimer=null,previewTimer=null;
 let pickerInput=null,pickerNote='',pickerOctave='';
 
@@ -1534,6 +1537,48 @@ function onAnyChange(){
   setSaveStatus('dirty');clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{if(currentId)saveCurrentInstrument();},1200);
   scheduleLivePreview();
+  scheduleHistory();
+}
+
+/* ── Undo / Redo ── */
+function pushHistory(){
+  if(_suppressHistory)return;
+  readNoteInputsIntoCFG();
+  const state=JSON.stringify(CFG);
+  if(undoStack.length&&undoStack[undoStack.length-1]===state)return;
+  undoStack.push(state);
+  if(undoStack.length>MAX_UNDO+1)undoStack.shift();
+  redoStack=[];
+  updateUndoRedoButtons();
+}
+function scheduleHistory(){
+  if(_suppressHistory)return;
+  clearTimeout(historyTimer);
+  historyTimer=setTimeout(pushHistory,1000);
+}
+function undo(){
+  if(undoStack.length<=1)return;
+  _suppressHistory=true;
+  redoStack.push(undoStack.pop());
+  CFG=JSON.parse(undoStack[undoStack.length-1]);
+  renderRangeesCfg();generateInputGrid();forcePreview();onAnyChange();
+  _suppressHistory=false;
+  updateUndoRedoButtons();
+}
+function redo(){
+  if(!redoStack.length)return;
+  _suppressHistory=true;
+  undoStack.push(redoStack.pop());
+  CFG=JSON.parse(undoStack[undoStack.length-1]);
+  renderRangeesCfg();generateInputGrid();forcePreview();onAnyChange();
+  _suppressHistory=false;
+  updateUndoRedoButtons();
+}
+function updateUndoRedoButtons(){
+  const u=document.getElementById('btn-undo');
+  const r=document.getElementById('btn-redo');
+  if(u)u.disabled=undoStack.length<=1;
+  if(r)r.disabled=!redoStack.length;
 }
 
 /* ╔══════════════════════════════════════════════════════╗
@@ -1550,6 +1595,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(list.length){loadFromDB(list[0]);}
   else{loadPreset('GCD33').then(()=>{document.getElementById('preset-select').value='GCD33';renderLhRowsCfg();});}
   scheduleLivePreview();
+  setTimeout(pushHistory,200);
+  // Keyboard shortcuts: Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo
+  document.addEventListener('keydown',function(e){
+    if(e.ctrlKey||e.metaKey){
+      if(!e.shiftKey&&e.key==='z'){e.preventDefault();undo();}
+      else if(e.key==='y'){e.preventDefault();redo();}
+      else if(e.shiftKey&&e.key==='Z'){e.preventDefault();redo();}
+    }
+  });
   // Event delegation: open picker when a note-input is clicked anywhere in #note-grid
   document.getElementById('note-grid').addEventListener('click',e=>{
     const inp=e.target.closest('.note-input');
@@ -2005,6 +2059,7 @@ function initRowDragDrop(){
       if(!_rowDragSrc||_rowDragSrc===el)return;
       const si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
       if(isNaN(si)||isNaN(ti)||si===ti)return;
+      pushHistory();
       const rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
       const nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
       renderRangeesCfg();generateInputGrid();onAnyChange();
@@ -3092,6 +3147,7 @@ function copyRow(rwId,btn){
 }
 function pasteRow(rwId){
   if(!rowClipboard)return;
+  pushHistory();
   const wrap=document.getElementById(rwId);if(!wrap)return;
   const cells=wrap.querySelectorAll('.btn-cell');
   const count=Math.min(cells.length,rowClipboard.length);
@@ -3106,11 +3162,13 @@ function pasteRow(rwId){
 }
 function clearNotes(){
   if(!confirm(t('clearConfirm')))return;
+  pushHistory();
   document.querySelectorAll('#note-grid input').forEach(el=>{el.value='';});
   readNoteInputsIntoCFG();onAnyChange();
 }
 function convertFlatsToSharps(){
   if(!confirm(t('flatToSharpConfirm')))return;
+  pushHistory();
   // Flat→Sharp maps (French and English roots)
   const F2S={
     'Réb':'Do#','Mib':'Ré#','Solb':'Fa#','Lab':'Sol#','Sib':'La#','Dob':'Si',
@@ -3170,7 +3228,7 @@ function _doTranspose(semi){
 function transposeAllNotes(semi){
   const label=semi>0?`+${semi}`:String(semi);
   if(!confirm(t('transposeConfirm').replace('%s',label)))return;
-  _doTranspose(semi);
+  pushHistory();_doTranspose(semi);
 }
 /* ── Custom transposition modal ─────────────────────── */
 function setTransposeSemitones(n){document.getElementById('transpose-semitones').value=n;}

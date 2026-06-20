@@ -2128,6 +2128,7 @@ function initRowDragDrop(){
       if(!_rowDragSrc||_rowDragSrc===el)return;
       var si=parseInt(_rowDragSrc.dataset.rowIdx),ti=parseInt(el.dataset.rowIdx);
       if(isNaN(si)||isNaN(ti)||si===ti)return;
+      pushHistory();
       var rc=CFG.rangees.splice(si,1)[0];CFG.rangees.splice(ti,0,rc);
       var nd=CFG.notes.droite.splice(si,1)[0];CFG.notes.droite.splice(ti,0,nd||[]);
       renderRangeesCfg();generateInputGrid();onAnyChange();
@@ -3313,7 +3314,7 @@ function _doTranspose(semi){
 function transposeAllNotes(semi){
   const label=semi>0?`+${semi}`:String(semi);
   if(!confirm(t('transposeConfirm').replace('%s',label)))return;
-  _doTranspose(semi);
+  pushHistory();_doTranspose(semi);
 }
 /* ── Custom transposition modal ─────────────────────── */
 function setTransposeSemitones(n){document.getElementById('transpose-semitones').value=n;}
