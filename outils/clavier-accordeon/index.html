@@ -2528,16 +2528,120 @@ function buildLhSommierSections(data){
   if(data.terzetto&&data.terzetto.length)lhSections.push({nom:t('terzetto'),items:data.terzetto,offset:0});
   return lhSections;
 }
+/* ── Musical staff (portée) helpers ──────────────────────────
+   Convert a note name to its absolute diatonic step.
+   C0=0, D0=1, E0=2, F0=3, G0=4, A0=5, B0=6, C1=7, …
+   Sharps/flats are ignored for staff position (diatonic only).
+   Treble clef reference: E4 = 4*7+2 = 30 → step relative to E4 = absStep - 30
+   Bass   clef reference: G2 = 2*7+4 = 18 → step relative to G2 = absStep - 18 */
+function noteToStaffStep(note){
+  if(!note)return null;
+  const DFR={Do:0,Re:1,Ré:1,Mi:2,Fa:3,Sol:4,La:5,Si:6};
+  const DEN={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+  let m=note.match(/^(Do|Ré|Re|Mi|Fa|Sol|La|Si)[#b♭]?(\d+)$/);
+  if(m)return parseInt(m[2])*7+DFR[m[1]];
+  m=note.match(/^([A-G])[#b♭]?(\d+)$/);
+  if(m)return parseInt(m[2])*7+DEN[m[1]];
+  return null;
+}
+
+/* Build an SVG portée (musical staff) showing push/pull notes for each row.
+   clefRef: absolute diatonic step of the bottom staff line
+   (30 for treble E4, 18 for bass G2) */
+function buildPorteeSVG(title,rows,clefRef,dark){
+  const LS=7,HS=3.5,BW=20;
+  // Compute display range from actual notes + margin
+  let sMin=0,sMax=8;
+  rows.forEach(row=>{(row.boutons||row.items||[]).forEach(btn=>{
+    [btn.p||'',btn.t||''].forEach(note=>{
+      const a=noteToStaffStep(note);
+      if(a!==null){const st=a-clefRef;sMin=Math.min(sMin,st);sMax=Math.max(sMax,st);}
+    });
+  });});
+  sMin-=3;sMax+=3;
+  const ZONE_H=(sMax-sMin)*HS,ROW_H=ZONE_H+14,VGAP=ROW_H+10;
+  const MARG=10,LPAD=148,HEAD=42;
+  const gold=dark?'#c9a227':'#1a5c1a';
+  const bg=dark?'#111':'#fff';
+  const pushCol=dark?'#6fcf5a':'#1a5c1a';
+  const pullCol=dark?'#e8b840':'#8b6914';
+  const lineCol=dark?'#666':'#444';
+  const ledgeCol=dark?'#888':'#aaa';
+  const numCol=dark?'rgba(200,162,39,.35)':'rgba(0,0,0,.22)';
+  const octCol=dark?'rgba(100,200,100,.12)':'rgba(0,140,60,.08)';
+  const octLbl=dark?'rgba(150,220,150,.5)':'rgba(0,100,40,.4)';
+  const clefLbl=dark?'rgba(200,180,100,.55)':'rgba(0,80,30,.55)';
+  const maxBtns=Math.max(...rows.map(r=>(r.boutons||r.items||[]).length),1);
+  const W=LPAD+maxBtns*BW+MARG;
+  const H=MARG+HEAD+rows.length*VGAP+MARG;
+  let s=svg_open(W,H,bg);
+  s+=tx(W/2,MARG+13,escSVG(title),11,gold,'bold','middle');
+  s+=`<ellipse cx="${LPAD+5}" cy="${MARG+27}" rx="4" ry="3" fill="${pushCol}"/>`;
+  s+=tx(LPAD+12,MARG+31,t('svgPush'),7,dark?'#ccc':'#444','normal','start');
+  s+=`<ellipse cx="${LPAD+80}" cy="${MARG+27}" rx="4" ry="3" fill="none" stroke="${pullCol}" stroke-width="1.2"/>`;
+  s+=tx(LPAD+87,MARG+31,t('svgPull'),7,dark?'#ccc':'#444','normal','start');
+  const clefNames=clefRef===30?['E4','G4','B4','D5','F5']:['G2','B2','D3','F3','A3'];
+  rows.forEach((row,ri)=>{
+    const rowY=MARG+HEAD+ri*VGAP;
+    const items=row.boutons||row.items||[];
+    const nom=row.nom||(row.label||`R${ri+1}`);
+    const staffW=maxBtns*BW;
+    // base = y of step 0 (clef bottom line: E4 for treble, G2 for bass)
+    const base=rowY+sMax*HS;
+    s+=tx(LPAD-10,base-4*LS/2+3,escSVG(nom),9,gold,'bold','end');
+    // Subtle horizontal bands at each C note for octave reference
+    for(let oct=0;oct<=8;oct++){
+      const cSt=oct*7-clefRef;
+      if(cSt<sMin||cSt>sMax)continue;
+      const cy=base-cSt*HS;
+      s+=`<rect x="${LPAD}" y="${cy-HS/2}" width="${staffW}" height="${HS}" fill="${octCol}"/>`;
+      s+=tx(LPAD-10,cy+2.5,`C${oct}`,5.5,octLbl,'normal','end');
+    }
+    // 5 staff lines with note labels
+    for(let li=0;li<5;li++){
+      const ly=base-li*LS;
+      s+=`<line x1="${LPAD}" y1="${ly}" x2="${LPAD+staffW}" y2="${ly}" stroke="${lineCol}" stroke-width=".7"/>`;
+      s+=tx(LPAD-12,ly+2.5,clefNames[li],5.5,clefLbl,'normal','end');
+    }
+    // Note heads: push slightly left, pull slightly right to separate overlapping notes
+    items.forEach((btn,bi)=>{
+      const cx=LPAD+bi*BW+BW/2;
+      s+=tx(cx,rowY+ROW_H-2,bi+1,5.5,numCol,'normal','middle');
+      [{note:btn.p||'',off:-2.5,fill:true,col:pushCol},{note:btn.t||'',off:2.5,fill:false,col:pullCol}].forEach(({note,off,fill,col})=>{
+        const absS=noteToStaffStep(note);
+        if(absS===null)return;
+        const step=absS-clefRef;
+        if(step<sMin||step>sMax)return;
+        const ny=base-step*HS;
+        const ncx=cx+off;
+        // Ledger lines below staff (at even steps < 0)
+        if(step<0)for(let l=-2;l>=step;l-=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
+        // Ledger lines above staff (at even steps > 8)
+        if(step>8)for(let l=10;l<=step;l+=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
+        if(fill){s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="${col}"/>`;}
+        else{s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="none" stroke="${col}" stroke-width="1.2"/>`;}
+      });
+    });
+  });
+  s+=svg_close();
+  return s;
+}
+
 function buildSommierSVG(data,dark){
   const rhTitle=t('svgSommierRH')+' — '+escSVG(data.nomInstrument);
   const lhTitle=t('svgSommierLH')+' — '+escSVG(data.nomInstrument);
   const lhSections=buildLhSommierSections(data);
-  const svgD=buildSommierSection(rhTitle,expandVoicesForSommier(data.droite,data.voixPerRow||['N']),dark);
+  const rhRows=expandVoicesForSommier(data.droite,data.voixPerRow||['N']);
+  const svgD=buildSommierSection(rhTitle,rhRows,dark);
   const svgG=lhSections.length?buildSommierSection(lhTitle,lhSections,dark):'';
+  const porteeD=buildPorteeSVG('Portées — '+t('svgRH'),rhRows,30,dark);
+  const porteeG=lhSections.length?buildPorteeSVG('Portées — '+t('svgLH'),lhSections,18,dark):'';
   const h3style=`color:#1d6b23;font-size:.88rem;margin-bottom:10px;`;
   const h3dstyle=`color:#c9a227;font-size:.88rem;margin-bottom:10px;`;
   return `<h3 style="${dark?h3dstyle:h3style}">${t('svgRH')}</h3>${svgD}
-    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}`;
+    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">${t('svgLH')}</h3>${svgG}
+    <h3 style="${dark?h3dstyle:h3style};margin-top:18px;">Portées — ${t('svgRH')}</h3>${porteeD}
+    ${lhSections.length?`<h3 style="${dark?h3dstyle:h3style};margin-top:18px;">Portées — ${t('svgLH')}</h3>${porteeG}`:''}`;
 }
 
 
