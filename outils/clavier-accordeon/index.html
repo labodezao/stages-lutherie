@@ -2546,10 +2546,13 @@ function noteToStaffStep(note){
 }
 
 /* Build an SVG portée (musical staff) showing push/pull notes for each row.
+   Each button is plotted as a note head at its pitch height (for octave
+   verification) AND labelled below the staff with its note name in poussé
+   and tiré, so the names are clearly readable.
    clefRef: absolute diatonic step of the bottom staff line
    (30 for treble E4, 18 for bass G2) */
 function buildPorteeSVG(title,rows,clefRef,dark){
-  const LS=7,HS=3.5,BW=20;
+  const LS=7,HS=3.5,BW=26;
   // Compute display range from actual notes + margin
   let sMin=0,sMax=8;
   rows.forEach(row=>{(row.boutons||row.items||[]).forEach(btn=>{
@@ -2559,28 +2562,36 @@ function buildPorteeSVG(title,rows,clefRef,dark){
     });
   });});
   sMin-=3;sMax+=3;
-  const ZONE_H=(sMax-sMin)*HS,ROW_H=ZONE_H+14,VGAP=ROW_H+10;
-  const MARG=10,LPAD=148,HEAD=42;
+  const ZONE_H=(sMax-sMin)*HS;
+  const LABEL_H=22;                 // space below staff for poussé/tiré names + button number
+  const ROW_H=ZONE_H+LABEL_H;
+  const VGAP=ROW_H+12;
+  const MARG=10,HEAD=42;
+  // Left padding: room for the (possibly long) row name + the pitch reference labels
+  const maxNameLen=Math.max(...rows.map(r=>(r.nom||r.label||'').length),0);
+  const ROWLBL_W=Math.min(170,Math.max(58,Math.ceil(maxNameLen*4.4)+6));
+  const PITCH_W=22;                 // room for "Do4"/"C4" octave reference labels
+  const LPAD=ROWLBL_W+PITCH_W;
   const gold=dark?'#c9a227':'#1a5c1a';
   const bg=dark?'#111':'#fff';
   const pushCol=dark?'#6fcf5a':'#1a5c1a';
   const pullCol=dark?'#e8b840':'#8b6914';
   const lineCol=dark?'#666':'#444';
   const ledgeCol=dark?'#888':'#aaa';
-  const numCol=dark?'rgba(200,162,39,.35)':'rgba(0,0,0,.22)';
-  const octCol=dark?'rgba(100,200,100,.12)':'rgba(0,140,60,.08)';
-  const octLbl=dark?'rgba(150,220,150,.5)':'rgba(0,100,40,.4)';
-  const clefLbl=dark?'rgba(200,180,100,.55)':'rgba(0,80,30,.55)';
+  const numCol=dark?'rgba(200,162,39,.4)':'rgba(0,0,0,.28)';
+  const octCol=dark?'rgba(100,200,100,.12)':'rgba(0,140,60,.07)';
+  const octLbl=dark?'rgba(150,220,150,.55)':'rgba(0,100,40,.45)';
+  const sepCol=dark?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
   const maxBtns=Math.max(...rows.map(r=>(r.boutons||r.items||[]).length),1);
   const W=LPAD+maxBtns*BW+MARG;
   const H=MARG+HEAD+rows.length*VGAP+MARG;
   let s=svg_open(W,H,bg);
   s+=tx(W/2,MARG+13,escSVG(title),11,gold,'bold','middle');
+  // Legend: filled head = poussé, open head = tiré
   s+=`<ellipse cx="${LPAD+5}" cy="${MARG+27}" rx="4" ry="3" fill="${pushCol}"/>`;
   s+=tx(LPAD+12,MARG+31,t('svgPush'),7,dark?'#ccc':'#444','normal','start');
-  s+=`<ellipse cx="${LPAD+80}" cy="${MARG+27}" rx="4" ry="3" fill="none" stroke="${pullCol}" stroke-width="1.2"/>`;
-  s+=tx(LPAD+87,MARG+31,t('svgPull'),7,dark?'#ccc':'#444','normal','start');
-  const clefNames=clefRef===30?['E4','G4','B4','D5','F5']:['G2','B2','D3','F3','A3'];
+  s+=`<ellipse cx="${LPAD+82}" cy="${MARG+27}" rx="4" ry="3" fill="none" stroke="${pullCol}" stroke-width="1.2"/>`;
+  s+=tx(LPAD+89,MARG+31,t('svgPull'),7,dark?'#ccc':'#444','normal','start');
   rows.forEach((row,ri)=>{
     const rowY=MARG+HEAD+ri*VGAP;
     const items=row.boutons||row.items||[];
@@ -2588,35 +2599,45 @@ function buildPorteeSVG(title,rows,clefRef,dark){
     const staffW=maxBtns*BW;
     // base = y of step 0 (clef bottom line: E4 for treble, G2 for bass)
     const base=rowY+sMax*HS;
-    s+=tx(LPAD-10,base-4*LS/2+3,escSVG(nom),9,gold,'bold','end');
-    // Subtle horizontal bands at each C note for octave reference
+    // Row name — far left, vertically centred on the staff
+    s+=tx(ROWLBL_W,rowY+ZONE_H/2+3,escSVG(nom),8,gold,'bold','end');
+    // Subtle horizontal bands + label at each C note for octave reference
     for(let oct=0;oct<=8;oct++){
       const cSt=oct*7-clefRef;
       if(cSt<sMin||cSt>sMax)continue;
       const cy=base-cSt*HS;
       s+=`<rect x="${LPAD}" y="${cy-HS/2}" width="${staffW}" height="${HS}" fill="${octCol}"/>`;
-      s+=tx(LPAD-10,cy+2.5,`C${oct}`,5.5,octLbl,'normal','end');
+      s+=tx(LPAD-3,cy+2.5,dn('Do'+oct),5.5,octLbl,'normal','end');
     }
-    // 5 staff lines with note labels
+    // 5 staff lines
     for(let li=0;li<5;li++){
       const ly=base-li*LS;
       s+=`<line x1="${LPAD}" y1="${ly}" x2="${LPAD+staffW}" y2="${ly}" stroke="${lineCol}" stroke-width=".7"/>`;
-      s+=tx(LPAD-12,ly+2.5,clefNames[li],5.5,clefLbl,'normal','end');
     }
-    // Note heads: push slightly left, pull slightly right to separate overlapping notes
+    const nameY1=rowY+ZONE_H+8;     // poussé name line
+    const nameY2=rowY+ZONE_H+15;    // tiré name line
+    const numY=rowY+ZONE_H+21;      // button number
+    // Note heads + name labels per button
     items.forEach((btn,bi)=>{
       const cx=LPAD+bi*BW+BW/2;
-      s+=tx(cx,rowY+ROW_H-2,bi+1,5.5,numCol,'normal','middle');
-      [{note:btn.p||'',off:-2.5,fill:true,col:pushCol},{note:btn.t||'',off:2.5,fill:false,col:pullCol}].forEach(({note,off,fill,col})=>{
+      // light column separator
+      if(bi>0)s+=`<line x1="${LPAD+bi*BW}" y1="${rowY-2}" x2="${LPAD+bi*BW}" y2="${numY+2}" stroke="${sepCol}" stroke-width=".5"/>`;
+      s+=tx(cx,numY,bi+1,5.5,numCol,'normal','middle');
+      const heads=[{note:btn.p||'',off:-2.6,fill:true,col:pushCol,nameY:nameY1},
+                   {note:btn.t||'',off:2.6,fill:false,col:pullCol,nameY:nameY2}];
+      heads.forEach(({note,off,fill,col,nameY})=>{
+        if(!note)return;
+        // Note name label below the staff (always shown, even if pitch unparsed)
+        s+=tx(cx,nameY,dn(note),6,col,'bold','middle');
         const absS=noteToStaffStep(note);
         if(absS===null)return;
         const step=absS-clefRef;
         if(step<sMin||step>sMax)return;
         const ny=base-step*HS;
         const ncx=cx+off;
-        // Ledger lines below staff (at even steps < 0)
+        // Ledger lines below staff (even steps < 0)
         if(step<0)for(let l=-2;l>=step;l-=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
-        // Ledger lines above staff (at even steps > 8)
+        // Ledger lines above staff (even steps > 8)
         if(step>8)for(let l=10;l<=step;l+=2){const ll=base-l*HS;s+=`<line x1="${ncx-5}" y1="${ll}" x2="${ncx+5}" y2="${ll}" stroke="${ledgeCol}" stroke-width=".7"/>`;}
         if(fill){s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="${col}"/>`;}
         else{s+=`<ellipse cx="${ncx}" cy="${ny}" rx="4" ry="3" fill="none" stroke="${col}" stroke-width="1.2"/>`;}
@@ -3182,9 +3203,15 @@ async function downloadPDF(which){
     // ── Sommier (suite directe, sans saut de page forcé) ──────────────
     const rhSomTitle=t('svgSommierRH')+' - '+(data.nomInstrument||'');
     const lhSomTitle=t('svgSommierLH')+' - '+(data.nomInstrument||'');
-    addSommierTable(expandVoicesForSommier(data.droite,data.voixPerRow||['N']),rhSomTitle);
+    const rhRowsSom=expandVoicesForSommier(data.droite,data.voixPerRow||['N']);
+    addSommierTable(rhRowsSom,rhSomTitle);
     const lhSecs=buildLhSommierSections(data);
     if(lhSecs.length)addSommierTable(lhSecs,lhSomTitle);
+
+    // ── Portées (vérification visuelle des octaves) ──────────────────
+    pdf.addPage();yPos=MT;
+    await addSvgImg(buildPorteeSVG('Portées — '+t('svgRH'),rhRowsSom,30,false),null,null,false);
+    if(lhSecs.length)await addSvgImg(buildPorteeSVG('Portées — '+t('svgLH'),lhSecs,18,false),null,null,false);
   }
 
   // ══════════════════════════════════════════════════
