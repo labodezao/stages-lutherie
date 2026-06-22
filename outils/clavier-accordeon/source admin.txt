@@ -3927,15 +3927,16 @@ function convertFlatsToSharps(){
   const F2S_lower={};for(const k in F2S)F2S_lower[k.toLowerCase()]=F2S[k];
   function convertNote(s){
     if(!s)return s;
+    const lookup=s.replace(/♭/g,'b').replace(/♯/g,'#');
     // Slash-separated notes: convert each part recursively (handles octave in each part)
-    if(s.includes('/')){return s.split('/').map(p=>convertNote(p.trim())).join('/');}
+    if(lookup.includes('/')){return lookup.split('/').map(p=>convertNote(p.trim())).join('/');}
     // Chord name: "Réb3 Maj" → "Do#3 Maj"
-    const sp=s.indexOf(' ');
-    if(sp>0){const root=s.slice(0,sp),qual=s.slice(sp);return convertNote(root)+qual;}
+    const sp=lookup.indexOf(' ');
+    if(sp>0){const root=lookup.slice(0,sp),qual=lookup.slice(sp);return convertNote(root)+qual;}
     // Simple note possibly with octave suffix: "Réb3" → "Do#3"
-    const m=s.match(/^(.+?)(\d)$/);
+    const m=lookup.match(/^(.+?)(\d)$/);
     if(m){const conv=F2S_lower[m[1].toLowerCase()];if(conv!==undefined)return conv+m[2];}
-    return F2S_lower[s.toLowerCase()]||s;
+    return F2S_lower[lookup.toLowerCase()]||s;
   }
   function convertRow(arr){return (arr||[]).map(b=>({p:convertNote(b.p),t:convertNote(b.t)}));}
   const n=CFG.notes;
