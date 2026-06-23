@@ -14,22 +14,26 @@
 <!-- Vérifiez tous les points avant de soumettre / Check all items before submitting -->
 
 ### Qualité / Quality
+
 - [ ] Les liens fonctionnent tous / All links work
 - [ ] Les images s'affichent correctement / Images display correctly
 - [ ] Le texte est exempt de fautes / Text is free of errors
 - [ ] Les titres suivent une hiérarchie logique (H1 → H2 → H3) / Headings follow logical hierarchy
 
 ### Internationalisation / Internationalization
+
 - [ ] Les modifications sont présentes en FR et EN / Changes are present in both FR and EN
 - [ ] Les traductions sont cohérentes / Translations are consistent
 
 ### Images
+
 - [ ] Format JPG ou PNG (pas de HEIC) / JPG or PNG format (no HEIC)
 - [ ] Texte alternatif descriptif ajouté / Descriptive alt text added
 - [ ] Taille optimisée (< 3 MB par image) / Optimized size (< 3 MB per image)
 - [ ] Noms de fichiers sans espaces / Filenames without spaces
 
 ### Documentation
+
 - [ ] README mis à jour si nécessaire / README updated if needed
 - [ ] AMELIORATIONS.md mis à jour avec ✅ si applicable / AMELIORATIONS.md updated with ✅ if applicable
 
