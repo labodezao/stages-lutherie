@@ -14,6 +14,9 @@
     },
     {
       "pattern": "^mailto:"
+    },
+    {
+      "pattern": "^https://www\\.acb44\\.bzh"
     }
   ],
   "timeout": "20s",
