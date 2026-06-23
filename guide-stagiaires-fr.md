@@ -7,7 +7,7 @@ author: "Ewen Daviau"
 date: "2026"
 ---
 
-# Guide des stagiaires – Stages de fabrication d'accordéon diatonique 2026
+## Guide des stagiaires – Stages de fabrication d'accordéon diatonique 2026
 
 Bienvenue ! Ce guide est conçu pour vous accompagner avant, pendant et après votre stage de fabrication d'accordéon diatonique. Vous y trouverez toutes les informations pratiques pour préparer au mieux votre venue et profiter pleinement de cette expérience unique.
 
@@ -140,24 +140,29 @@ Le choix du bois influe sur l'esthétique, le poids et légèrement sur la réso
 ### 2. Configuration Main Droite (clavier mélodique)
 
 #### Nombre de boutons
+
 - **21 boutons (2 rangées)** : Configuration plus simple, idéale pour débuter
 - **33 boutons (3 rangées)** : Plus de possibilités mélodiques, permet de jouer dans plusieurs tonalités
 
 #### Layouts (disposition des notes)
+
 - **Layout Heim** : Disposition traditionnelle allemande
 - **Layout Milleret-Pignol** : Disposition française très répandue
 - **Layout personnalisé*** : Sur demande, avec supplément tarifaire
 
 #### Tonalités disponibles
+
 - **G/C** (Sol/Do) : La plus courante, parfaite pour la musique traditionnelle française et irlandaise
 - **D/G** (Ré/Sol) : Tonalité plus aigüe, appréciée pour la musique irlandaise
 - **A/D** (La/Ré) : Tonalité très aigüe, utilisée pour certains répertoires spécifiques
 
 #### Type d'accordage
+
 - **Accordage sec** : Son clair et précis, notes bien définies
 - **Accordage demi-sec** : Légère ondulation, son plus "français" et chaleureux
 
 #### Marquage des boutons
+
 - **Marquage tactile** : Boutons en relief sur certaines notes repères
 - **Marquage visuel** : Boutons de couleurs différentes
 - **Sans marquage** : Tous les boutons identiques (pour musiciens confirmés)
@@ -165,11 +170,13 @@ Le choix du bois influe sur l'esthétique, le poids et légèrement sur la réso
 ### 3. Configuration Main Gauche (basses et accords)
 
 #### Nombre de basses
+
 - **8 basses** : Configuration simple, parfaite pour débuter
 - **12 basses** : Plus de possibilités d'accompagnement
 - **18 basses** : Maximum de richesse harmonique
 
 #### Layouts
+
 - **Layout Milleret-Pignol** : Standard français
 - **Layout Heim** : Standard allemand
 - **Layout personnalisé*** : Possibilité de créer votre propre disposition (avec supplément)
@@ -216,6 +223,7 @@ Les soufflets sont l'âme visuelle de votre accordéon ! C'est souvent l'éléme
 ![Plusieurs soufflets colorés exposés montrant la variété des couleurs disponibles](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(26).jpg)
 
 #### Coins des soufflets
+
 - **Coins standard** : Carton pressé traditionnel
 - **Coins renforcés** : Coins en cuir, plus résistants
 - **Coins métal brossé** : Aspect moderne et robuste
@@ -231,10 +239,12 @@ Les anches sont les lames métalliques qui vibrent pour produire le son. C'est u
 ### 8. Accessoires
 
 #### Fournis avec votre accordéon
+
 - **Bretelles** : Ajustables, en cuir ou tissu résistant
 - **Sac/housse de transport** : Protection rembourrée pour transport et stockage
 
 #### Recommandés pour le stage (à apporter)
+
 - **Gants fins** : Pour protéger vos mains lors du ponçage
 - **Lunettes de sécurité** : Fournies sur place mais vous pouvez amener les vôtres
 - **Bouchons d'oreilles** : Pour les moments de tests sonores intensifs (facultatif)
@@ -251,12 +261,14 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 1 : Accueil et premiers assemblages
 
 **Matin (9h30-12h30)**
+
 - Accueil des stagiaires, présentation de chacun
 - Visite complète de l'atelier et des outils
 - Présentation des règles de sécurité
 - Choix final des options de personnalisation de votre accordéon
 
 **Après-midi (14h00-17h30)**
+
 - Découverte des pièces préparées pour votre accordéon
 - Premiers assemblages de test
 - Prise en main des outils de base
@@ -266,6 +278,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 2 : Structure en bois
 
 **Ce que vous allez faire :**
+
 - Assemblage de la **caisse de résonance** (main droite et main gauche)
 - **Ponçage** des surfaces pour un rendu lisse
 - **Collage** des différentes parties
@@ -273,6 +286,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 - Mise en place de la **base mécanique**
 
 **Ce que vous apprendrez :**
+
 - Techniques de travail du bois précis
 - Importance de la géométrie pour le bon fonctionnement
 - Utilisation des outils de mesure et de contrôle
@@ -282,12 +296,14 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 3 : Claviers et boutons
 
 **Ce que vous allez faire :**
+
 - Installation des **axes** qui supportent les boutons
 - Mise en place des **ressorts** de rappel
 - Montage des **boutons** du clavier
 - Réglage du **toucher** (résistance et course des boutons)
 
 **Ce que vous apprendrez :**
+
 - Mécanique fine et précision
 - Importance du confort de jeu
 - Réglage personnalisé selon votre main
@@ -297,12 +313,14 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 4 : Mécaniques Main Droite et Main Gauche
 
 **Ce que vous allez faire :**
+
 - Assemblage complet des **systèmes de leviers**
 - Connexion entre boutons et soupapes
 - Réglage des **hauteurs** de chaque bouton
 - Ajustement des **courses** (profondeur d'enfoncement)
 
 **Ce que vous apprendrez :**
+
 - Fonctionnement du système mécanique de l'accordéon
 - Précision millimétrique nécessaire
 - Tests et ajustements progressifs
@@ -312,6 +330,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 5 : Soufflets
 
 **Ce que vous allez faire :**
+
 - **Fabrication** des soufflets avec le carton spécial
 - Pliage et collage des sections
 - **Pose** des soufflets sur les caisses
@@ -319,6 +338,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 - Tests d'**étanchéité** (crucial !)
 
 **Ce que vous apprendrez :**
+
 - Technique traditionnelle de fabrication des soufflets
 - Importance de l'étanchéité pour le son
 - Patience et minutie dans le pliage
@@ -328,6 +348,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 6 : Grilles et finitions du bois
 
 **Ce que vous allez faire :**
+
 - **Montage** des grilles décoratives
 - Fixation sécurisée tout en maintenant l'esthétique
 - **Finitions du bois** : derniers ponçages, traitement
@@ -335,6 +356,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 - **Décoration** : ajout d'éventuels détails personnalisés
 
 **Ce que vous apprendrez :**
+
 - Techniques de finition du bois
 - Protection et mise en valeur du bois
 - Dernières touches esthétiques
@@ -344,12 +366,14 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 7 : Anches et premier accordage
 
 **Ce que vous allez faire :**
+
 - **Tri** des anches par tonalité
 - **Installation** des anches sur les sommiers
 - **Première mise en tension** des anches
 - **Tests note par note** : vérification de chaque son
 
 **Ce que vous apprendrez :**
+
 - Comprendre comment une anche produit le son
 - Reconnaissance des tonalités
 - Premiers réglages acoustiques
@@ -359,12 +383,14 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 8 : Réglages fins
 
 **Ce que vous allez faire :**
+
 - Chasse aux **fuites d'air** et correction
 - Ajustements finaux de la **mécanique**
 - **Alignement** précis de toutes les touches
 - Tests de **réactivité** et de **confort**
 
 **Ce que vous apprendrez :**
+
 - Méthode de détection des problèmes
 - Résolution des imperfections
 - Perfectionnement du fonctionnement
@@ -372,12 +398,14 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 9 : Tests complets et ajustements personnalisés
 
 **Ce que vous allez faire :**
+
 - **Tests complets** Main Droite + Main Gauche ensemble
 - Évaluation du **confort de jeu** (poids, équilibre, toucher)
 - **Corrections personnalisées** selon vos besoins spécifiques
 - Derniers ajustements de l'accordage
 
 **Ce que vous apprendrez :**
+
 - Évaluation globale d'un instrument
 - Adaptation de l'instrument à votre morphologie
 - Fine tuning acoustique
@@ -385,12 +413,14 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Jour 10 : Pratique musicale et finalisation
 
 **Matin (9h30-12h30)**
+
 - **Pratique musicale** avec un intervenant extérieur (musicien professionnel)
 - Apprentissage des **premières notes** et mélodies simples
 - Découverte du **fonctionnement musical** de votre accordéon
 - Conseils d'**entretien et de soin** de votre instrument
 
 **Après-midi (14h00-17h30)**
+
 - **Tests finaux** de chaque instrument
 - **Session photo** : portraits avec votre accordéon
 - **Bilan collectif** : partage des expériences, retours
@@ -406,6 +436,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 **9h30** : Accueil, café/thé
 **9h45** : Briefing de la journée (objectifs, étapes prévues)
 **10h00 – 12h30** : Atelier fabrication
+
 - Travail individuel sur votre instrument
 - Accompagnement personnalisé d'Ewen
 - Entraide entre stagiaires
@@ -419,6 +450,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Après-midi (14h00 – 17h30)
 
 **14h00 – 17h30** : Atelier fabrication (suite)
+
 - Montage, réglages
 - Accompagnement individuel approfondi
 - Points techniques spécifiques
@@ -428,6 +460,7 @@ Voici un aperçu détaillé de ce que vous allez apprendre et réaliser pendant 
 ### Soirées (selon les jours)
 
 Selon les jours et la motivation du groupe :
+
 - **Concerts** : Nous pouvons aller écouter de la musique traditionnelle si des concerts ont lieu
 - **Bals folk** : Participation à des bals traditionnels de la région
 - **Échanges conviviaux** : Discussions, partage musical, moments conviviaux à l'atelier ou en extérieur
@@ -439,6 +472,7 @@ Selon les jours et la motivation du groupe :
 ### Flexibilité
 
 Le planning est indicatif et peut être adapté selon :
+
 - L'avancement de chacun
 - Les besoins spécifiques
 - Les moments de fatigue ou de concentration nécessaire
@@ -455,18 +489,21 @@ Le stage **n'inclut pas l'hébergement**. Voici un guide complet des options dis
 **Avantages** : Flexibilité, souvent équipé d'une cuisine, ambiance comme à la maison
 
 #### Studios et petits appartements
+
 - **Prix** : 50-80 €/nuit
 - **Localisation** : Centre-ville ou proche plage
 - **Distance de l'atelier** : 15-30 min à pied
 - **Idéal pour** : Ceux qui veulent leur indépendance
 
 #### Chambres privées chez l'habitant
+
 - **Prix** : 17-40 €/nuit (option économique !)
 - **Localisation** : Divers quartiers résidentiels
 - **Distance de l'atelier** : Variable
 - **Idéal pour** : Budget serré, envie de rencontrer des locaux
 
 **💡 Conseils de recherche Airbnb :**
+
 - Filtrer par "max 60 €/nuit"
 - Privilégier "proche centre/plage/transport"
 - Vérifier les **frais de ménage** et services (peuvent alourdir la facture)
@@ -476,6 +513,7 @@ Le stage **n'inclut pas l'hébergement**. Voici un guide complet des options dis
 ### Option 2 : Hôtels budget
 
 #### Ibis Budget, B&B Hotel
+
 - **Prix** : 45-70 €/nuit
 - **Localisation** : Centre-ville ou près de la gare
 - **Distance de l'atelier** : 15-25 min à pied ou bus
@@ -484,6 +522,7 @@ Le stage **n'inclut pas l'hébergement**. Voici un guide complet des options dis
 ### Option 3 : Résidences jeunesse / Auberges
 
 #### Auberge de jeunesse / Résidences
+
 - **Prix** : 20-40 €/nuit
 - **Distance de l'atelier** : 15-30 min à pied
 - **Avantages** : Très économique, ambiance jeune et conviviale
@@ -494,6 +533,7 @@ Le stage **n'inclut pas l'hébergement**. Voici un guide complet des options dis
 Pour les amoureux de la nature et du camping !
 
 #### Campings accessibles en bus ou covoiturage (15-30 min)
+
 - **Saint-Brevin-les-Pins** : Proche plage
 - **Pornichet** : Bord de mer
 - **Batz-sur-Mer** : Village de caractère
@@ -508,11 +548,13 @@ Pour les amoureux de la nature et du camping !
 ### 🚗 Avec ou sans voiture ?
 
 #### Sans voiture (recommandé)
+
 - Saint-Nazaire est bien desservie en **bus**
 - Distances à pied raisonnables pour la plupart des hébergements
 - Covoiturage possible avec d'autres stagiaires
 
 #### Avec voiture
+
 - **Stationnement gratuit** dans la rue près de l'atelier
 - Facilite l'accès aux campings périphériques
 - Permet de visiter la région le weekend
@@ -532,6 +574,7 @@ Pour les amoureux de la nature et du camping !
 ### 🤝 Hébergement groupé
 
 Si vous vous inscrivez **avec un ami ou en groupe**, vous pouvez :
+
 - Louer un appartement/maison ensemble sur Airbnb
 - Diviser les coûts
 - Partager les moments hors atelier
@@ -561,6 +604,7 @@ Les **repas ne sont pas inclus** dans le stage. Voici comment vous organiser :
 ### Option 3 : Cuisiner
 
 Si votre hébergement dispose d'une cuisine :
+
 - Courses au supermarché
 - Repas faits maison
 - **Coût** : 5-10 €/repas
@@ -578,6 +622,7 @@ Votre sécurité est une priorité. Voici ce qui est mis en place :
 ### Équipements de Protection Individuelle (EPI)
 
 **Fournis sur place (inclus) :**
+
 - Lunettes de sécurité
 - Gants de protection
 - Protection auditive (bouchons d'oreilles)
@@ -604,6 +649,7 @@ Votre sécurité est une priorité. Voici ce qui est mis en place :
 ### Pendant le stage
 
 Nous prenons régulièrement des photos et vidéos pour :
+
 - Documenter votre progression
 - Partager sur les réseaux sociaux (avec votre accord)
 - Constituer des souvenirs de votre expérience
@@ -611,6 +657,7 @@ Nous prenons régulièrement des photos et vidéos pour :
 ### Consentement
 
 Un **formulaire de consentement** vous sera proposé en début de stage :
+
 - ✅ Vous pouvez accepter (photos utilisées pour communication)
 - ❌ Vous pouvez refuser (pas de photos de vous utilisées publiquement)
 - 🎭 Vous pouvez demander à être flouté ou de dos
@@ -618,6 +665,7 @@ Un **formulaire de consentement** vous sera proposé en début de stage :
 ### Vos propres photos
 
 **Vous êtes libre** de prendre vos propres photos et vidéos pour :
+
 - Garder des souvenirs
 - Partager sur vos réseaux sociaux
 - Documenter votre processus créatif
@@ -633,7 +681,7 @@ Un **formulaire de consentement** vous sera proposé en début de stage :
 #### Vidéo de présentation
 
 **Regardez cette vidéo** (3 minutes) pour découvrir l'atelier et l'ambiance :
-🎥 **https://www.youtube.com/watch?v=DREx2RqMXeU**
+🎥 **<https://www.youtube.com/watch?v=DREx2RqMXeU>**
 
 #### Lectures recommandées (optionnel)
 
@@ -643,6 +691,7 @@ Un **formulaire de consentement** vous sera proposé en début de stage :
 #### Se familiariser avec l'accordéon diatonique
 
 Si vous n'êtes pas familier avec l'instrument :
+
 - Écoutez de la musique traditionnelle avec accordéon diatonique
 - Regardez des vidéos de musiciens sur YouTube
 - Pas besoin de savoir en jouer ! Vous apprendrez les bases le dernier jour.
@@ -679,8 +728,8 @@ Si vous n'êtes pas familier avec l'instrument :
 
 Si vous avez des **questions** avant votre venue :
 
-📧 **Email** : contact@ewendaviau.com
-🌐 **Site web** : https://ewendaviau.com
+📧 **Email** : <contact@ewendaviau.com>
+🌐 **Site web** : <https://ewendaviau.com>
 📱 **Téléphone** : [Numéro à ajouter si souhaité]
 
 **Délai de réponse** : Généralement sous 48h
@@ -713,6 +762,7 @@ Restez en contact ! Nous aimons avoir des nouvelles de nos stagiaires et de leur
 ### Maintenance professionnelle
 
 Tous les **2-3 ans**, faire vérifier votre accordéon par un luthier :
+
 - Vérification de l'accordage
 - État des anches
 - Étanchéité des soufflets
@@ -726,10 +776,10 @@ Tous les **2-3 ans**, faire vérifier votre accordéon par un luthier :
 
 > *"À 52 ans, je ne pensais pas être capable de fabriquer un instrument de musique. C'était mon cadeau de départ en retraite. Ewen est un pédagogue exceptionnel, patient et passionné. Aujourd'hui je joue avec mon accordéon dans un groupe de musique trad !"*  
 > — Marie D., stage octobre 2025
-
+>
 > *"Une expérience inoubliable. J'ai appris énormément en 10 jours, pas seulement sur la lutherie mais aussi sur la musique traditionnelle. L'ambiance était super, on a formé une vraie petite famille."*  
 > — Thomas L., stage avril 2025
-
+>
 > *"Je recommande à 100% ! Même sans aucune expérience manuelle, j'ai réussi à créer un bel instrument qui sonne très bien. Les autres stagiaires et Ewen m'ont beaucoup aidé."*  
 > — Sophie B., stage octobre 2024
 
@@ -738,30 +788,34 @@ Tous les **2-3 ans**, faire vérifier votre accordéon par un luthier :
 ## ✅ Checklist avant le départ
 
 **3 mois avant :**
+
 - [ ] Inscription confirmée + acompte versé
 - [ ] Choix du modèle et options validés
 - [ ] Hébergement réservé
 
 **1 mois avant :**
+
 - [ ] Transport organisé (train, voiture, avion)
 - [ ] Regardé la vidéo de présentation
 - [ ] Lu le programme détaillé
 - [ ] Noté les dates dans l'agenda
 
 **1 semaine avant :**
+
 - [ ] Valise préparée
 - [ ] Solde du stage prêt à être réglé
 - [ ] Coordonnées de l'atelier notées
 - [ ] Itinéraire vérifié
 
 **Veille du départ :**
+
 - [ ] Vérification de tous les documents
 - [ ] Chargement du téléphone
 - [ ] Excitation à son maximum ! 🎉
 
 ---
 
-## 💙 Bienvenue dans l'aventure !
+## 💙 Bienvenue dans l'aventure
 
 Vous vous apprêtez à vivre une **expérience unique** : créer de vos mains un instrument de musique qui vous accompagnera pendant des années.
 

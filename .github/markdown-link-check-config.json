@@ -11,6 +11,9 @@
     },
     {
       "pattern": "\\.HEIC$"
+    },
+    {
+      "pattern": "^mailto:"
     }
   ],
   "timeout": "20s",

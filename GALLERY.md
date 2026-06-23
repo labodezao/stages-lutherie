@@ -9,12 +9,15 @@ This gallery showcases the different stages of building a diatonic accordion dur
 ## Matériaux / Materials
 
 ### Bois de Cerisier / Cherry Wood
+
 ![Cherry Wood](comm/cherrywood.png)
 
 ### Bois de Noyer / Walnut Wood
+
 ![Walnut Wood](comm/walnut.png)
 
 ### Bois d'Érable / Maple Wood
+
 ![Maple Wood](comm/maple.png)
 
 ---
@@ -210,7 +213,7 @@ This gallery showcases the different stages of building a diatonic accordion dur
 ## Images Additionnelles / Additional Images
 
 > **Note:** Les images suivantes sont au format HEIC (Apple). Elles peuvent ne pas s'afficher dans tous les navigateurs web. Pour une meilleure compatibilité, envisagez de les convertir au format JPEG ou PNG.
-> 
+>
 > **Note:** The following images are in HEIC format (Apple). They may not display in all web browsers. For better compatibility, consider converting them to JPEG or PNG format.
 
 ![IMG 0916](comm/IMG_0916%202.HEIC)
@@ -237,5 +240,5 @@ Ce stage de lutherie vous permet de fabriquer votre propre accordéon diatonique
 
 This lutherie workshop allows you to build your own diatonic accordion in 10 days, guided by professional luthiers. For more information, check the other files in this repository.
 
-**Contact:** contact@ewendaviau.com  
-**Site web:** https://stages.ewendaviau.com
+**Contact:** <contact@ewendaviau.com>  
+**Site web:** <https://stages.ewendaviau.com>

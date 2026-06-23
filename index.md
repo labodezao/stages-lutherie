@@ -4,41 +4,45 @@ title: Stages de Lutherie - Accordéon Diatonique
 lang: fr
 ---
 
-# Stages de Lutherie - Accordéon Diatonique 🎵
+## Stages de Lutherie - Accordéon Diatonique 🎵
 
 ![Groupe de stagiaires avec leurs accordéons terminés](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg?raw=true)
 
-## 🎯 Fabriquez votre propre accordéon en 10 jours !
+## 🎯 Fabriquez votre propre accordéon en 10 jours
 
 Stages intensifs de **fabrication d'accordéon diatonique** organisés par **Ewen Daviau**, luthier professionnel à Saint-Nazaire, France.
 
 Une expérience unique et accessible à tous, dès 13 ans, **sans aucune expérience manuelle requise**.
 
 ### 📅 Sessions 2026
+
 - **8–17 avril 2026** (10 jours)
 - **14–23 octobre 2026** (10 jours)
 
 ### 🎵 Modèles disponibles
+
 - **21/8 basses** – 2 820 € (acompte 900 €)
 - **33/12 basses** – 4 500 € (acompte 1 500 €)
 - **33/18 basses** – 4 880 € (acompte 1 900 €)
 - **33/24 basses** – 6 250 € (acompte 2 500 €)
 
 > **Option Anche a mano Blue Star** : anches fabriquées à la main, +15 % sur le tarif du modèle (21/8b +423 €, 33/12b +675 €, 33/18b +732 €, 33/24b +938 €).
-
+>
 > **Upgrade 2 voix MD avec registres** : possibilité de passer en 2 voix main droite avec registres (nécessite 2 stages de fabrication).
-
+>
 > Tous les modèles sont livrés en **1 voix (1V) main droite** par défaut.
 
 ## 📖 Documentation Complète
 
 ### Français 🇫🇷
+
 - [Annonce courte](00-communication-annonce-fr.md) - Présentation synthétique
 - [Guide des stagiaires](guide-stagiaires-fr.md) - Guide complet avec photos
 - [Fiche détaillée](01-fiche-stage-detaillee-fr.md) - Toutes les informations
 - [Programme jour par jour](02-programme-jour-par-jour-fr.md) - Déroulé quotidien
 
 ### English 🇬🇧
+
 - [Short announcement](00-communication-annonce-en.md) - Workshop overview
 - [Trainee guide](guide-stagiaires-en.md) - Complete guide with photos
 - [Detailed description](01-detailed-workshop-description-en.md) - All information
@@ -89,15 +93,19 @@ Découvrez l'ambiance et le processus de fabrication en vidéo :
 ## ❓ Questions Fréquentes
 
 ### Ai-je besoin d'expérience en bricolage ?
+
 Non ! Le stage est accessible à tous, même sans aucune expérience manuelle. Vous serez guidé pas à pas.
 
 ### Que se passe-t-il si je ne termine pas mon accordéon en 10 jours ?
+
 Vous pouvez revenir lors d'une session ultérieure pour terminer votre instrument (80 €/jour pour l'atelier et l'accompagnement).
 
 ### Les repas et l'hébergement sont-ils inclus ?
+
 Non, ils ne sont pas inclus. Consultez le [guide des stagiaires](guide-stagiaires-fr.md#budget-hébergement-proche-atelier-9-rue-fernand-de-magellan) pour des suggestions d'hébergement à proximité.
 
 ### Puis-je choisir les options de mon accordéon ?
+
 Oui ! Vous pourrez choisir : l'essence de bois, la couleur des soufflets, le type de grille décorative, le nombre de boutons, et bien plus. Tous les détails sont dans la [fiche détaillée](01-fiche-stage-detaillee-fr.md).
 
 ---
