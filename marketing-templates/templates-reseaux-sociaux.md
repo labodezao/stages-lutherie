@@ -3,9 +3,11 @@
 ## 📸 Instagram - 5 Templates Prêts à l'Emploi
 
 ### Post 1 : Annonce Ouverture Inscriptions
+
 **Image suggérée** : Mains en train de travailler le bois dans l'atelier
 **Caption** :
-```
+
+```text
 🎵 INSCRIPTIONS OUVERTES ! 🎵
 
 Envie de vivre une aventure de lutherie ?
@@ -27,9 +29,11 @@ Envie de vivre une aventure de lutherie ?
 ```
 
 ### Post 2 : Témoignage
+
 **Image** : Photo d'un stagiaire en train de travailler, souriant
 **Caption** :
-```
+
+```text
 "Je ne savais même pas tenir un tournevis... 
 10 jours plus tard, j'avais appris les gestes d'un luthier — et mon accordéon prenait forme." 🎶
 
@@ -40,9 +44,11 @@ Envie de vivre une aventure de lutherie ?
 ```
 
 ### Post 3 : Behind the Scenes
+
 **Images** : Carrousel de 3-5 photos du processus
 **Caption** :
-```
+
+```text
 🛠️ JOUR 3 : Les mécaniques prennent vie !
 
 Aujourd'hui nos stagiaires :
@@ -56,9 +62,11 @@ C'est lent, c'est minutieux — et c'est exactement ça qui est beau. 👉 Swipe
 ```
 
 ### Post 4 : Places limitées
+
 **Image** : Atelier en activité, ambiance chaleureuse
 **Caption** :
-```
+
+```text
 🎵 Plus que quelques places pour avril 2026 !
 
 Un parcours de 10 jours pour apprendre la lutherie de l'accordéon diatonique.
@@ -73,9 +81,11 @@ Petit groupe, accompagnement personnalisé, cadre bienveillant.
 ```
 
 ### Post 5 : Le chemin
+
 **Images** : Carrousel montrant les différentes étapes de fabrication
 **Caption** :
-```
+
+```text
 ✨ DU BOIS BRUT À L'INSTRUMENT ✨
 
 Ce n'est pas en 10 jours qu'on devient luthier.
@@ -93,7 +103,8 @@ Chaque geste apris, chaque pièce assemblée — c'est l'aventure.
 ## 📘 Facebook - 3 Posts Stratégiques
 
 ### Post 1 : Annonce Complète
-```
+
+```text
 🎶 STAGE DE LUTHERIE – ACCORDÉON DIATONIQUE 🎶
 
 📅 DATES 2026
@@ -118,7 +129,8 @@ On apprend et on fait ensemble — à votre rythme, dans un cadre bienveillant.
 ```
 
 ### Post 2 : Album Photo
-```
+
+```text
 📸 RETOUR EN IMAGES - STAGE OCTOBRE 2025 📸
 
 10 jours de gestes, de découvertes et de partage 🎶
@@ -132,7 +144,8 @@ Places pour avril et octobre 2026
 ```
 
 ### Post 3 : Témoignage Détaillé
-```
+
+```text
 💬 TÉMOIGNAGE
 
 "À 52 ans, je ne pensais pas être capable de ça..."
@@ -152,7 +165,8 @@ Sessions 2026 ouvertes à l'inscription !
 ## 🎥 YouTube - Descriptions Optimisées
 
 ### Vidéo : Time-lapse 10 jours
-```
+
+```text
 TITRE: "10 jours de lutherie – Stage accordéon diatonique – Time-lapse complet"
 
 DESCRIPTION:
@@ -177,7 +191,8 @@ Découvrez comment 6 personnes ont appris les gestes de la lutherie et avancé s
 ## 📧 Emails - Séquence d'Accueil
 
 ### Email 1 : Bienvenue (Jour 0)
-```
+
+```text
 OBJET: Bienvenue ! 🎵 Votre parcours de lutherie commence ici
 
 Bonjour [Prénom],
@@ -198,7 +213,8 @@ PS: Places limitées (4 à 6 par session) - avril et octobre 2026
 ```
 
 ### Email 2 : Témoignage (Jour 3)
-```
+
+```text
 OBJET: "Je n'aurais jamais cru être capable de ça..."
 
 Bonjour [Prénom],
@@ -215,7 +231,8 @@ Ewen
 ```
 
 ### Email 3 : Places disponibles (Jour 14)
-```
+
+```text
 OBJET: Plus que quelques places pour avril !
 
 Bonjour [Prénom],
@@ -234,7 +251,8 @@ Ewen
 ## 💡 Templates Supports Imprimés
 
 ### Affiche A3
-```
+
+```text
 [IMAGE CENTRALE: Mains de stagiaire travaillant le bois en atelier]
 
 STAGE DE LUTHERIE
@@ -255,8 +273,10 @@ Aucune expérience requise
 ```
 
 ### Flyer Recto/Verso
+
 **RECTO:**
-```
+
+```text
 STAGE DE LUTHERIE
 ACCORDÉON DIATONIQUE
 
@@ -275,7 +295,8 @@ stages.ewendaviau.com
 ```
 
 **VERSO:**
-```
+
+```text
 POURQUOI CE STAGE ?
 
 ✨ Une aventure de lutherie
@@ -302,25 +323,30 @@ INFOS
 ## 📅 Calendrier de Publication
 
 ### Instagram (3-4 posts/semaine)
+
 - Lundi : Inspiration/Citation
 - Mercredi : Behind the scenes
 - Vendredi : Témoignage/Résultat
 - Dimanche : Call-to-action
 
 ### Stories Instagram (quotidien)
+
 - Pendant stages : daily updates
 - Hors stages : tips lutherie, Q&A
 
 ### Facebook (2-3 posts/semaine)
+
 - Mardi : Info/Éducatif
 - Jeudi : Témoignage/Album
 - Samedi : Promotion/Urgence
 
 ### YouTube (1-2 vidéos/mois)
+
 - Semaine 1 : Vidéo longue (5-10min)
 - Semaine 3 : Short/Reel (< 60s)
 
 ### Email (1/mois + campagnes)
+
 - Newsletter mensuelle
 - Campagnes spéciales (ouverture, urgence)
 
@@ -329,13 +355,15 @@ INFOS
 ## 🎯 Hashtags Stratégiques
 
 ### Principaux (toujours utiliser)
-```
+
+```text
 #accordéondiatonique #lutherie #accordéon
 #artisanat #faitmain #handmade
 ```
 
 ### Secondaires (rotation)
-```
+
+```text
 #musiquetrad #folkmusic #DIY
 #stagefabrication #atelierlutherie
 #saintnazaire #paysdelaloire #bretagne
@@ -344,14 +372,16 @@ INFOS
 ```
 
 ### Locaux
-```
+
+```text
 #saintnazaire #loireatlantique
 #paysdelaloire #bretagnesudloire
 #cotedamour
 ```
 
 ### Niches
-```
+
+```text
 #diatonicaccordion #accordeoniste
 #musiquetradbreizh #folkbreizh
 #lutheriefrancaise
@@ -368,6 +398,7 @@ INFOS
 5. **Restez authentique** - c'est votre force !
 
 **Outils recommandés :**
+
 - Canva (visuels)
 - Later (planification)
 - Linktree (bio Instagram)

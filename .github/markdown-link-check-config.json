@@ -5,6 +5,12 @@
     },
     {
       "pattern": "^https://chorotempo\\.org/"
+    },
+    {
+      "pattern": "^https://www\\.net1901\\.org/"
+    },
+    {
+      "pattern": "\\.HEIC$"
     }
   ],
   "timeout": "20s",

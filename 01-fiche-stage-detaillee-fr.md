@@ -7,19 +7,23 @@ author: "Ewen Daviau"
 date: "2026"
 ---
 
-# Fiche détaillée – Stages de lutherie d’accordéon diatonique 2026
+## Fiche détaillée – Stages de lutherie d’accordéon diatonique 2026
+
 ## Esprit du stage
+
 10 jours d’immersion dans l’art du luthier, dans un cadre calme et convivial. Ce stage est avant tout une expérience d’apprentissage : vous découvrez les gestes, les matériaux et les outils qui donnent vie à un accordéon diatonique. Accessible même sans expérience manuelle préalable.
 
 L’accent est mis sur le chemin, pas sur la destination. Chaque jour est une avancée : vous comprenez, vous faites, vous progressez ensemble. La majorité des participants repartent avec leur instrument — et quand ce n’est pas le cas, des séances de retour permettent de le finaliser sans pression.
 
 ## Public visé
+
 - Ouvert à tous publics dès 13 ans (mineurs avec tuteur majeur)
 - Débutants bienvenus, profils confirmés acceptés
 - Aucune expérience manuelle requise
 - Curieux de lutherie, amateurs de musique traditionnelle, passionnés d’artisanat
 
 ## Sessions & lieu
+
 - 8–17 avril 2026
 - 14–23 octobre 2026
 - Durée : 10 jours consécutifs
@@ -28,6 +32,7 @@ L’accent est mis sur le chemin, pas sur la destination. Chaque jour est une av
 - Repas et hébergements non inclus
 
 ## Ce que vous apprenez et faites
+
 - Comprendre la structure et le fonctionnement d’un accordéon diatonique
 - Travailler le bois : caisse de résonance, ponçage, collage, équerrage
 - Assembler les soufflets et vérifier l’étanchéité
@@ -37,11 +42,13 @@ L’accent est mis sur le chemin, pas sur la destination. Chaque jour est une av
 - Prendre en main musicalement l’instrument en cours de fabrication
 
 ## Et si l’instrument n’est pas terminé au bout de 10 jours ?
+
 C’est une possibilité tout à fait normale, qui dépend du modèle choisi, de votre rythme et de votre expérience. Cela ne remet pas en question la qualité de votre parcours — chaque heure passée dans l’atelier est une heure apprise.
 
 Des séances de retour sont proposées à 80 € / jour d’atelier, pour finaliser l’instrument à votre rythme. Certains reviennent 1 ou 2 jours, d’autres davantage. L’accordéon sera le vôtre et il sera terminé — simplement en plusieurs étapes.
 
 ## Modèles, tarifs, options
+
 - Modèles : 21/8 (2820 €), 33/12 (4500 €), 33/18 (4880 €), 33/24 (6250 €)
 - Acompte (40 %) : 900 € / 1500 € / 1900 € / 2500 € à l’inscription
 - Essences : merisier, noyer, érable sycomore
@@ -56,12 +63,14 @@ Des séances de retour sont proposées à 80 € / jour d’atelier, pour finali
 - Accessoires : bretelles fournies, sac/housse fournie
 
 ## Déroulé type d’une journée
+
 - 9h30–12h30 : atelier fabrication
 - 12h30–14h00 : pause déjeuner
 - 14h00–17h30 : montage, réglages, accompagnement individuel
 - Soirée : concerts, bals, échanges (selon jours)
 
 ## Conditions
+
 - Inclus : préparation des pièces, matériaux, accessoires, encadrement, outillage, consommables, sac + bretelles
 - Non inclus : hébergement, repas, transport
 - Acompte non remboursable (travail préparatoire) ; possible de déplacer la session ou transférer la place
@@ -69,6 +78,7 @@ Des séances de retour sont proposées à 80 € / jour d’atelier, pour finali
 - Instrument non fini en 10 jours : retour possible (80 € / jour atelier + accompagnement)
 
 ## Inscriptions & contact
-- Fiche + acompte : https://stages.ewendaviau.com
-- Contact : contact@ewendaviau.com | https://ewendaviau.com
-- Vidéo : https://www.youtube.com/watch?v=DREx2RqMXeU
+
+- Fiche + acompte : <https://stages.ewendaviau.com>
+- Contact : <contact@ewendaviau.com> | <https://ewendaviau.com>
+- Vidéo : <https://www.youtube.com/watch?v=DREx2RqMXeU>
