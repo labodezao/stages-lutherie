@@ -373,7 +373,7 @@ Des facilités de paiement sont possibles.
 
 ![👉](https://lh7-us.googleusercontent.com/yFrOB_4Xn2KthfTaLwr4bgGKjz07lgtGAPPZoLGfGa2cp6Img4bSA5rg6j4fp4I6RM9Jz-BWwisyaE5YecKMUHa1oLvIlJhdc7xKnFWBF10zrFkvx0TIwd-E8_N8RAmMB6nl5PQeGb6cxhlhjTfZ9g)Pour s’inscrire il faut remplir la fiche d’inscription et la renvoyer avec 40 % d'acompte : 
 
-[stages2022.ewendaviau.com](http://stages2022.ewendaviau.com)
+[stages.ewendaviau.com](https://stages.ewendaviau.com)
 
   
 

@@ -84,7 +84,7 @@ Quartier calme, à environ 20 minutes à pied de la mer, avec accès bus et cent
 
 Découvrez l'ambiance et le processus de fabrication en vidéo :
 
-[![Vidéo de présentation des stages](https://img.youtube.com/vi/DREx2RqMXeU/maxresdefault.jpg)](https://www.youtube.com/watch?v=DREx2RqMXeU)
+[![Vidéo de présentation des stages](https://img.youtube.com/vi/DREx2RqMXeU/hqdefault.jpg)](https://www.youtube.com/watch?v=DREx2RqMXeU)
 
 ## ❓ Questions Fréquentes
 
