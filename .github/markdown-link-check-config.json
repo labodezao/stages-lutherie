@@ -17,6 +17,12 @@
     },
     {
       "pattern": "^https://www\\.acb44\\.bzh"
+    },
+    {
+      "pattern": "^https://forum\\.melodeon\\.net"
+    },
+    {
+      "pattern": "^https://www\\.accordionists\\.info"
     }
   ],
   "timeout": "20s",
