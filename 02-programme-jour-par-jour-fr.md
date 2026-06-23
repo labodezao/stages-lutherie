@@ -7,7 +7,8 @@ author: "Ewen Daviau"
 date: "2026"
 ---
 
-# Programme – 10 jours (indicatif et réaliste)
+## Programme – 10 jours (indicatif et réaliste)
+
 - Jour 1 : Accueil, visite atelier, choix d’options, premiers assemblages
 - Jour 2 : Structure bois (caisse MD/MG), ponçage, collage, équerrage, base mécanique
 - Jour 3 : Claviers & boutons – axes, ressorts, toucher
@@ -20,6 +21,7 @@ date: "2026"
 - Jour 10 : Pratique musicale avec intervenant extérieur, prise en main finale, photos, bilan
 
 ## Déroulé d’une journée type
+
 - 9h30–12h30 : atelier fabrication
 - 12h30–14h00 : pause déjeuner
 - 14h00–17h30 : montage, réglages, accompagnement individuel

@@ -7,17 +7,20 @@ author: "Ewen Daviau"
 date: "2026"
 ---
 
-# Detailed Description – Diatonic Accordion Building Workshops 2026
+## Detailed Description – Diatonic Accordion Building Workshops 2026
 
 ## Workshop Spirit
+
 10 days of immersion to assemble your own instrument, in a calm and friendly setting. A creative and sensory experience, accessible even without tooling experience.
 
 ## Target Audience
+
 - Open to all audiences from age 13 (minors with adult guardian)
 - Beginners welcome, experienced profiles accepted
 - No manual experience required
 
 ## Sessions & Location
+
 - April 8–17, 2026
 - October 14–23, 2026
 - Duration: 10 consecutive days
@@ -26,6 +29,7 @@ date: "2026"
 - Meals and lodging not included
 
 ## Educational Objectives (examples)
+
 - Assemble the bellows and check airtightness
 - Mount and adjust mechanics, keyboards and springs
 - Install grills, wood finishes, install reeds
@@ -33,6 +37,7 @@ date: "2026"
 - Basic musical handling of the instrument you built
 
 ## Models, Pricing, Options
+
 - Models: 21/8 (€2820), 33/12 (€4500), 33/18 (€4880), 33/24 (€6250)
 - Deposit (40%): €900 / €1500 / €1900 / €2500 at registration
 - Woods: cherry, walnut, maple sycamore
@@ -47,12 +52,14 @@ date: "2026"
 - Accessories: straps provided, bag/case provided
 
 ## Typical Day Schedule
+
 - 9:30–12:30: workshop building
 - 12:30–14:00: lunch break
 - 14:00–17:30: assembly, adjustments, individual guidance
 - Evening: concerts, dances, exchanges (on selected days)
 
 ## Terms & Conditions
+
 - Included: parts preparation, materials, accessories, supervision, tools, consumables, bag + straps
 - Not included: lodging, meals, transportation
 - Non-refundable deposit (preparatory work); possible to move session or transfer place
@@ -60,6 +67,7 @@ date: "2026"
 - Instrument not finished in 10 days: return possible (€80 / day workshop + guidance)
 
 ## Registration & Contact
-- Form + deposit: https://stages.ewendaviau.com
-- Contact: contact@ewendaviau.com | https://ewendaviau.com
-- Video: https://www.youtube.com/watch?v=DREx2RqMXeU
+
+- Form + deposit: <https://stages.ewendaviau.com>
+- Contact: <contact@ewendaviau.com> | <https://ewendaviau.com>
+- Video: <https://www.youtube.com/watch?v=DREx2RqMXeU>

@@ -7,7 +7,7 @@ author: "Ewen Daviau"
 date: "2026"
 ---
 
-# Program – 10 Days (Indicative and Realistic)
+## Program – 10 Days (Indicative and Realistic)
 
 - **Day 1**: Welcome, workshop tour, option choices, first assemblies
 - **Day 2**: Wooden structure (RH/LH body), sanding, gluing, squaring, mechanical base
@@ -21,6 +21,7 @@ date: "2026"
 - **Day 10**: Musical practice with guest musician, final handling, photos, group wrap-up
 
 ## Typical Daily Schedule
+
 - 9:30–12:30: workshop building
 - 12:30–14:00: lunch break
 - 14:00–17:30: assembly, adjustments, individual guidance

@@ -1,18 +1,23 @@
 # Visual Mail Version 3 - Summary
 
 ## Overview
+
 Version 3 email visuals with comprehensive workshop information in both French and English.
 
 ## Files Created
 
 ### French Version
+
 **File**: `comm/visuel-stage-email-v3-fr.html`
+
 - **Size**: 25,989 bytes (~26 KB)
 - **Language**: French
 - **Title**: "Stage « Fabriquez votre accordéon diatonique » – 2026 (Version 3)"
 
 ### English Version
+
 **File**: `comm/visuel-stage-email-v3-en.html`
+
 - **Size**: 25,692 bytes (~26 KB)
 - **Language**: English
 - **Title**: "Workshop 'Build Your Diatonic Accordion' – 2026 (Version 3)"
@@ -20,6 +25,7 @@ Version 3 email visuals with comprehensive workshop information in both French a
 ## New Features in Version 3
 
 ### 1. Complete Pricing (All 4 Models)
+
 - **21/8**: €2,820 (deposit: €900)
 - **33/12**: €4,500 (deposit: €1,500) ⭐ Popular
 - **33/18**: €4,880 (deposit: €1,900)
@@ -29,28 +35,36 @@ Version 3 email visuals with comprehensive workshop information in both French a
 All with deposit amounts (40%) clearly displayed.
 
 ### 2. Detailed 10-Day Program
+
 **Days 1-2**: Structure & Wood
+
 - Welcome, workshop tour, options selection
 - Case fabrication, sanding, gluing, mechanical base
 
 **Days 3-4**: Keyboards & Mechanics
+
 - Mounting axes, springs, touch adjustment
 - Mechanics assembly, height and travel settings
 
 **Days 5-6**: Bellows & Grills
+
 - Bellows fabrication, installation, airtightness
 - Decorative grill mounting, wood finishing
 
 **Days 7-8**: Reeds & Tuning
+
 - Reed sorting, installation, note-by-note testing
 - Fine tuning, air leak detection, button alignment
 
 **Days 9-10**: Testing & Music
+
 - Complete testing, personalized corrections
 - Musical introduction, final handover
 
 ### 3. Customization Options Grid
+
 Six categories with visual emojis:
+
 - 🌳 **Wood Species**: Cherry, Walnut, Maple
 - 🎵 **Keys**: G/C, D/G, A/D
 - ⚙️ **Layouts**: Heim, Milleret-Pignol, custom
@@ -59,17 +73,21 @@ Six categories with visual emojis:
 - 🎺 **Reeds**: Tipo a mano, A mano +, tunings
 
 ### 4. Practical Information
+
 **Location**:
+
 - Lutherie Workshop
 - 9 rue Fernand de Magellan
 - 44600 Saint-Nazaire, France
 
 **Schedule**:
+
 - 9:30 AM-12:30 PM: Workshop fabrication
 - 2:00 PM-5:30 PM: Assembly & adjustments
 - Evenings: Concerts, dances, exchanges
 
 **Included**:
+
 - All materials
 - Professional tools
 - Expert guidance
@@ -77,25 +95,30 @@ Six categories with visual emojis:
 - Consumables & accessories
 
 **Not Included**:
+
 - Accommodation
 - Meals
 - Transportation
 
 ### 5. Enhanced Call-to-Action
+
 Strong CTA section with:
+
 - Headline: "Ready to Get Started?" / "Prêt à vous lancer ?"
 - Message about limited spots
 - Large registration button → stages.ewendaviau.com
 - Gradient background for visibility
 
 ### 6. Complete Contact Footer
+
 - Website: stages.ewendaviau.com
-- Email: contact@ewendaviau.com
+- Email: <contact@ewendaviau.com>
 - Video: YouTube link to workshop video
 
 ## Technical Specifications
 
 ### Email Compatibility ✅
+
 - **Gmail**: Full compatibility
 - **Outlook**: MSO conditional comments included
 - **Apple Mail**: WebKit optimizations
@@ -103,12 +126,14 @@ Strong CTA section with:
 - **Mobile clients**: Responsive design
 
 ### Code Structure
+
 - **DOCTYPE**: XHTML with Office namespaces
 - **Tables**: Role="presentation" for accessibility
 - **Inline CSS**: All styles inline for email clients
 - **Fallback colors**: Background colors for gradient fallback
 
 ### Responsive Design
+
 ```css
 @media only screen and (max-width: 620px) {
   .mobile-full { width: 100% !important; }
@@ -124,7 +149,9 @@ Strong CTA section with:
 - Maintains readability on mobile
 
 ### Visual Design
+
 **Color Palette**:
+
 - Wood dark: #3E2723
 - Wood medium: #5D4037
 - Wood light: #8D6E63
@@ -133,11 +160,13 @@ Strong CTA section with:
 - Gold light: #F5D061
 
 **Typography**:
+
 - Headers: Georgia, Times New Roman (serif)
 - Body: Arial, Helvetica (sans-serif)
 - Hierarchy maintained throughout
 
 **Spacing**:
+
 - Consistent padding: 20-30px sections
 - Card spacing: 8-10px between items
 - Mobile optimized with stacking
@@ -145,15 +174,18 @@ Strong CTA section with:
 ## Comparison with Previous Versions
 
 ### Version 1 (Original)
+
 - Basic pricing (21/8, 33/12, 33/18, 33/24)
 - Simple program mention
 - Limited options info
 - ~20 KB
 
 ### Version 2 (Not Created)
+
 - N/A
 
 ### Version 3 (Current) ✨
+
 - Complete pricing (all 3 models)
 - Detailed 10-day program breakdown
 - Full customization options grid
@@ -164,19 +196,23 @@ Strong CTA section with:
 ## Usage Instructions
 
 ### For French Audience
+
 1. Open `comm/visuel-stage-email-v3-fr.html`
 2. Copy entire HTML content
 3. Paste into email client as HTML source
 4. Send to French-speaking contacts
 
 ### For International Audience
+
 1. Open `comm/visuel-stage-email-v3-en.html`
 2. Copy entire HTML content
 3. Paste into email client as HTML source
 4. Send to English-speaking contacts
 
 ### Testing Checklist
+
 Before sending:
+
 - [ ] Preview in Gmail
 - [ ] Preview in Outlook
 - [ ] Preview in Apple Mail
@@ -188,6 +224,7 @@ Before sending:
 ## Content Sources
 
 All information compiled from:
+
 - `01-fiche-stage-detaillee-fr.md` - Detailed workshop specs
 - `02-programme-jour-par-jour-fr.md` - Daily program
 - `00-communication-annonce-fr.md` - Announcements
@@ -197,16 +234,19 @@ All information compiled from:
 ## Performance Metrics
 
 ### File Sizes
+
 - French: 25.9 KB (excellent for email)
 - English: 25.7 KB (excellent for email)
 - Under 30 KB recommended limit ✅
 
 ### Load Times
+
 - Gmail: <1 second
 - Outlook: <2 seconds
 - Mobile: <3 seconds on 4G
 
 ### Deliverability Score
+
 - No JavaScript ✅
 - No external resources ✅
 - Inline CSS ✅
@@ -227,6 +267,7 @@ All information compiled from:
 ## Translation Notes
 
 ### French → English Key Terms
+
 - Fabriquez → Build
 - Accordéon diatonique → Diatonic accordion
 - Stage → Workshop
@@ -239,6 +280,7 @@ All information compiled from:
 - Anches → Reeds
 
 ### Cultural Adaptations
+
 - Date format: European (8-17 avril vs April 8-17)
 - Currency: Euro symbol placement varies
 - Time format: 24-hour vs AM/PM
@@ -247,12 +289,14 @@ All information compiled from:
 ## Maintenance
 
 ### When to Update
+
 - **Annually**: Dates for new year (2027, etc.)
 - **As needed**: Price changes
 - **As needed**: New options available
 - **As needed**: Updated contact information
 
 ### Version Control
+
 - Current: V3 (2026-02-12)
 - Previous: V1 (original)
 - Archive old versions when creating new ones
@@ -260,6 +304,7 @@ All information compiled from:
 ## Support & Questions
 
 ### Common Issues
+
 **Email doesn't display correctly**
 → Some clients block images/styles by default
 → Ask recipient to "display images" or "show content"
@@ -273,8 +318,10 @@ All information compiled from:
 → Content is still readable, just not optimized
 
 ### Contact
+
 For questions about these email templates:
-- Email: contact@ewendaviau.com
+
+- Email: <contact@ewendaviau.com>
 - Reference: "Email V3 Templates"
 
 ---
