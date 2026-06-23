@@ -153,9 +153,9 @@ List of contacts and communities to promote the diatonic accordion building work
 ### Facebook FR
 
 ```text
-🔨 Fabriquez votre propre accordéon diatonique en 10 jours !
+🎵 Un parcours de lutherie en 10 jours : fabriquez votre accordéon diatonique !
 
-Depuis 2021, plus de 30 stagiaires ont assemblé leur instrument de A à Z dans notre atelier de Saint-Nazaire.
+Depuis 2021, plus de 30 stagiaires ont vécu l'aventure de la lutherie dans notre atelier de Saint-Nazaire.
 
 🌸 8-17 avril 2026
 🍂 14-23 octobre 2026
@@ -173,9 +173,9 @@ Depuis 2021, plus de 30 stagiaires ont assemblé leur instrument de A à Z dans 
 ### Facebook/Reddit EN
 
 ```text
-🔨 Build your own diatonic accordion in 10 days!
+🎵 A 10-day lutherie journey: learn to build your diatonic accordion!
 
-Since 2021, 30+ trainees have assembled their instrument from scratch in our workshop in Saint-Nazaire, France.
+Since 2021, 30+ trainees have experienced the lutherie adventure in our workshop in Saint-Nazaire, France.
 
 🌸 April 8-17, 2026
 🍂 October 14-23, 2026
@@ -193,8 +193,8 @@ Since 2021, 30+ trainees have assembled their instrument from scratch in our wor
 ### Instagram FR
 
 ```text
-🔨 Fabriquez votre accordéon diatonique en 10 jours.
-Repartez avec un instrument fait de vos mains.
+🛠️ 10 jours d'immersion dans la lutherie de l'accordéon diatonique.
+On apprend et on fait ensemble — un parcours artisanal unique.
 
 📅 Avril & Octobre 2026
 📍 Saint-Nazaire, France
@@ -208,8 +208,8 @@ Lien en bio → stages.ewendaviau.com
 ### Instagram EN
 
 ```text
-🔨 Build your own diatonic accordion in 10 days.
-Leave with an instrument made by your own hands.
+🛠️ 10-day lutherie workshop: learn to build a diatonic accordion.
+An immersive craftsmanship journey, step by step.
 
 📅 April & October 2026
 📍 Saint-Nazaire, France

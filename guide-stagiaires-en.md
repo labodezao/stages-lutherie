@@ -98,7 +98,7 @@ For the most demanding musicians, we offer the **Anche a mano Blue Star** option
 
 ### If You Don't Finish in 10 Days
 
-While most trainees finish their instrument on time, you can return in a later session to complete your accordion:
+The workshop is a learning journey — completing the instrument during the 10 days is the goal, though some steps may continue. You can always return in a later session:
 
 - **Rate**: €80 per workshop day (includes access to the workshop, tools and guidance)
 - **Flexibility**: You can return for 1, 2 or more days as needed

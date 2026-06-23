@@ -275,7 +275,7 @@ Des facilités de paiement sont possibles.
 
 [stages.ewendaviau.com](https://stages.ewendaviau.com)
 
-Bref pour le prix d’un accordéon neuf, vous le fabriquez, repartez avec lui
+Bref pour le prix d’un accordéon neuf, vous apprenez à le fabriquer — et dans la plupart des cas, vous repartez avec !
 
 et 10 jours de partage , de découvertes et rencontres
 

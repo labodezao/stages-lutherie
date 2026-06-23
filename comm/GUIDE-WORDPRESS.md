@@ -277,7 +277,7 @@ Copiez ce code dans un bloc **HTML personnalisé** dans Gutenberg.
 ```text
 ```text
 🎵 Only a few spots left for the April workshop!
-🔨 10 days to build your own diatonic accordion from scratch
+🛠️ 10-day lutherie journey — learn to build a diatonic accordion
 🌿 Led by Ewen d'Aviau, professional luthier in Saint-Nazaire, France
 ✅ No experience needed · Everything included · Max 6 participants
 

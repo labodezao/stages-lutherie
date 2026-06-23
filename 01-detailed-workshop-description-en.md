@@ -11,7 +11,9 @@ date: "2026"
 
 ## Workshop Spirit
 
-10 days of immersion to assemble your own instrument, in a calm and friendly setting. A creative and sensory experience, accessible even without tooling experience.
+A 10-day learning journey into diatonic accordion lutherie, in a calm and friendly atmosphere. We learn and build together, step by step — a creative and sensory experience, no prior tooling experience required.
+
+The aim is to develop real hands-on skills and understand how an accordion is made. Most participants advance significantly during the 10 days; if further work is needed, you can return at €80/day.
 
 ## Target Audience
 
@@ -28,7 +30,7 @@ date: "2026"
 - Typical hours: 9:30–12:30 / 14:00–17:30
 - Meals and lodging not included
 
-## Educational Objectives (examples)
+## What You'll Learn to Do
 
 - Assemble the bellows and check airtightness
 - Mount and adjust mechanics, keyboards and springs

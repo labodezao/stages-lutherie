@@ -6,13 +6,13 @@ lang: fr
 
 ## Stages de Lutherie - Accordéon Diatonique 🎵
 
-![Groupe de stagiaires avec leurs accordéons terminés](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg?raw=true)
+![Groupe de stagiaires en atelier de lutherie](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg?raw=true)
 
-## 🎯 Fabriquez votre propre accordéon en 10 jours
+## 🛠️ 10 jours d'immersion dans l'art de la lutherie
 
-Stages intensifs de **fabrication d'accordéon diatonique** organisés par **Ewen Daviau**, luthier professionnel à Saint-Nazaire, France.
+**Parcours de fabrication d'accordéon diatonique** animé par **Ewen Daviau**, luthier professionnel à Saint-Nazaire, France.
 
-Une expérience unique et accessible à tous, dès 13 ans, **sans aucune expérience manuelle requise**.
+On apprend et on fait ensemble, à votre rythme. Accessible à tous dès 13 ans, **sans aucune expérience manuelle requise**.
 
 ### 📅 Sessions 2026
 
