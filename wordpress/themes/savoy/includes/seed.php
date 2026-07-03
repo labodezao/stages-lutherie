@@ -192,20 +192,52 @@ function evd_seed_accueil(): int {
 
 function evd_seed_stages(): int {
     $fr = '
-<h1>Stage de lutherie — Accordéon diatonique</h1>
+<h1>Stage de lutherie — Accordéon diatonique 2026</h1>
 
-<p class="evd-lead">Un parcours de fabrication en 10 jours, animé par Ewen Daviau,
-luthier professionnel à Saint-Nazaire. On apprend et on fait ensemble, à votre rythme.
+<p class="evd-lead">10 jours d\'immersion dans l\'art du luthier, dans un cadre calme et convivial.
+Ce stage est avant tout une expérience d\'apprentissage : vous découvrez les gestes, les matériaux
+et les outils qui donnent vie à un accordéon diatonique.
 <strong>Aucune expérience manuelle requise.</strong></p>
 
-<h2>Sessions 2026</h2>
+<p>L\'accent est mis sur le chemin, pas sur la destination. Chaque jour est une avancée : vous
+comprenez, vous faites, vous progressez ensemble. La majorité des participants repartent avec leur
+instrument — et quand ce n\'est pas le cas, des séances de retour permettent de le finaliser sans pression.</p>
+
+<h2>Public visé</h2>
+<ul>
+  <li>Ouvert à tous publics dès 13 ans (mineurs avec tuteur majeur)</li>
+  <li>Débutants bienvenus, profils confirmés acceptés</li>
+  <li>Curieux de lutherie, amateurs de musique traditionnelle, passionnés d\'artisanat</li>
+</ul>
+
+<h2>Sessions & lieu</h2>
 <ul>
   <li>🌸 <strong>8–17 avril 2026</strong></li>
   <li>🍂 <strong>14–23 octobre 2026</strong></li>
 </ul>
-<p>Horaires : 9h30–12h30 / 14h00–17h30<br>
-Lieu : 9 rue Fernand de Magellan, 44600 Saint-Nazaire<br>
-Groupes de 4 à 6 personnes maximum</p>
+<p>Durée : 10 jours consécutifs<br>
+Lieu : Atelier, 9 rue Fernand de Magellan, Saint-Nazaire (44)<br>
+Horaires indicatifs : 9h30–12h30 / 14h00–17h30<br>
+Repas et hébergements non inclus</p>
+
+<h2>Ce que vous apprenez et faites</h2>
+<ul>
+  <li>Comprendre la structure et le fonctionnement d\'un accordéon diatonique</li>
+  <li>Travailler le bois : caisse de résonance, ponçage, collage, équerrage</li>
+  <li>Assembler les soufflets et vérifier l\'étanchéité</li>
+  <li>Monter et régler les mécaniques, claviers et ressorts</li>
+  <li>Poser les grilles décoratives, réaliser les finitions bois</li>
+  <li>Installer et trier les anches, effectuer les premiers réglages et tests MD/MG</li>
+  <li>Prendre en main musicalement l\'instrument en cours de fabrication</li>
+</ul>
+
+<h2>Et si l\'instrument n\'est pas terminé au bout de 10 jours ?</h2>
+<p>C\'est une possibilité tout à fait normale, qui dépend du modèle choisi, de votre rythme et de
+votre expérience. Cela ne remet pas en question la qualité de votre parcours — chaque heure passée
+dans l\'atelier est une heure apprise.</p>
+<p>Des séances de retour sont proposées à <strong>80 € / jour d\'atelier</strong>, pour finaliser
+l\'instrument à votre rythme. Certains reviennent 1 ou 2 jours, d\'autres davantage. L\'accordéon
+sera le vôtre et il sera terminé — simplement en plusieurs étapes.</p>
 
 <h2>Modèles et tarifs</h2>
 <table>
@@ -217,54 +249,98 @@ Groupes de 4 à 6 personnes maximum</p>
     <tr><td>33/24 basses</td><td>6 250 €</td><td>2 500 €</td></tr>
   </tbody>
 </table>
-<p><em>Option Anche a mano Blue Star : +15 % · Tous modèles livrés en 1 voix MD par défaut.</em></p>
+<p><em>Option Anche a mano Blue Star : +15 % · Tous modèles en 1 voix MD par défaut.<br>
+Upgrade 2 voix MD avec registres possible (nécessite 2 stages).</em></p>
 
 <h2>Personnalisations</h2>
 <ul>
-  <li><strong>Bois</strong> : merisier, noyer, érable sycomore</li>
-  <li><strong>Tonalité</strong> : Sol/Do, Ré/Sol, La/Ré</li>
-  <li><strong>Soufflets</strong> : noir, rouge, bleu, vert, orange, mixte</li>
-  <li><strong>Grilles</strong> : plus de 100 modèles numérotés</li>
-  <li><strong>Clavier</strong> : Heim, Milleret-Pignol, ou personnalisé</li>
+  <li><strong>Essences</strong> : merisier, noyer, érable sycomore</li>
+  <li><strong>Tonalité</strong> : Sol/Do, Ré/Sol, La/Ré · Accordage sec/demi-sec</li>
+  <li><strong>Soufflets</strong> : noir, rouge, bleu, vert, orange, mixte · Coins standard/renforcés/métal brossé/perso</li>
+  <li><strong>Grilles décoratives</strong> : plus de 100 modèles numérotés (choisir à l\'inscription)</li>
+  <li><strong>Clavier</strong> : Heim, Milleret-Pignol, ou personnalisé (surcoût)</li>
+  <li><strong>Boutons</strong> : champignon bois naturel, nacre noire ou blanche</li>
+  <li><strong>Anches</strong> : tipo a mano, a mano (+)</li>
 </ul>
 
-<h2>Inclus</h2>
+<h2>Inclus dans le tarif</h2>
 <ul>
-  <li>✅ Matériaux et pièces</li>
+  <li>✅ Préparation des pièces avant le stage</li>
+  <li>✅ Matériaux, accessoires, consommables</li>
   <li>✅ Outillage professionnel</li>
   <li>✅ Sac + bretelles</li>
-  <li>✅ Encadrement personnalisé</li>
+  <li>✅ Encadrement personnalisé tout au long du stage</li>
 </ul>
 <p><strong>Non inclus :</strong> hébergement, repas, transport.</p>
 
-<h2>Et si l\'instrument n\'est pas terminé en 10 jours ?</h2>
-<p>La lutherie ne se chronomètre pas. Si des étapes restent à finaliser,
-vous pouvez revenir lors d\'une session ultérieure à <strong>80 € / jour</strong>
-(atelier, outillage, guidance). La progression est réelle quel que soit l\'avancement final.</p>
+<h2>Déroulé type d\'une journée</h2>
+<ul>
+  <li>9h30–12h30 : atelier fabrication</li>
+  <li>12h30–14h00 : pause déjeuner</li>
+  <li>14h00–17h30 : montage, réglages, accompagnement individuel</li>
+  <li>Soirée : concerts, bals, échanges (selon les jours)</li>
+</ul>
+
+<h2>Conditions importantes</h2>
+<ul>
+  <li>Acompte non remboursable (travail préparatoire engagé) ; possible de reporter la session ou transférer la place</li>
+  <li>Le modèle transmis est destiné à un usage personnel non commercial</li>
+  <li>Instrument non fini en 10 jours : retour possible à 80 € / jour atelier</li>
+</ul>
+<p><a href="/cgv/">→ Lire les Conditions Générales de Vente complètes</a></p>
 
 <p>
   <a href="https://stages.ewendaviau.com" class="evd-btn" target="_blank">📝 S\'inscrire</a>
-  <a href="/cgv/" class="evd-btn evd-btn-sec">Conditions générales</a>
+  <a href="mailto:contact@ewendaviau.com" class="evd-btn evd-btn-sec">Nous contacter</a>
 </p>
 ';
 
     $en = '
-<h1>Lutherie Workshop — Diatonic Accordion</h1>
+<h1>Lutherie Workshop — Diatonic Accordion 2026</h1>
 
-<p class="evd-lead">A 10-day building journey led by Ewen Daviau,
-professional luthier in Saint-Nazaire, France. We learn and build together, at your own pace.
-<strong>No prior experience required.</strong></p>
+<p class="evd-lead">A 10-day learning journey into diatonic accordion lutherie, in a calm and friendly atmosphere.
+We learn and build together, step by step — a creative and sensory experience.
+<strong>No prior tooling experience required.</strong></p>
 
-<h2>2026 Sessions</h2>
+<p>The aim is to develop real hands-on skills and understand how an accordion is made. Most participants
+advance significantly during the 10 days; if further work is needed, you can return at €80/day.</p>
+
+<h2>Target Audience</h2>
+<ul>
+  <li>Open to all audiences from age 13 (minors with adult guardian)</li>
+  <li>Beginners welcome, experienced profiles accepted</li>
+  <li>Curious about lutherie, folk music lovers, craft enthusiasts</li>
+</ul>
+
+<h2>Sessions &amp; Location</h2>
 <ul>
   <li>🌸 <strong>April 8–17, 2026</strong></li>
   <li>🍂 <strong>October 14–23, 2026</strong></li>
 </ul>
-<p>Hours: 9:30–12:30 / 14:00–17:30<br>
-Location: 9 rue Fernand de Magellan, 44600 Saint-Nazaire, France<br>
-Groups of 4 to 6 participants maximum</p>
+<p>Duration: 10 consecutive days<br>
+Location: Workshop, 9 rue Fernand de Magellan, Saint-Nazaire (44), France<br>
+Typical hours: 9:30–12:30 / 14:00–17:30<br>
+Meals and lodging not included</p>
 
-<h2>Models and pricing</h2>
+<h2>What You\'ll Learn to Do</h2>
+<ul>
+  <li>Understand the structure and workings of a diatonic accordion</li>
+  <li>Woodworking: resonance box, sanding, gluing, squaring</li>
+  <li>Assemble the bellows and check airtightness</li>
+  <li>Mount and adjust mechanics, keyboards and springs</li>
+  <li>Install decorative grills, perform wood finishing</li>
+  <li>Install and sort reeds, perform initial RH/LH adjustments and tests</li>
+  <li>Basic musical handling of the instrument you built</li>
+</ul>
+
+<h2>What if the instrument is not finished in 10 days?</h2>
+<p>This is entirely normal, depending on the chosen model, your pace and experience. It does not call into
+question the quality of your journey — every hour spent in the workshop is an hour learned.</p>
+<p>Return sessions are available at <strong>€80 / workshop day</strong> to complete your instrument at your
+own pace. Some participants return for 1 or 2 days, others for more. Your accordion will be yours and it
+will be finished — simply in several stages.</p>
+
+<h2>Models and Pricing</h2>
 <table>
   <thead><tr><th>Model</th><th>Price</th><th>Deposit 40%</th></tr></thead>
   <tbody>
@@ -274,34 +350,49 @@ Groups of 4 to 6 participants maximum</p>
     <tr><td>33/24 basses</td><td>€6,250</td><td>€2,500</td></tr>
   </tbody>
 </table>
-<p><em>Anche a mano Blue Star option: +15% · All models: 1 voice RH by default.</em></p>
+<p><em>Anche a mano Blue Star option: +15% · All models: 1 voice RH by default.<br>
+2-voice RH upgrade with registers available (requires 2 workshop sessions).</em></p>
 
 <h2>Customisation</h2>
 <ul>
-  <li><strong>Wood</strong>: cherry, walnut, maple sycamore</li>
-  <li><strong>Key</strong>: G/C, D/G, A/D</li>
-  <li><strong>Bellows</strong>: black, red, blue, green, orange, mixed</li>
-  <li><strong>Grilles</strong>: over 100 numbered models</li>
-  <li><strong>Keyboard layout</strong>: Heim, Milleret-Pignol, or custom</li>
+  <li><strong>Woods</strong>: cherry, walnut, maple sycamore</li>
+  <li><strong>Keys</strong>: G/C, D/G, A/D · Dry/semi-dry tuning</li>
+  <li><strong>Bellows</strong>: black, red, blue, green, orange, mixed · Standard/reinforced/brushed metal/custom corners</li>
+  <li><strong>Decorative grills</strong>: over 100 numbered models (choose at registration)</li>
+  <li><strong>Keyboard layout</strong>: Heim, Milleret-Pignol, or custom (extra cost)</li>
+  <li><strong>Buttons</strong>: mushroom in natural wood, black or white nacre</li>
+  <li><strong>Reeds</strong>: tipo a mano, a mano (+)</li>
 </ul>
 
-<h2>Included</h2>
+<h2>Included in the price</h2>
 <ul>
-  <li>✅ All materials and parts</li>
+  <li>✅ Parts preparation before the workshop</li>
+  <li>✅ Materials, accessories, consumables</li>
   <li>✅ Professional tools</li>
   <li>✅ Gig bag + straps</li>
-  <li>✅ Personal guidance throughout</li>
+  <li>✅ Personal guidance throughout the workshop</li>
 </ul>
 <p><strong>Not included:</strong> accommodation, meals, transport.</p>
 
-<h2>What if the instrument is not finished in 10 days?</h2>
-<p>Lutherie cannot be timed to a deadline. If some steps remain,
-you can return in a later session at <strong>€80 / day</strong>
-(workshop access, tools, guidance). Progress is real whatever the final outcome.</p>
+<h2>Typical Day Schedule</h2>
+<ul>
+  <li>9:30–12:30: workshop building</li>
+  <li>12:30–14:00: lunch break</li>
+  <li>14:00–17:30: assembly, adjustments, individual guidance</li>
+  <li>Evening: concerts, dances, exchanges (on selected days)</li>
+</ul>
+
+<h2>Important terms</h2>
+<ul>
+  <li>Non-refundable deposit (preparatory work already engaged); possible to move session or transfer place</li>
+  <li>The model is for personal, non-commercial use only</li>
+  <li>Instrument not finished in 10 days: return possible at €80 / workshop day</li>
+</ul>
+<p><a href="/cgv/?lang=en">→ Read the full Terms &amp; Conditions</a></p>
 
 <p>
   <a href="https://stages.ewendaviau.com?lang=en" class="evd-btn" target="_blank">📝 Register</a>
-  <a href="/cgv/?lang=en" class="evd-btn evd-btn-sec">Terms &amp; conditions</a>
+  <a href="mailto:contact@ewendaviau.com" class="evd-btn evd-btn-sec">Contact us</a>
 </p>
 ';
 
