@@ -23,6 +23,9 @@
     },
     {
       "pattern": "^https://www\\.accordionists\\.info"
+    },
+    {
+      "pattern": "^https://www\\.superprof\\.fr"
     }
   ],
   "timeout": "20s",
