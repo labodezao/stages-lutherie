@@ -64,8 +64,15 @@ add_action( 'admin_menu', fn() => add_management_page( 'Seed', 'Seed ewendaviau'
 add_action( 'admin_post_evd_seed_run', function () {
     if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized', 403 );
     check_admin_referer( 'evd_seed_run' );
-    require_once get_template_directory() . '/includes/seed.php';
-    evd_run_seed();
+    try {
+        require_once get_template_directory() . '/includes/seed.php';
+        evd_run_seed();
+    } catch ( \Throwable $e ) {
+        wp_die(
+            '<h2>Erreur seed</h2><pre>' . esc_html( $e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine() ) . '</pre>',
+            'Seed error', [ 'back_link' => true ]
+        );
+    }
     wp_redirect( admin_url( 'tools.php?page=evd-seed&seeded=1' ) );
     exit;
 } );
