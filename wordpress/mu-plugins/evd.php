@@ -64,7 +64,7 @@ add_action( 'admin_menu', fn() => add_management_page( 'Seed', 'Seed ewendaviau'
 add_action( 'admin_post_evd_seed_run', function () {
     if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized', 403 );
     check_admin_referer( 'evd_seed_run' );
-    require_once get_template_directory() . '/inc/seed.php';
+    require_once get_template_directory() . '/includes/seed.php';
     evd_run_seed();
     wp_redirect( admin_url( 'tools.php?page=evd-seed&seeded=1' ) );
     exit;
