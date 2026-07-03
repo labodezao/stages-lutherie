@@ -26,6 +26,12 @@
     },
     {
       "pattern": "^https://www\\.superprof\\.fr"
+    },
+    {
+      "pattern": "^https://ewendaviau\\.com"
+    },
+    {
+      "pattern": "^https://stages\\.ewendaviau\\.com"
     }
   ],
   "timeout": "20s",
