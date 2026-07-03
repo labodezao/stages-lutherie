@@ -1,4 +1,15 @@
 <?php
+/**
+ * Plugin Name: EVD — Bloc bilingue + Seed
+ * Description: Bloc Gutenberg FR/EN, système de langue et seed SQL pour ewendaviau.com
+ * Version: 1.0
+ *
+ * Déploiement : copier ce fichier dans wp-content/mu-plugins/evd.php
+ * WordPress le charge automatiquement — aucune activation, functions.php inchangé.
+ *
+ * Copier aussi assets/block.js et inc/seed.php dans le thème actif.
+ */
+
 // ── Bloc Gutenberg dynamique bilingue ewendaviau/html-libre ───────────────────
 
 add_action( 'init', function () {
