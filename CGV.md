@@ -3,11 +3,11 @@ title: "Conditions Générales de Vente — Stages de lutherie"
 lang: fr
 ---
 
-# Conditions Générales de Vente — Stages de lutherie accordéon diatonique
+## Conditions Générales de Vente — Stages de lutherie accordéon diatonique
 
 **Prestataire** : Ewen Daviau, luthier indépendant
 **Adresse** : 9 rue Fernand de Magellan, 44600 Saint-Nazaire
-**Contact** : contact@ewendaviau.com — <https://stages.ewendaviau.com>
+**Contact** : <contact@ewendaviau.com> — <https://stages.ewendaviau.com>
 
 ---
 
@@ -127,7 +127,7 @@ Il ne saurait être tenu responsable :
 Les informations collectées lors de l'inscription sont utilisées exclusivement pour
 l'organisation du stage. Elles ne sont pas transmises à des tiers. Conformément au
 RGPD, vous disposez d'un droit d'accès, de rectification et de suppression en
-contactant contact@ewendaviau.com.
+contactant <contact@ewendaviau.com>.
 
 ---
 
