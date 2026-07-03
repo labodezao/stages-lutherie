@@ -97,15 +97,21 @@ function evd_run_seed(): int {
     $seed  = sanitize_key( $_POST['seed'] ?? 'all' );
     $count = 0;
     switch ( $seed ) {
-        case 'accueil':    $count = evd_seed_accueil();    break;
-        case 'stages':     $count = evd_seed_stages();     break;
-        case 'programme':  $count = evd_seed_programme();  break;
-        case 'contact':    $count = evd_seed_contact();    break;
-        case 'cgv':        $count = evd_seed_cgv();        break;
+        case 'accueil':         $count = evd_seed_accueil();         break;
+        case 'stages':          $count = evd_seed_stages();          break;
+        case 'stages_en':       $count = evd_seed_stages_en();       break;
+        case 'inscriptions':    $count = evd_seed_inscriptions();    break;
+        case 'inscriptions_en': $count = evd_seed_inscriptions_en(); break;
+        case 'programme':       $count = evd_seed_programme();       break;
+        case 'contact':         $count = evd_seed_contact();         break;
+        case 'cgv':             $count = evd_seed_cgv();             break;
         case 'all':
         default:
             $count += evd_seed_accueil();
             $count += evd_seed_stages();
+            $count += evd_seed_stages_en();
+            $count += evd_seed_inscriptions();
+            $count += evd_seed_inscriptions_en();
             $count += evd_seed_programme();
             $count += evd_seed_contact();
             $count += evd_seed_cgv();
@@ -188,9 +194,43 @@ function evd_seed_accueil(): int {
     return 1;
 }
 
-// ── 2. STAGES ────────────────────────────────────────────────────────────────
+// ── 2. STAGES (Gutenberg depuis includes/) ───────────────────────────────────
+
+function evd_read_include( string $filename ): string {
+    $path = get_template_directory() . '/includes/' . $filename;
+    if ( ! file_exists( $path ) ) {
+        throw new \RuntimeException( "Fichier introuvable : $path" );
+    }
+    return file_get_contents( $path );
+}
 
 function evd_seed_stages(): int {
+    $content = evd_read_include( 'stages-fr.html' );
+    evd_upsert_page( 'Stage de lutherie — Accordéon diatonique', 'stages-lutherie', $content );
+    return 1;
+}
+
+function evd_seed_stages_en(): int {
+    $content = evd_read_include( 'stages-en.html' );
+    evd_upsert_page( 'Diatonic Accordion Making Workshop', 'stages-accordion-workshop', $content );
+    return 1;
+}
+
+function evd_seed_inscriptions(): int {
+    $content = evd_read_include( 'inscriptions-fr.html' );
+    evd_upsert_page( 'Inscription — Stage de lutherie', 'inscription-lutherie', $content );
+    return 1;
+}
+
+function evd_seed_inscriptions_en(): int {
+    $content = evd_read_include( 'inscriptions-en.html' );
+    evd_upsert_page( 'Registration — Lutherie Workshop', 'registration-lutherie-workshop', $content );
+    return 1;
+}
+
+// ── (old evd_seed_stages plain-HTML fallback removed) ────────────────────────
+
+function _evd_seed_stages_legacy_unused(): int {
     $fr = '
 <h1>Stage de lutherie — Accordéon diatonique 2026</h1>
 
@@ -396,8 +436,8 @@ will be finished — simply in several stages.</p>
 </p>
 ';
 
-    evd_upsert_page( 'Stages', 'stages', evd_block( $fr, $en ) );
-    return 1;
+    // Legacy body — not called; kept as reference only.
+    return 0;
 }
 
 // ── 3. PROGRAMME ─────────────────────────────────────────────────────────────
