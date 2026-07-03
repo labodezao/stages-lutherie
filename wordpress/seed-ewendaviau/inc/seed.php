@@ -410,3 +410,158 @@ France</p>
     evd_upsert_page( 'Contact', 'contact', evd_block( $fr, $en ) );
     return 1;
 }
+
+// ── 5. PAGE CGV ───────────────────────────────────────────────────────────────
+
+function evd_seed_cgv(): int {
+
+    $fr = '
+<h1>Conditions Générales de Vente</h1>
+<p><em>Stages de lutherie accordéon diatonique — Ewen Daviau, Saint-Nazaire</em></p>
+
+<h2>Article 1 — Objet</h2>
+<p>Les présentes CGV s\'appliquent à toute inscription à un stage de lutherie organisé par
+Ewen Daviau. Le stage est un <strong>parcours pédagogique d\'initiation à la lutherie</strong> :
+le stagiaire apprend les gestes du métier sous la guidance du formateur. Il ne s\'agit
+pas d\'une prestation commerciale de fabrication ou de livraison d\'instrument.</p>
+
+<h2>Article 2 — Nature du stage</h2>
+<p>Le stage de 10 jours constitue un cadre d\'apprentissage intensif. La progression et
+le niveau d\'avancement dépendent du stagiaire (aptitudes, rythme, modèle choisi).
+Le formateur accompagne chaque stagiaire au mieux de ses capacités.</p>
+
+<h2>Article 3 — Non-garantie de finalisation</h2>
+<p><strong>Un stage de 10 jours ne garantit pas la finalisation complète de l\'accordéon.</strong>
+La lutherie est un artisanat de précision qui ne se chronomètre pas. Certaines étapes
+— réglages des anches, ajustements mécaniques fins, finitions — nécessitent du temps
+et de la pratique. Le formateur s\'engage à permettre au stagiaire d\'avancer au maximum
+sur son instrument dans les meilleures conditions possibles.</p>
+
+<h2>Article 4 — Session de retour (forfait pédagogique quotidien)</h2>
+<p>Si l\'instrument n\'est pas finalisé à l\'issue du stage, le stagiaire peut revenir
+lors d\'une session ultérieure.</p>
+<p><strong>Tarif de retour : 80 € / jour</strong> (accès atelier, outillage, consommables,
+guidance). Jours à convenir selon disponibilités. Le stagiaire peut également choisir
+de terminer certaines étapes à domicile, avec l\'appui du formateur par email.</p>
+
+<h2>Article 5 — Inscription et acompte</h2>
+<p>L\'inscription est confirmée à réception du formulaire et du versement de l\'acompte :</p>
+<table>
+  <thead><tr><th>Modèle</th><th>Acompte (40 %)</th></tr></thead>
+  <tbody>
+    <tr><td>21/8</td><td>900 €</td></tr>
+    <tr><td>33/12</td><td>1 500 €</td></tr>
+    <tr><td>33/18</td><td>1 900 €</td></tr>
+    <tr><td>33/24</td><td>2 500 €</td></tr>
+  </tbody>
+</table>
+<p>L\'acompte couvre les frais de préparation des pièces engagés avant le stage.
+Il est <strong>non remboursable</strong>, sauf annulation à l\'initiative du formateur.
+Le solde est réglé au démarrage du stage.</p>
+
+<h2>Article 6 — Annulation et report</h2>
+<ul>
+  <li><strong>Annulation par le stagiaire</strong> : acompte acquis. La place peut être reportée
+  ou cédée à un tiers, à convenir avec le formateur.</li>
+  <li><strong>Annulation par le formateur</strong> (force majeure ou effectif insuffisant) :
+  acompte intégralement remboursé ou place reportée.</li>
+</ul>
+
+<h2>Article 7 — Matériaux</h2>
+<p>Le tarif inclut l\'ensemble des matériaux, pièces, consommables, outillage et accessoires
+(sac + bretelles). En cas de casse ou d\'erreur irréparable nécessitant le remplacement
+d\'une pièce majeure, des frais supplémentaires peuvent être facturés au coût réel,
+après accord du stagiaire.</p>
+
+<h2>Article 8 — Utilisation du modèle</h2>
+<p>Le modèle transmis est destiné à un <strong>usage personnel non commercial</strong>.
+Toute reproduction à des fins de revente est interdite sans accord écrit du formateur.</p>
+
+<h2>Article 9 — Responsabilité</h2>
+<p>Le formateur ne saurait être tenu responsable du niveau d\'avancement de l\'instrument
+à l\'issue du stage, ni des dommages résultant d\'une manipulation incorrecte du stagiaire.</p>
+
+<h2>Article 10 — Données personnelles</h2>
+<p>Les données collectées à l\'inscription sont utilisées uniquement pour l\'organisation
+du stage et ne sont pas transmises à des tiers (RGPD). Droits d\'accès, rectification
+et suppression : <a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a>.</p>
+
+<p><em>CGV en vigueur à compter du 1er juillet 2026.</em></p>
+';
+
+    $en = '
+<h1>Terms and Conditions</h1>
+<p><em>Diatonic accordion lutherie workshops — Ewen Daviau, Saint-Nazaire, France</em></p>
+
+<h2>Article 1 — Purpose</h2>
+<p>These Terms and Conditions apply to any registration for a lutherie workshop run by
+Ewen Daviau. The workshop is a <strong>pedagogical learning journey into lutherie</strong>:
+the participant learns the craft skills under the guidance of the instructor. It is not
+a commercial instrument manufacturing or delivery service.</p>
+
+<h2>Article 2 — Nature of the workshop</h2>
+<p>The 10-day workshop is an intensive learning framework. Progress and completion level
+depend on the participant (skills, pace, chosen model). The instructor accompanies each
+participant to the best of their ability throughout.</p>
+
+<h2>Article 3 — No guarantee of completion</h2>
+<p><strong>A single 10-day workshop does not guarantee the complete finishing of the accordion.</strong>
+Lutherie is a precision craft that cannot be timed to a deadline. Some steps —
+reed adjustment, fine mechanical tuning, finishing — require time and practice.
+The instructor commits to enabling each participant to advance as far as possible
+under the best possible conditions.</p>
+
+<h2>Article 4 — Return sessions (daily pedagogical rate)</h2>
+<p>If the instrument is not complete at the end of the workshop, the participant may
+return for a subsequent session.</p>
+<p><strong>Return rate: €80 / day</strong> (workshop access, tools, consumables, guidance).
+Days to be arranged by agreement with the instructor. The participant may also choose
+to complete certain steps at home, with the instructor\'s support by email.</p>
+
+<h2>Article 5 — Registration and deposit</h2>
+<p>Registration is confirmed upon receipt of the form and the deposit payment:</p>
+<table>
+  <thead><tr><th>Model</th><th>Deposit (40%)</th></tr></thead>
+  <tbody>
+    <tr><td>21/8</td><td>€900</td></tr>
+    <tr><td>33/12</td><td>€1,500</td></tr>
+    <tr><td>33/18</td><td>€1,900</td></tr>
+    <tr><td>33/24</td><td>€2,500</td></tr>
+  </tbody>
+</table>
+<p>The deposit covers the preparation costs incurred before the workshop (parts preparation,
+place reservation). It is <strong>non-refundable</strong>, except in the event of
+cancellation by the instructor. The balance is paid at the start of the workshop.</p>
+
+<h2>Article 6 — Cancellation and deferral</h2>
+<ul>
+  <li><strong>Cancellation by the participant</strong>: deposit is retained. The place may be
+  deferred to a later session or transferred to another person, by agreement with the instructor.</li>
+  <li><strong>Cancellation by the instructor</strong> (force majeure or insufficient numbers):
+  full deposit refund or deferral.</li>
+</ul>
+
+<h2>Article 7 — Materials</h2>
+<p>The price includes all materials, parts, consumables, tools and accessories (gig bag + straps).
+In the event of irreparable damage requiring replacement of a major component, additional
+material costs may be charged at cost price, with the participant\'s prior agreement.</p>
+
+<h2>Article 8 — Use of the model</h2>
+<p>The accordion model taught is intended for the participant\'s <strong>personal, non-commercial use</strong>.
+Any reproduction for resale purposes is prohibited without written agreement from the instructor.</p>
+
+<h2>Article 9 — Liability</h2>
+<p>The instructor cannot be held liable for the level of completion of the instrument at the
+end of the workshop, nor for damage resulting from incorrect handling by the participant.</p>
+
+<h2>Article 10 — Personal data</h2>
+<p>Data collected at registration is used solely to organise the workshop and is not shared
+with third parties (GDPR). Rights of access, rectification and deletion:
+<a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a>.</p>
+
+<p><em>Terms in force from 1 July 2026.</em></p>
+';
+
+    evd_upsert_page( 'CGV — Conditions Générales de Vente', 'cgv', evd_block( $fr, $en ) );
+    return 1;
+}

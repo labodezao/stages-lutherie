@@ -91,6 +91,7 @@ function evd_admin_page(): void {
         'stages'      => '🎵 Page Stages détaillée',
         'programme'   => '📅 Programme jour par jour',
         'contact'     => '✉️ Page Contact',
+        'cgv'         => '📋 Page CGV',
         'all'         => '🚀 Tout seeder',
     ];
 
@@ -128,12 +129,14 @@ add_action( 'admin_post_evd_seed_run', function () {
         case 'stages':    $count = evd_seed_stages();    break;
         case 'programme': $count = evd_seed_programme(); break;
         case 'contact':   $count = evd_seed_contact();   break;
+        case 'cgv':       $count = evd_seed_cgv();       break;
         case 'all':
         default:
             $count  = evd_seed_pages();
             $count += evd_seed_stages();
             $count += evd_seed_programme();
             $count += evd_seed_contact();
+            $count += evd_seed_cgv();
             break;
     }
 
