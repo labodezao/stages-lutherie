@@ -1835,44 +1835,41 @@ function stluth_replace_session_dates_in_content( $content ) {
 
 	$d = stluth_get_session_date_texts();
 
-	$search = array(
-		'8 – 17 avril 2026',
-		'8–17 avril 2026',
-		'14 – 23 octobre 2026',
-		'14–23 octobre 2026',
-		'April 8–17, 2026',
-		'October 14–23, 2026',
-		'2026 · Stage de printemps',
-		'2026 · Stage d\'automne',
-		'2026 · Spring workshop',
-		'2026 · Autumn workshop',
-		'8 – 17 avril',
-		'8–17 avril',
-		'14 – 23 octobre',
-		'14–23 octobre',
-		'April 8–17',
-		'October 14–23',
+	$tokens = array(
+		'8 – 17 avril 2026'         => '__STLUTH_SPRING_FR_FULL__',
+		'8–17 avril 2026'           => '__STLUTH_SPRING_FR_FULL__',
+		'14 – 23 octobre 2026'      => '__STLUTH_AUTUMN_FR_FULL__',
+		'14–23 octobre 2026'        => '__STLUTH_AUTUMN_FR_FULL__',
+		'April 8–17, 2026'          => '__STLUTH_SPRING_EN_FULL__',
+		'October 14–23, 2026'       => '__STLUTH_AUTUMN_EN_FULL__',
+		'2026 · Stage de printemps' => '__STLUTH_SPRING_FR_META__',
+		'2026 · Stage d\'automne'   => '__STLUTH_AUTUMN_FR_META__',
+		'2026 · Spring workshop'    => '__STLUTH_SPRING_EN_META__',
+		'2026 · Autumn workshop'    => '__STLUTH_AUTUMN_EN_META__',
+		'8 – 17 avril'              => '__STLUTH_SPRING_FR_SHORT__',
+		'8–17 avril'                => '__STLUTH_SPRING_FR_SHORT__',
+		'14 – 23 octobre'           => '__STLUTH_AUTUMN_FR_SHORT__',
+		'14–23 octobre'             => '__STLUTH_AUTUMN_FR_SHORT__',
+		'April 8–17'                => '__STLUTH_SPRING_EN_SHORT__',
+		'October 14–23'             => '__STLUTH_AUTUMN_EN_SHORT__',
 	);
-	$replace = array(
-		$d['spring_fr_full'],
-		$d['spring_fr_full'],
-		$d['autumn_fr_full'],
-		$d['autumn_fr_full'],
-		$d['spring_en_full'],
-		$d['autumn_en_full'],
-		$d['year'] . ' · Stage de printemps',
-		$d['year'] . ' · Stage d\'automne',
-		$d['year'] . ' · Spring workshop',
-		$d['year'] . ' · Autumn workshop',
-		$d['spring_fr_short'],
-		$d['spring_fr_short'],
-		$d['autumn_fr_short'],
-		$d['autumn_fr_short'],
-		$d['spring_en_short'],
-		$d['autumn_en_short'],
-	);
+	$content = strtr( $content, $tokens );
 
-	return str_replace( $search, $replace, $content );
+	$values = array(
+		'__STLUTH_SPRING_FR_FULL__'   => $d['spring_fr_full'],
+		'__STLUTH_AUTUMN_FR_FULL__'   => $d['autumn_fr_full'],
+		'__STLUTH_SPRING_EN_FULL__'   => $d['spring_en_full'],
+		'__STLUTH_AUTUMN_EN_FULL__'   => $d['autumn_en_full'],
+		'__STLUTH_SPRING_FR_META__'   => $d['year'] . ' · Stage de printemps',
+		'__STLUTH_AUTUMN_FR_META__'   => $d['year'] . ' · Stage d\'automne',
+		'__STLUTH_SPRING_EN_META__'   => $d['year'] . ' · Spring workshop',
+		'__STLUTH_AUTUMN_EN_META__'   => $d['year'] . ' · Autumn workshop',
+		'__STLUTH_SPRING_FR_SHORT__'  => $d['spring_fr_short'],
+		'__STLUTH_AUTUMN_FR_SHORT__'  => $d['autumn_fr_short'],
+		'__STLUTH_SPRING_EN_SHORT__'  => $d['spring_en_short'],
+		'__STLUTH_AUTUMN_EN_SHORT__'  => $d['autumn_en_short'],
+	);
+	return strtr( $content, $values );
 }
 add_filter( 'the_content', 'stluth_replace_session_dates_in_content', 20 );
 endif; // function_exists stluth_replace_session_dates_in_content
