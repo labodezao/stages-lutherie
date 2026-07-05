@@ -914,18 +914,31 @@ var STAGE_CONFIG = {
 <p style="padding:0 28px 8px">In case of cancellation, you will need to reschedule to another session or find someone to replace you.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
-<p style="padding:0 28px 8px">If you are unable to finish your instrument within the allotted time, you may come back to complete it at a future workshop for a <strong>flat rate of 80 € per day</strong>.</p>
-<!-- /wp:paragraph -->
-
 <!-- wp:html -->
-<div style="padding:0 28px 24px">
-<div class="insc-field" style="margin-top:18px;">
-          <label>
-            <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
-            I have read and accept the above terms <span class="req">*</span>
-          </label>
-        </div>
+<div style="padding:0 28px 16px">
+<div class="insc-terms" style="background:#FFF8E1;border-left:4px solid #D4A017;border-radius:6px;padding:14px 18px;margin:8px 0 16px">
+  <p style="margin:0 0 6px"><strong>📌 Learning journey — what you need to know</strong></p>
+  <p style="margin:0 0 4px;font-size:0.92rem">A 10-day workshop is a <strong>learning journey</strong>, not a delivery guarantee. Completion depends on the model chosen, your pace, and your experience.</p>
+  <p style="margin:0;font-size:0.92rem">If the instrument is not finished within 10 days, you may return for a follow-up session at the <strong>daily workshop rate of €80/day</strong>.</p>
+</div>
+<div class="insc-field" style="margin-top:14px;">
+  <label>
+    <input type="checkbox" id="ackNonCompletion" name="ackNonCompletion" required>
+    I acknowledge that a single 10-day workshop does <strong>not guarantee completion</strong> of the accordion <span class="req">*</span>
+  </label>
+</div>
+<div class="insc-field" style="margin-top:10px;">
+  <label>
+    <input type="checkbox" id="ackReturnSessions" name="ackReturnSessions" required>
+    I acknowledge that it is possible to return for a follow-up session at the <strong>daily workshop rate of €80/day</strong> <span class="req">*</span>
+  </label>
+</div>
+<div class="insc-field" style="margin-top:14px;padding-top:14px;border-top:1px solid #e0d5cc;">
+  <label>
+    <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+    I have read and accept all of the above terms <span class="req">*</span>
+  </label>
+</div>
 </div>
 <!-- /wp:html -->
 </div>
@@ -2135,7 +2148,9 @@ var STAGE_CONFIG = {
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(150, 150, 150);
     var terms = 'This order form is binding. To be valid, it must be accompanied by a 40% deposit. '
-      + 'The deposit cannot be refunded if the participant cancels after the start of fabrication (2 months before the workshop).';
+      + 'The deposit cannot be refunded if the participant cancels after the start of fabrication (2 months before the workshop). '
+      + '\u2714 I acknowledge that a single 10-day workshop does not guarantee completion of the accordion. '
+      + '\u2714 I acknowledge that it is possible to return for a follow-up session at the daily workshop rate of \u20ac80/day.';
     var splitTerms = doc.splitTextToSize(terms, CW);
     doc.text(splitTerms, MARGIN, y);
     y += splitTerms.length * 4 + 6;
@@ -2203,12 +2218,15 @@ var STAGE_CONFIG = {
         if (pcEl) pcEl.style.outline = '';
       }
     }
-    if (!document.getElementById('acceptTerms').checked) {
-      errors.push('acceptTerms');
-      document.getElementById('acceptTerms').parentElement.style.outline = '2px solid #e74c3c';
-    } else {
-      document.getElementById('acceptTerms').parentElement.style.outline = '';
-    }
+    ['ackNonCompletion', 'ackReturnSessions', 'acceptTerms'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el.checked) {
+        errors.push(id);
+        el.parentElement.style.outline = '2px solid #e74c3c';
+      } else {
+        el.parentElement.style.outline = '';
+      }
+    });
     if (errors.length > 0) {
       var firstErr = document.getElementById(errors[0]) || document.querySelector('input[name="' + errors[0] + '"]');
       if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});

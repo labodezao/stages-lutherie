@@ -916,18 +916,31 @@ var STAGE_CONFIG = {
 <p style="padding:0 28px 8px">En cas d'annulation, il vous faudra déplacer votre venue à une autre session ou trouver une personne qui vous remplace.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
-<p style="padding:0 28px 8px">Si vous n'arrivez pas à finir votre instrument dans le délai imparti, il vous est possible de revenir finir l'instrument à un prochain stage moyennant un <strong>tarif forfaitaire de 80 € par jour</strong>.</p>
-<!-- /wp:paragraph -->
-
 <!-- wp:html -->
-<div style="padding:0 28px 24px">
-<div class="insc-field" style="margin-top:18px;">
-          <label>
-            <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
-            J'ai lu et j'accepte les conditions ci-dessus <span class="req">*</span>
-          </label>
-        </div>
+<div style="padding:0 28px 16px">
+<div class="insc-terms" style="background:#FFF8E1;border-left:4px solid #D4A017;border-radius:6px;padding:14px 18px;margin:8px 0 16px">
+  <p style="margin:0 0 6px"><strong>📌 Parcours d'apprentissage — ce que vous devez savoir</strong></p>
+  <p style="margin:0 0 4px;font-size:0.92rem">Un stage de 10 jours constitue un <strong>parcours d'apprentissage</strong>, pas une garantie de livraison. La finalisation dépend du modèle choisi, de votre rythme et de votre expérience.</p>
+  <p style="margin:0;font-size:0.92rem">Si l'instrument n'est pas terminé au bout des 10 jours, il est possible de revenir à une session suivante moyennant le <strong>forfait pédagogique de 80 €/jour</strong>.</p>
+</div>
+<div class="insc-field" style="margin-top:14px;">
+  <label>
+    <input type="checkbox" id="ackNonCompletion" name="ackNonCompletion" required>
+    J'ai pris connaissance qu'un seul stage de 10 jours <strong>ne garantit pas nécessairement</strong> la finalisation de l'accordéon <span class="req">*</span>
+  </label>
+</div>
+<div class="insc-field" style="margin-top:10px;">
+  <label>
+    <input type="checkbox" id="ackReturnSessions" name="ackReturnSessions" required>
+    J'ai pris connaissance qu'il est possible de revenir à une session suivante moyennant le <strong>forfait pédagogique de 80 €/jour</strong> <span class="req">*</span>
+  </label>
+</div>
+<div class="insc-field" style="margin-top:14px;padding-top:14px;border-top:1px solid #e0d5cc;">
+  <label>
+    <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+    J'ai lu et j'accepte l'ensemble des conditions ci-dessus <span class="req">*</span>
+  </label>
+</div>
 </div>
 <!-- /wp:html -->
 </div>
@@ -2141,7 +2154,9 @@ var STAGE_CONFIG = {
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(150, 150, 150);
     var terms = 'Ce bon de commande vous engage. Pour \u00eatre valide, ce bon doit \u00eatre accompagn\u00e9 d\'un acompte de 40 %. '
-      + 'Il ne pourra \u00eatre restitu\u00e9 si le client annule son inscription apr\u00e8s le d\u00e9but de la fabrication (2 mois avant le stage).';
+      + 'Il ne pourra \u00eatre restitu\u00e9 si le client annule son inscription apr\u00e8s le d\u00e9but de la fabrication (2 mois avant le stage). '
+      + '\u2714 J\'ai pris connaissance qu\'un seul stage de 10 jours ne garantit pas n\u00e9cessairement la finalisation de l\'accord\u00e9on. '
+      + '\u2714 J\'ai pris connaissance qu\'il est possible de revenir \u00e0 une session suivante moyennant le forfait p\u00e9dagogique de 80 \u20ac/jour.';
     var splitTerms = doc.splitTextToSize(terms, CW);
     doc.text(splitTerms, MARGIN, y);
     y += splitTerms.length * 4 + 6;
@@ -2209,12 +2224,15 @@ var STAGE_CONFIG = {
         if (pcEl) pcEl.style.outline = '';
       }
     }
-    if (!document.getElementById('acceptTerms').checked) {
-      errors.push('acceptTerms');
-      document.getElementById('acceptTerms').parentElement.style.outline = '2px solid #e74c3c';
-    } else {
-      document.getElementById('acceptTerms').parentElement.style.outline = '';
-    }
+    ['ackNonCompletion', 'ackReturnSessions', 'acceptTerms'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el.checked) {
+        errors.push(id);
+        el.parentElement.style.outline = '2px solid #e74c3c';
+      } else {
+        el.parentElement.style.outline = '';
+      }
+    });
     if (errors.length > 0) {
       var firstErr = document.getElementById(errors[0]) || document.querySelector('input[name="' + errors[0] + '"]');
       if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
