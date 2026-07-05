@@ -96,23 +96,26 @@ function stluth_get_sessions(): array {
 	}
 
 	/* Migrate from legacy flat options if they were customised */
+	$defaults  = stluth_default_sessions();
+	$def_sp    = $defaults[0];
+	$def_au    = $defaults[1];
 	$year      = (int) get_option( 'stluth_dates_year', STLUTH_DEFAULT_YEAR );
 	$spring_fr = trim( (string) get_option( 'stluth_date_spring_fr_short', '' ) );
 	$autumn_fr = trim( (string) get_option( 'stluth_date_autumn_fr_short', '' ) );
 	$spring_en = trim( (string) get_option( 'stluth_date_spring_en_short', '' ) );
 	$autumn_en = trim( (string) get_option( 'stluth_date_autumn_en_short', '' ) );
 
-	if ( '' === $spring_fr ) { $spring_fr = '8 – 17 avril'; }
-	if ( '' === $autumn_fr ) { $autumn_fr = '14 – 23 octobre'; }
-	if ( '' === $spring_en ) { $spring_en = 'April 8 – 17'; }
-	if ( '' === $autumn_en ) { $autumn_en = 'October 14 – 23'; }
+	if ( '' === $spring_fr ) { $spring_fr = $def_sp['date_fr_short']; }
+	if ( '' === $autumn_fr ) { $autumn_fr = $def_au['date_fr_short']; }
+	if ( '' === $spring_en ) { $spring_en = $def_sp['date_en_short']; }
+	if ( '' === $autumn_en ) { $autumn_en = $def_au['date_en_short']; }
 
 	/* If everything is still at 2026 defaults, return built-in catalogue */
 	if ( STLUTH_DEFAULT_YEAR === $year
-		&& '8 – 17 avril' === $spring_fr
-		&& '14 – 23 octobre' === $autumn_fr
+		&& $def_sp['date_fr_short'] === $spring_fr
+		&& $def_au['date_fr_short'] === $autumn_fr
 	) {
-		return stluth_default_sessions();
+		return $defaults;
 	}
 
 	$cap_total = (int) get_option( 'stluth_cap_total', 15 );
