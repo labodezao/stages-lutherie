@@ -534,142 +534,265 @@ function evd_seed_contact(): int {
 // ── 5. CGV ────────────────────────────────────────────────────────────────────
 
 function evd_seed_cgv(): int {
-    $fr = '
-<h1>Conditions Générales de Vente</h1>
-<p><em>Stages de lutherie accordéon diatonique — Ewen Daviau, Saint-Nazaire</em></p>
 
-<h2>Article 1 — Objet</h2>
-<p>Les présentes CGV s\'appliquent à toute inscription à un stage de lutherie organisé par Ewen Daviau.
-Le stage est un <strong>parcours pédagogique d\'initiation à la lutherie</strong> : le stagiaire
-apprend les gestes du métier sous la guidance du formateur. Il ne s\'agit pas d\'une prestation
-commerciale de fabrication ou de livraison d\'instrument.</p>
-
-<h2>Article 2 — Nature du stage</h2>
-<p>Le stage de 10 jours constitue un cadre d\'apprentissage intensif. La progression et le niveau
-d\'avancement dépendent du stagiaire (aptitudes, rythme, modèle choisi). Le formateur accompagne
-chaque stagiaire au mieux de ses capacités tout au long du stage.</p>
-
-<h2>Article 3 — Non-garantie de finalisation</h2>
-<p><strong>Un seul stage de 10 jours ne garantit pas nécessairement la finalisation complète de l\'accordéon.</strong>
-La lutherie est un artisanat de précision qui ne se chronomètre pas. Certaines étapes — réglages
-des anches, ajustements mécaniques fins, finitions — nécessitent du temps et de la pratique.
-Le formateur s\'engage à permettre au stagiaire d\'avancer au maximum sur son instrument.</p>
-
-<h2>Article 4 — Session de retour</h2>
-<p>Si l\'instrument n\'est pas finalisé à l\'issue du stage, le stagiaire peut revenir lors d\'une
-session ultérieure. <strong>Tarif : 80 € / jour</strong> (accès atelier, outillage, consommables,
-guidance). Jours à convenir selon disponibilités. Le stagiaire peut également terminer certaines
-étapes à domicile, avec l\'appui du formateur par email.</p>
-
-<h2>Article 5 — Inscription et acompte</h2>
-<table>
-  <thead><tr><th>Modèle</th><th>Acompte (40 %)</th></tr></thead>
-  <tbody>
-    <tr><td>21/8</td><td>900 €</td></tr>
-    <tr><td>33/12</td><td>1 500 €</td></tr>
-    <tr><td>33/18</td><td>1 900 €</td></tr>
-    <tr><td>33/24</td><td>2 500 €</td></tr>
-  </tbody>
-</table>
-<p>L\'acompte couvre les frais de préparation des pièces engagés avant le stage.
-Il est <strong>non remboursable</strong> sauf annulation à l\'initiative du formateur.
-Le solde est réglé au démarrage du stage.</p>
-
-<h2>Article 6 — Annulation et report</h2>
-<ul>
-  <li><strong>Annulation par le stagiaire</strong> : acompte acquis. La place peut être reportée
-  sur une session ultérieure ou cédée à un tiers, à convenir avec le formateur.</li>
-  <li><strong>Annulation par le formateur</strong> (force majeure ou effectif insuffisant) :
-  acompte intégralement remboursé ou place reportée.</li>
-</ul>
-
-<h2>Article 7 — Matériaux</h2>
-<p>Le tarif inclut l\'ensemble des matériaux, pièces, consommables, outillage et accessoires (sac + bretelles).
-En cas de casse ou d\'erreur irréparable nécessitant le remplacement d\'une pièce majeure, des frais
-supplémentaires peuvent être facturés au coût réel, après accord du stagiaire.</p>
-
-<h2>Article 8 — Utilisation du modèle</h2>
-<p>Le modèle transmis est destiné à un <strong>usage personnel non commercial</strong>. Toute reproduction
-à des fins de revente est interdite sans accord écrit du formateur.</p>
-
-<h2>Article 9 — Responsabilité</h2>
-<p>Le formateur ne saurait être tenu responsable du niveau d\'avancement de l\'instrument à l\'issue du stage,
-ni des dommages résultant d\'une manipulation incorrecte du stagiaire.</p>
-
-<h2>Article 10 — Données personnelles (RGPD)</h2>
-<p>Les données collectées à l\'inscription sont utilisées uniquement pour l\'organisation du stage et ne sont
-pas transmises à des tiers. Droits d\'accès, rectification et suppression :
-<a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a>.</p>
-
-<p><em>CGV en vigueur à compter du 1er juillet 2026.</em></p>
+    $cgv_style = '
+<style>
+.evd-cgv{max-width:780px;margin:0 auto;padding:0 1rem 3rem;font-family:inherit;color:inherit}
+.evd-cgv-header{border-bottom:2px solid #3E2723;padding-bottom:1.2rem;margin-bottom:2rem}
+.evd-cgv-header h1{margin:0 0 .35rem;font-size:1.7rem;font-weight:700;color:#3E2723}
+.evd-cgv-header p{margin:0;font-size:.9rem;color:#6b5c54}
+.evd-cgv-toc{background:#faf8f6;border:1px solid #e0d5cc;border-radius:4px;padding:1rem 1.2rem;margin-bottom:2.2rem}
+.evd-cgv-toc p{margin:0 0 .5rem;font-weight:600;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;color:#6b5c54}
+.evd-cgv-toc ol{margin:0;padding-left:1.4rem;font-size:.88rem;line-height:2}
+.evd-cgv-toc ol li a{color:#3E2723;text-decoration:none}
+.evd-cgv-toc ol li a:hover{text-decoration:underline}
+.evd-cgv article{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #ede7e0}
+.evd-cgv article:last-of-type{border-bottom:none}
+.evd-cgv article h2{font-size:1rem;font-weight:700;color:#3E2723;margin:0 0 .7rem;display:flex;align-items:baseline;gap:.6rem}
+.evd-cgv article h2 .art-num{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9e8276;flex-shrink:0}
+.evd-cgv article p,.evd-cgv article ul{font-size:.93rem;line-height:1.75;margin:.4rem 0}
+.evd-cgv article ul{padding-left:1.3rem}
+.evd-cgv-callout{background:#fdf3e7;border-left:3px solid #c8a96e;border-radius:0 4px 4px 0;padding:.9rem 1.1rem;margin:.6rem 0}
+.evd-cgv-callout p{margin:0;font-size:.92rem}
+.evd-cgv table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.8rem 0}
+.evd-cgv table th{background:#3E2723;color:#fff;padding:.55rem .9rem;text-align:left;font-weight:600;font-size:.82rem;letter-spacing:.03em}
+.evd-cgv table td{padding:.5rem .9rem;border-bottom:1px solid #ede7e0}
+.evd-cgv table tbody tr:last-child td{border-bottom:none}
+.evd-cgv-footer{margin-top:2.5rem;padding-top:1.2rem;border-top:1px solid #ede7e0;font-size:.82rem;color:#9e8276;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.evd-cgv-footer a{color:#3E2723}
+</style>
 ';
 
-    $en = '
-<h1>Terms and Conditions</h1>
-<p><em>Diatonic accordion lutherie workshops — Ewen Daviau, Saint-Nazaire, France</em></p>
+    $fr = $cgv_style . '
+<div class="evd-cgv">
 
-<h2>Article 1 — Purpose</h2>
-<p>These Terms apply to any registration for a lutherie workshop run by Ewen Daviau.
-The workshop is a <strong>pedagogical learning journey into lutherie</strong>: the participant
-learns craft skills under the instructor\'s guidance. It is not a commercial instrument
-manufacturing or delivery service.</p>
+  <header class="evd-cgv-header">
+    <h1>Conditions Générales de Vente</h1>
+    <p>Stages de lutherie accordéon diatonique &mdash; Ewen Daviau, Saint-Nazaire</p>
+  </header>
 
-<h2>Article 2 — Nature of the workshop</h2>
-<p>The 10-day workshop is an intensive learning framework. Progress depends on the participant
-(skills, pace, chosen model). The instructor accompanies each participant throughout.</p>
+  <nav class="evd-cgv-toc">
+    <p>Sommaire</p>
+    <ol>
+      <li><a href="#art1">Objet</a></li>
+      <li><a href="#art2">Nature du stage</a></li>
+      <li><a href="#art3">Non-garantie de finalisation</a></li>
+      <li><a href="#art4">Session de retour</a></li>
+      <li><a href="#art5">Inscription et acompte</a></li>
+      <li><a href="#art6">Annulation et report</a></li>
+      <li><a href="#art7">Matériaux</a></li>
+      <li><a href="#art8">Utilisation du modèle</a></li>
+      <li><a href="#art9">Responsabilité</a></li>
+      <li><a href="#art10">Données personnelles</a></li>
+    </ol>
+  </nav>
 
-<h2>Article 3 — No guarantee of completion</h2>
-<p><strong>A single 10-day workshop does not necessarily guarantee the complete finishing of the accordion.</strong>
-Lutherie is a precision craft that cannot be timed to a deadline. Some steps — reed adjustment,
-fine mechanical tuning, finishing — require time and practice.
-The instructor commits to enabling each participant to advance as far as possible.</p>
+  <article id="art1">
+    <h2><span class="art-num">Art. 1</span> Objet</h2>
+    <p>Les présentes CGV s\'appliquent à toute inscription à un stage de lutherie organisé par Ewen Daviau.
+    Le stage est un <strong>parcours pédagogique d\'initiation à la lutherie</strong> : le stagiaire
+    apprend les gestes du métier sous la guidance du formateur. Il ne s\'agit pas d\'une prestation
+    commerciale de fabrication ou de livraison d\'instrument.</p>
+  </article>
 
-<h2>Article 4 — Return sessions</h2>
-<p>If the instrument is not complete at the end of the workshop, the participant may return for a
-subsequent session. <strong>Rate: €80 / day</strong> (workshop access, tools, consumables, guidance).
-Days to be arranged with the instructor. The participant may also complete certain steps at home,
-with the instructor\'s support by email.</p>
+  <article id="art2">
+    <h2><span class="art-num">Art. 2</span> Nature du stage</h2>
+    <p>Le stage de 10 jours constitue un cadre d\'apprentissage intensif. La progression et le niveau
+    d\'avancement dépendent du stagiaire (aptitudes, rythme, modèle choisi). Le formateur accompagne
+    chaque stagiaire au mieux de ses capacités tout au long du stage.</p>
+  </article>
 
-<h2>Article 5 — Registration and deposit</h2>
-<table>
-  <thead><tr><th>Model</th><th>Deposit (40%)</th></tr></thead>
-  <tbody>
-    <tr><td>21/8</td><td>€900</td></tr>
-    <tr><td>33/12</td><td>€1,500</td></tr>
-    <tr><td>33/18</td><td>€1,900</td></tr>
-    <tr><td>33/24</td><td>€2,500</td></tr>
-  </tbody>
-</table>
-<p>The deposit covers preparation costs incurred before the workshop. It is <strong>non-refundable</strong>
-except in the event of cancellation by the instructor. The balance is paid at the start of the workshop.</p>
+  <article id="art3">
+    <h2><span class="art-num">Art. 3</span> Non-garantie de finalisation</h2>
+    <div class="evd-cgv-callout">
+      <p><strong>Un seul stage de 10 jours ne garantit pas nécessairement la finalisation complète de l\'accordéon.</strong>
+      La lutherie est un artisanat de précision qui ne se chronomètre pas. Certaines étapes — réglages
+      des anches, ajustements mécaniques fins, finitions — nécessitent du temps et de la pratique.</p>
+    </div>
+    <p>Le formateur s\'engage à permettre au stagiaire d\'avancer au maximum sur son instrument.</p>
+  </article>
 
-<h2>Article 6 — Cancellation and deferral</h2>
-<ul>
-  <li><strong>Cancellation by the participant</strong>: deposit is retained. The place may be deferred
-  or transferred to another person, by agreement with the instructor.</li>
-  <li><strong>Cancellation by the instructor</strong> (force majeure or insufficient numbers):
-  full deposit refund or deferral offered.</li>
-</ul>
+  <article id="art4">
+    <h2><span class="art-num">Art. 4</span> Session de retour</h2>
+    <p>Si l\'instrument n\'est pas finalisé à l\'issue du stage, le stagiaire peut revenir lors d\'une
+    session ultérieure. <strong>Tarif : 80 € / jour</strong> (accès atelier, outillage, consommables,
+    guidance). Jours à convenir selon disponibilités. Le stagiaire peut également terminer certaines
+    étapes à domicile, avec l\'appui du formateur par email.</p>
+  </article>
 
-<h2>Article 7 — Materials</h2>
-<p>The price includes all materials, parts, consumables, tools and accessories (gig bag + straps).
-In the event of irreparable damage, additional material costs may be charged at cost price,
-with the participant\'s prior agreement.</p>
+  <article id="art5">
+    <h2><span class="art-num">Art. 5</span> Inscription et acompte</h2>
+    <table>
+      <thead><tr><th>Modèle</th><th>Tarif</th><th>Acompte (40 %)</th></tr></thead>
+      <tbody>
+        <tr><td>21/8 basses</td><td>2 820 €</td><td>900 €</td></tr>
+        <tr><td>33/12 basses</td><td>4 500 €</td><td>1 500 €</td></tr>
+        <tr><td>33/18 basses</td><td>4 880 €</td><td>1 900 €</td></tr>
+        <tr><td>33/24 basses</td><td>6 250 €</td><td>2 500 €</td></tr>
+      </tbody>
+    </table>
+    <p>L\'acompte couvre les frais de préparation des pièces engagés avant le stage.
+    Il est <strong>non remboursable</strong> sauf annulation à l\'initiative du formateur.
+    Le solde est réglé au démarrage du stage.</p>
+  </article>
 
-<h2>Article 8 — Use of the model</h2>
-<p>The accordion model taught is for the participant\'s <strong>personal, non-commercial use</strong>.
-Reproduction for resale is prohibited without written agreement from the instructor.</p>
+  <article id="art6">
+    <h2><span class="art-num">Art. 6</span> Annulation et report</h2>
+    <ul>
+      <li><strong>Annulation par le stagiaire</strong> : l\'acompte reste acquis. La place peut être
+      reportée sur une session ultérieure ou cédée à un tiers, à convenir avec le formateur.</li>
+      <li><strong>Annulation par le formateur</strong> (force majeure ou effectif insuffisant) :
+      l\'acompte est intégralement remboursé ou la place reportée.</li>
+    </ul>
+  </article>
 
-<h2>Article 9 — Liability</h2>
-<p>The instructor cannot be held liable for the level of completion of the instrument, nor for damage
-resulting from incorrect handling by the participant.</p>
+  <article id="art7">
+    <h2><span class="art-num">Art. 7</span> Matériaux</h2>
+    <p>Le tarif inclut l\'ensemble des matériaux, pièces, consommables, outillage et accessoires (sac + bretelles).
+    En cas de casse ou d\'erreur irréparable nécessitant le remplacement d\'une pièce majeure, des frais
+    supplémentaires peuvent être facturés au coût réel, après accord du stagiaire.</p>
+  </article>
 
-<h2>Article 10 — Personal data (GDPR)</h2>
-<p>Data collected at registration is used solely to organise the workshop and is not shared with third
-parties. Rights of access, rectification and deletion:
-<a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a>.</p>
+  <article id="art8">
+    <h2><span class="art-num">Art. 8</span> Utilisation du modèle</h2>
+    <p>Le modèle transmis est destiné à un <strong>usage personnel non commercial</strong>. Toute reproduction
+    à des fins de revente est interdite sans accord écrit du formateur.</p>
+  </article>
 
-<p><em>Terms in force from 1 July 2026.</em></p>
+  <article id="art9">
+    <h2><span class="art-num">Art. 9</span> Responsabilité</h2>
+    <p>Le formateur ne saurait être tenu responsable du niveau d\'avancement de l\'instrument à l\'issue du stage,
+    ni des dommages résultant d\'une manipulation incorrecte du stagiaire.</p>
+  </article>
+
+  <article id="art10">
+    <h2><span class="art-num">Art. 10</span> Données personnelles (RGPD)</h2>
+    <p>Les données collectées à l\'inscription sont utilisées uniquement pour l\'organisation du stage et ne sont
+    pas transmises à des tiers. Droits d\'accès, rectification et suppression :
+    <a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a>.</p>
+  </article>
+
+  <footer class="evd-cgv-footer">
+    <span>CGV en vigueur à compter du 1<sup>er</sup> juillet 2026</span>
+    <a href="/stages-lutherie/">← Retour aux stages</a>
+  </footer>
+
+</div>
+';
+
+    $en = $cgv_style . '
+<div class="evd-cgv">
+
+  <header class="evd-cgv-header">
+    <h1>Terms and Conditions</h1>
+    <p>Diatonic accordion lutherie workshops &mdash; Ewen Daviau, Saint-Nazaire, France</p>
+  </header>
+
+  <nav class="evd-cgv-toc">
+    <p>Contents</p>
+    <ol>
+      <li><a href="#art1">Purpose</a></li>
+      <li><a href="#art2">Nature of the workshop</a></li>
+      <li><a href="#art3">No guarantee of completion</a></li>
+      <li><a href="#art4">Return sessions</a></li>
+      <li><a href="#art5">Registration and deposit</a></li>
+      <li><a href="#art6">Cancellation and deferral</a></li>
+      <li><a href="#art7">Materials</a></li>
+      <li><a href="#art8">Use of the model</a></li>
+      <li><a href="#art9">Liability</a></li>
+      <li><a href="#art10">Personal data</a></li>
+    </ol>
+  </nav>
+
+  <article id="art1">
+    <h2><span class="art-num">Art. 1</span> Purpose</h2>
+    <p>These Terms apply to any registration for a lutherie workshop run by Ewen Daviau.
+    The workshop is a <strong>pedagogical learning journey into lutherie</strong>: the participant
+    learns craft skills under the instructor\'s guidance. It is not a commercial instrument
+    manufacturing or delivery service.</p>
+  </article>
+
+  <article id="art2">
+    <h2><span class="art-num">Art. 2</span> Nature of the workshop</h2>
+    <p>The 10-day workshop is an intensive learning framework. Progress depends on the participant
+    (skills, pace, chosen model). The instructor accompanies each participant throughout the workshop.</p>
+  </article>
+
+  <article id="art3">
+    <h2><span class="art-num">Art. 3</span> No guarantee of completion</h2>
+    <div class="evd-cgv-callout">
+      <p><strong>A single 10-day workshop does not necessarily guarantee the complete finishing of the accordion.</strong>
+      Lutherie is a precision craft that cannot be timed to a deadline. Some steps — reed adjustment,
+      fine mechanical tuning, finishing — require time and practice.</p>
+    </div>
+    <p>The instructor commits to enabling each participant to advance as far as possible on their instrument.</p>
+  </article>
+
+  <article id="art4">
+    <h2><span class="art-num">Art. 4</span> Return sessions</h2>
+    <p>If the instrument is not complete at the end of the workshop, the participant may return for a
+    subsequent session. <strong>Rate: €80 / day</strong> (workshop access, tools, consumables, guidance).
+    Days to be arranged with the instructor. The participant may also complete certain steps at home,
+    with the instructor\'s support by email.</p>
+  </article>
+
+  <article id="art5">
+    <h2><span class="art-num">Art. 5</span> Registration and deposit</h2>
+    <table>
+      <thead><tr><th>Model</th><th>Price</th><th>Deposit (40%)</th></tr></thead>
+      <tbody>
+        <tr><td>21/8 basses</td><td>€2,820</td><td>€900</td></tr>
+        <tr><td>33/12 basses</td><td>€4,500</td><td>€1,500</td></tr>
+        <tr><td>33/18 basses</td><td>€4,880</td><td>€1,900</td></tr>
+        <tr><td>33/24 basses</td><td>€6,250</td><td>€2,500</td></tr>
+      </tbody>
+    </table>
+    <p>The deposit covers preparation costs incurred before the workshop. It is <strong>non-refundable</strong>
+    except in the event of cancellation by the instructor. The balance is paid at the start of the workshop.</p>
+  </article>
+
+  <article id="art6">
+    <h2><span class="art-num">Art. 6</span> Cancellation and deferral</h2>
+    <ul>
+      <li><strong>Cancellation by the participant</strong>: the deposit is retained. The place may be deferred
+      to a later session or transferred to another person, by agreement with the instructor.</li>
+      <li><strong>Cancellation by the instructor</strong> (force majeure or insufficient numbers):
+      full deposit refund or deferral offered.</li>
+    </ul>
+  </article>
+
+  <article id="art7">
+    <h2><span class="art-num">Art. 7</span> Materials</h2>
+    <p>The price includes all materials, parts, consumables, tools and accessories (gig bag + straps).
+    In the event of irreparable damage requiring replacement of a major part, additional costs may be
+    charged at cost price, with the participant\'s prior agreement.</p>
+  </article>
+
+  <article id="art8">
+    <h2><span class="art-num">Art. 8</span> Use of the model</h2>
+    <p>The accordion model taught is for the participant\'s <strong>personal, non-commercial use</strong>.
+    Reproduction for resale is prohibited without written agreement from the instructor.</p>
+  </article>
+
+  <article id="art9">
+    <h2><span class="art-num">Art. 9</span> Liability</h2>
+    <p>The instructor cannot be held liable for the level of completion of the instrument at the end of
+    the workshop, nor for damage resulting from incorrect handling by the participant.</p>
+  </article>
+
+  <article id="art10">
+    <h2><span class="art-num">Art. 10</span> Personal data (GDPR)</h2>
+    <p>Data collected at registration is used solely to organise the workshop and is not shared with third
+    parties. Rights of access, rectification and deletion:
+    <a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a>.</p>
+  </article>
+
+  <footer class="evd-cgv-footer">
+    <span>Terms in force from 1 July 2026</span>
+    <a href="/stages-accordion-workshop/">← Back to workshops</a>
+  </footer>
+
+</div>
 ';
 
     evd_upsert_page( 'CGV — Conditions Générales de Vente', 'cgv', evd_block( $fr, $en ) );
