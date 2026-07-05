@@ -7,7 +7,7 @@
  * Déploiement : copier ce fichier dans wp-content/mu-plugins/evd.php
  * WordPress le charge automatiquement — aucune activation, functions.php inchangé.
  *
- * Copier aussi assets/block.js et inc/seed.php dans le thème actif.
+ * Copier aussi assets/block.js et includes/seed.php dans le thème actif.
  */
 
 // ── Bloc Gutenberg dynamique bilingue ewendaviau/html-libre ───────────────────

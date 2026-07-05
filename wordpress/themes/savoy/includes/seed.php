@@ -3,7 +3,7 @@
  * Seed ewendaviau.com — intégré au thème, SQL pur via $wpdb.
  *
  * Chargé à la demande depuis functions.php :
- *   add_action('admin_post_evd_seed_run', function(){ require __DIR__.'/inc/seed.php'; evd_run_seed(); });
+ *   add_action('admin_post_evd_seed_run', function(){ require __DIR__.'/seed.php'; evd_run_seed(); });
  *
  * RÈGLES :
  *  - Jamais wp_insert_post() / wp_update_post() → corrompt le JSON via wp_unslash
