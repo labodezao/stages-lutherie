@@ -1786,7 +1786,7 @@ function stluth_get_session_date_texts() {
 
 		if ( '' !== $spring_fr_legacy && '' !== $autumn_fr_legacy && '' !== $spring_en_legacy && '' !== $autumn_en_legacy ) {
 			if ( $year_legacy < 2000 || $year_legacy > 2100 ) {
-				$year_legacy = 2026;
+				$year_legacy = STLUTH_DEFAULT_YEAR;
 			}
 			return array(
 				'year'             => (string) $year_legacy,
