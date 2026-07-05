@@ -175,98 +175,138 @@ add_action( 'admin_post_stluth_params_save', function () {
 function evd_render_seed_page() {
     $sessions = get_option( 'stluth_sessions', [] );
     $tarif    = (int) get_option( 'stluth_tarif_retour', 80 );
-    if ( isset( $_GET['seeded'] ) )  echo '<div class="notice notice-success is-dismissible"><p>Seed exécuté.</p></div>';
-    if ( isset( $_GET['saved'] ) )   echo '<div class="notice notice-success is-dismissible"><p>Paramètres enregistrés.</p></div>';
+    $tab      = sanitize_key( $_GET['tab'] ?? 'sessions' );
+    if ( isset( $_GET['seeded'] ) ) echo '<div class="notice notice-success is-dismissible"><p>Seed exécuté.</p></div>';
+    if ( isset( $_GET['saved'] ) )  echo '<div class="notice notice-success is-dismissible"><p>Paramètres enregistrés.</p></div>';
+    $page_url = admin_url( 'admin.php?page=evd-seed' );
     ?>
     <div class="wrap">
-    <h1>Seed ewendaviau.com</h1>
+    <h1>Stages ewendaviau</h1>
 
-    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-      <input type="hidden" name="action" value="evd_seed_run">
-      <?php wp_nonce_field( 'evd_seed_run' ); ?>
-      <select name="seed">
-        <option value="all">Tout le site</option>
-        <option value="stages">Stages FR (Gutenberg)</option>
-        <option value="stages_en">Stages EN (Gutenberg)</option>
-        <option value="inscriptions">Inscriptions FR (Gutenberg)</option>
-        <option value="inscriptions_en">Inscriptions EN (Gutenberg)</option>
-        <option value="cgv">CGV</option>
-      </select>
-      <button class="button button-primary">Lancer</button>
-    </form>
+    <nav class="nav-tab-wrapper" style="margin-bottom:1.5rem">
+      <a href="<?php echo esc_url( $page_url . '&tab=sessions' ); ?>"
+         class="nav-tab <?php echo $tab === 'sessions' ? 'nav-tab-active' : ''; ?>">Sessions</a>
+      <a href="<?php echo esc_url( $page_url . '&tab=seed' ); ?>"
+         class="nav-tab <?php echo $tab === 'seed' ? 'nav-tab-active' : ''; ?>">Seed</a>
+      <a href="<?php echo esc_url( $page_url . '&tab=params' ); ?>"
+         class="nav-tab <?php echo $tab === 'params' ? 'nav-tab-active' : ''; ?>">Paramètres</a>
+    </nav>
 
-    <hr style="margin:2rem 0">
+    <?php if ( $tab === 'sessions' ) : ?>
 
-    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-      <input type="hidden" name="action" value="stluth_params_save">
-      <?php wp_nonce_field( 'stluth_params_save' ); ?>
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+        <input type="hidden" name="action" value="stluth_params_save">
+        <input type="hidden" name="stluth_tarif_retour" value="<?php echo esc_attr( $tarif ); ?>">
+        <?php wp_nonce_field( 'stluth_params_save' ); ?>
 
-      <h2 style="margin-top:0">Paramètres</h2>
+        <p class="description" style="margin-bottom:1rem">
+          Sessions injectées dans le formulaire d'inscription (<code>window.STLUTH_ACTIVE_SESSIONS</code>).
+          Laisser vide → affiche « Dates disponibles prochainement ».
+        </p>
 
-      <table class="form-table" style="max-width:600px"><tbody>
-        <tr>
-          <th><label for="stluth_tarif_retour">Retour atelier (€/jour)</label></th>
-          <td>
-            <input type="number" id="stluth_tarif_retour" name="stluth_tarif_retour"
-                   value="<?php echo esc_attr( $tarif ); ?>" min="0" step="1" class="small-text"> €
-            <p class="description">Affiché dans les CGV — Art. 4 (après un seed CGV).</p>
-          </td>
-        </tr>
-      </tbody></table>
+        <table class="widefat striped" id="stluth-sess-tbl" style="max-width:100%;margin:0 0 1rem">
+          <thead><tr>
+            <th>ID <small style="font-weight:400">(ex: octobre2026)</small></th>
+            <th>Icône</th>
+            <th>Saison FR</th>
+            <th>Saison EN</th>
+            <th>Dates FR</th>
+            <th>Dates EN</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="stluth-sess-body">
+          <?php foreach ( $sessions as $s ) : ?>
+            <tr>
+              <td><input type="text" name="s_fullId[]"   value="<?php echo esc_attr( $s['fullId']   ?? '' ); ?>" placeholder="octobre2026" style="width:110px"></td>
+              <td><input type="text" name="s_icon[]"     value="<?php echo esc_attr( $s['icon']     ?? '' ); ?>" placeholder="🍂" style="width:44px"></td>
+              <td><input type="text" name="s_saison[]"   value="<?php echo esc_attr( $s['saison']   ?? '' ); ?>" placeholder="Automne" style="width:95px"></td>
+              <td><input type="text" name="s_saisonEn[]" value="<?php echo esc_attr( $s['saisonEn'] ?? '' ); ?>" placeholder="Autumn" style="width:95px"></td>
+              <td><input type="text" name="s_dates[]"    value="<?php echo esc_attr( $s['dates']    ?? '' ); ?>" placeholder="Merc. 14 – Vend. 23 oct. 2026" style="width:210px"></td>
+              <td><input type="text" name="s_datesEn[]"  value="<?php echo esc_attr( $s['datesEn']  ?? '' ); ?>" placeholder="Wed 14 – Fri 23 Oct 2026" style="width:200px"></td>
+              <td><button type="button" class="button button-small stluth-del-row">–</button></td>
+            </tr>
+          <?php endforeach; ?>
+          </tbody>
+        </table>
+        <button type="button" class="button" id="stluth-add-sess">+ Ajouter une session</button>
+        <p style="margin-top:1.5rem">
+          <button type="submit" class="button button-primary">Enregistrer les sessions</button>
+        </p>
+      </form>
 
-      <h3>Sessions actives</h3>
-      <p class="description">Injectées dans le formulaire d'inscription via <code>window.STLUTH_ACTIVE_SESSIONS</code>.
-      Laisser vide → affiche « Dates disponibles prochainement ».</p>
+      <script>
+      (function(){
+        var tpl = '<td><input type="text" name="s_fullId[]" placeholder="octobre2026" style="width:110px"></td>'
+          + '<td><input type="text" name="s_icon[]" placeholder="🍂" style="width:44px"></td>'
+          + '<td><input type="text" name="s_saison[]" placeholder="Automne" style="width:95px"></td>'
+          + '<td><input type="text" name="s_saisonEn[]" placeholder="Autumn" style="width:95px"></td>'
+          + '<td><input type="text" name="s_dates[]" placeholder="Merc. 14 – Vend. 23 oct. 2026" style="width:210px"></td>'
+          + '<td><input type="text" name="s_datesEn[]" placeholder="Wed 14 – Fri 23 Oct 2026" style="width:200px"></td>'
+          + '<td><button type="button" class="button button-small stluth-del-row">–</button></td>';
+        var tbody = document.getElementById('stluth-sess-body');
+        function bindDel(btn){ btn.addEventListener('click', function(){ this.closest('tr').remove(); }); }
+        document.querySelectorAll('.stluth-del-row').forEach(bindDel);
+        document.getElementById('stluth-add-sess').addEventListener('click', function(){
+          var tr = document.createElement('tr'); tr.innerHTML = tpl; tbody.appendChild(tr); bindDel(tr.querySelector('.stluth-del-row'));
+        });
+      })();
+      </script>
 
-      <table class="widefat striped" id="stluth-sess-tbl" style="max-width:100%;margin:1rem 0">
-        <thead><tr>
-          <th>ID <small style="font-weight:400">(ex: octobre2026)</small></th>
-          <th>Icône</th>
-          <th>Saison FR</th>
-          <th>Saison EN</th>
-          <th>Dates FR</th>
-          <th>Dates EN</th>
-          <th></th>
-        </tr></thead>
-        <tbody id="stluth-sess-body">
+    <?php elseif ( $tab === 'seed' ) : ?>
+
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+        <input type="hidden" name="action" value="evd_seed_run">
+        <?php wp_nonce_field( 'evd_seed_run' ); ?>
+        <p class="description" style="margin-bottom:1rem">
+          Écrase le contenu des pages WP avec les fichiers HTML du repo + paramètres actuels.
+        </p>
+        <select name="seed" style="margin-right:.5rem">
+          <option value="all">Tout le site</option>
+          <option value="stages">Stages FR</option>
+          <option value="stages_en">Stages EN</option>
+          <option value="inscriptions">Inscriptions FR</option>
+          <option value="inscriptions_en">Inscriptions EN</option>
+          <option value="cgv">CGV (FR + EN)</option>
+        </select>
+        <button class="button button-primary">Lancer le seed</button>
+      </form>
+
+    <?php elseif ( $tab === 'params' ) : ?>
+
+      <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+        <input type="hidden" name="action" value="stluth_params_save">
+        <?php wp_nonce_field( 'stluth_params_save' ); ?>
+        <!-- Sessions vides — conserve les sessions existantes lors d'une sauvegarde params-only -->
         <?php foreach ( $sessions as $s ) : ?>
-          <tr>
-            <td><input type="text" name="s_fullId[]"   value="<?php echo esc_attr( $s['fullId']   ?? '' ); ?>" placeholder="octobre2026" style="width:110px"></td>
-            <td><input type="text" name="s_icon[]"     value="<?php echo esc_attr( $s['icon']     ?? '' ); ?>" placeholder="🍂" style="width:44px"></td>
-            <td><input type="text" name="s_saison[]"   value="<?php echo esc_attr( $s['saison']   ?? '' ); ?>" placeholder="Automne" style="width:95px"></td>
-            <td><input type="text" name="s_saisonEn[]" value="<?php echo esc_attr( $s['saisonEn'] ?? '' ); ?>" placeholder="Autumn" style="width:95px"></td>
-            <td><input type="text" name="s_dates[]"    value="<?php echo esc_attr( $s['dates']    ?? '' ); ?>" placeholder="Merc. 14 – Vend. 23 oct. 2026" style="width:210px"></td>
-            <td><input type="text" name="s_datesEn[]"  value="<?php echo esc_attr( $s['datesEn']  ?? '' ); ?>" placeholder="Wed 14 – Fri 23 Oct 2026" style="width:200px"></td>
-            <td><button type="button" class="button button-small stluth-del-row">–</button></td>
-          </tr>
+          <input type="hidden" name="s_fullId[]"   value="<?php echo esc_attr( $s['fullId']   ?? '' ); ?>">
+          <input type="hidden" name="s_icon[]"     value="<?php echo esc_attr( $s['icon']     ?? '' ); ?>">
+          <input type="hidden" name="s_saison[]"   value="<?php echo esc_attr( $s['saison']   ?? '' ); ?>">
+          <input type="hidden" name="s_saisonEn[]" value="<?php echo esc_attr( $s['saisonEn'] ?? '' ); ?>">
+          <input type="hidden" name="s_dates[]"    value="<?php echo esc_attr( $s['dates']    ?? '' ); ?>">
+          <input type="hidden" name="s_datesEn[]"  value="<?php echo esc_attr( $s['datesEn']  ?? '' ); ?>">
         <?php endforeach; ?>
-        </tbody>
-      </table>
-      <button type="button" class="button" id="stluth-add-sess">+ Ajouter une session</button>
 
-      <p style="margin-top:1.5rem">
-        <button type="submit" class="button button-primary">Enregistrer les paramètres</button>
-      </p>
-    </form>
+        <table class="form-table" style="max-width:580px"><tbody>
+          <tr>
+            <th><label for="stluth_tarif_retour">Retour atelier</label></th>
+            <td>
+              <input type="number" id="stluth_tarif_retour" name="stluth_tarif_retour"
+                     value="<?php echo esc_attr( $tarif ); ?>" min="0" step="1" class="small-text"> €/jour
+              <p class="description">
+                Remplace <code>{{TARIF_RETOUR}}</code> dans toutes les pages au prochain seed.<br>
+                Apparaît dans les stages, inscriptions et CGV (Art. 4).
+              </p>
+            </td>
+          </tr>
+        </tbody></table>
+
+        <p style="margin-top:1rem">
+          <button type="submit" class="button button-primary">Enregistrer</button>
+        </p>
+      </form>
+
+    <?php endif; ?>
     </div>
-
-    <script>
-    (function(){
-      var tpl = '<td><input type="text" name="s_fullId[]" placeholder="octobre2026" style="width:110px"></td>'
-        + '<td><input type="text" name="s_icon[]" placeholder="🍂" style="width:44px"></td>'
-        + '<td><input type="text" name="s_saison[]" placeholder="Automne" style="width:95px"></td>'
-        + '<td><input type="text" name="s_saisonEn[]" placeholder="Autumn" style="width:95px"></td>'
-        + '<td><input type="text" name="s_dates[]" placeholder="Merc. 14 – Vend. 23 oct. 2026" style="width:210px"></td>'
-        + '<td><input type="text" name="s_datesEn[]" placeholder="Wed 14 – Fri 23 Oct 2026" style="width:200px"></td>'
-        + '<td><button type="button" class="button button-small stluth-del-row">–</button></td>';
-      var tbody = document.getElementById('stluth-sess-body');
-      function bindDel(btn){ btn.addEventListener('click', function(){ this.closest('tr').remove(); }); }
-      document.querySelectorAll('.stluth-del-row').forEach(bindDel);
-      document.getElementById('stluth-add-sess').addEventListener('click', function(){
-        var tr = document.createElement('tr'); tr.innerHTML = tpl; tbody.appendChild(tr); bindDel(tr.querySelector('.stluth-del-row'));
-      });
-    })();
-    </script>
     <?php
 }
 

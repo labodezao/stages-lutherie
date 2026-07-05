@@ -961,7 +961,7 @@
         <img src="https://raw.githubusercontent.com/labodezao/stages-lutherie/main/comm/Jour%2010%20%2818%29%20-%20Copie.jpg" alt="Stagiaire présentant son accordéon terminé à la fin du stage">
         <div class="stluth-trainee-slider__caption">
           <strong>Jour 10 · L’instrument est terminé</strong>
-          <span>La plupart des stagiaires repartent avec leur instrument terminé. Pour les autres, des séances de retour à 80 €/jour permettent de finaliser à leur propre rythme.</span>
+          <span>La plupart des stagiaires repartent avec leur instrument terminé. Pour les autres, des séances de retour à {{TARIF_RETOUR}} €/jour permettent de finaliser à leur propre rythme.</span>
         </div>
       </article>
 
@@ -1301,7 +1301,7 @@
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Retour possible si non terminé (80 €/jour)</li>
+<li>Retour possible si non terminé ({{TARIF_RETOUR}} €/jour)</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list --></div>
 <!-- /wp:group --></div>

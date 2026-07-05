@@ -1215,7 +1215,7 @@
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Return possible if unfinished (€80/day)</li>
+<li>Return possible if unfinished (€{{TARIF_RETOUR}}/day)</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list --></div>
 <!-- /wp:group --></div>

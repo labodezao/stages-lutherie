@@ -123,27 +123,32 @@ function evd_read_include( string $filename ): string {
     return file_get_contents( $path );
 }
 
+function evd_apply_params( string $content ): string {
+    $tarif = (string) get_option( 'stluth_tarif_retour', 80 );
+    return str_replace( '{{TARIF_RETOUR}}', $tarif, $content );
+}
+
 function evd_seed_stages(): int {
-    $content = evd_read_include( 'stages-fr.html' );
-    evd_upsert_page( 'Stage de lutherie — Accordéon diatonique', 'stages-lutherie', $content );
+    evd_upsert_page( 'Stage de lutherie — Accordéon diatonique', 'stages-lutherie',
+        evd_apply_params( evd_read_include( 'stages-fr.html' ) ) );
     return 1;
 }
 
 function evd_seed_stages_en(): int {
-    $content = evd_read_include( 'stages-en.html' );
-    evd_upsert_page( 'Diatonic Accordion Making Workshop', 'stages-accordion-workshop', $content );
+    evd_upsert_page( 'Diatonic Accordion Making Workshop', 'stages-accordion-workshop',
+        evd_apply_params( evd_read_include( 'stages-en.html' ) ) );
     return 1;
 }
 
 function evd_seed_inscriptions(): int {
-    $content = evd_read_include( 'inscriptions-fr.html' );
-    evd_upsert_page( 'Inscription — Stage de lutherie', 'inscription-lutherie', $content );
+    evd_upsert_page( 'Inscription — Stage de lutherie', 'inscription-lutherie',
+        evd_apply_params( evd_read_include( 'inscriptions-fr.html' ) ) );
     return 1;
 }
 
 function evd_seed_inscriptions_en(): int {
-    $content = evd_read_include( 'inscriptions-en.html' );
-    evd_upsert_page( 'Registration — Lutherie Workshop', 'registration-lutherie-workshop', $content );
+    evd_upsert_page( 'Registration — Lutherie Workshop', 'registration-lutherie-workshop',
+        evd_apply_params( evd_read_include( 'inscriptions-en.html' ) ) );
     return 1;
 }
 
