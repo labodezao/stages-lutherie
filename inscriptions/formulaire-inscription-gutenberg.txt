@@ -31,10 +31,8 @@ var STAGE_CONFIG = (function(){
     };
   }
   return {
-    annee: 2026,
-    sessions: [
-      { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Mercredi 14 – Vendredi 23 octobre 2026', fullId: 'octobre2026' }
-    ],
+    annee: new Date().getFullYear(),
+    sessions: [],
     presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
     grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
     apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
@@ -449,16 +447,11 @@ var STAGE_CONFIG = (function(){
 
 <!-- wp:html -->
 <div class="insc-section-body">
-<div class="insc-options" id="sessionOptions">
-          <!-- ════ MODIFIER ICI CHAQUE ANNÉE — synchroniser avec STAGE_CONFIG ci-dessus ════ -->
-          <label class="insc-option-card">
-            <input type="radio" name="session" value="octobre2026" required>
-            <span class="card-label">
-              <span class="card-title">🍂 Automne</span>
-              <span class="card-sub">Mercredi 14 – Vendredi 23 octobre 2026</span>
-            </span>
-          </label>
-        </div>
+<div class="insc-options" id="sessionOptions"></div>
+<div id="insc-no-sessions" hidden style="padding:1.5rem 1rem;text-align:center">
+  <p style="font-size:1.05rem;font-weight:600;color:#3E2723;margin:0 0 .4rem">Dates disponibles prochainement</p>
+  <p style="color:#5D4037;font-size:.92rem;margin:0">Inscrivez-vous à la newsletter pour être prévenu(e) en avant-première.</p>
+</div>
 </div>
 <!-- /wp:html -->
 </div>
@@ -1110,18 +1103,24 @@ var STAGE_CONFIG = (function(){
   document.title = 'Formulaire d\u2019inscription \u2013 Stage de lutherie accord\u00e9on diatonique ' + ANNEE;
 
   var sessionContainer = document.getElementById('sessionOptions');
+  var noSessionsEl = document.getElementById('insc-no-sessions');
   if (sessionContainer) {
-    if (sessionContainer.children.length === 0) {
-    STAGE_CONFIG.sessions.forEach(function (s, i) {
-      var label = document.createElement('label');
-      label.className = 'insc-option-card';
-      label.innerHTML = '<input type="radio" name="session" value="' + s.id + ANNEE + '"' + (i === 0 ? ' required' : '') + '>'
-        + '<span class="card-label">'
-        + '<span class="card-title">' + s.icon + ' ' + s.saison + '</span>'
-        + '<span class="card-sub">' + s.dates + '</span>'
-        + '</span>';
-      sessionContainer.appendChild(label);
-    });
+    if (STAGE_CONFIG.sessions.length === 0) {
+      if (noSessionsEl) noSessionsEl.removeAttribute('hidden');
+    } else {
+      if (noSessionsEl) noSessionsEl.setAttribute('hidden', '');
+      if (sessionContainer.children.length === 0) {
+        STAGE_CONFIG.sessions.forEach(function (s, i) {
+          var label = document.createElement('label');
+          label.className = 'insc-option-card';
+          label.innerHTML = '<input type="radio" name="session" value="' + (s.fullId || s.id + ANNEE) + '"' + (i === 0 ? ' required' : '') + '>'
+            + '<span class="card-label">'
+            + '<span class="card-title">' + s.icon + ' ' + s.saison + '</span>'
+            + '<span class="card-sub">' + s.dates + '</span>'
+            + '</span>';
+          sessionContainer.appendChild(label);
+        });
+      }
     }
   }
 

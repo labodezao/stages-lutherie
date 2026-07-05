@@ -362,6 +362,14 @@ will be finished — simply in several stages.</p>
 // ── 2. CGV ────────────────────────────────────────────────────────────────────
 
 function evd_seed_cgv(): int {
+    $tarif = (string) get_option( 'stluth_tarif_retour', 80 );
+    $fr    = str_replace( '{{TARIF_RETOUR}}', $tarif, evd_read_include( 'cgv-fr.html' ) );
+    $en    = str_replace( '{{TARIF_RETOUR}}', $tarif, evd_read_include( 'cgv-en.html' ) );
+    evd_upsert_page( 'CGV — Conditions Générales de Vente', 'cgv', evd_block( $fr, $en ) );
+    return 1;
+}
+
+function _evd_seed_cgv_legacy_unused(): int {
 
     $cgv_style = '
 <style>
@@ -624,5 +632,5 @@ function evd_seed_cgv(): int {
 ';
 
     evd_upsert_page( 'CGV — Conditions Générales de Vente', 'cgv', evd_block( $fr, $en ) );
-    return 1;
+    return 1; // end legacy unused
 }
