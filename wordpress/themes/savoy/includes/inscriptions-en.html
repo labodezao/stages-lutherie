@@ -931,6 +931,18 @@ var STAGE_CONFIG = (function(){
 
 <!-- wp:html -->
 <div style="padding:0 28px 16px">
+<div style="border:1px solid #c8b59a;border-radius:6px;background:#fdf8f3;padding:14px 18px;margin:0 0 12px">
+  <p style="margin:0 0 8px;font-weight:700;font-size:0.95rem">📋 Terms and Conditions — key points</p>
+  <ul style="margin:0 0 8px;padding-left:18px;font-size:0.88rem;line-height:1.6">
+    <li><strong>Nature of the workshop:</strong> a pedagogical learning journey into lutherie, not an instrument delivery service.</li>
+    <li><strong>No guarantee of completion:</strong> a single 10-day workshop does not guarantee the complete finishing of the accordion.</li>
+    <li><strong>Return sessions:</strong> option to return at <strong>€80/day</strong> if the instrument is not complete.</li>
+    <li><strong>40% non-refundable deposit</strong> (except if cancelled by the instructor). Balance paid at the start of the workshop.</li>
+    <li><strong>Cancellation by the participant:</strong> deposit is retained; place may be deferred or transferred to another person.</li>
+    <li><strong>Materials:</strong> included in the price (except replacement of a major part after irreparable damage).</li>
+  </ul>
+  <p style="margin:0;font-size:0.9rem"><a href="/cgv/?lang=en" target="_blank" rel="noopener">→ Read the full Terms and Conditions</a></p>
+</div>
 <div class="insc-terms" style="background:#FFF8E1;border-left:4px solid #D4A017;border-radius:6px;padding:14px 18px;margin:8px 0 16px">
   <p style="margin:0 0 6px"><strong>📌 Learning journey — what you need to know</strong></p>
   <p style="margin:0 0 4px;font-size:0.92rem">A 10-day workshop is a <strong>learning journey</strong>, not a delivery guarantee. Completion depends on the model chosen, your pace, and your experience.</p>
@@ -951,7 +963,7 @@ var STAGE_CONFIG = (function(){
 <div class="insc-field" style="margin-top:14px;padding-top:14px;border-top:1px solid #e0d5cc;">
   <label>
     <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
-    I have read and accept all of the above terms <span class="req">*</span>
+    I have read and accept the <a href="/cgv/?lang=en" target="_blank" rel="noopener">Terms and Conditions</a> <span class="req">*</span>
   </label>
 </div>
 </div>
@@ -2165,7 +2177,8 @@ var STAGE_CONFIG = (function(){
     var terms = 'This order form is binding. To be valid, it must be accompanied by a 40% deposit. '
       + 'The deposit cannot be refunded if the participant cancels after the start of fabrication (2 months before the workshop). '
       + '\u2714 I acknowledge that a single 10-day workshop does not guarantee completion of the accordion. '
-      + '\u2714 I acknowledge that it is possible to return for a follow-up session at the daily workshop rate of \u20ac80/day.';
+      + '\u2714 I acknowledge that it is possible to return for a follow-up session at the daily workshop rate of \u20ac80/day. '
+      + 'Full T&C: ewendaviau.com/cgv/?lang=en';
     var splitTerms = doc.splitTextToSize(terms, CW);
     doc.text(splitTerms, MARGIN, y);
     y += splitTerms.length * 4 + 6;
