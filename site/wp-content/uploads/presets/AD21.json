@@ -1,0 +1,235 @@
+{
+    "nbRangees": 2,
+    "rangees": [
+        {
+            "nom": "Rangée La ",
+            "nb": 11,
+            "offset": 0,
+            "register": "N"
+        },
+        {
+            "nom": "Rangée Ré",
+            "nb": 10,
+            "offset": 1,
+            "register": "N"
+        }
+    ],
+    "lhDisplayMode": "paired",
+    "lhSeparatedDir": "vertical",
+    "lhPairedDir": "vertical",
+    "lhRows": [
+        {
+            "nb": 4,
+            "offset": 0
+        }
+    ],
+    "lhPairsPerRow": 2,
+    "lhBassFirst": false,
+    "lhBassesLabel": "",
+    "lhAccordsLabel": "",
+    "lhShowLabels": false,
+    "nbVoix": 2,
+    "nbVoixAccords": 2,
+    "nbVoixBasses": 2,
+    "notes": {
+        "droite": [
+            [
+                {
+                    "p": "Réb3",
+                    "t": "Solb3"
+                },
+                {
+                    "p": "Mi3",
+                    "t": "Lab3"
+                },
+                {
+                    "p": "La3",
+                    "t": "Si3"
+                },
+                {
+                    "p": "Réb4",
+                    "t": "Ré4"
+                },
+                {
+                    "p": "Mi4",
+                    "t": "Solb4"
+                },
+                {
+                    "p": "La4",
+                    "t": "Lab4"
+                },
+                {
+                    "p": "Réb5",
+                    "t": "Si4"
+                },
+                {
+                    "p": "Mi5",
+                    "t": "Ré5"
+                },
+                {
+                    "p": "La5",
+                    "t": "Solb5"
+                },
+                {
+                    "p": "Réb6",
+                    "t": "Lab5"
+                },
+                {
+                    "p": "Mi6",
+                    "t": "Si5"
+                }
+            ],
+            [
+                {
+                    "p": "Solb3",
+                    "t": "Si3"
+                },
+                {
+                    "p": "La3",
+                    "t": "Réb4"
+                },
+                {
+                    "p": "Ré4",
+                    "t": "Mi4"
+                },
+                {
+                    "p": "Solb4",
+                    "t": "Sol4"
+                },
+                {
+                    "p": "La4",
+                    "t": "Si4"
+                },
+                {
+                    "p": "Ré5",
+                    "t": "Réb6"
+                },
+                {
+                    "p": "Solb5",
+                    "t": "Mi5"
+                },
+                {
+                    "p": "La5",
+                    "t": "Sol5"
+                },
+                {
+                    "p": "Ré6",
+                    "t": "Si5"
+                },
+                {
+                    "p": "Solb6",
+                    "t": "Réb7"
+                }
+            ]
+        ],
+        "basses": [
+            {
+                "p": "Solb2",
+                "t": "Si2"
+            },
+            {
+                "p": "Sol2",
+                "t": "Sol2"
+            },
+            {
+                "p": "La2",
+                "t": "Mi2"
+            },
+            {
+                "p": "Ré2",
+                "t": "La2"
+            }
+        ],
+        "accords": [
+            {
+                "p": "Solb4",
+                "t": "Si4"
+            },
+            {
+                "p": "Sol4",
+                "t": "Sol4"
+            },
+            {
+                "p": "La4",
+                "t": "Mi4"
+            },
+            {
+                "p": "Ré4",
+                "t": "La4"
+            }
+        ],
+        "terzetto": [],
+        "basses2": [
+            {
+                "p": "Solb3",
+                "t": "Si3"
+            },
+            {
+                "p": "Sol3",
+                "t": "Sol3"
+            },
+            {
+                "p": "La3",
+                "t": "Mi3"
+            },
+            {
+                "p": "Ré3",
+                "t": "La3"
+            }
+        ],
+        "basses3": [
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            }
+        ],
+        "accords2": [
+            {
+                "p": "Réb5",
+                "t": "Solb4"
+            },
+            {
+                "p": "Ré4",
+                "t": "Ré4"
+            },
+            {
+                "p": "Mi4",
+                "t": "Si4"
+            },
+            {
+                "p": "La4",
+                "t": "Mi4"
+            }
+        ],
+        "accords3": [
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            },
+            {
+                "p": "",
+                "t": ""
+            }
+        ]
+    }
+}
