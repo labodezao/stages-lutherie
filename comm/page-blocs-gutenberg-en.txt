@@ -120,11 +120,11 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
-<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">April 8 – 17</h2>
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">__STLUTH_SPRING_EN_SHORT__</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
-<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Spring workshop</p>
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">__STLUTH_SPRING_EN_META__</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column -->
@@ -140,11 +140,11 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"2rem","fontWeight":"700"}}} -->
-<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">October 14 – 23</h2>
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723;font-size:2rem;font-weight:700">__STLUTH_AUTUMN_EN_SHORT__</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#8D6E63"}}} -->
-<p class="has-text-align-center has-text-color" style="color:#8D6E63">2026 · Autumn workshop</p>
+<p class="has-text-align-center has-text-color" style="color:#8D6E63">__STLUTH_AUTUMN_EN_META__</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:column --></div>

@@ -140,10 +140,10 @@ function evd_seed_accueil(): int {
 </section>
 
 <section class="evd-sessions">
-  <h2>Sessions 2026</h2>
+  <h2>Sessions __STLUTH_YEAR__</h2>
   <ul>
-    <li>🌸 <strong>8–17 avril 2026</strong></li>
-    <li>🍂 <strong>14–23 octobre 2026</strong></li>
+    <li>🌸 <strong>__STLUTH_SPRING_FR_FULL__</strong></li>
+    <li>🍂 <strong>__STLUTH_AUTUMN_FR_FULL__</strong></li>
   </ul>
   <p>Petits groupes · 4 à 6 personnes · Saint-Nazaire (44)</p>
 </section>
@@ -174,10 +174,10 @@ function evd_seed_accueil(): int {
 </section>
 
 <section class="evd-sessions">
-  <h2>2026 Sessions</h2>
+  <h2>__STLUTH_YEAR__ Sessions</h2>
   <ul>
-    <li>🌸 <strong>April 8–17, 2026</strong></li>
-    <li>🍂 <strong>October 14–23, 2026</strong></li>
+    <li>🌸 <strong>__STLUTH_SPRING_EN_FULL__</strong></li>
+    <li>🍂 <strong>__STLUTH_AUTUMN_EN_FULL__</strong></li>
   </ul>
   <p>Small groups · 4 to 6 participants · Saint-Nazaire, France</p>
 </section>
