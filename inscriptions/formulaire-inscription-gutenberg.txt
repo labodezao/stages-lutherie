@@ -909,6 +909,10 @@ var STAGE_CONFIG = {
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
+<p style="padding:0 28px 8px">💡 <em>Réservation sur stand : si vous avez versé 150 € sur l'un de nos stands, cette somme est déduite de votre acompte — mentionnez-le dans la zone commentaire ci-dessous.</em></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
 <p style="padding:0 28px 8px">L'acompte ne pourra être restitué si le client annule son inscription après le début de la fabrication (2 mois avant le stage).</p>
 <!-- /wp:paragraph -->
 
