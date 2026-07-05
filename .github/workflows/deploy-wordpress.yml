@@ -1,6 +1,11 @@
 name: Deploy WordPress files (FTP)
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "wordpress/**"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -32,7 +37,7 @@ jobs:
           server-dir: ${{ secrets.FTP_REMOTE_DIR || 'www/wp-content/' }}
           # Ne déploie que les fichiers qui ont changé (état conservé dans .ftp-deploy-sync-state.json)
           state-name: .ftp-deploy-sync-state.json
-          dry-run: ${{ inputs.dry_run == 'true' }}
+          dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == 'true' }}
           # Exclure tout sauf les fichiers WordPress utiles
           exclude: |
             **/.git*
