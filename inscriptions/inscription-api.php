@@ -1763,6 +1763,33 @@ endif; // function_exists stluth_register_settings
 
 if ( ! function_exists( 'stluth_get_session_date_texts' ) ) :
 function stluth_get_session_date_texts() {
+	/* Compat: if an existing consolidated admin setting is already present, use it first. */
+	$legacy_dates = get_option( 'stluth_session_dates', null );
+	if ( is_array( $legacy_dates ) ) {
+		$spring_fr_legacy = isset( $legacy_dates['spring_fr_short'] ) ? trim( (string) $legacy_dates['spring_fr_short'] ) : '';
+		$autumn_fr_legacy = isset( $legacy_dates['autumn_fr_short'] ) ? trim( (string) $legacy_dates['autumn_fr_short'] ) : '';
+		$spring_en_legacy = isset( $legacy_dates['spring_en_short'] ) ? trim( (string) $legacy_dates['spring_en_short'] ) : '';
+		$autumn_en_legacy = isset( $legacy_dates['autumn_en_short'] ) ? trim( (string) $legacy_dates['autumn_en_short'] ) : '';
+		$year_legacy      = isset( $legacy_dates['year'] ) ? (int) $legacy_dates['year'] : 0;
+
+		if ( '' !== $spring_fr_legacy && '' !== $autumn_fr_legacy && '' !== $spring_en_legacy && '' !== $autumn_en_legacy ) {
+			if ( $year_legacy < 2000 || $year_legacy > 2100 ) {
+				$year_legacy = 2026;
+			}
+			return array(
+				'year'             => (string) $year_legacy,
+				'spring_fr_short'  => $spring_fr_legacy,
+				'autumn_fr_short'  => $autumn_fr_legacy,
+				'spring_en_short'  => $spring_en_legacy,
+				'autumn_en_short'  => $autumn_en_legacy,
+				'spring_fr_full'   => $spring_fr_legacy . ' ' . $year_legacy,
+				'autumn_fr_full'   => $autumn_fr_legacy . ' ' . $year_legacy,
+				'spring_en_full'   => $spring_en_legacy . ', ' . $year_legacy,
+				'autumn_en_full'   => $autumn_en_legacy . ', ' . $year_legacy,
+			);
+		}
+	}
+
 	$year = (int) get_option( 'stluth_dates_year', 2026 );
 	if ( $year < 2000 || $year > 2100 ) {
 		$year = 2026;
@@ -1808,26 +1835,44 @@ function stluth_replace_session_dates_in_content( $content ) {
 
 	$d = stluth_get_session_date_texts();
 
-	$replacements = array(
-		'8 – 17 avril 2026'      => $d['spring_fr_full'],
-		'8–17 avril 2026'        => $d['spring_fr_full'],
-		'14 – 23 octobre 2026'   => $d['autumn_fr_full'],
-		'14–23 octobre 2026'     => $d['autumn_fr_full'],
-		'8 – 17 avril'           => $d['spring_fr_short'],
-		'8–17 avril'             => $d['spring_fr_short'],
-		'14 – 23 octobre'        => $d['autumn_fr_short'],
-		'14–23 octobre'          => $d['autumn_fr_short'],
-		'2026 · Stage de printemps' => $d['year'] . ' · Stage de printemps',
-		'2026 · Stage d\'automne'   => $d['year'] . ' · Stage d\'automne',
-		'April 8–17, 2026'       => $d['spring_en_full'],
-		'October 14–23, 2026'    => $d['autumn_en_full'],
-		'April 8–17'             => $d['spring_en_short'],
-		'October 14–23'          => $d['autumn_en_short'],
-		'2026 · Spring workshop' => $d['year'] . ' · Spring workshop',
-		'2026 · Autumn workshop' => $d['year'] . ' · Autumn workshop',
+	$search = array(
+		'8 – 17 avril 2026',
+		'8–17 avril 2026',
+		'14 – 23 octobre 2026',
+		'14–23 octobre 2026',
+		'April 8–17, 2026',
+		'October 14–23, 2026',
+		'2026 · Stage de printemps',
+		'2026 · Stage d\'automne',
+		'2026 · Spring workshop',
+		'2026 · Autumn workshop',
+		'8 – 17 avril',
+		'8–17 avril',
+		'14 – 23 octobre',
+		'14–23 octobre',
+		'April 8–17',
+		'October 14–23',
+	);
+	$replace = array(
+		$d['spring_fr_full'],
+		$d['spring_fr_full'],
+		$d['autumn_fr_full'],
+		$d['autumn_fr_full'],
+		$d['spring_en_full'],
+		$d['autumn_en_full'],
+		$d['year'] . ' · Stage de printemps',
+		$d['year'] . ' · Stage d\'automne',
+		$d['year'] . ' · Spring workshop',
+		$d['year'] . ' · Autumn workshop',
+		$d['spring_fr_short'],
+		$d['spring_fr_short'],
+		$d['autumn_fr_short'],
+		$d['autumn_fr_short'],
+		$d['spring_en_short'],
+		$d['autumn_en_short'],
 	);
 
-	return strtr( $content, $replacements );
+	return str_replace( $search, $replace, $content );
 }
 add_filter( 'the_content', 'stluth_replace_session_dates_in_content', 20 );
 endif; // function_exists stluth_replace_session_dates_in_content
