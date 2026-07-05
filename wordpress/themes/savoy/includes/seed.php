@@ -305,11 +305,11 @@ Upgrade 2 voix MD avec registres possible (nécessite 2 stages).</em></p>
 
 <h2>Inclus dans le tarif</h2>
 <ul>
-  <li>✅ Préparation des pièces avant le stage</li>
-  <li>✅ Matériaux, accessoires, consommables</li>
-  <li>✅ Outillage professionnel</li>
-  <li>✅ Sac + bretelles</li>
-  <li>✅ Encadrement personnalisé tout au long du stage</li>
+  <li>Préparation des pièces avant le stage</li>
+  <li>Matériaux, accessoires, consommables</li>
+  <li>Outillage professionnel</li>
+  <li>Sac + bretelles</li>
+  <li>Encadrement personnalisé tout au long du stage</li>
 </ul>
 <p><strong>Non inclus :</strong> hébergement, repas, transport.</p>
 
@@ -330,7 +330,7 @@ Upgrade 2 voix MD avec registres possible (nécessite 2 stages).</em></p>
 <p><a href="/cgv/">→ Lire les Conditions Générales de Vente complètes</a></p>
 
 <p>
-  <a href="https://stages.ewendaviau.com" class="evd-btn" target="_blank">📝 S\'inscrire</a>
+  <a href="https://stages.ewendaviau.com" class="evd-btn" target="_blank">S\'inscrire</a>
   <a href="mailto:contact@ewendaviau.com" class="evd-btn evd-btn-sec">Nous contacter</a>
 </p>
 ';
@@ -406,11 +406,11 @@ will be finished — simply in several stages.</p>
 
 <h2>Included in the price</h2>
 <ul>
-  <li>✅ Parts preparation before the workshop</li>
-  <li>✅ Materials, accessories, consumables</li>
-  <li>✅ Professional tools</li>
-  <li>✅ Gig bag + straps</li>
-  <li>✅ Personal guidance throughout the workshop</li>
+  <li>Parts preparation before the workshop</li>
+  <li>Materials, accessories, consumables</li>
+  <li>Professional tools</li>
+  <li>Gig bag + straps</li>
+  <li>Personal guidance throughout the workshop</li>
 </ul>
 <p><strong>Not included:</strong> accommodation, meals, transport.</p>
 
@@ -431,7 +431,7 @@ will be finished — simply in several stages.</p>
 <p><a href="/cgv/?lang=en">→ Read the full Terms &amp; Conditions</a></p>
 
 <p>
-  <a href="https://stages.ewendaviau.com?lang=en" class="evd-btn" target="_blank">📝 Register</a>
+  <a href="https://stages.ewendaviau.com?lang=en" class="evd-btn" target="_blank">Register</a>
   <a href="mailto:contact@ewendaviau.com" class="evd-btn evd-btn-sec">Contact us</a>
 </p>
 ';
@@ -505,12 +505,12 @@ function evd_seed_contact(): int {
 <h1>Contact</h1>
 <p>Pour toute question sur les stages, les instruments ou les tarifs :</p>
 <ul>
-  <li>✉️ <a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></li>
-  <li>🌐 <a href="https://stages.ewendaviau.com" target="_blank">stages.ewendaviau.com</a> — inscription en ligne</li>
-  <li>🎥 <a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank">Vidéo de présentation</a></li>
+  <li><a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></li>
+  <li><a href="https://stages.ewendaviau.com" target="_blank">stages.ewendaviau.com</a> — inscription en ligne</li>
+  <li><a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank">Vidéo de présentation</a></li>
 </ul>
 <h2>Atelier</h2>
-<p>📍 9 rue Fernand de Magellan<br>44600 Saint-Nazaire, France</p>
+<p>9 rue Fernand de Magellan<br>44600 Saint-Nazaire, France</p>
 <p>Quartier calme, à environ 20 minutes à pied de la mer.</p>
 ';
 
@@ -518,12 +518,12 @@ function evd_seed_contact(): int {
 <h1>Contact</h1>
 <p>For any questions about workshops, instruments or pricing:</p>
 <ul>
-  <li>✉️ <a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></li>
-  <li>🌐 <a href="https://stages.ewendaviau.com?lang=en" target="_blank">stages.ewendaviau.com</a> — online registration</li>
-  <li>🎥 <a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank">Presentation video</a></li>
+  <li><a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></li>
+  <li><a href="https://stages.ewendaviau.com?lang=en" target="_blank">stages.ewendaviau.com</a> — online registration</li>
+  <li><a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank">Presentation video</a></li>
 </ul>
 <h2>Workshop</h2>
-<p>📍 9 rue Fernand de Magellan<br>44600 Saint-Nazaire, France</p>
+<p>9 rue Fernand de Magellan<br>44600 Saint-Nazaire, France</p>
 <p>Quiet neighbourhood, about 20 minutes walk from the sea.</p>
 ';
 
