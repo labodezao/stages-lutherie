@@ -109,7 +109,7 @@
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","bottom":"3rem"}},"color":{"background":"#FFFFFF"}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group has-background" style="background-color:#FFFFFF;padding-top:3rem;padding-bottom:3rem"><!-- wp:heading {"textAlign":"center","style":{"color":{"text":"#3E2723"}}} -->
-<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Une experience unique</h2>
+<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#3E2723">Un parcours de lutherie</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
@@ -308,7 +308,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#3E2723"},"typography":{"fontSize":"0.95rem"}}} -->
-<p class="has-text-align-center has-text-color" style="color:#3E2723;font-size:0.95rem"></p>
+<p class="has-text-align-center has-text-color" style="color:#3E2723;font-size:0.8rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;opacity:0.75">Le plus choisi</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -813,7 +813,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#5D4037"}}} -->
-<p class="has-text-align-center has-text-color" style="color:#5D4037">Plus de 100 combinaisons possibles pour créer VOTRE instrument unique</p>
+<p class="has-text-align-center has-text-color" style="color:#5D4037">Plus de 100 combinaisons possibles pour créer votre instrument unique</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"style":{"color":{"background":"#D4CFC8"}}} -->
@@ -1411,6 +1411,245 @@
 <!-- /wp:group --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+
+<!-- wp:group {"metadata":{"name":"💌 Popup newsletter stages (supprimer ce bloc pour désactiver)"},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group"><!-- wp:html -->
+<div id="stluth-stage-news-popup" class="stluth-stage-news-popup" hidden data-delay-ms="28000" data-scroll-threshold="0.55" data-hide-days="14">
+  <div class="stluth-stage-news-popup__backdrop" data-popup-close="overlay"></div>
+  <div class="stluth-stage-news-popup__dialog" role="dialog" aria-modal="true" aria-labelledby="stluth-stage-news-popup-title">
+    <button type="button" class="stluth-stage-news-popup__close" aria-label="Fermer la fenêtre d’inscription newsletter" data-popup-close="close">×</button>
+    <p class="stluth-stage-news-popup__eyebrow">Newsletter spéciale stages</p>
+    <h3 id="stluth-stage-news-popup-title">Recevez les prochaines dates avant tout le monde</h3>
+    <p class="stluth-stage-news-popup__text">Promis, pas de popup relou : juste les nouvelles sessions, les ouvertures d’inscription et quelques nouvelles de l’atelier liées aux stages.</p>
+
+    <form action="https://ewendaviau.com/wp-admin/admin-post.php?action=mailpoet_subscription_form" method="post" target="_self" class="stluth-stage-news-popup__form">
+      <input type="hidden" name="data[form_id]" value="1">
+      <input type="hidden" name="token" value="fd154bc989">
+      <input type="hidden" name="api_version" value="v1">
+      <input type="hidden" name="endpoint" value="subscribers">
+      <input type="hidden" name="mailpoet_method" value="subscribe">
+      <label class="stluth-stage-news-popup__hp" aria-hidden="true">Veuillez laisser ce champ vide<input type="email" name="data[email]" tabindex="-1" autocomplete="off"></label>
+      <label class="stluth-stage-news-popup__label" for="stluth-stage-news-email">Adresse e-mail</label>
+      <input id="stluth-stage-news-email" type="email" name="data[form_field_ZThjYmJjODk0Mjc5X2VtYWls]" class="stluth-stage-news-popup__input" placeholder="votre@email.com" autocomplete="email" required aria-required="true">
+      <button type="submit" class="stluth-stage-news-popup__submit">Recevoir les infos stages</button>
+    </form>
+
+    <div class="stluth-stage-news-popup__footer">
+      <button type="button" class="stluth-stage-news-popup__later" data-popup-close="later">Plus tard</button>
+      <a class="stluth-stage-news-popup__link" href="https://ewendaviau.com/inscriptions-stages/" target="_blank" rel="noopener noreferrer">Voir les stages maintenant</a>
+    </div>
+
+    <p class="stluth-stage-news-popup__note">Le popup n’apparaît qu’après un temps de lecture ou un vrai signe d’intérêt, puis se fait oublier pendant plusieurs jours si on le ferme.</p>
+  </div>
+</div>
+
+<style>
+.stluth-stage-news-popup[hidden]{display:none !important}
+body.stluth-stage-news-popup-open{overflow:hidden}
+.stluth-stage-news-popup{position:fixed;inset:0;z-index:9999;padding:20px;display:flex;align-items:center;justify-content:center}
+.stluth-stage-news-popup__backdrop{position:absolute;inset:0;background:rgba(44,24,16,0.56)}
+.stluth-stage-news-popup__dialog{position:relative;z-index:1;width:min(100%,460px);max-height:min(88vh,760px);overflow:auto;background:#FFF8E1;color:#3E2723;border-radius:22px;padding:1.5rem 1.5rem 1.35rem;box-shadow:0 26px 70px rgba(44,24,16,0.3)}
+.stluth-stage-news-popup__close{position:absolute;top:12px;right:12px;width:40px;height:40px;border:0;border-radius:999px;background:#fff;color:#6D4C41;font-size:1.6rem;line-height:1;cursor:pointer}
+.stluth-stage-news-popup__eyebrow{margin:0 0 .5rem;color:#D4A017;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.stluth-stage-news-popup__dialog h3{margin:0 0 .6rem;font-size:1.75rem;line-height:1.2;color:#3E2723}
+.stluth-stage-news-popup__text{margin:0 0 1rem;color:#5D4037;line-height:1.65}
+.stluth-stage-news-popup__form{display:grid;gap:.65rem}
+.stluth-stage-news-popup__label{font-size:.92rem;font-weight:600;color:#3E2723}
+.stluth-stage-news-popup__input{width:100%;border:1px solid rgba(62,39,35,0.18);border-radius:14px;padding:.95rem 1rem;background:#fff;color:#3E2723;box-sizing:border-box}
+.stluth-stage-news-popup__input:focus{outline:2px solid rgba(212,160,23,0.35);outline-offset:2px}
+.stluth-stage-news-popup__submit{border:0;border-radius:999px;background:#D4A017;color:#3E2723;padding:.95rem 1.2rem;font-weight:700;cursor:pointer}
+.stluth-stage-news-popup__footer{display:flex;gap:.75rem;align-items:center;justify-content:space-between;margin-top:1rem;flex-wrap:wrap}
+.stluth-stage-news-popup__later{border:0;background:transparent;color:#8D6E63;padding:0;cursor:pointer;text-decoration:underline}
+.stluth-stage-news-popup__link{color:#3E2723;font-weight:600;text-decoration:none}
+.stluth-stage-news-popup__link:hover{text-decoration:underline}
+.stluth-stage-news-popup__note{margin:1rem 0 0;color:#8D6E63;font-size:.88rem;line-height:1.5}
+.stluth-stage-news-popup__hp{position:absolute;left:-9999px;opacity:0;pointer-events:none}
+@media (max-width: 640px){
+  .stluth-stage-news-popup{padding:0;align-items:flex-end}
+  .stluth-stage-news-popup__dialog{width:100%;max-height:min(86vh,720px);border-radius:24px 24px 0 0;padding:1.1rem 1rem calc(1rem + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(44,24,16,0.28)}
+  .stluth-stage-news-popup__dialog h3{font-size:1.4rem;padding-right:2.25rem}
+  .stluth-stage-news-popup__text{font-size:.98rem;line-height:1.55}
+  .stluth-stage-news-popup__footer{align-items:stretch;flex-direction:column}
+  .stluth-stage-news-popup__link,.stluth-stage-news-popup__later{text-align:center}
+  .stluth-stage-news-popup__submit,.stluth-stage-news-popup__input{font-size:16px}
+}
+</style>
+
+<script>
+(function(){
+  var root = document.getElementById('stluth-stage-news-popup');
+  if (!root) {
+    return;
+  }
+
+  var dialog = root.querySelector('.stluth-stage-news-popup__dialog');
+  var form = root.querySelector('form');
+  var closeButtons = root.querySelectorAll('[data-popup-close]');
+  var shown = false;
+  var closed = false;
+  var storageReady = false;
+  var dismissedKey = 'stluth-stage-news-popup-dismissed-at';
+  var subscribedKey = 'stluth-stage-news-popup-subscribed';
+  var delayMs = parseInt(root.getAttribute('data-delay-ms'), 10);
+  var hideDays = parseInt(root.getAttribute('data-hide-days'), 10);
+  var scrollThreshold = parseFloat(root.getAttribute('data-scroll-threshold'));
+
+  if (isNaN(delayMs)) {
+    delayMs = 28000;
+  }
+  if (isNaN(hideDays)) {
+    hideDays = 14;
+  }
+  if (isNaN(scrollThreshold)) {
+    scrollThreshold = 0.55;
+  }
+
+  try {
+    window.localStorage.setItem('stluth-stage-news-popup-test', '1');
+    window.localStorage.removeItem('stluth-stage-news-popup-test');
+    storageReady = true;
+  } catch (error) {
+    storageReady = false;
+  }
+
+  function rememberState(key, value) {
+    if (!storageReady) {
+      return;
+    }
+    window.localStorage.setItem(key, value);
+  }
+
+  function isSuppressed() {
+    if (!storageReady) {
+      return false;
+    }
+    if (window.localStorage.getItem(subscribedKey) === '1') {
+      return true;
+    }
+    var rawValue = window.localStorage.getItem(dismissedKey);
+    if (!rawValue) {
+      return false;
+    }
+    var dismissedAt = parseInt(rawValue, 10);
+    if (isNaN(dismissedAt)) {
+      return false;
+    }
+    if ((Date.now() - dismissedAt) < hideDays * 24 * 60 * 60 * 1000) {
+      return true;
+    }
+    return false;
+  }
+
+  function openPopup() {
+    if (shown) {
+      return;
+    }
+    if (closed) {
+      return;
+    }
+    if (isSuppressed()) {
+      return;
+    }
+    shown = true;
+    root.removeAttribute('hidden');
+    document.body.classList.add('stluth-stage-news-popup-open');
+  }
+
+  function closePopup(markSubscribed) {
+    if (closed) {
+      return;
+    }
+    closed = true;
+    root.setAttribute('hidden', 'hidden');
+    document.body.classList.remove('stluth-stage-news-popup-open');
+    rememberState(dismissedKey, String(Date.now()));
+    if (markSubscribed) {
+      rememberState(subscribedKey, '1');
+    }
+  }
+
+  function maybeOpenFromScroll() {
+    if (shown) {
+      return;
+    }
+    if (closed) {
+      return;
+    }
+    var doc = document.documentElement;
+    var scrollable = doc.scrollHeight - window.innerHeight;
+    if (scrollable <= 0) {
+      return;
+    }
+    var progress = window.scrollY / scrollable;
+    if (progress >= scrollThreshold) {
+      openPopup();
+    }
+  }
+
+  window.setTimeout(function(){
+    openPopup();
+  }, delayMs);
+
+  window.addEventListener('scroll', maybeOpenFromScroll, { passive: true });
+
+  if (window.matchMedia) {
+    var finePointer = window.matchMedia('(pointer:fine)').matches;
+    if (finePointer) {
+      document.addEventListener('mouseout', function(event){
+        if (shown) {
+          return;
+        }
+        if (closed) {
+          return;
+        }
+        if (!event) {
+          return;
+        }
+        if (event.clientY > 12) {
+          return;
+        }
+        openPopup();
+      });
+    }
+  }
+
+  closeButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+      closePopup(false);
+    });
+  });
+
+  document.addEventListener('keydown', function(event){
+    if (!shown) {
+      return;
+    }
+    if (!event) {
+      return;
+    }
+    if (event.key === 'Escape') {
+      closePopup(false);
+    }
+  });
+
+  if (dialog) {
+    dialog.addEventListener('click', function(event){
+      if (!event) {
+        return;
+      }
+      event.stopPropagation();
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', function(){
+      closePopup(true);
+    });
+  }
+})();
+</script>
+<!-- /wp:html --></div>
 <!-- /wp:group -->
 
 

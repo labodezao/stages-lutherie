@@ -33,7 +33,6 @@ var STAGE_CONFIG = (function(){
   return {
     annee: 2026,
     sessions: [
-      { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Mercredi 8 – Vendredi 17 avril 2026',    fullId: 'avril2026' },
       { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Mercredi 14 – Vendredi 23 octobre 2026', fullId: 'octobre2026' }
     ],
     presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
@@ -453,14 +452,7 @@ var STAGE_CONFIG = (function(){
 <div class="insc-options" id="sessionOptions">
           <!-- ════ MODIFIER ICI CHAQUE ANNÉE — synchroniser avec STAGE_CONFIG ci-dessus ════ -->
           <label class="insc-option-card">
-            <input type="radio" name="session" value="avril2026" required>
-            <span class="card-label">
-              <span class="card-title">🌸 Printemps</span>
-              <span class="card-sub">Mercredi 8 – Vendredi 17 avril 2026</span>
-            </span>
-          </label>
-          <label class="insc-option-card">
-            <input type="radio" name="session" value="octobre2026">
+            <input type="radio" name="session" value="octobre2026" required>
             <span class="card-label">
               <span class="card-title">🍂 Automne</span>
               <span class="card-sub">Mercredi 14 – Vendredi 23 octobre 2026</span>
@@ -860,7 +852,7 @@ var STAGE_CONFIG = (function(){
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#888"},"spacing":{"padding":{"top":"0","bottom":"16px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.88rem"}}} -->
-<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">L'aperçu se met à jour automatiquement selon vos choix ci-dessus.<br><em>Les photos réelles s'afficheront dès que les calques PNG sont déposés dans <code>img/apercu/</code>.</em></p>
+<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">L'aperçu se met à jour automatiquement selon vos choix ci-dessus.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->

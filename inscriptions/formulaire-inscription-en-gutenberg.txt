@@ -33,7 +33,6 @@ var STAGE_CONFIG = (function(){
   return {
     annee: 2026,
     sessions: [
-      { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Wednesday 8 – Friday 17 April 2026',    fullId: 'avril2026' },
       { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Wednesday 14 – Friday 23 October 2026', fullId: 'octobre2026' }
     ],
     presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
@@ -453,14 +452,7 @@ var STAGE_CONFIG = (function(){
 <div class="insc-options" id="sessionOptions">
           <!-- ════ UPDATE EVERY YEAR — keep in sync with STAGE_CONFIG above ════ -->
           <label class="insc-option-card">
-            <input type="radio" name="session" value="avril2026" required>
-            <span class="card-label">
-              <span class="card-title">🌸 Spring</span>
-              <span class="card-sub">Wednesday 8 – Friday 17 April 2026</span>
-            </span>
-          </label>
-          <label class="insc-option-card">
-            <input type="radio" name="session" value="octobre2026">
+            <input type="radio" name="session" value="octobre2026" required>
             <span class="card-label">
               <span class="card-title">🍂 Autumn</span>
               <span class="card-sub">Wednesday 14 – Friday 23 October 2026</span>
@@ -858,7 +850,7 @@ var STAGE_CONFIG = (function(){
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#888"},"spacing":{"padding":{"top":"0","bottom":"16px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.88rem"}}} -->
-<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">The preview updates automatically based on your choices above.<br><em>Real photos will appear once the transparent PNG layers are placed in <code>img/apercu/</code>.</em></p>
+<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">The preview updates automatically based on your choices above.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
