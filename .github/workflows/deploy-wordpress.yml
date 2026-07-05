@@ -1,0 +1,41 @@
+name: Deploy WordPress files (FTP)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (liste les fichiers sans uploader)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+jobs:
+  deploy:
+    name: Deploy to ewendaviau.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Dossier local source (mappage : wordpress/ → wp-content/ sur le serveur)
+          local-dir: ./wordpress/
+          # Chemin distant : adapter si le site n'est pas à la racine
+          server-dir: ${{ secrets.FTP_REMOTE_DIR || 'www/wp-content/' }}
+          # Ne déploie que les fichiers qui ont changé (état conservé dans .ftp-deploy-sync-state.json)
+          state-name: .ftp-deploy-sync-state.json
+          dry-run: ${{ inputs.dry_run == 'true' }}
+          # Exclure tout sauf les fichiers WordPress utiles
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
+            **/*.md
