@@ -1752,9 +1752,85 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_body',       array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
 	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_subject_en', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_body_en',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
+	register_setting( 'stluth_inscription', 'stluth_dates_year',            array( 'sanitize_callback' => 'absint' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_spring_fr_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_autumn_fr_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_spring_en_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_autumn_en_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
 }
 
 endif; // function_exists stluth_register_settings
+
+if ( ! function_exists( 'stluth_get_session_date_texts' ) ) :
+function stluth_get_session_date_texts() {
+	$year = (int) get_option( 'stluth_dates_year', 2026 );
+	if ( $year < 2000 || $year > 2100 ) {
+		$year = 2026;
+	}
+
+	$spring_fr = trim( (string) get_option( 'stluth_date_spring_fr_short', '8 – 17 avril' ) );
+	$autumn_fr = trim( (string) get_option( 'stluth_date_autumn_fr_short', '14 – 23 octobre' ) );
+	$spring_en = trim( (string) get_option( 'stluth_date_spring_en_short', 'April 8–17' ) );
+	$autumn_en = trim( (string) get_option( 'stluth_date_autumn_en_short', 'October 14–23' ) );
+
+	if ( '' === $spring_fr ) {
+		$spring_fr = '8 – 17 avril';
+	}
+	if ( '' === $autumn_fr ) {
+		$autumn_fr = '14 – 23 octobre';
+	}
+	if ( '' === $spring_en ) {
+		$spring_en = 'April 8–17';
+	}
+	if ( '' === $autumn_en ) {
+		$autumn_en = 'October 14–23';
+	}
+
+	return array(
+		'year'             => (string) $year,
+		'spring_fr_short'  => $spring_fr,
+		'autumn_fr_short'  => $autumn_fr,
+		'spring_en_short'  => $spring_en,
+		'autumn_en_short'  => $autumn_en,
+		'spring_fr_full'   => $spring_fr . ' ' . $year,
+		'autumn_fr_full'   => $autumn_fr . ' ' . $year,
+		'spring_en_full'   => $spring_en . ', ' . $year,
+		'autumn_en_full'   => $autumn_en . ', ' . $year,
+	);
+}
+endif; // function_exists stluth_get_session_date_texts
+
+if ( ! function_exists( 'stluth_replace_session_dates_in_content' ) ) :
+function stluth_replace_session_dates_in_content( $content ) {
+	if ( ! is_string( $content ) || '' === $content ) {
+		return $content;
+	}
+
+	$d = stluth_get_session_date_texts();
+
+	$replacements = array(
+		'8 – 17 avril 2026'      => $d['spring_fr_full'],
+		'8–17 avril 2026'        => $d['spring_fr_full'],
+		'14 – 23 octobre 2026'   => $d['autumn_fr_full'],
+		'14–23 octobre 2026'     => $d['autumn_fr_full'],
+		'8 – 17 avril'           => $d['spring_fr_short'],
+		'8–17 avril'             => $d['spring_fr_short'],
+		'14 – 23 octobre'        => $d['autumn_fr_short'],
+		'14–23 octobre'          => $d['autumn_fr_short'],
+		'2026 · Stage de printemps' => $d['year'] . ' · Stage de printemps',
+		'2026 · Stage d\'automne'   => $d['year'] . ' · Stage d\'automne',
+		'April 8–17, 2026'       => $d['spring_en_full'],
+		'October 14–23, 2026'    => $d['autumn_en_full'],
+		'April 8–17'             => $d['spring_en_short'],
+		'October 14–23'          => $d['autumn_en_short'],
+		'2026 · Spring workshop' => $d['year'] . ' · Spring workshop',
+		'2026 · Autumn workshop' => $d['year'] . ' · Autumn workshop',
+	);
+
+	return strtr( $content, $replacements );
+}
+add_filter( 'the_content', 'stluth_replace_session_dates_in_content', 20 );
+endif; // function_exists stluth_replace_session_dates_in_content
 
 /**
  * Strip all MSO / IE conditional comment blocks from HTML.
@@ -2076,6 +2152,34 @@ function stluth_render_settings_page() {
 					<textarea name="stluth_payment_confirmed_body_en" rows="30" class="large-text code" style="font-family:monospace;font-size:12px;"><?php echo esc_textarea( $pc_en_for_display ); ?></textarea>
 					<p class="description">Full HTML email sent automatically to English-speaking trainees when the registration is marked as confirmed / paid.</p>
 				</td>
+			</tr>
+		</table>
+
+		<hr style="margin:32px 0 24px;">
+		<h2 style="font-size:1.1rem;">📅 Dates des sessions (source admin)</h2>
+		<p>Toutes les dates affichées dans les pages de stage et d'inscription sont recalculées automatiquement à partir de ces champs.</p>
+		<table class="form-table">
+			<tr>
+				<th scope="row">Année affichée</th>
+				<td>
+					<input type="number" name="stluth_dates_year" value="<?php echo esc_attr( (int) get_option( 'stluth_dates_year', 2026 ) ); ?>" min="2000" max="2100" style="width:100px;">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">Printemps (FR, format court)</th>
+				<td><input type="text" name="stluth_date_spring_fr_short" value="<?php echo esc_attr( get_option( 'stluth_date_spring_fr_short', '8 – 17 avril' ) ); ?>" class="regular-text"></td>
+			</tr>
+			<tr>
+				<th scope="row">Automne (FR, format court)</th>
+				<td><input type="text" name="stluth_date_autumn_fr_short" value="<?php echo esc_attr( get_option( 'stluth_date_autumn_fr_short', '14 – 23 octobre' ) ); ?>" class="regular-text"></td>
+			</tr>
+			<tr>
+				<th scope="row">Spring (EN, short format)</th>
+				<td><input type="text" name="stluth_date_spring_en_short" value="<?php echo esc_attr( get_option( 'stluth_date_spring_en_short', 'April 8–17' ) ); ?>" class="regular-text"></td>
+			</tr>
+			<tr>
+				<th scope="row">Autumn (EN, short format)</th>
+				<td><input type="text" name="stluth_date_autumn_en_short" value="<?php echo esc_attr( get_option( 'stluth_date_autumn_en_short', 'October 14–23' ) ); ?>" class="regular-text"></td>
 			</tr>
 		</table>
 
