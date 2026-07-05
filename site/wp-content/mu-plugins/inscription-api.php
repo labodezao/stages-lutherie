@@ -34,6 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
 define( 'STLUTH_API_VERSION', '2.5' );
+define( 'STLUTH_DEFAULT_YEAR', 2026 );
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -1718,11 +1719,22 @@ if ( ! function_exists( 'stluth_add_settings_page' ) ) :
 add_action( 'admin_menu', 'stluth_add_settings_page' );
 
 function stluth_add_settings_page() {
-	add_options_page(
-		'Inscription Stage',
-		'Inscription Stage',
+	add_menu_page(
+		'Stages',
+		'Stages',
 		'manage_options',
-		'stluth_inscription',
+		'stluth-stages',
+		'stluth_render_settings_page',
+		'dashicons-calendar-alt',
+		58
+	);
+
+	add_submenu_page(
+		'stluth-stages',
+		'Inscriptions',
+		'Inscriptions',
+		'manage_options',
+		'stluth-stages',
 		'stluth_render_settings_page'
 	);
 }
@@ -1790,9 +1802,9 @@ function stluth_get_session_date_texts() {
 		}
 	}
 
-	$year = (int) get_option( 'stluth_dates_year', 2026 );
+	$year = (int) get_option( 'stluth_dates_year', STLUTH_DEFAULT_YEAR );
 	if ( $year < 2000 || $year > 2100 ) {
-		$year = 2026;
+		$year = STLUTH_DEFAULT_YEAR;
 	}
 
 	$spring_fr = trim( (string) get_option( 'stluth_date_spring_fr_short', '8 – 17 avril' ) );
@@ -1836,16 +1848,16 @@ function stluth_replace_session_dates_in_content( $content ) {
 	$d = stluth_get_session_date_texts();
 
 	$tokens = array(
-		'8 – 17 avril 2026'         => '__STLUTH_SPRING_FR_FULL__',
-		'8–17 avril 2026'           => '__STLUTH_SPRING_FR_FULL__',
-		'14 – 23 octobre 2026'      => '__STLUTH_AUTUMN_FR_FULL__',
-		'14–23 octobre 2026'        => '__STLUTH_AUTUMN_FR_FULL__',
-		'April 8–17, 2026'          => '__STLUTH_SPRING_EN_FULL__',
-		'October 14–23, 2026'       => '__STLUTH_AUTUMN_EN_FULL__',
-		'2026 · Stage de printemps' => '__STLUTH_SPRING_FR_META__',
-		'2026 · Stage d\'automne'   => '__STLUTH_AUTUMN_FR_META__',
-		'2026 · Spring workshop'    => '__STLUTH_SPRING_EN_META__',
-		'2026 · Autumn workshop'    => '__STLUTH_AUTUMN_EN_META__',
+		'8 – 17 avril ' . STLUTH_DEFAULT_YEAR         => '__STLUTH_SPRING_FR_FULL__',
+		'8–17 avril ' . STLUTH_DEFAULT_YEAR           => '__STLUTH_SPRING_FR_FULL__',
+		'14 – 23 octobre ' . STLUTH_DEFAULT_YEAR      => '__STLUTH_AUTUMN_FR_FULL__',
+		'14–23 octobre ' . STLUTH_DEFAULT_YEAR        => '__STLUTH_AUTUMN_FR_FULL__',
+		'April 8–17, ' . STLUTH_DEFAULT_YEAR          => '__STLUTH_SPRING_EN_FULL__',
+		'October 14–23, ' . STLUTH_DEFAULT_YEAR       => '__STLUTH_AUTUMN_EN_FULL__',
+		STLUTH_DEFAULT_YEAR . ' · Stage de printemps' => '__STLUTH_SPRING_FR_META__',
+		STLUTH_DEFAULT_YEAR . ' · Stage d\'automne'   => '__STLUTH_AUTUMN_FR_META__',
+		STLUTH_DEFAULT_YEAR . ' · Spring workshop'    => '__STLUTH_SPRING_EN_META__',
+		STLUTH_DEFAULT_YEAR . ' · Autumn workshop'    => '__STLUTH_AUTUMN_EN_META__',
 		'8 – 17 avril'              => '__STLUTH_SPRING_FR_SHORT__',
 		'8–17 avril'                => '__STLUTH_SPRING_FR_SHORT__',
 		'14 – 23 octobre'           => '__STLUTH_AUTUMN_FR_SHORT__',
@@ -1873,6 +1885,20 @@ function stluth_replace_session_dates_in_content( $content ) {
 }
 add_filter( 'the_content', 'stluth_replace_session_dates_in_content', 20 );
 endif; // function_exists stluth_replace_session_dates_in_content
+
+if ( ! function_exists( 'stluth_redirect_legacy_admin_page' ) ) :
+add_action( 'admin_init', 'stluth_redirect_legacy_admin_page' );
+function stluth_redirect_legacy_admin_page() {
+	if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+	if ( 'stluth_inscription' === $page ) {
+		wp_safe_redirect( admin_url( 'admin.php?page=stluth-stages' ) );
+		exit;
+	}
+}
+endif; // function_exists stluth_redirect_legacy_admin_page
 
 /**
  * Strip all MSO / IE conditional comment blocks from HTML.

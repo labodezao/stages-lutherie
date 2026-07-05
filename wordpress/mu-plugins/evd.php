@@ -42,9 +42,9 @@ add_action( 'wp_head', function () {
     echo '<style>.evd-lang-en{display:none}html.lang-en .evd-lang-fr{display:none}html.lang-en .evd-lang-en{display:block}</style>' . "\n";
 }, 1 );
 
-// ── Admin : Outils › Seed ewendaviau ─────────────────────────────────────────
+// ── Admin : onglet Stages › Seed ewendaviau ─────────────────────────────────
 
-add_action( 'admin_menu', fn() => add_management_page( 'Seed', 'Seed ewendaviau', 'manage_options', 'evd-seed', function () {
+function evd_render_seed_page() {
     echo '<div class="wrap"><h1>Seed ewendaviau.com</h1>'
        . '<form method="post" action="' . admin_url( 'admin-post.php' ) . '">'
        . '<input type="hidden" name="action" value="evd_seed_run">';
@@ -62,7 +62,17 @@ add_action( 'admin_menu', fn() => add_management_page( 'Seed', 'Seed ewendaviau'
        . '</select> '
        . '<button class="button button-primary">Lancer</button>'
        . '</form></div>';
-} ) );
+}
+
+function evd_add_seed_admin_page() {
+    global $admin_page_hooks;
+    if ( isset( $admin_page_hooks['stluth-stages'] ) ) {
+        add_submenu_page( 'stluth-stages', 'Seed', 'Seed', 'manage_options', 'evd-seed', 'evd_render_seed_page' );
+        return;
+    }
+    add_management_page( 'Seed', 'Seed ewendaviau', 'manage_options', 'evd-seed', 'evd_render_seed_page' );
+}
+add_action( 'admin_menu', 'evd_add_seed_admin_page', 20 );
 
 add_action( 'admin_post_evd_seed_run', function () {
     if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized', 403 );
@@ -76,6 +86,6 @@ add_action( 'admin_post_evd_seed_run', function () {
             'Seed error', [ 'back_link' => true ]
         );
     }
-    wp_redirect( admin_url( 'tools.php?page=evd-seed&seeded=1' ) );
+    wp_redirect( admin_url( 'admin.php?page=evd-seed&seeded=1' ) );
     exit;
 } );
