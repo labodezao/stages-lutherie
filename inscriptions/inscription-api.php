@@ -33,7 +33,190 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /* Plugin version — displayed on the settings page so the admin can verify
    they are running the latest version after an FTP upload. */
-define( 'STLUTH_API_VERSION', '2.5' );
+define( 'STLUTH_API_VERSION', '2.6' );
+define( 'STLUTH_DEFAULT_YEAR', 2026 );
+
+/* ══════════════════════════════════════════════════════
+   SESSION CATALOGUE — multi-year session management
+   ══════════════════════════════════════════════════════ */
+
+if ( ! function_exists( 'stluth_default_sessions' ) ) :
+/**
+ * Built-in fallback session catalogue (2026 sessions).
+ */
+function stluth_default_sessions(): array {
+	return array(
+		array(
+			'id'            => 'avril2026',
+			'year'          => 2026,
+			'season'        => 'spring',
+			'end_date'      => '2026-04-17',
+			'date_fr_short' => '8 – 17 avril',
+			'date_en_short' => 'April 8 – 17',
+			'date_fr_full'  => 'Mercredi 8 – Vendredi 17 avril 2026',
+			'date_en_full'  => 'Wednesday 8 – Friday 17 April 2026',
+			'cap_total'     => 15,
+			'cap_21_8b'     => 6,
+			'cap_33_12b'    => 5,
+			'cap_33_18b'    => 3,
+			'cap_33_24b'    => 3,
+		),
+		array(
+			'id'            => 'octobre2026',
+			'year'          => 2026,
+			'season'        => 'autumn',
+			'end_date'      => '2026-10-23',
+			'date_fr_short' => '14 – 23 octobre',
+			'date_en_short' => 'October 14 – 23',
+			'date_fr_full'  => 'Mercredi 14 – Vendredi 23 octobre 2026',
+			'date_en_full'  => 'Wednesday 14 – Friday 23 October 2026',
+			'cap_total'     => 15,
+			'cap_21_8b'     => 6,
+			'cap_33_12b'    => 5,
+			'cap_33_18b'    => 3,
+			'cap_33_24b'    => 3,
+		),
+	);
+}
+endif;
+
+if ( ! function_exists( 'stluth_get_sessions' ) ) :
+/**
+ * Returns all sessions from the catalogue, sorted by end_date ascending.
+ * Falls back to migrating legacy flat options, then to built-in defaults.
+ */
+function stluth_get_sessions(): array {
+	$sessions = get_option( 'stluth_sessions', null );
+
+	if ( is_array( $sessions ) && ! empty( $sessions ) ) {
+		usort( $sessions, function ( $a, $b ) {
+			return strcmp( $a['end_date'] ?? '', $b['end_date'] ?? '' );
+		} );
+		return $sessions;
+	}
+
+	/* Migrate from legacy flat options if they were customised */
+	$defaults  = stluth_default_sessions();
+	$def_sp    = $defaults[0];
+	$def_au    = $defaults[1];
+	$year      = (int) get_option( 'stluth_dates_year', STLUTH_DEFAULT_YEAR );
+	$spring_fr = trim( (string) get_option( 'stluth_date_spring_fr_short', '' ) );
+	$autumn_fr = trim( (string) get_option( 'stluth_date_autumn_fr_short', '' ) );
+	$spring_en = trim( (string) get_option( 'stluth_date_spring_en_short', '' ) );
+	$autumn_en = trim( (string) get_option( 'stluth_date_autumn_en_short', '' ) );
+
+	if ( '' === $spring_fr ) { $spring_fr = $def_sp['date_fr_short']; }
+	if ( '' === $autumn_fr ) { $autumn_fr = $def_au['date_fr_short']; }
+	if ( '' === $spring_en ) { $spring_en = $def_sp['date_en_short']; }
+	if ( '' === $autumn_en ) { $autumn_en = $def_au['date_en_short']; }
+
+	/* If everything is still at 2026 defaults, return built-in catalogue */
+	if ( STLUTH_DEFAULT_YEAR === $year
+		&& $def_sp['date_fr_short'] === $spring_fr
+		&& $def_au['date_fr_short'] === $autumn_fr
+	) {
+		return $defaults;
+	}
+
+	$cap_total = (int) get_option( 'stluth_cap_total', 15 );
+	$cap_21    = (int) get_option( 'stluth_cap_21_8b', 6 );
+	$cap_12    = (int) get_option( 'stluth_cap_33_12b', 5 );
+	$cap_18    = (int) get_option( 'stluth_cap_33_18b', 3 );
+	$cap_24    = (int) get_option( 'stluth_cap_33_24b', 3 );
+
+	return array(
+		array(
+			'id'            => 'avril' . $year,
+			'year'          => $year,
+			'season'        => 'spring',
+			'end_date'      => $year . '-04-17',
+			'date_fr_short' => $spring_fr,
+			'date_en_short' => $spring_en,
+			'date_fr_full'  => $spring_fr . ' ' . $year,
+			'date_en_full'  => $spring_en . ', ' . $year,
+			'cap_total'     => $cap_total,
+			'cap_21_8b'     => $cap_21,
+			'cap_33_12b'    => $cap_12,
+			'cap_33_18b'    => $cap_18,
+			'cap_33_24b'    => $cap_24,
+		),
+		array(
+			'id'            => 'octobre' . $year,
+			'year'          => $year,
+			'season'        => 'autumn',
+			'end_date'      => $year . '-10-23',
+			'date_fr_short' => $autumn_fr,
+			'date_en_short' => $autumn_en,
+			'date_fr_full'  => $autumn_fr . ' ' . $year,
+			'date_en_full'  => $autumn_en . ', ' . $year,
+			'cap_total'     => $cap_total,
+			'cap_21_8b'     => $cap_21,
+			'cap_33_12b'    => $cap_12,
+			'cap_33_18b'    => $cap_18,
+			'cap_33_24b'    => $cap_24,
+		),
+	);
+}
+endif;
+
+if ( ! function_exists( 'stluth_get_future_sessions' ) ) :
+/**
+ * Returns sessions whose end_date >= today, sorted ascending.
+ * If all sessions are past, returns the most-recent year's sessions
+ * so the site never displays an empty session list.
+ */
+function stluth_get_future_sessions(): array {
+	$today    = gmdate( 'Y-m-d' );
+	$sessions = stluth_get_sessions();
+	$future   = array_values( array_filter( $sessions, function ( $s ) use ( $today ) {
+		return ( $s['end_date'] ?? '9999-12-31' ) >= $today;
+	} ) );
+
+	if ( ! empty( $future ) ) {
+		return $future;
+	}
+
+	/* All past — return sessions of the last year in the catalogue */
+	if ( empty( $sessions ) ) {
+		return stluth_default_sessions();
+	}
+	$last_year = max( array_column( $sessions, 'year' ) );
+	return array_values( array_filter( $sessions, function ( $s ) use ( $last_year ) {
+		return (int) ( $s['year'] ?? 0 ) === (int) $last_year;
+	} ) );
+}
+endif;
+
+if ( ! function_exists( 'stluth_get_active_session_pair' ) ) :
+/**
+ * Returns [spring, autumn] for the active year (first future year).
+ * Used by the date-replacement filter and the JS injection.
+ */
+function stluth_get_active_session_pair(): array {
+	$future = stluth_get_future_sessions();
+	if ( empty( $future ) ) {
+		return stluth_default_sessions();
+	}
+	$year = (int) ( $future[0]['year'] ?? STLUTH_DEFAULT_YEAR );
+	return array_values( array_filter( $future, function ( $s ) use ( $year ) {
+		return (int) ( $s['year'] ?? 0 ) === $year;
+	} ) );
+}
+endif;
+
+if ( ! function_exists( 'stluth_get_session_by_id' ) ) :
+/**
+ * Returns a single session by its ID (e.g. 'avril2026'), or null.
+ */
+function stluth_get_session_by_id( string $id ): ?array {
+	foreach ( stluth_get_sessions() as $s ) {
+		if ( ( $s['id'] ?? '' ) === $id ) {
+			return $s;
+		}
+	}
+	return null;
+}
+endif;
 
 /* ── Log wp_mail failures for debugging ── */
 if ( ! has_action( 'wp_mail_failed', 'stluth_log_mail_error' ) ) :
@@ -1064,17 +1247,53 @@ function stluth_register_availability_route() {
 
 endif; // function_exists stluth_register_availability_route
 
+/* ── Inject active sessions into every page via wp_head ─────────────────────
+   window.STLUTH_ACTIVE_SESSIONS is consumed by the inscription form to build
+   the session selector dynamically without any hard-coded year. */
+if ( ! function_exists( 'stluth_inject_active_sessions' ) ) :
+
+add_action( 'wp_head', 'stluth_inject_active_sessions', 5 );
+
+function stluth_inject_active_sessions() {
+	$future   = function_exists( 'stluth_get_future_sessions' ) ? stluth_get_future_sessions() : array();
+	$year     = ! empty( $future ) ? (int) ( $future[0]['year'] ?? STLUTH_DEFAULT_YEAR ) : STLUTH_DEFAULT_YEAR;
+	$sessions = array();
+	foreach ( $future as $s ) {
+		if ( (int) ( $s['year'] ?? 0 ) !== $year ) {
+			continue;
+		}
+		$icon   = ( ( $s['season'] ?? '' ) === 'spring' ) ? '🌸' : '🍂';
+		$saison = ( ( $s['season'] ?? '' ) === 'spring' ) ? 'Printemps' : 'Automne';
+		$sessions[] = array(
+			'id'     => preg_replace( '/\d+$/', '', $s['id'] ?? '' ), /* 'avril' */
+			'fullId' => $s['id'] ?? '',                               /* 'avril2026' */
+			'icon'   => $icon,
+			'saison' => $saison,
+			'dates'  => $s['date_fr_full'] ?? '',
+			'datesEn' => $s['date_en_full'] ?? '',
+		);
+	}
+	echo '<script>window.STLUTH_ACTIVE_SESSIONS=' . wp_json_encode( array(
+		'annee'    => $year,
+		'sessions' => $sessions,
+	) ) . ';</script>' . "\n";
+}
+
+endif; // function_exists stluth_inject_active_sessions
+
 if ( ! function_exists( 'stluth_handle_availability' ) ) :
 
 function stluth_handle_availability( WP_REST_Request $request ) {
 	$all_models = array( '21/8b', '33/12b', '33/18b', '33/24b' );
-	$cap_map    = array(
+
+	/* Global fallback caps (used when session not in catalogue) */
+	$global_caps = array(
 		'21/8b'  => (int) get_option( 'stluth_cap_21_8b',  6 ),
 		'33/12b' => (int) get_option( 'stluth_cap_33_12b', 5 ),
 		'33/18b' => (int) get_option( 'stluth_cap_33_18b', 3 ),
 		'33/24b' => (int) get_option( 'stluth_cap_33_24b', 3 ),
 	);
-	$cap_total = (int) get_option( 'stluth_cap_total', 15 );
+	$global_cap_total = (int) get_option( 'stluth_cap_total', 15 );
 
 	/* Build session list from ?sessions= param (comma-separated) */
 	$sessions_param = sanitize_text_field( $request->get_param( 'sessions' ) );
@@ -1104,6 +1323,16 @@ function stluth_handle_availability( WP_REST_Request $request ) {
 
 	$result = array();
 	foreach ( $session_ids as $session_id ) {
+		/* Per-session caps — fallback to global options when session not in catalogue */
+		$sess_data = function_exists( 'stluth_get_session_by_id' ) ? stluth_get_session_by_id( $session_id ) : null;
+		$cap_total = $sess_data ? (int) ( $sess_data['cap_total'] ?? $global_cap_total ) : $global_cap_total;
+		$cap_map   = array(
+			'21/8b'  => $sess_data ? (int) ( $sess_data['cap_21_8b']  ?? $global_caps['21/8b']  ) : $global_caps['21/8b'],
+			'33/12b' => $sess_data ? (int) ( $sess_data['cap_33_12b'] ?? $global_caps['33/12b'] ) : $global_caps['33/12b'],
+			'33/18b' => $sess_data ? (int) ( $sess_data['cap_33_18b'] ?? $global_caps['33/18b'] ) : $global_caps['33/18b'],
+			'33/24b' => $sess_data ? (int) ( $sess_data['cap_33_24b'] ?? $global_caps['33/24b'] ) : $global_caps['33/24b'],
+		);
+
 		$total_used   = stluth_count_inscriptions( $session_id, '' );
 		$session_full = $total_used >= $cap_total;
 		$all_full     = true;
@@ -1196,7 +1425,10 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 
 	/* ── Capacity check — reject if session or model is full ── */
 	if ( function_exists( 'stluth_count_inscriptions' ) && ! empty( $session ) && ! empty( $modele ) ) {
-		$cap_total   = (int) get_option( 'stluth_cap_total', 15 );
+		/* Per-session caps; fall back to global options for unknown sessions */
+		$sess_data = function_exists( 'stluth_get_session_by_id' ) ? stluth_get_session_by_id( $session ) : null;
+		$cap_total = $sess_data ? (int) ( $sess_data['cap_total'] ?? get_option( 'stluth_cap_total', 15 ) ) : (int) get_option( 'stluth_cap_total', 15 );
+
 		$count_total = stluth_count_inscriptions( $session, '' );
 		if ( $count_total >= $cap_total ) {
 			return new WP_REST_Response(
@@ -1205,14 +1437,14 @@ function stluth_handle_inscription( WP_REST_Request $request ) {
 			);
 		}
 		$model_cap_keys = array(
-			'21/8b'  => array( 'stluth_cap_21_8b',  6 ),
-			'33/12b' => array( 'stluth_cap_33_12b', 5 ),
-			'33/18b' => array( 'stluth_cap_33_18b', 3 ),
-			'33/24b' => array( 'stluth_cap_33_24b', 3 ),
+			'21/8b'  => array( 'cap_21_8b',  'stluth_cap_21_8b',  6 ),
+			'33/12b' => array( 'cap_33_12b', 'stluth_cap_33_12b', 5 ),
+			'33/18b' => array( 'cap_33_18b', 'stluth_cap_33_18b', 3 ),
+			'33/24b' => array( 'cap_33_24b', 'stluth_cap_33_24b', 3 ),
 		);
 		if ( isset( $model_cap_keys[ $modele ] ) ) {
-			list( $cap_opt, $cap_default ) = $model_cap_keys[ $modele ];
-			$cap_model   = (int) get_option( $cap_opt, $cap_default );
+			list( $sess_key, $cap_opt, $cap_default ) = $model_cap_keys[ $modele ];
+			$cap_model   = $sess_data ? (int) ( $sess_data[ $sess_key ] ?? get_option( $cap_opt, $cap_default ) ) : (int) get_option( $cap_opt, $cap_default );
 			$count_model = stluth_count_inscriptions( $session, $modele );
 			if ( $count_model >= $cap_model ) {
 				return new WP_REST_Response(
@@ -1718,11 +1950,22 @@ if ( ! function_exists( 'stluth_add_settings_page' ) ) :
 add_action( 'admin_menu', 'stluth_add_settings_page' );
 
 function stluth_add_settings_page() {
-	add_options_page(
-		'Inscription Stage',
-		'Inscription Stage',
+	add_menu_page(
+		'Stages',
+		'Stages',
 		'manage_options',
-		'stluth_inscription',
+		'stluth-stages',
+		'stluth_render_settings_page',
+		'dashicons-calendar-alt',
+		58
+	);
+
+	add_submenu_page(
+		'stluth-stages',
+		'Inscriptions',
+		'Inscriptions',
+		'manage_options',
+		'stluth-stages',
 		'stluth_render_settings_page'
 	);
 }
@@ -1752,9 +1995,160 @@ function stluth_register_settings() {
 	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_body',       array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
 	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_subject_en', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'stluth_inscription', 'stluth_payment_confirmed_body_en',    array( 'sanitize_callback' => 'stluth_sanitize_email_html' ) );
+	register_setting( 'stluth_inscription', 'stluth_dates_year',            array( 'sanitize_callback' => 'absint' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_spring_fr_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_autumn_fr_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_spring_en_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_date_autumn_en_short',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'stluth_inscription', 'stluth_sessions', array( 'sanitize_callback' => 'stluth_sanitize_sessions' ) );
 }
 
 endif; // function_exists stluth_register_settings
+
+if ( ! function_exists( 'stluth_sanitize_sessions' ) ) :
+/**
+ * Sanitize callback for the stluth_sessions option.
+ * Accepts an array of session objects from the admin form.
+ */
+function stluth_sanitize_sessions( $input ): array {
+	if ( ! is_array( $input ) ) {
+		return array();
+	}
+	$clean = array();
+	foreach ( $input as $raw ) {
+		if ( ! is_array( $raw ) ) {
+			continue;
+		}
+		$id = sanitize_key( $raw['id'] ?? '' );
+		if ( '' === $id ) {
+			continue;
+		}
+		$season = in_array( $raw['season'] ?? '', array( 'spring', 'autumn' ), true ) ? $raw['season'] : 'spring';
+		$clean[] = array(
+			'id'           => $id,
+			'year'         => (int) ( $raw['year'] ?? STLUTH_DEFAULT_YEAR ),
+			'season'       => $season,
+			'end_date'     => sanitize_text_field( $raw['end_date'] ?? '' ),
+			'date_fr_short'=> sanitize_text_field( $raw['date_fr_short'] ?? '' ),
+			'date_en_short'=> sanitize_text_field( $raw['date_en_short'] ?? '' ),
+			'date_fr_full' => sanitize_text_field( $raw['date_fr_full'] ?? '' ),
+			'date_en_full' => sanitize_text_field( $raw['date_en_full'] ?? '' ),
+			'cap_total'    => (int) ( $raw['cap_total'] ?? 15 ),
+			'cap_21_8b'    => (int) ( $raw['cap_21_8b'] ?? 6 ),
+			'cap_33_12b'   => (int) ( $raw['cap_33_12b'] ?? 5 ),
+			'cap_33_18b'   => (int) ( $raw['cap_33_18b'] ?? 3 ),
+			'cap_33_24b'   => (int) ( $raw['cap_33_24b'] ?? 3 ),
+		);
+	}
+	return $clean;
+}
+endif; // function_exists stluth_sanitize_sessions
+
+if ( ! function_exists( 'stluth_get_session_date_texts' ) ) :
+/**
+ * Returns date texts for the active session pair (spring + autumn).
+ * Driven by stluth_get_active_session_pair(); legacy options are kept
+ * as a migration path via stluth_get_sessions().
+ */
+function stluth_get_session_date_texts(): array {
+	$pair   = function_exists( 'stluth_get_active_session_pair' ) ? stluth_get_active_session_pair() : array();
+	$spring = null;
+	$autumn = null;
+	foreach ( $pair as $s ) {
+		if ( 'spring' === ( $s['season'] ?? '' ) ) { $spring = $s; }
+		if ( 'autumn' === ( $s['season'] ?? '' ) ) { $autumn = $s; }
+	}
+	/* Fallback: positional */
+	if ( ! $spring && isset( $pair[0] ) ) { $spring = $pair[0]; }
+	if ( ! $autumn && isset( $pair[1] ) ) { $autumn = $pair[1]; }
+	if ( ! $spring ) { $spring = $autumn; }
+	if ( ! $autumn ) { $autumn = $spring; }
+	/* Absolute last resort */
+	if ( ! $spring ) {
+		$defaults = function_exists( 'stluth_default_sessions' ) ? stluth_default_sessions() : array();
+		$spring   = $defaults[0] ?? array();
+		$autumn   = $defaults[1] ?? array();
+	}
+	$year = (string) ( $spring['year'] ?? STLUTH_DEFAULT_YEAR );
+	return array(
+		'year'             => $year,
+		'spring_fr_short'  => $spring['date_fr_short'] ?? '8 – 17 avril',
+		'autumn_fr_short'  => $autumn['date_fr_short'] ?? '14 – 23 octobre',
+		'spring_en_short'  => $spring['date_en_short'] ?? 'April 8 – 17',
+		'autumn_en_short'  => $autumn['date_en_short'] ?? 'October 14 – 23',
+		'spring_fr_full'   => $spring['date_fr_full']  ?? ( ( $spring['date_fr_short'] ?? '8 – 17 avril' ) . ' ' . $year ),
+		'autumn_fr_full'   => $autumn['date_fr_full']  ?? ( ( $autumn['date_fr_short'] ?? '14 – 23 octobre' ) . ' ' . $year ),
+		'spring_en_full'   => $spring['date_en_full']  ?? ( ( $spring['date_en_short'] ?? 'April 8 – 17' ) . ', ' . $year ),
+		'autumn_en_full'   => $autumn['date_en_full']  ?? ( ( $autumn['date_en_short'] ?? 'October 14 – 23' ) . ', ' . $year ),
+	);
+}
+endif; // function_exists stluth_get_session_date_texts
+
+if ( ! function_exists( 'stluth_replace_session_dates_in_content' ) ) :
+function stluth_replace_session_dates_in_content( $content ) {
+	if ( ! is_string( $content ) || '' === $content ) {
+		return $content;
+	}
+
+	$d = stluth_get_session_date_texts();
+
+	/* Backward-compat: replace any hard-coded 2026 strings still present in
+	   older stored content, then replace all __STLUTH_*__ tokens. */
+	$tokens = array(
+		'8 – 17 avril ' . STLUTH_DEFAULT_YEAR         => '__STLUTH_SPRING_FR_FULL__',
+		'8–17 avril ' . STLUTH_DEFAULT_YEAR           => '__STLUTH_SPRING_FR_FULL__',
+		'14 – 23 octobre ' . STLUTH_DEFAULT_YEAR      => '__STLUTH_AUTUMN_FR_FULL__',
+		'14–23 octobre ' . STLUTH_DEFAULT_YEAR        => '__STLUTH_AUTUMN_FR_FULL__',
+		'April 8–17, ' . STLUTH_DEFAULT_YEAR          => '__STLUTH_SPRING_EN_FULL__',
+		'April 8 – 17, ' . STLUTH_DEFAULT_YEAR        => '__STLUTH_SPRING_EN_FULL__',
+		'October 14–23, ' . STLUTH_DEFAULT_YEAR       => '__STLUTH_AUTUMN_EN_FULL__',
+		'October 14 – 23, ' . STLUTH_DEFAULT_YEAR     => '__STLUTH_AUTUMN_EN_FULL__',
+		STLUTH_DEFAULT_YEAR . ' · Stage de printemps' => '__STLUTH_SPRING_FR_META__',
+		STLUTH_DEFAULT_YEAR . ' · Stage d\'automne'   => '__STLUTH_AUTUMN_FR_META__',
+		STLUTH_DEFAULT_YEAR . ' · Spring workshop'    => '__STLUTH_SPRING_EN_META__',
+		STLUTH_DEFAULT_YEAR . ' · Autumn workshop'    => '__STLUTH_AUTUMN_EN_META__',
+		'8 – 17 avril'              => '__STLUTH_SPRING_FR_SHORT__',
+		'8–17 avril'                => '__STLUTH_SPRING_FR_SHORT__',
+		'14 – 23 octobre'           => '__STLUTH_AUTUMN_FR_SHORT__',
+		'14–23 octobre'             => '__STLUTH_AUTUMN_FR_SHORT__',
+		'April 8–17'                => '__STLUTH_SPRING_EN_SHORT__',
+		'October 14–23'             => '__STLUTH_AUTUMN_EN_SHORT__',
+	);
+	$content = strtr( $content, $tokens );
+
+	$values = array(
+		'__STLUTH_SPRING_FR_FULL__'   => $d['spring_fr_full'],
+		'__STLUTH_AUTUMN_FR_FULL__'   => $d['autumn_fr_full'],
+		'__STLUTH_SPRING_EN_FULL__'   => $d['spring_en_full'],
+		'__STLUTH_AUTUMN_EN_FULL__'   => $d['autumn_en_full'],
+		'__STLUTH_SPRING_FR_META__'   => $d['year'] . ' · Stage de printemps',
+		'__STLUTH_AUTUMN_FR_META__'   => $d['year'] . ' · Stage d\'automne',
+		'__STLUTH_SPRING_EN_META__'   => $d['year'] . ' · Spring workshop',
+		'__STLUTH_AUTUMN_EN_META__'   => $d['year'] . ' · Autumn workshop',
+		'__STLUTH_SPRING_FR_SHORT__'  => $d['spring_fr_short'],
+		'__STLUTH_AUTUMN_FR_SHORT__'  => $d['autumn_fr_short'],
+		'__STLUTH_SPRING_EN_SHORT__'  => $d['spring_en_short'],
+		'__STLUTH_AUTUMN_EN_SHORT__'  => $d['autumn_en_short'],
+		'__STLUTH_YEAR__'             => $d['year'],
+	);
+	return strtr( $content, $values );
+}
+add_filter( 'the_content', 'stluth_replace_session_dates_in_content', 20 );
+endif; // function_exists stluth_replace_session_dates_in_content
+
+if ( ! function_exists( 'stluth_redirect_legacy_admin_page' ) ) :
+add_action( 'admin_init', 'stluth_redirect_legacy_admin_page' );
+function stluth_redirect_legacy_admin_page() {
+	if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+	if ( 'stluth_inscription' === $page ) {
+		wp_safe_redirect( admin_url( 'admin.php?page=stluth-stages' ) );
+		exit;
+	}
+}
+endif; // function_exists stluth_redirect_legacy_admin_page
 
 /**
  * Strip all MSO / IE conditional comment blocks from HTML.
@@ -2080,41 +2474,134 @@ function stluth_render_settings_page() {
 		</table>
 
 		<hr style="margin:32px 0 24px;">
-		<h2 style="font-size:1.1rem;">🎓 Gestion des places par session</h2>
-		<p>Les limites s'appliquent à <strong>chaque session</strong> indépendamment. Les formulaires d'inscription griseront automatiquement les modèles complets.</p>
-		<div class="notice notice-info" style="padding:8px 14px;margin:8px 0 16px 0;">
-			<small>Quand tous les modèles d'une session sont complets <em>ou</em> que le total est atteint, la session est grisée avec la mention <strong>Session complète</strong>.</small>
-		</div>
-		<table class="form-table">
-			<tr>
-				<th scope="row">Max. stagiaires par session<br><small style="font-weight:normal;">(total tous modèles confondus)</small></th>
-				<td>
-					<input type="number" name="stluth_cap_total" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_total', 15 ) ); ?>" min="1" max="99" style="width:80px;">
-					<p class="description">Aucune inscription n'est acceptée au-delà de ce total pour une même session.</p>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">21 / 8 basses <small style="font-weight:normal;">(2 rangées)</small></th>
-				<td><input type="number" name="stluth_cap_21_8b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_21_8b', 6 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
-			</tr>
-			<tr>
-				<th scope="row">33 / 12 basses <small style="font-weight:normal;">(3 rangées)</small></th>
-				<td><input type="number" name="stluth_cap_33_12b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_33_12b', 5 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
-			</tr>
-			<tr>
-				<th scope="row">33 / 18 basses <small style="font-weight:normal;">(3 rangées)</small></th>
-				<td><input type="number" name="stluth_cap_33_18b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_33_18b', 3 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
-			</tr>
-			<tr>
-				<th scope="row">33 / 24 basses <small style="font-weight:normal;">(4 rangées)</small></th>
-				<td><input type="number" name="stluth_cap_33_24b" value="<?php echo esc_attr( (int) get_option( 'stluth_cap_33_24b', 3 ) ); ?>" min="0" max="99" style="width:80px;"> places max par session</td>
-			</tr>
+		<h2 style="font-size:1.1rem;">📅 Sessions (dates &amp; places)</h2>
+		<p>Chaque ligne représente une session. Les dates et capacités s'appliquent à cette session uniquement.
+		   Quand une session est passée (date de fin &lt; aujourd'hui), elle n'est plus affichée sur le site : la session de l'année suivante prend le relais automatiquement.</p>
+		<?php
+		$saved_sessions = get_option( 'stluth_sessions', array() );
+		if ( empty( $saved_sessions ) ) {
+			$saved_sessions = function_exists( 'stluth_default_sessions' ) ? stluth_default_sessions() : array();
+		}
+		?>
+		<table id="stluth-sessions-table" class="widefat" style="margin-bottom:12px;">
+			<thead>
+				<tr>
+					<th style="min-width:100px;">ID <small style="font-weight:normal;">(ex&nbsp;: avril2027)</small></th>
+					<th>Saison</th>
+					<th style="min-width:105px;">Date fin <small style="font-weight:normal;">(AAAA-MM-JJ)</small></th>
+					<th>Dates FR court</th>
+					<th>Dates EN court</th>
+					<th>Dates FR long</th>
+					<th>Dates EN long</th>
+					<th style="min-width:50px;">Total</th>
+					<th style="min-width:50px;">21/8b</th>
+					<th style="min-width:50px;">33/12b</th>
+					<th style="min-width:50px;">33/18b</th>
+					<th style="min-width:50px;">33/24b</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="stluth-sessions-tbody">
+			<?php foreach ( $saved_sessions as $i => $sess ) : ?>
+				<tr class="stluth-session-row">
+					<td><input type="text" name="stluth_sessions[<?php echo $i; ?>][id]" value="<?php echo esc_attr( $sess['id'] ?? '' ); ?>" class="regular-text" style="width:100px;" required></td>
+					<td>
+						<select name="stluth_sessions[<?php echo $i; ?>][season]">
+							<option value="spring" <?php selected( $sess['season'] ?? '', 'spring' ); ?>>🌸 Printemps</option>
+							<option value="autumn" <?php selected( $sess['season'] ?? '', 'autumn' ); ?>>🍂 Automne</option>
+						</select>
+					</td>
+					<td><input type="date" name="stluth_sessions[<?php echo $i; ?>][end_date]" value="<?php echo esc_attr( $sess['end_date'] ?? '' ); ?>" style="width:130px;"></td>
+					<td><input type="text" name="stluth_sessions[<?php echo $i; ?>][date_fr_short]" value="<?php echo esc_attr( $sess['date_fr_short'] ?? '' ); ?>" class="regular-text"></td>
+					<td><input type="text" name="stluth_sessions[<?php echo $i; ?>][date_en_short]" value="<?php echo esc_attr( $sess['date_en_short'] ?? '' ); ?>" class="regular-text"></td>
+					<td><input type="text" name="stluth_sessions[<?php echo $i; ?>][date_fr_full]" value="<?php echo esc_attr( $sess['date_fr_full'] ?? '' ); ?>" class="regular-text"></td>
+					<td><input type="text" name="stluth_sessions[<?php echo $i; ?>][date_en_full]" value="<?php echo esc_attr( $sess['date_en_full'] ?? '' ); ?>" class="regular-text"></td>
+					<td><input type="number" name="stluth_sessions[<?php echo $i; ?>][cap_total]"  value="<?php echo esc_attr( $sess['cap_total'] ?? 15 ); ?>" min="1" max="99" style="width:55px;"></td>
+					<td><input type="number" name="stluth_sessions[<?php echo $i; ?>][cap_21_8b]"  value="<?php echo esc_attr( $sess['cap_21_8b'] ?? 6 ); ?>" min="0" max="99" style="width:55px;"></td>
+					<td><input type="number" name="stluth_sessions[<?php echo $i; ?>][cap_33_12b]" value="<?php echo esc_attr( $sess['cap_33_12b'] ?? 5 ); ?>" min="0" max="99" style="width:55px;"></td>
+					<td><input type="number" name="stluth_sessions[<?php echo $i; ?>][cap_33_18b]" value="<?php echo esc_attr( $sess['cap_33_18b'] ?? 3 ); ?>" min="0" max="99" style="width:55px;"></td>
+					<td><input type="number" name="stluth_sessions[<?php echo $i; ?>][cap_33_24b]" value="<?php echo esc_attr( $sess['cap_33_24b'] ?? 3 ); ?>" min="0" max="99" style="width:55px;"></td>
+					<td><button type="button" class="button stluth-remove-session" style="color:#c0392b;" title="Supprimer">✕</button></td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
 		</table>
+		<button type="button" id="stluth-add-session" class="button">+ Ajouter une session</button>
+		<script>
+		(function(){
+			var tbody = document.getElementById('stluth-sessions-tbody');
+			var tpl = <?php
+				$tpl = array(
+					'id'           => '',
+					'season'       => 'spring',
+					'end_date'     => '',
+					'date_fr_short'=> '',
+					'date_en_short'=> '',
+					'date_fr_full' => '',
+					'date_en_full' => '',
+					'cap_total'    => 15,
+					'cap_21_8b'    => 6,
+					'cap_33_12b'   => 5,
+					'cap_33_18b'   => 3,
+					'cap_33_24b'   => 3,
+				);
+				echo wp_json_encode( $tpl );
+			?>;
+
+			function buildRow(i, s) {
+				return '<tr class="stluth-session-row">' +
+					'<td><input type="text" name="stluth_sessions['+i+'][id]" value="'+esc(s.id)+'" class="regular-text" style="width:100px;" required></td>' +
+					'<td><select name="stluth_sessions['+i+'][season]"><option value="spring"'+(s.season==='spring'?' selected':'')+'>🌸 Printemps</option><option value="autumn"'+(s.season==='autumn'?' selected':'')+'>🍂 Automne</option></select></td>' +
+					'<td><input type="date" name="stluth_sessions['+i+'][end_date]" value="'+esc(s.end_date)+'" style="width:130px;"></td>' +
+					'<td><input type="text" name="stluth_sessions['+i+'][date_fr_short]" value="'+esc(s.date_fr_short)+'" class="regular-text"></td>' +
+					'<td><input type="text" name="stluth_sessions['+i+'][date_en_short]" value="'+esc(s.date_en_short)+'" class="regular-text"></td>' +
+					'<td><input type="text" name="stluth_sessions['+i+'][date_fr_full]" value="'+esc(s.date_fr_full)+'" class="regular-text"></td>' +
+					'<td><input type="text" name="stluth_sessions['+i+'][date_en_full]" value="'+esc(s.date_en_full)+'" class="regular-text"></td>' +
+					'<td><input type="number" name="stluth_sessions['+i+'][cap_total]"  value="'+s.cap_total+'" min="1" max="99" style="width:55px;"></td>' +
+					'<td><input type="number" name="stluth_sessions['+i+'][cap_21_8b]"  value="'+s.cap_21_8b+'" min="0" max="99" style="width:55px;"></td>' +
+					'<td><input type="number" name="stluth_sessions['+i+'][cap_33_12b]" value="'+s.cap_33_12b+'" min="0" max="99" style="width:55px;"></td>' +
+					'<td><input type="number" name="stluth_sessions['+i+'][cap_33_18b]" value="'+s.cap_33_18b+'" min="0" max="99" style="width:55px;"></td>' +
+					'<td><input type="number" name="stluth_sessions['+i+'][cap_33_24b]" value="'+s.cap_33_24b+'" min="0" max="99" style="width:55px;"></td>' +
+					'<td><button type="button" class="button stluth-remove-session" style="color:#c0392b;" title="Supprimer">✕</button></td>' +
+					'</tr>';
+			}
+			function esc(v){ return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+			function reindex(){
+				var rows = tbody.querySelectorAll('tr.stluth-session-row');
+				rows.forEach(function(row,i){
+					row.querySelectorAll('input,select').forEach(function(el){
+						el.name = el.name.replace(/\[\d+\]/,'['+i+']');
+					});
+				});
+			}
+			document.getElementById('stluth-add-session').addEventListener('click',function(){
+				var rows = tbody.querySelectorAll('tr.stluth-session-row');
+				var newRow = document.createElement('tbody');
+				newRow.innerHTML = buildRow(rows.length, tpl);
+				tbody.appendChild(newRow.firstChild);
+			});
+			tbody.addEventListener('click',function(e){
+				if(e.target.classList.contains('stluth-remove-session')){
+					e.target.closest('tr').remove();
+					reindex();
+				}
+			});
+		})();
+		</script>
+
 		<?php
 		/* Show current inscription counts per session */
-		$known_sessions = array( 'avril2026', 'octobre2026' );
 		if ( function_exists( 'stluth_count_inscriptions' ) ) {
-			/* Discover additional sessions from DB */
+			$known_sessions = array();
+			/* Collect session IDs from catalogue */
+			if ( function_exists( 'stluth_get_sessions' ) ) {
+				foreach ( stluth_get_sessions() as $cs ) {
+					$known_sessions[] = $cs['id'];
+				}
+			} else {
+				$known_sessions = array( 'avril2026', 'octobre2026' );
+			}
+			/* Also discover any sessions that exist only in DB */
 			$db_pids = get_posts( array(
 				'post_type'      => 'stluth_inscription',
 				'post_status'    => array( 'publish', 'stluth_pending', 'stluth_paid' ),
@@ -2130,12 +2617,13 @@ function stluth_render_settings_page() {
 			echo '<h3 style="font-size:.9rem;margin-top:20px;color:#23282d;">📊 Inscriptions actuelles (hors annulées)</h3>';
 			echo '<table class="widefat striped" style="margin-top:6px;max-width:680px;">';
 			echo '<thead><tr><th>Session</th><th>21/8b</th><th>33/12b</th><th>33/18b</th><th>33/24b</th><th>Total</th></tr></thead><tbody>';
-			$c21d  = (int) get_option( 'stluth_cap_21_8b',  6 );
-			$c12d  = (int) get_option( 'stluth_cap_33_12b', 5 );
-			$c18d  = (int) get_option( 'stluth_cap_33_18b', 3 );
-			$c24d  = (int) get_option( 'stluth_cap_33_24b', 3 );
-			$ctotd = (int) get_option( 'stluth_cap_total',  15 );
 			foreach ( $known_sessions as $sess ) {
+				$s_data = function_exists( 'stluth_get_session_by_id' ) ? stluth_get_session_by_id( $sess ) : null;
+				$c21d   = $s_data ? (int) ( $s_data['cap_21_8b']  ?? get_option( 'stluth_cap_21_8b',  6 ) ) : (int) get_option( 'stluth_cap_21_8b',  6 );
+				$c12d   = $s_data ? (int) ( $s_data['cap_33_12b'] ?? get_option( 'stluth_cap_33_12b', 5 ) ) : (int) get_option( 'stluth_cap_33_12b', 5 );
+				$c18d   = $s_data ? (int) ( $s_data['cap_33_18b'] ?? get_option( 'stluth_cap_33_18b', 3 ) ) : (int) get_option( 'stluth_cap_33_18b', 3 );
+				$c24d   = $s_data ? (int) ( $s_data['cap_33_24b'] ?? get_option( 'stluth_cap_33_24b', 3 ) ) : (int) get_option( 'stluth_cap_33_24b', 3 );
+				$ctotd  = $s_data ? (int) ( $s_data['cap_total']  ?? get_option( 'stluth_cap_total',  15 ) ) : (int) get_option( 'stluth_cap_total',  15 );
 				$u21  = stluth_count_inscriptions( $sess, '21/8b' );
 				$u12  = stluth_count_inscriptions( $sess, '33/12b' );
 				$u18  = stluth_count_inscriptions( $sess, '33/18b' );

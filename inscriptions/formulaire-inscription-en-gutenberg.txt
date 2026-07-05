@@ -13,23 +13,34 @@
 <!-- /wp:cover -->
 
 <!-- wp:html -->
-<!-- ════ 🗓 SESSIONS — UPDATE HERE EVERY YEAR ════
-     Change the year and session dates in this block.
-     This script must remain BEFORE the main JavaScript block. -->
+<!-- ════ 🗓 SESSIONS — managed automatically via window.STLUTH_ACTIVE_SESSIONS ════
+     Dates and year are injected by the mu-plugin (wp_head, priority 5).
+     Values below are used as fallback when the server script is absent. -->
 <script>
-var STAGE_CONFIG = {
-  annee: 2026,
-  sessions: [
-    { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Wednesday 8 – Friday 17 April 2026' },
-    { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Wednesday 14 – Friday 23 October 2026' }
-  ],
-  /* URL of the presets/ folder (trailing slash). '' = relative path (local dev). */
-  presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
-  /* URL of the grilles images folder (trailing slash). */
-  grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
-  /* URL of the accordion preview layers folder (trailing slash). */
-  apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
-};
+var STAGE_CONFIG = (function(){
+  var srv = window.STLUTH_ACTIVE_SESSIONS;
+  if (srv && srv.sessions && srv.sessions.length) {
+    return {
+      annee: srv.annee,
+      sessions: srv.sessions.map(function(s){
+        return { id: s.id, icon: s.icon, saison: s.saison, dates: s.datesEn||s.dates, fullId: s.fullId };
+      }),
+      presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
+      grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
+      apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
+    };
+  }
+  return {
+    annee: 2026,
+    sessions: [
+      { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Wednesday 8 – Friday 17 April 2026',    fullId: 'avril2026' },
+      { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Wednesday 14 – Friday 23 October 2026', fullId: 'octobre2026' }
+    ],
+    presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
+    grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
+    apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
+  };
+})();
 /* Load ca-svg.js if presets-api.php mu-plugin did not already enqueue it.
    window.CA_SVG_URL is injected by presets-api.php in wp_footer.
    Fallback: use presetsBaseUrl defined above (same domain, no cross-origin). */
@@ -1010,7 +1021,7 @@ var STAGE_CONFIG = {
     STLUTH_REST_ROOT += '/';
   }
   var WP_ENDPOINT = STLUTH_REST_ROOT + 'stages-lutherie/v1/inscription';
-  var AVAIL_ENDPOINT = STLUTH_REST_ROOT + 'stages-lutherie/v1/availability?sessions=avril2026,octobre2026';
+  var AVAIL_ENDPOINT = STLUTH_REST_ROOT + 'stages-lutherie/v1/availability?sessions=' + STAGE_CONFIG.sessions.map(function(s){return s.fullId||s.id+STAGE_CONFIG.annee;}).join(',');
   var _stluthAvail = null;
   function stluthApplyAvail(avail, sessionId) {
     if (!avail) return;
