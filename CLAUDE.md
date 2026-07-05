@@ -15,7 +15,12 @@ Les fichiers Gutenberg ont **deux emplacements** qui doivent toujours être iden
 
 ## Architecture WordPress
 
-- **mu-plugin** : `wordpress/mu-plugins/evd.php` → copier dans `wp-content/mu-plugins/evd.php`
+- **mu-plugin EVD** : `wordpress/mu-plugins/evd.php` → copier dans `wp-content/mu-plugins/evd.php`
+  - Bloc Gutenberg FR/EN, détection de langue, page Seed + tarif retour
+- **mu-plugin inscriptions** : `inscriptions/inscription-api.php` → copier dans `wp-content/mu-plugins/inscription-api.php`
+  - Gestion des sessions (calendrier), emails de confirmation, capacités par modèle, REST endpoint, CPT inscriptions
+  - **Source de vérité** : `inscriptions/inscription-api.php` (maintenu dans le repo)
+  - **Ne pas modifier** `wordpress/mu-plugins/inscription-api.php` directement — c'est une copie
 - **seed** : `wordpress/themes/savoy/includes/seed.php` → copier dans `wp-content/themes/savoy/includes/seed.php`
 - **block JS** : `wordpress/themes/savoy/assets/block.js` → copier dans `wp-content/themes/savoy/assets/block.js`
 - Thème actif : **Savoy** (dossier `includes/`, pas `inc/`)
