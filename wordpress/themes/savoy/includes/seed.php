@@ -97,104 +97,23 @@ function evd_run_seed(): int {
     $seed  = sanitize_key( $_POST['seed'] ?? 'all' );
     $count = 0;
     switch ( $seed ) {
-        case 'accueil':         $count = evd_seed_accueil();         break;
         case 'stages':          $count = evd_seed_stages();          break;
         case 'stages_en':       $count = evd_seed_stages_en();       break;
         case 'inscriptions':    $count = evd_seed_inscriptions();    break;
         case 'inscriptions_en': $count = evd_seed_inscriptions_en(); break;
-        case 'programme':       $count = evd_seed_programme();       break;
-        case 'contact':         $count = evd_seed_contact();         break;
         case 'cgv':             $count = evd_seed_cgv();             break;
         case 'all':
         default:
-            $count += evd_seed_accueil();
             $count += evd_seed_stages();
             $count += evd_seed_stages_en();
             $count += evd_seed_inscriptions();
             $count += evd_seed_inscriptions_en();
-            $count += evd_seed_programme();
-            $count += evd_seed_contact();
             $count += evd_seed_cgv();
     }
     return $count;
 }
 
-// ── 1. ACCUEIL ────────────────────────────────────────────────────────────────
-
-function evd_seed_accueil(): int {
-    $fr = '
-<section class="evd-hero">
-  <h1>Ewen Daviau — Luthier</h1>
-  <p>Fabricant d\'accordéons diatoniques sur mesure à Saint-Nazaire, France.</p>
-</section>
-
-<section class="evd-intro">
-  <h2>Stages de lutherie · Accordéon diatonique</h2>
-  <p>10 jours d\'immersion dans l\'art de la fabrication d\'un accordéon diatonique.<br>
-  On apprend et on fait ensemble, à votre rythme.<br>
-  Accessible à tous dès 13 ans, <strong>sans aucune expérience manuelle requise</strong>.</p>
-  <p>
-    <a href="/stages/" class="evd-btn">Découvrir les stages →</a>
-    <a href="https://stages.ewendaviau.com" class="evd-btn evd-btn-sec" target="_blank">Inscription</a>
-  </p>
-</section>
-
-<section class="evd-sessions">
-  <h2>Sessions __STLUTH_YEAR__</h2>
-  <ul>
-    <li>🌸 <strong>__STLUTH_SPRING_FR_FULL__</strong></li>
-    <li>🍂 <strong>__STLUTH_AUTUMN_FR_FULL__</strong></li>
-  </ul>
-  <p>Petits groupes · 4 à 6 personnes · Saint-Nazaire (44)</p>
-</section>
-
-<section class="evd-instruments">
-  <h2>Instruments sur mesure</h2>
-  <p>Accordéons diatoniques fabriqués à la commande : essence de bois, tonalité, boutons,
-  couleurs de soufflets, grilles décoratives — plus de 100 combinaisons possibles.</p>
-  <p><a href="/contact/" class="evd-btn">Me contacter</a></p>
-</section>
-';
-
-    $en = '
-<section class="evd-hero">
-  <h1>Ewen Daviau — Luthier</h1>
-  <p>Custom diatonic accordion maker in Saint-Nazaire, France.</p>
-</section>
-
-<section class="evd-intro">
-  <h2>Lutherie Workshop · Diatonic Accordion</h2>
-  <p>10 days of immersion into the art of building a diatonic accordion.<br>
-  We learn and build together, at your own pace.<br>
-  Open to everyone 13+, <strong>no prior experience required</strong>.</p>
-  <p>
-    <a href="/stages/?lang=en" class="evd-btn">Discover the workshops →</a>
-    <a href="https://stages.ewendaviau.com?lang=en" class="evd-btn evd-btn-sec" target="_blank">Register</a>
-  </p>
-</section>
-
-<section class="evd-sessions">
-  <h2>__STLUTH_YEAR__ Sessions</h2>
-  <ul>
-    <li>🌸 <strong>__STLUTH_SPRING_EN_FULL__</strong></li>
-    <li>🍂 <strong>__STLUTH_AUTUMN_EN_FULL__</strong></li>
-  </ul>
-  <p>Small groups · 4 to 6 participants · Saint-Nazaire, France</p>
-</section>
-
-<section class="evd-instruments">
-  <h2>Custom Instruments</h2>
-  <p>Diatonic accordions made to order: wood species, key, buttons,
-  bellows colours, decorative grilles — over 100 possible combinations.</p>
-  <p><a href="/contact/?lang=en" class="evd-btn">Contact me</a></p>
-</section>
-';
-
-    evd_upsert_page( 'Accueil', 'accueil', evd_block( $fr, $en ) );
-    return 1;
-}
-
-// ── 2. STAGES (Gutenberg depuis includes/) ───────────────────────────────────
+// ── 1. STAGES (Gutenberg depuis includes/) ───────────────────────────────────
 
 function evd_read_include( string $filename ): string {
     $path = get_template_directory() . '/includes/' . $filename;
@@ -440,98 +359,7 @@ will be finished — simply in several stages.</p>
     return 0;
 }
 
-// ── 3. PROGRAMME ─────────────────────────────────────────────────────────────
-
-function evd_seed_programme(): int {
-    $fr = '
-<h1>Programme — 10 jours</h1>
-<p><em>Programme indicatif. La progression dépend de chaque stagiaire et de chaque instrument.</em></p>
-<ol>
-  <li><strong>Jour 1</strong> — Accueil, visite atelier, choix des options, premiers assemblages</li>
-  <li><strong>Jour 2</strong> — Structure bois : caisses MD/MG, ponçage, collage, équerrage</li>
-  <li><strong>Jour 3</strong> — Claviers & boutons : axes, ressorts, toucher</li>
-  <li><strong>Jour 4</strong> — Mécaniques MD/MG : assemblage complet, réglages hauteurs</li>
-  <li><strong>Jour 5</strong> — Soufflets : fabrication, pose, ajustements, étanchéité</li>
-  <li><strong>Jour 6</strong> — Grilles & finitions : fixation, décor, finitions bois</li>
-  <li><strong>Jour 7</strong> — Anches : tri, installation, première mise en tension</li>
-  <li><strong>Jour 8</strong> — Réglages fins : fuites d\'air, mécanique, alignement</li>
-  <li><strong>Jour 9</strong> — Tests complets MD + MG, corrections personnalisées</li>
-  <li><strong>Jour 10</strong> — Pratique musicale, photos, bilan de stage</li>
-</ol>
-<h2>Journée type</h2>
-<ul>
-  <li>9h30–12h30 : atelier fabrication</li>
-  <li>12h30–14h00 : pause déjeuner</li>
-  <li>14h00–17h30 : montage, réglages, accompagnement individuel</li>
-  <li>Soirée : concerts, bals, échanges (selon planning)</li>
-</ul>
-<p><a href="/stages/">← Retour aux stages</a></p>
-';
-
-    $en = '
-<h1>Program — 10 Days</h1>
-<p><em>Indicative schedule. Progress varies according to each participant and instrument.</em></p>
-<ol>
-  <li><strong>Day 1</strong> — Welcome, workshop tour, option choices, first assemblies</li>
-  <li><strong>Day 2</strong> — Wooden structure: RH/LH body, sanding, gluing, squaring</li>
-  <li><strong>Day 3</strong> — Keyboards & buttons: axes, springs, touch adjustment</li>
-  <li><strong>Day 4</strong> — RH/LH mechanics: full assembly, height adjustments</li>
-  <li><strong>Day 5</strong> — Bellows: making, fitting, adjustments, airtightness</li>
-  <li><strong>Day 6</strong> — Grilles & finishing: mounting, decoration, wood finishing</li>
-  <li><strong>Day 7</strong> — Reeds: sorting, installation, initial tensioning</li>
-  <li><strong>Day 8</strong> — Fine adjustments: air leaks, mechanics, key alignment</li>
-  <li><strong>Day 9</strong> — Complete RH + LH tests, personalised corrections</li>
-  <li><strong>Day 10</strong> — Musical practice, photos, group wrap-up</li>
-</ol>
-<h2>Typical daily schedule</h2>
-<ul>
-  <li>9:30–12:30: workshop building</li>
-  <li>12:30–14:00: lunch break</li>
-  <li>14:00–17:30: assembly, adjustments, individual guidance</li>
-  <li>Evening: concerts, dances, friendly exchanges</li>
-</ul>
-<p><a href="/stages/?lang=en">← Back to workshops</a></p>
-';
-
-    $stages_id = (int) ( new WP_Query( [ 'post_type' => 'page', 'name' => 'stages', 'fields' => 'ids', 'posts_per_page' => 1 ] ) )->posts[0] ?? 0;
-    evd_upsert_page( 'Programme', 'programme', evd_block( $fr, $en ), $stages_id );
-    return 1;
-}
-
-// ── 4. CONTACT ────────────────────────────────────────────────────────────────
-
-function evd_seed_contact(): int {
-    $fr = '
-<h1>Contact</h1>
-<p>Pour toute question sur les stages, les instruments ou les tarifs :</p>
-<ul>
-  <li><a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></li>
-  <li><a href="https://stages.ewendaviau.com" target="_blank">stages.ewendaviau.com</a> — inscription en ligne</li>
-  <li><a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank">Vidéo de présentation</a></li>
-</ul>
-<h2>Atelier</h2>
-<p>9 rue Fernand de Magellan<br>44600 Saint-Nazaire, France</p>
-<p>Quartier calme, à environ 20 minutes à pied de la mer.</p>
-';
-
-    $en = '
-<h1>Contact</h1>
-<p>For any questions about workshops, instruments or pricing:</p>
-<ul>
-  <li><a href="mailto:contact@ewendaviau.com">contact@ewendaviau.com</a></li>
-  <li><a href="https://stages.ewendaviau.com?lang=en" target="_blank">stages.ewendaviau.com</a> — online registration</li>
-  <li><a href="https://www.youtube.com/watch?v=DREx2RqMXeU" target="_blank">Presentation video</a></li>
-</ul>
-<h2>Workshop</h2>
-<p>9 rue Fernand de Magellan<br>44600 Saint-Nazaire, France</p>
-<p>Quiet neighbourhood, about 20 minutes walk from the sea.</p>
-';
-
-    evd_upsert_page( 'Contact', 'contact', evd_block( $fr, $en ) );
-    return 1;
-}
-
-// ── 5. CGV ────────────────────────────────────────────────────────────────────
+// ── 2. CGV ────────────────────────────────────────────────────────────────────
 
 function evd_seed_cgv(): int {
 

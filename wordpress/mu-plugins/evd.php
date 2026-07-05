@@ -51,13 +51,10 @@ function evd_render_seed_page() {
     wp_nonce_field( 'evd_seed_run' );
     echo '<select name="seed">'
        . '<option value="all">Tout le site</option>'
-       . '<option value="accueil">Accueil</option>'
        . '<option value="stages">Stages FR (Gutenberg)</option>'
        . '<option value="stages_en">Stages EN (Gutenberg)</option>'
        . '<option value="inscriptions">Inscriptions FR (Gutenberg)</option>'
        . '<option value="inscriptions_en">Inscriptions EN (Gutenberg)</option>'
-       . '<option value="programme">Programme</option>'
-       . '<option value="contact">Contact</option>'
        . '<option value="cgv">CGV</option>'
        . '</select> '
        . '<button class="button button-primary">Lancer</button>'
