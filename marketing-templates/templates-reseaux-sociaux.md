@@ -3,46 +3,52 @@
 ## 📸 Instagram - 5 Templates Prêts à l'Emploi
 
 ### Post 1 : Annonce Ouverture Inscriptions
-**Image suggérée** : Accordéon terminé avec mains de stagiaire
+
+**Image suggérée** : Mains en train de travailler le bois dans l'atelier
 **Caption** :
-```
+
+```text
 🎵 INSCRIPTIONS OUVERTES ! 🎵
 
-Envie de créer VOTRE propre accordéon diatonique ?
+Envie de vivre une aventure de lutherie ?
 
 📅 Sessions 2026 :
 • 8-17 avril
 • 14-23 octobre
 
-🎯 10 jours pour passer de zéro expérience à un accordéon complet fait main !
+🛠️ 10 jours d'immersion dans l'art de la fabrication d'un accordéon diatonique — on apprend et on fait ensemble.
 
 💡 Aucune expérience requise
 🏠 À Saint-Nazaire (proche océan)
-👥 Places limitées
+👥 Petits groupes (4–6 personnes)
 
 🔗 Lien en bio
 📧 contact@ewendaviau.com
 
-#accordéondiatonique #lutherie #faitmain #artisanat #musiquetrad #DIY
+#accordéondiatonique #lutherie #faitmain #artisanat #musiquetrad #artisanat
 ```
 
 ### Post 2 : Témoignage
-**Image** : Photo avant/après du stagiaire
+
+**Image** : Photo d'un stagiaire en train de travailler, souriant
 **Caption** :
-```
+
+```text
 "Je ne savais même pas tenir un tournevis... 
-10 jours plus tard, j'ai mon propre accordéon !" 🎶
+10 jours plus tard, j'avais appris les gestes d'un luthier — et mon accordéon prenait forme." 🎶
 
 📅 Prochaines sessions : avril et octobre 2026
 🔗 Lien en bio
 
-#témoignage #accordéon #lutherie #stagefabrication
+#témoignage #accordéon #lutherie #parcourslutherie
 ```
 
 ### Post 3 : Behind the Scenes
+
 **Images** : Carrousel de 3-5 photos du processus
 **Caption** :
-```
+
+```text
 🛠️ JOUR 3 : Les mécaniques prennent vie !
 
 Aujourd'hui nos stagiaires :
@@ -50,40 +56,46 @@ Aujourd'hui nos stagiaires :
 • Ajustent les ressorts
 • Testent le toucher
 
-👉 Swipe pour voir l'évolution →
+C'est lent, c'est minutieux — et c'est exactement ça qui est beau. 👉 Swipe pour voir →
 
-#fabrication #lutherie #processcreatif #accordéon
+#fabrication #lutherie #artisanat #accordéon
 ```
 
-### Post 4 : Urgence
-**Image** : Texte graphique attractif
+### Post 4 : Places limitées
+
+**Image** : Atelier en activité, ambiance chaleureuse
 **Caption** :
-```
-⚠️ DERNIÈRES PLACES ! ⚠️
 
-Il ne reste que 3 places pour avril 2026 ! 
+```text
+🎵 Plus que quelques places pour avril 2026 !
 
-🎵 10 jours pour créer votre accordéon
+Un parcours de 10 jours pour apprendre la lutherie de l'accordéon diatonique.
+Petit groupe, accompagnement personnalisé, cadre bienveillant.
+
 📍 Saint-Nazaire
 💰 À partir de 2820€
 
-🔗 Lien en bio MAINTENANT !
+🔗 Lien en bio
 
-#dernieresplaces #urgence #stagefabrication
+#lutherie #accordéon #artisanat #saintnazaire
 ```
 
-### Post 5 : Transformation
-**Images** : Avant/Après carrousel
+### Post 5 : Le chemin
+
+**Images** : Carrousel montrant les différentes étapes de fabrication
 **Caption** :
-```
-✨ DU BOIS BRUT AU CHEF-D'ŒUVRE ✨
 
-10 jours. Une transformation incroyable.
-Et c'est VOUS qui l'avez fait ! 🎶
+```text
+✨ DU BOIS BRUT À L'INSTRUMENT ✨
+
+Ce n'est pas en 10 jours qu'on devient luthier.
+Mais c'est en 10 jours qu'on comprend ce que ça veut dire. 🎶
+
+Chaque geste apris, chaque pièce assemblée — c'est l'aventure.
 
 👉 Prochaines places : avril 2026
 
-#transformation #beforeafter #lutherie #accordéon
+#lutherie #artisanat #accordéon #parcours
 ```
 
 ---
@@ -91,35 +103,39 @@ Et c'est VOUS qui l'avez fait ! 🎶
 ## 📘 Facebook - 3 Posts Stratégiques
 
 ### Post 1 : Annonce Complète
-```
-🎶 STAGE DE FABRICATION D'ACCORDÉON DIATONIQUE 🎶
+
+```text
+🎶 STAGE DE LUTHERIE – ACCORDÉON DIATONIQUE 🎶
 
 📅 DATES 2026
 • 8-17 avril | 14-23 octobre
 
 👨‍🏫 AVEC EWEN DAVIAU, luthier professionnel
 
-🎯 10 JOURS D'IMMERSION
-Structure bois → Mécaniques → Soufflets → Anches → Concert final !
+🛠️ 10 JOURS D'IMMERSION
+Structure bois → Mécaniques → Soufflets → Anches → Prise en main musicale
+
+On apprend et on fait ensemble — à votre rythme, dans un cadre bienveillant.
 
 💰 TARIFS : à partir de 2820€
 📍 LIEU : Saint-Nazaire (44)
-👥 PETITS GROUPES (places limitées)
+👥 PETITS GROUPES (4 à 6 personnes)
 
 ✨ AUCUNE EXPÉRIENCE REQUISE
 
 🔗 Info & inscription : https://stages.ewendaviau.com
 
-#accordéon #lutherie #stagefabrication #artisanat #saintnazaire
+#accordéon #lutherie #artisanat #parcourslutherie #saintnazaire
 ```
 
 ### Post 2 : Album Photo
-```
+
+```text
 📸 RETOUR EN IMAGES - STAGE OCTOBRE 2025 📸
 
-10 jours, 6 stagiaires, 6 accordéons uniques ! 🎶
+10 jours de gestes, de découvertes et de partage 🎶
 
-Merci à [prénoms] pour cette belle aventure musicale 💚
+Merci à [prénoms] pour cette belle aventure 💚
 
 ➡️ Vous aussi, vivez cette expérience !
 Places pour avril et octobre 2026
@@ -128,7 +144,8 @@ Places pour avril et octobre 2026
 ```
 
 ### Post 3 : Témoignage Détaillé
-```
+
+```text
 💬 TÉMOIGNAGE
 
 "À 52 ans, je ne pensais pas être capable de ça..."
@@ -148,11 +165,12 @@ Sessions 2026 ouvertes à l'inscription !
 ## 🎥 YouTube - Descriptions Optimisées
 
 ### Vidéo : Time-lapse 10 jours
-```
-TITRE: "10 jours pour créer un ACCORDÉON - Time-lapse complet"
+
+```text
+TITRE: "10 jours de lutherie – Stage accordéon diatonique – Time-lapse complet"
 
 DESCRIPTION:
-Découvrez comment 6 personnes sans expérience ont créé leur accordéon en 10 jours !
+Découvrez comment 6 personnes ont appris les gestes de la lutherie et avancé sur leur accordéon en 10 jours !
 
 🎯 Dans cette vidéo :
 • 00:00 - Introduction
@@ -173,14 +191,17 @@ Découvrez comment 6 personnes sans expérience ont créé leur accordéon en 10
 ## 📧 Emails - Séquence d'Accueil
 
 ### Email 1 : Bienvenue (Jour 0)
-```
-OBJET: Bienvenue ! 🎵 Votre aventure en lutherie commence ici
+
+```text
+OBJET: Bienvenue ! 🎵 Votre parcours de lutherie commence ici
 
 Bonjour [Prénom],
 
 Merci de votre intérêt pour nos stages !
 
-Je suis Ewen Daviau, et je serai votre guide pour créer votre accordéon en 10 jours.
+Je suis Ewen Daviau, et je serai votre guide pendant ces 10 jours d'immersion dans l'art de la lutherie de l'accordéon diatonique.
+
+Ce que vous vivrez n'est pas une course à la finition — c'est un parcours d'apprentissage, pas à pas, ensemble. L'objectif est que vous repartiez avec des gestes, des savoirs et, pour la grande majorité, un instrument en cours ou terminé.
 
 📹 Découvrez l'expérience en vidéo (3min) :
 [LIEN]
@@ -188,11 +209,12 @@ Je suis Ewen Daviau, et je serai votre guide pour créer votre accordéon en 10 
 À très bientôt,
 Ewen
 
-PS: Places limitées - avril et octobre 2026
+PS: Places limitées (4 à 6 par session) - avril et octobre 2026
 ```
 
 ### Email 2 : Témoignage (Jour 3)
-```
+
+```text
 OBJET: "Je n'aurais jamais cru être capable de ça..."
 
 Bonjour [Prénom],
@@ -201,22 +223,23 @@ Laissez-moi vous raconter l'histoire de Marie, 48 ans, qui n'avait jamais touch�
 
 [Témoignage complet]
 
-🎵 Vous aussi, vivez cette transformation.
+🎵 Vous aussi, vivez cette aventure.
 
 [CTA : Je m'inscris]
 
 Ewen
 ```
 
-### Email 3 : Urgence (Jour 14)
-```
-OBJET: ⚠️ Plus que 3 places pour avril !
+### Email 3 : Places disponibles (Jour 14)
+
+```text
+OBJET: Plus que quelques places pour avril !
 
 Bonjour [Prénom],
 
-Juste un message rapide : il ne reste que 3 places !
+Juste un message rapide : il reste peu de places pour la session d'avril.
 
-👉 Réservez maintenant :
+👉 Réservez votre place :
 [LIEN]
 
 À très vite,
@@ -228,35 +251,40 @@ Ewen
 ## 💡 Templates Supports Imprimés
 
 ### Affiche A3
-```
-[IMAGE CENTRALE: Accordéon + mains artisan]
 
-CRÉEZ VOTRE ACCORDÉON
-EN 10 JOURS !
+```text
+[IMAGE CENTRALE: Mains de stagiaire travaillant le bois en atelier]
 
-Stage de lutherie
+STAGE DE LUTHERIE
+ACCORDÉON DIATONIQUE
+
+10 jours d'immersion
+dans l'art du luthier
+
 Ewen Daviau
 
 📅 Avril & Octobre 2026
 📍 Saint-Nazaire
 
-Aucune expérience requise !
+Aucune expérience requise
 
 🔗 stages.ewendaviau.com
 [QR CODE]
 ```
 
 ### Flyer Recto/Verso
+
 **RECTO:**
-```
-FABRIQUEZ VOTRE 
+
+```text
+STAGE DE LUTHERIE
 ACCORDÉON DIATONIQUE
 
-[PHOTO stagiaire heureux]
+[PHOTO stagiaire au travail en atelier]
 
 • 10 jours d'immersion
-• De A à Z
-• Votre instrument !
+• On apprend et on fait ensemble
+• Un parcours unique
 
 STAGE 2026
 8-17 avril | 14-23 octobre
@@ -267,19 +295,20 @@ stages.ewendaviau.com
 ```
 
 **VERSO:**
-```
+
+```text
 POURQUOI CE STAGE ?
 
-✨ Expérience unique
-👥 Petits groupes (max 6)
-🎓 Pour tous niveaux
+✨ Une aventure de lutherie
+👥 Petits groupes (4–6 personnes)
+🎓 Pour tous niveaux, dès 13 ans
 🏠 Saint-Nazaire
 
 INCLUS
 • Matériaux
 • Outillage
 • Accessoires
-• Encadrement
+• Encadrement personnalisé
 
 INFOS
 📧 contact@ewendaviau.com
@@ -294,25 +323,30 @@ INFOS
 ## 📅 Calendrier de Publication
 
 ### Instagram (3-4 posts/semaine)
+
 - Lundi : Inspiration/Citation
 - Mercredi : Behind the scenes
 - Vendredi : Témoignage/Résultat
 - Dimanche : Call-to-action
 
 ### Stories Instagram (quotidien)
+
 - Pendant stages : daily updates
 - Hors stages : tips lutherie, Q&A
 
 ### Facebook (2-3 posts/semaine)
+
 - Mardi : Info/Éducatif
 - Jeudi : Témoignage/Album
 - Samedi : Promotion/Urgence
 
 ### YouTube (1-2 vidéos/mois)
+
 - Semaine 1 : Vidéo longue (5-10min)
 - Semaine 3 : Short/Reel (< 60s)
 
 ### Email (1/mois + campagnes)
+
 - Newsletter mensuelle
 - Campagnes spéciales (ouverture, urgence)
 
@@ -321,13 +355,15 @@ INFOS
 ## 🎯 Hashtags Stratégiques
 
 ### Principaux (toujours utiliser)
-```
+
+```text
 #accordéondiatonique #lutherie #accordéon
 #artisanat #faitmain #handmade
 ```
 
 ### Secondaires (rotation)
-```
+
+```text
 #musiquetrad #folkmusic #DIY
 #stagefabrication #atelierlutherie
 #saintnazaire #paysdelaloire #bretagne
@@ -336,14 +372,16 @@ INFOS
 ```
 
 ### Locaux
-```
+
+```text
 #saintnazaire #loireatlantique
 #paysdelaloire #bretagnesudloire
 #cotedamour
 ```
 
 ### Niches
-```
+
+```text
 #diatonicaccordion #accordeoniste
 #musiquetradbreizh #folkbreizh
 #lutheriefrancaise
@@ -360,6 +398,7 @@ INFOS
 5. **Restez authentique** - c'est votre force !
 
 **Outils recommandés :**
+
 - Canva (visuels)
 - Later (planification)
 - Linktree (bio Instagram)

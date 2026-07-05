@@ -7,17 +7,21 @@ author: "Ewen Daviau"
 date: "2026"
 ---
 
-# Diatonic Accordion Building Workshop – Trainee Guide (2026)
+## Diatonic Accordion Building Workshop – Trainee Guide (2026)
+
 ## 2026 Sessions
+
 - April 8–17, 2026 (10 days)
 - October 14–23, 2026 (10 days)
 
 ## Location
+
 - Workshop: 9 rue Fernand de Magellan, 44600 Saint-Nazaire, France
 - Setting: quiet neighborhood, ~20 min walk to the sea, bus/city-center access
 - Meals & lodging: not included
 
 ## Models & pricing (40% deposit at registration)
+
 - 21/8 basses – €2820 – deposit €900
 - 33/12 basses – €4500 – deposit €1500
 - 33/18 basses – €4880 – deposit €1900
@@ -25,12 +29,13 @@ date: "2026"
 - If the instrument is not finished within 10 days: you may return in a later session (€80/day for workshop + guidance)
 
 ## Options (with visuals)
+
 - **Woods**: cherry, walnut, maple sycamore  
   ![Cherry wood sample showing reddish-brown tone](https://github.com/labodezao/stages-lutherie/blob/main/comm/cherrywood.png)  
   ![Walnut wood sample showing rich dark brown color](https://github.com/labodezao/stages-lutherie/blob/main/comm/walnut.png)  
   ![Maple sycamore wood sample showing light creamy color with fine grain](https://github.com/labodezao/stages-lutherie/blob/main/comm/maple.png)
 
-- **Right hand**: 21 buttons (2 rows) or 33 buttons (3 rows); layouts Heim / Milleret-Pignol / custom*; keys G/C, D/G, A/D; tuning dry / demi-dry; marking tactile / visual / none   
+- **Right hand**: 21 buttons (2 rows) or 33 buttons (3 rows); layouts Heim / Milleret-Pignol / custom*; keys G/C, D/G, A/D; tuning dry / demi-dry; marking tactile / visual / none
   - Layouts (add diagrams): Heim, Milleret-Pignol, 3 rows / 18 basses
 
 - **Left hand**: 8 / 12 / 18 basses; layout Milleret-Pignol / Heim / custom*
@@ -52,6 +57,7 @@ date: "2026"
 *Custom options: pricing to confirm before preparation.
 
 ## Process (step-by-step photos)
+
 - **Bellows, gluing, pressing**:  
   ![Accordion bellows being glued and assembled, showing cardboard pleats and pressing technique](https://github.com/labodezao/stages-lutherie/blob/main/comm/Collage_20220425_180111.jpg)
 
@@ -71,6 +77,7 @@ date: "2026"
   ![Group portrait of workshop participants proudly displaying their finished handcrafted accordions](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%2010%20(18)%20-%20Copie.jpg)
 
 ## Atmosphere & workshop
+
 - **Workshop & woodwork**:  
   ![Workshop interior showing woodworking stations and tools for accordion building](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%202%20(29).jpg)
 
@@ -81,6 +88,7 @@ date: "2026"
   ![Outdoor break time with participants relaxing in the sunshine](https://github.com/labodezao/stages-lutherie/blob/main/comm/FB%20jour%205.jpg)
 
 ## Day-by-day outline (reminder)
+
 1. Welcome, final option choices, first assemblies
 2. Wooden structure (RH/LH), sanding, gluing, squaring, mechanical base
 3. Keyboards & buttons: axes, springs, touch feel
@@ -93,17 +101,20 @@ date: "2026"
 10. Musical practice with guest, final playtest, photos, group wrap-up
 
 ## Typical day
+
 - 9:30–12:30: workshop build
 - 12:30–14:00: lunch break
 - 14:00–17:30: assembly, adjustments, individual guidance
 - Evening: concerts, dances, exchanges (on selected days)
 
 ## Multimedia
-- Presentation video (QR code possible): https://www.youtube.com/watch?v=DREx2RqMXeU
+
+- Presentation video (QR code possible): <https://www.youtube.com/watch?v=DREx2RqMXeU>
 - Audio/video clips: plan a short edit (adjustments, tests, final play)
 - Boards to include in the PDF: numbered grills, Heim/Milleret-Pignol/3-row layouts, workshop/ambience series, bellows, final portraits.
 
 ## Budget lodging near the workshop (9 rue Fernand de Magellan)
+
 - Airbnb center / near sea (studios, small flats, private rooms): filter “max €60/night”, 15–30 min on foot.
 - Typical examples:
   - Simple studio near beach/shops (~€50–80/night)
@@ -116,12 +127,14 @@ date: "2026"
 - Tips: check Airbnb cleaning/service fees, prefer no-car options, filter “walkable to center/beach/transport”.
 
 ## Logistics & safety
+
 - PPE: safety glasses, gloves, ear protection available
 - Ventilation, breaks, hydration
 - Photo/video consent to be signed
 - Internal checkpoints: structure, mechanics, bellows, reeds, tuning
 
 ## Contacts & registration
-- Form + 40% deposit: https://stages.ewendaviau.com
-- Email: contact@ewendaviau.com
-- Site: https://ewendaviau.com
+
+- Form + 40% deposit: <https://stages.ewendaviau.com>
+- Email: <contact@ewendaviau.com>
+- Site: <https://ewendaviau.com>

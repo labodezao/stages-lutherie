@@ -7,7 +7,7 @@
 Chaque fichier HTML du formulaire est désormais **entièrement décomposé en blocs Gutenberg natifs** — chaque section est un bloc indépendant éditable d'un clic :
 
 | Bloc | Type | Contenu |
-|---|---|---|
+| --- | --- | --- |
 | `<!-- wp:cover -->` | **Natif** ✅ | Héro photo de fond · titre H1 · sous-titre |
 | `<!-- wp:html -->` | HTML | CSS scopé (classes `.insc-*`) |
 | `<!-- wp:html -->` | HTML | Script jsPDF |
@@ -39,11 +39,11 @@ Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<inp
 
 ### 🇫🇷 Formulaire français
 
-> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/formulaire-inscription.html**
+> **<https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/formulaire-inscription.html>**
 
 ### 🇬🇧 English registration form
 
-> **https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/formulaire-inscription-en.html**
+> **<https://raw.githubusercontent.com/labodezao/stages-lutherie/main/inscriptions/formulaire-inscription-en.html>**
 
 ---
 
@@ -62,7 +62,7 @@ Les `wp:html` ne contiennent que ce qui est strictement interactif (champs `<inp
 ## Fichiers
 
 | Fichier | Usage |
-|---|---|
+| --- | --- |
 | `formulaire-inscription.html` | ⭐ Formulaire complet (FR) — 45 blocs Gutenberg (29 natifs) |
 | `formulaire-inscription-en.html` | ⭐ Complete form (EN) — 45 Gutenberg blocks (29 native) |
 | `formulaire-inscription-gutenberg.txt` | Import texte Gutenberg (FR) — coller dans l'éditeur de code |
@@ -81,12 +81,11 @@ Ce fichier est un **mu-plugin** (must-use plugin) : il est chargé automatiqueme
 
 **Un seul fichier** suffit :
 
-```
+```text
 wp-content/
   mu-plugins/
     inscription-api.php           ← mu-plugin REST endpoint (seul fichier nécessaire)
-```
-
+```text
 ### Étapes
 
 1. Connectez-vous au FTP de votre hébergement WordPress
@@ -102,6 +101,7 @@ wp-content/
 ### Fonctionnement de l'email de confirmation
 
 Quand un stagiaire soumet le formulaire :
+
 1. `inscription-api.php` lit l'option `stluth_confirmation_body` depuis la base WordPress
 2. Si l'option est vide → utilise le modèle HTML intégré (beau design aux couleurs du site)
 3. Les variables `{nom}`, `{modele}`, `{session}`, `{acompte}`, `{bank_details}` sont remplacées

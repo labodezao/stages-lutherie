@@ -1,6 +1,7 @@
 # Guide pour Collecter 1000+ Emails d'Associations
 
 ## Objectif
+
 Collecter plus de 1000 adresses email de contacts intéressés par l'accordéon diatonique, la musique traditionnelle, et le bal folk.
 
 ## Stratégie en 3 Axes
@@ -10,6 +11,7 @@ Collecter plus de 1000 adresses email de contacts intéressés par l'accordéon 
 Pour atteindre 1000+ emails, il faut cibler:
 
 #### A. Associations de musique traditionnelle
+
 - Bal folk
 - Fest-noz
 - Musique celtique
@@ -17,6 +19,7 @@ Pour atteindre 1000+ emails, il faut cibler:
 - Musique folklorique européenne
 
 #### B. Structures éducatives et culturelles
+
 - Conservatoires
 - Écoles de musique
 - Centres culturels
@@ -24,12 +27,14 @@ Pour atteindre 1000+ emails, il faut cibler:
 - Médiathèques avec sections musique
 
 #### C. Professionnels et commerces
+
 - Luthiers d'instruments folk
 - Magasins de musique spécialisés
 - Réparateurs d'accordéons
 - Professeurs de musique indépendants
 
 #### D. Organisateurs d'événements
+
 - Festivals de musique folk/trad
 - Organisateurs de bals
 - Associations culturelles bretonnes
@@ -38,16 +43,18 @@ Pour atteindre 1000+ emails, il faut cibler:
 ### 2. SOURCES DE DONNÉES PRINCIPALES
 
 #### HelloAsso (100+ associations par catégorie)
+
 **URL à explorer:**
-```
+
+```text
 https://www.helloasso.com/e/cat/accordeon
 https://www.helloasso.com/e/cat/musique
 https://www.helloasso.com/e/cat/bal-folk
 https://www.helloasso.com/e/cat/danse
 https://www.helloasso.com/e/cat/culture
-```
-
+```text
 **Par région (12 régions = 12 × 100 = 1200 associations potentielles):**
+
 - Bretagne: `/e/reg/bretagne/cat/accordeon`
 - Pays de la Loire: `/e/reg/pays--de--la--loire/cat/accordeon`
 - Nouvelle-Aquitaine: `/e/reg/nouvelle-aquitaine/cat/accordeon`
@@ -62,29 +69,35 @@ https://www.helloasso.com/e/cat/culture
 - Centre-Val de Loire: `/e/reg/centre-val-de-loire/cat/accordeon`
 
 **Méthode:**
+
 1. Ouvrir chaque page de région/catégorie
 2. Cliquer sur chaque association listée
 3. Noter l'email de contact (souvent dans "À propos" ou "Contact")
 4. Compiler dans un tableur
 
 #### AgendaTrad (500+ organisateurs)
-**URL:** https://agendatrad.org/orgas/Francia
+
+**URL:** <https://agendatrad.org/orgas/Francia>
 
 **Méthode:**
+
 - Parcourir la liste des organisateurs
 - Cliquer sur chaque fiche
 - Noter nom, ville, email, site web
 - Beaucoup d'organisateurs listent leur email directement
 
 #### Chorotempo (300+ organisateurs)
-**URL:** https://chorotempo.org/organisateurs/France
+
+**URL:** <https://chorotempo.org/organisateurs/France>
 
 **Méthode similaire à AgendaTrad**
 
 #### Net1901 (Annuaire complet des associations)
-**URL:** https://www.net1901.org/
+
+**URL:** <https://www.net1901.org/>
 
 **Recherche par mots-clés:**
+
 - "accordéon"
 - "musique traditionnelle"
 - "bal folk"
@@ -95,9 +108,11 @@ https://www.helloasso.com/e/cat/culture
 **Avantage:** Contient souvent l'email direct dans les fiches
 
 #### Répertoire National des Associations
-**URL:** https://repertoiredesassociations.fr/
+
+**URL:** <https://repertoiredesassociations.fr/>
 
 **Recherche officielle gouvernementale**
+
 - Recherche par activité
 - Par département
 - Données officielles
@@ -105,7 +120,9 @@ https://www.helloasso.com/e/cat/culture
 ### 3. SOURCES COMPLÉMENTAIRES
 
 #### A. Groupes et Forums Facebook
+
 **Groupes ciblés (50 000+ membres au total):**
+
 1. BALS FOLK TRAD PARISIENS (~5000 membres)
 2. Folk Info / Folk Weekender (~3000 membres)
 3. Agendas Trad par régions (multiples groupes)
@@ -113,11 +130,13 @@ https://www.helloasso.com/e/cat/culture
 5. Musique Traditionnelle en France
 
 **Méthode:**
+
 - Rejoindre les groupes
 - Poster une annonce demandant les contacts intéressés
 - Contacter les administrateurs pour partenariat
 
 #### B. Forums Spécialisés
+
 1. **Melodeon.net** (forum anglophone très actif)
    - Section "Events" et "Makers"
    - Membres du monde entier
@@ -127,6 +146,7 @@ https://www.helloasso.com/e/cat/culture
 3. **Reddit r/Accordion** (~25k membres)
 
 #### C. Fédérations et Réseaux
+
 1. **UNAF** (Union Nationale des Accordéonistes de France)
    - Contact: Via leur site pour accès à leur réseau
 
@@ -139,7 +159,9 @@ https://www.helloasso.com/e/cat/culture
    - Bodadeg ar Sonerion
 
 #### D. Festivals et Événements
+
 **Rechercher les contacts des festivals:**
+
 - Festival Interceltique de Lorient
 - Fest-Noz dans toute la Bretagne
 - Rencontres de Luthiers et Maîtres Sonneurs
@@ -153,6 +175,7 @@ https://www.helloasso.com/e/cat/culture
 #### Script Python fourni: `scrape_mass_contacts.py`
 
 **Usage:**
+
 ```bash
 # Installer les dépendances
 pip install requests beautifulsoup4
@@ -168,9 +191,9 @@ python3 scrape_mass_contacts.py --categories accordeon musique bal-folk danse cu
 
 # Ajuster le délai entre requêtes (respecter les sites)
 python3 scrape_mass_contacts.py --delay 3
-```
+```text
+**IMPORTANT:**
 
-**IMPORTANT:** 
 - Respecter les limites de taux de requêtes
 - Délai minimum de 2 secondes entre requêtes
 - Certains sites peuvent bloquer le scraping automatique
@@ -179,7 +202,9 @@ python3 scrape_mass_contacts.py --delay 3
 ### 5. MÉTHODE MANUELLE EFFICACE
 
 #### Étape 1: Créer un tableur Google Sheets
+
 Colonnes:
+
 - Nom association/structure
 - Email
 - Téléphone
@@ -192,6 +217,7 @@ Colonnes:
 - Notes
 
 #### Étape 2: Répartir le travail par source
+
 **Session 1 (2-3 heures):** HelloAsso région par région
 **Session 2 (2-3 heures):** AgendaTrad + Chorotempo
 **Session 3 (1-2 heures):** Net1901
@@ -199,22 +225,24 @@ Colonnes:
 **Session 5 (1-2 heures):** Écoles de musique + Conservatoires
 
 #### Étape 3: Recherche Google ciblée
-```
+
+```text
 site:*.fr "contact" "accordéon diatonique"
 site:*.fr "association" "musique traditionnelle" email
 site:*.fr "bal folk" contact
 site:*.fr "école musique" accordéon email
-```
-
+```text
 ### 6. EXPANSION GÉOGRAPHIQUE
 
 #### Pays francophones voisins
+
 - **Belgique** (Wallonie): Associations folk, bals
 - **Suisse** (Romandie): Musique trad suisse
 - **Luxembourg**: Scène folk
 - **Québec/Canada**: Musique trad québécoise
 
 #### Autres pays européens
+
 - **UK/Irlande**: Melodeon societies (anglophone mais pertinent)
 - **Allemagne**: Akkordeon Vereine
 - **Italie**: Associazioni fisarmonica
@@ -223,6 +251,7 @@ site:*.fr "école musique" accordéon email
 ### 7. ESTIMATION RÉALISTE
 
 **Sources directement accessibles:**
+
 - HelloAsso: 200-400 emails
 - AgendaTrad: 150-300 emails
 - Chorotempo: 100-200 emails
@@ -235,17 +264,20 @@ site:*.fr "école musique" accordéon email
 ### 8. CONSIDÉRATIONS LÉGALES (RGPD)
 
 ✅ **Autorisé:**
+
 - Collecter des emails publics d'associations
 - Utiliser pour prospection B2B légitime
 - Proposer des services professionnels (stages de lutherie)
 
 ⚠️ **Obligations:**
+
 - Indiquer la source de collecte
 - Offrir un moyen de désinscription
 - Ne pas revendre la liste
 - Utiliser seulement pour l'usage déclaré
 
 ❌ **Interdit:**
+
 - Spam massif non ciblé
 - Vente de liste d'emails
 - Emails personnels non professionnels
@@ -272,12 +304,14 @@ Au lieu de collecter des emails, **créer une page d'inscription:**
 5. Laisser les gens s'inscrire volontairement
 
 **Avantages:**
+
 - 100% conforme RGPD
 - Audience qualifiée et intéressée
 - Meilleur taux d'ouverture
 - Pas de risque de blocage/spam
 
 **Promotion de la landing page dans:**
+
 - Tous les groupes Facebook folk/trad
 - Forums (Melodeon.net, etc.)
 - Via les associations partenaires

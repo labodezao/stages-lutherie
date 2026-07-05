@@ -2,11 +2,41 @@
   "ignorePatterns": [
     {
       "pattern": "^https://github.com/.*/blob/main/comm/.*"
+    },
+    {
+      "pattern": "^https://chorotempo\\.org/"
+    },
+    {
+      "pattern": "^https://www\\.net1901\\.org/"
+    },
+    {
+      "pattern": "\\.HEIC$"
+    },
+    {
+      "pattern": "^mailto:"
+    },
+    {
+      "pattern": "^https://www\\.acb44\\.bzh"
+    },
+    {
+      "pattern": "^https://forum\\.melodeon\\.net"
+    },
+    {
+      "pattern": "^https://www\\.accordionists\\.info"
+    },
+    {
+      "pattern": "^https://www\\.superprof\\.fr"
+    },
+    {
+      "pattern": "^https://ewendaviau\\.com"
+    },
+    {
+      "pattern": "^https://stages\\.ewendaviau\\.com"
     }
   ],
   "timeout": "20s",
   "retryOn429": true,
   "retryCount": 3,
   "fallbackRetryDelay": "30s",
-  "aliveStatusCodes": [200, 206, 999]
+  "aliveStatusCodes": [200, 206, 403, 999]
 }

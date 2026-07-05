@@ -7,7 +7,7 @@ author: "Ewen Daviau"
 date: "2026"
 ---
 
-# Diatonic Accordion Building Workshop – Trainee Guide 2026
+## Diatonic Accordion Building Workshop – Trainee Guide 2026
 
 Welcome! This guide is designed to support you before, during, and after your diatonic accordion building workshop. You'll find all the practical information you need to prepare for your visit and make the most of this unique experience.
 
@@ -98,7 +98,7 @@ For the most demanding musicians, we offer the **Anche a mano Blue Star** option
 
 ### If You Don't Finish in 10 Days
 
-While most trainees finish their instrument on time, you can return in a later session to complete your accordion:
+The workshop is a learning journey — completing the instrument during the 10 days is the goal, though some steps may continue. You can always return in a later session:
 
 - **Rate**: €80 per workshop day (includes access to the workshop, tools and guidance)
 - **Flexibility**: You can return for 1, 2 or more days as needed
@@ -140,24 +140,29 @@ The choice of wood affects the aesthetics, weight and slightly the resonance of 
 ### 2. Right Hand Configuration (melody keyboard)
 
 #### Number of Buttons
+
 - **21 buttons (2 rows)**: Simpler configuration, ideal for beginners
 - **33 buttons (3 rows)**: More melodic possibilities, allows playing in multiple keys
 
 #### Layouts (note arrangement)
+
 - **Heim layout**: Traditional German arrangement
 - **Milleret-Pignol layout**: French arrangement, very widespread
 - **Custom layout***: On request, with additional cost
 
 #### Available Keys
+
 - **G/C** (Sol/Do): Most common, perfect for French and Irish traditional music
 - **D/G** (Ré/Sol): Higher key, appreciated for Irish music
 - **A/D** (La/Ré): Very high key, used for certain specific repertoires
 
 #### Tuning Type
+
 - **Dry tuning**: Clear and precise sound, well-defined notes
 - **Semi-dry tuning**: Slight wavering, warmer "French" sound
 
 #### Button Marking
+
 - **Tactile marking**: Raised buttons on certain reference notes
 - **Visual marking**: Buttons of different colors
 - **No marking**: All identical buttons (for advanced musicians)
@@ -165,11 +170,13 @@ The choice of wood affects the aesthetics, weight and slightly the resonance of 
 ### 3. Left Hand Configuration (basses and chords)
 
 #### Number of Basses
+
 - **8 basses**: Simple configuration, perfect for beginners
 - **12 basses**: More accompaniment possibilities
 - **18 basses**: Maximum harmonic richness
 
 #### Layouts
+
 - **Milleret-Pignol layout**: French standard
 - **Heim layout**: German standard
 - **Custom layout***: Possibility to create your own arrangement (with surcharge)
@@ -216,6 +223,7 @@ The bellows are the visual soul of your accordion! It's often the most visible e
 ![Multiple colored bellows displayed showing variety of available colors](https://github.com/labodezao/stages-lutherie/blob/main/comm/Jour%205%20(26).jpg)
 
 #### Bellows Corners
+
 - **Standard corners**: Traditional pressed cardboard
 - **Reinforced corners**: Leather corners, more resistant
 - **Brushed metal corners**: Modern and robust appearance
@@ -231,10 +239,12 @@ Reeds are the metal blades that vibrate to produce sound. This is a crucial elem
 ### 8. Accessories
 
 #### Provided with Your Accordion
+
 - **Straps**: Adjustable, leather or resistant fabric
 - **Gig bag/carrying case**: Padded protection for transport and storage
 
 #### Recommended for the Workshop (to bring)
+
 - **Thin gloves**: To protect your hands during sanding
 - **Safety glasses**: Provided on site but you can bring your own
 - **Earplugs**: For intensive sound testing moments (optional)
@@ -251,12 +261,14 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 1: Welcome and First Assemblies
 
 **Morning (9:30 AM-12:30 PM)**
+
 - Welcome of trainees, introduction of each person
 - Complete tour of the workshop and tools
 - Presentation of safety rules
 - Final choice of customization options for your accordion
 
 **Afternoon (2:00 PM-5:30 PM)**
+
 - Discovery of the parts prepared for your accordion
 - First test assemblies
 - Getting familiar with basic tools
@@ -266,6 +278,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 2: Wooden Structure
 
 **What you'll do:**
+
 - Assembly of the **resonance box** (right hand and left hand)
 - **Sanding** surfaces for a smooth finish
 - **Gluing** different parts
@@ -273,6 +286,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 - Installation of the **mechanical base**
 
 **What you'll learn:**
+
 - Precise woodworking techniques
 - Importance of geometry for proper functioning
 - Use of measuring and checking tools
@@ -282,12 +296,14 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 3: Keyboards and Buttons
 
 **What you'll do:**
+
 - Installation of **axes** that support the buttons
 - Placement of **return springs**
 - Mounting of keyboard **buttons**
 - Adjustment of **touch feel** (resistance and travel of buttons)
 
 **What you'll learn:**
+
 - Fine mechanics and precision
 - Importance of playing comfort
 - Personalized adjustment according to your hand
@@ -297,12 +313,14 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 4: Right Hand and Left Hand Mechanics
 
 **What you'll do:**
+
 - Complete assembly of **lever systems**
 - Connection between buttons and valves
 - Adjustment of **heights** of each button
 - Adjustment of **travel** (depth of pressing)
 
 **What you'll learn:**
+
 - How the accordion mechanical system works
 - Millimetric precision required
 - Progressive testing and adjustments
@@ -312,6 +330,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 5: Bellows
 
 **What you'll do:**
+
 - **Manufacturing** bellows with special cardboard
 - Folding and gluing sections
 - **Installing** bellows on the boxes
@@ -319,6 +338,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 - **Airtightness** tests (crucial!)
 
 **What you'll learn:**
+
 - Traditional bellows manufacturing technique
 - Importance of airtightness for sound
 - Patience and meticulousness in folding
@@ -328,6 +348,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 6: Grills and Wood Finishing
 
 **What you'll do:**
+
 - **Mounting** decorative grills
 - Secure fastening while maintaining aesthetics
 - **Wood finishing**: Final sanding, treatment
@@ -335,6 +356,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 - **Decoration**: Adding any personalized details
 
 **What you'll learn:**
+
 - Wood finishing techniques
 - Protection and enhancement of wood
 - Final aesthetic touches
@@ -344,12 +366,14 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 7: Reeds and First Tuning
 
 **What you'll do:**
+
 - **Sorting** reeds by tonality
 - **Installing** reeds on reed blocks
 - **First tensioning** of reeds
 - **Note-by-note tests**: Checking each sound
 
 **What you'll learn:**
+
 - Understanding how a reed produces sound
 - Recognition of tonalities
 - First acoustic adjustments
@@ -359,12 +383,14 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 8: Fine Adjustments
 
 **What you'll do:**
+
 - Hunting for **air leaks** and correction
 - Final adjustments of the **mechanics**
 - Precise **alignment** of all keys
 - **Responsiveness** and **comfort** tests
 
 **What you'll learn:**
+
 - Method for detecting problems
 - Resolving imperfections
 - Perfecting the operation
@@ -372,12 +398,14 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 9: Complete Tests and Personalized Adjustments
 
 **What you'll do:**
+
 - **Complete tests** Right Hand + Left Hand together
 - Evaluation of **playing comfort** (weight, balance, touch)
 - **Personalized corrections** according to your specific needs
 - Final tuning adjustments
 
 **What you'll learn:**
+
 - Overall evaluation of an instrument
 - Adapting the instrument to your morphology
 - Fine acoustic tuning
@@ -385,12 +413,14 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Day 10: Musical Practice and Finalization
 
 **Morning (9:30 AM-12:30 PM)**
+
 - **Musical practice** with an external guest (professional musician)
 - Learning **first notes** and simple melodies
 - Discovery of the **musical operation** of your accordion
 - **Care and maintenance** tips for your instrument
 
 **Afternoon (2:00 PM-5:30 PM)**
+
 - **Final tests** of each instrument
 - **Photo session**: Portraits with your accordion
 - **Group wrap-up**: Sharing experiences, feedback
@@ -406,6 +436,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 **9:30 AM**: Welcome, coffee/tea
 **9:45 AM**: Daily briefing (objectives, planned steps)
 **10:00 AM – 12:30 PM**: Workshop building
+
 - Individual work on your instrument
 - Personalized support from Ewen
 - Mutual help between trainees
@@ -419,6 +450,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Afternoon (2:00 PM – 5:30 PM)
 
 **2:00 PM – 5:30 PM**: Workshop building (continued)
+
 - Assembly, adjustments
 - In-depth individual support
 - Specific technical points
@@ -428,6 +460,7 @@ Here's a detailed overview of what you'll learn and accomplish during the 10 day
 ### Evenings (depending on the day)
 
 Depending on the day and the group's motivation:
+
 - **Concerts**: We can go listen to traditional music if concerts are happening
 - **Folk dances**: Participation in traditional dances in the region
 - **Friendly exchanges**: Discussions, musical sharing, friendly moments at the workshop or outdoors
@@ -439,6 +472,7 @@ Depending on the day and the group's motivation:
 ### Flexibility
 
 The schedule is indicative and can be adapted according to:
+
 - Each person's progress
 - Specific needs
 - Moments of fatigue or necessary concentration
@@ -455,18 +489,21 @@ The workshop **does not include accommodation**. Here's a complete guide to opti
 **Advantages**: Flexibility, often equipped with a kitchen, home-like atmosphere
 
 #### Studios and Small Apartments
+
 - **Price**: €50-80/night
 - **Location**: City center or near beach
 - **Distance from workshop**: 15-30 min walk
 - **Ideal for**: Those who want independence
 
 #### Private Rooms with Locals
+
 - **Price**: €17-40/night (economical option!)
 - **Location**: Various residential neighborhoods
 - **Distance from workshop**: Varies
 - **Ideal for**: Tight budget, wanting to meet locals
 
 **💡 Airbnb Search Tips:**
+
 - Filter by "max €60/night"
 - Prefer "walkable to center/beach/transport"
 - Check **cleaning fees** and services (can increase the bill)
@@ -476,6 +513,7 @@ The workshop **does not include accommodation**. Here's a complete guide to opti
 ### Option 2: Budget Hotels
 
 #### Ibis Budget, B&B Hotel
+
 - **Price**: €45-70/night
 - **Location**: City center or near the station
 - **Distance from workshop**: 15-25 min walk or bus
@@ -484,6 +522,7 @@ The workshop **does not include accommodation**. Here's a complete guide to opti
 ### Option 3: Youth Residences / Hostels
 
 #### Youth Hostel / Residences
+
 - **Price**: €20-40/night
 - **Distance from workshop**: 15-30 min walk
 - **Advantages**: Very economical, young and friendly atmosphere
@@ -494,6 +533,7 @@ The workshop **does not include accommodation**. Here's a complete guide to opti
 For nature and camping lovers!
 
 #### Campgrounds Accessible by Bus or Carpool (15-30 min)
+
 - **Saint-Brevin-les-Pins**: Near beach
 - **Pornichet**: Seaside
 - **Batz-sur-Mer**: Charming village
@@ -508,11 +548,13 @@ For nature and camping lovers!
 ### 🚗 With or Without a Car?
 
 #### Without a Car (recommended)
+
 - Saint-Nazaire is well served by **buses**
 - Reasonable walking distances for most accommodations
 - Carpooling possible with other trainees
 
 #### With a Car
+
 - **Free parking** on the street near the workshop
 - Facilitates access to peripheral campgrounds
 - Allows visiting the region on weekends
@@ -532,6 +574,7 @@ For nature and camping lovers!
 ### 🤝 Group Accommodation
 
 If you're registering **with a friend or in a group**, you can:
+
 - Rent an apartment/house together on Airbnb
 - Split costs
 - Share time outside the workshop
@@ -561,6 +604,7 @@ If you're registering **with a friend or in a group**, you can:
 ### Option 3: Cook
 
 If your accommodation has a kitchen:
+
 - Supermarket shopping
 - Homemade meals
 - **Cost**: €5-10/meal
@@ -578,6 +622,7 @@ Your safety is a priority. Here's what's in place:
 ### Personal Protective Equipment (PPE)
 
 **Provided on site (included):**
+
 - Safety glasses
 - Protective gloves
 - Hearing protection (earplugs)
@@ -604,6 +649,7 @@ Your safety is a priority. Here's what's in place:
 ### During the Workshop
 
 We regularly take photos and videos to:
+
 - Document your progress
 - Share on social media (with your consent)
 - Create memories of your experience
@@ -611,6 +657,7 @@ We regularly take photos and videos to:
 ### Consent
 
 A **consent form** will be offered at the start of the workshop:
+
 - ✅ You can agree (photos used for communication)
 - ❌ You can refuse (no photos of you used publicly)
 - 🎭 You can request to be blurred or shown from behind
@@ -618,6 +665,7 @@ A **consent form** will be offered at the start of the workshop:
 ### Your Own Photos
 
 **You're free** to take your own photos and videos to:
+
 - Keep memories
 - Share on your social media
 - Document your creative process
@@ -633,7 +681,7 @@ A **consent form** will be offered at the start of the workshop:
 #### Presentation Video
 
 **Watch this video** (3 minutes) to discover the workshop and atmosphere:
-🎥 **https://www.youtube.com/watch?v=DREx2RqMXeU**
+🎥 **<https://www.youtube.com/watch?v=DREx2RqMXeU>**
 
 #### Recommended Reading (optional)
 
@@ -643,6 +691,7 @@ A **consent form** will be offered at the start of the workshop:
 #### Familiarize Yourself with the Diatonic Accordion
 
 If you're not familiar with the instrument:
+
 - Listen to traditional music with diatonic accordion
 - Watch musician videos on YouTube
 - No need to know how to play! You'll learn the basics on the last day.
@@ -679,8 +728,8 @@ If you're not familiar with the instrument:
 
 If you have **questions** before your visit:
 
-📧 **Email**: contact@ewendaviau.com
-🌐 **Website**: https://ewendaviau.com
+📧 **Email**: <contact@ewendaviau.com>
+🌐 **Website**: <https://ewendaviau.com>
 📱 **Phone**: [Number to add if desired]
 
 **Response time**: Generally within 48h
@@ -713,6 +762,7 @@ Stay in touch! We love hearing from our trainees and their musical progress.
 ### Professional Maintenance
 
 Every **2-3 years**, have your accordion checked by a luthier:
+
 - Tuning check
 - Reed condition
 - Bellows airtightness
@@ -726,10 +776,10 @@ Every **2-3 years**, have your accordion checked by a luthier:
 
 > *"At 52, I didn't think I was capable of making a musical instrument. It was my retirement gift. Ewen is an exceptional teacher, patient and passionate. Today I play with my accordion in a trad music group!"*  
 > — Marie D., October 2025 workshop
-
+>
 > *"An unforgettable experience. I learned a lot in 10 days, not just about lutherie but also about traditional music. The atmosphere was great, we formed a real little family."*  
 > — Thomas L., April 2025 workshop
-
+>
 > *"I recommend 100%! Even without any manual experience, I managed to create a beautiful instrument that sounds very good. The other trainees and Ewen helped me a lot."*  
 > — Sophie B., October 2024 workshop
 
@@ -738,30 +788,34 @@ Every **2-3 years**, have your accordion checked by a luthier:
 ## ✅ Checklist Before Departure
 
 **3 months before:**
+
 - [ ] Registration confirmed + deposit paid
 - [ ] Model and options validated
 - [ ] Accommodation booked
 
 **1 month before:**
+
 - [ ] Transport organized (train, car, plane)
 - [ ] Watched the presentation video
 - [ ] Read the detailed program
 - [ ] Marked dates in calendar
 
 **1 week before:**
+
 - [ ] Suitcase packed
 - [ ] Workshop balance ready to be paid
 - [ ] Workshop contact details noted
 - [ ] Route verified
 
 **Day before departure:**
+
 - [ ] Check all documents
 - [ ] Phone charged
 - [ ] Excitement at maximum! 🎉
 
 ---
 
-## 💙 Welcome to the Adventure!
+## 💙 Welcome to the Adventure
 
 You're about to experience something **unique**: creating with your hands a musical instrument that will accompany you for years.
 

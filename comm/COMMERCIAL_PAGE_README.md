@@ -1,14 +1,17 @@
 # Commercial WordPress Page - Stages de Lutherie
 
 ## Description
+
 Page commerciale complète pour les stages de fabrication d'accordéons diatoniques, optimisée pour WordPress et incluant toutes les informations détaillées.
 
 ## Fichier
+
 `comm/commercial-page-wordpress.html`
 
 ## Contenu inclus
 
 ### Sections principales
+
 1. **Hero Section** - Bannière d'accueil avec titre accrocheur
 2. **Dates** - Sessions printemps et automne 2026
 3. **Présentation** - Esprit du stage, public cible, objectifs
@@ -20,6 +23,7 @@ Page commerciale complète pour les stages de fabrication d'accordéons diatoniq
 9. **Contact** - Liens vers site web, email, vidéo YouTube
 
 ### Informations détaillées
+
 ✅ **Modèles**: 21/8 (2820€), 33/12 (4500€), 33/18 (4880€), 33/24 (6250€)
 ✅ **Option Anche a mano Blue Star**: +15 % (21/8 +423€, 33/12 +675€, 33/18 +732€, 33/24 +938€)
 ✅ **Acomptes**: 900€ / 1500€ / 1900€ / 2500€ (40%)
@@ -30,7 +34,9 @@ Page commerciale complète pour les stages de fabrication d'accordéons diatoniq
 ✅ **Horaires**: 9h30-12h30 / 14h00-17h30
 
 ## Sources
+
 Contenu compilé depuis:
+
 - `01-fiche-stage-detaillee-fr.md` - Informations détaillées du stage
 - `02-programme-jour-par-jour-fr.md` - Programme quotidien
 - `00-communication-annonce-fr.md` - Annonce commerciale
@@ -41,7 +47,8 @@ Contenu compilé depuis:
 ## Compatibilité WordPress
 
 ### Méthode 1: Bloc HTML personnalisé (Recommandée)
-```
+
+```text
 1. Dans WordPress, créez une nouvelle page
 2. Ajoutez un bloc "HTML personnalisé" (Gutenberg)
 3. Copiez le contenu de <style> jusqu'à </style>
@@ -49,22 +56,23 @@ Contenu compilé depuis:
 5. Copiez le contenu de <div class="workshop-page"> jusqu'à </div>
 6. Collez-le dans le bloc HTML
 7. Publiez la page
-```
-
+```text
 ### Méthode 2: Template de page
-```
+
+```text
 1. Créez un nouveau fichier dans votre thème: page-stages.php
 2. Copiez tout le code HTML
 3. Dans WordPress, créez une page et assignez le template "Stages"
-```
-
+```text
 ### Méthode 3: Plugin page builder
+
 - Compatible avec Elementor, Divi, WPBakery
 - Utilisez un widget HTML/Code personnalisé
 
 ## Formulaires de contact
 
 ### Option 1: Contact Form 7
+
 ```html
 <!-- Remplacez le lien du bouton par: -->
 <a href="#contact-form" class="btn btn-primary">S'inscrire</a>
@@ -73,9 +81,9 @@ Contenu compilé depuis:
 <div id="contact-form">
   [contact-form-7 id="123" title="Inscription Stage"]
 </div>
-```
-
+```text
 ### Option 2: WPForms
+
 ```html
 <!-- Remplacez le lien du bouton par: -->
 <a href="#wpforms-form" class="btn btn-primary">S'inscrire</a>
@@ -84,10 +92,11 @@ Contenu compilé depuis:
 <div id="wpforms-form">
   [wpforms id="456"]
 </div>
-```
-
+```text
 ### Option 3: Lien direct
+
 Les liens actuels pointent vers:
+
 - Inscription: `https://stages.ewendaviau.com`
 - Email: `contact@ewendaviau.com`
 - Vidéo: YouTube
@@ -95,6 +104,7 @@ Les liens actuels pointent vers:
 ## Design
 
 ### Palette de couleurs
+
 - Bois foncé: `#3E2723`
 - Bois moyen: `#5D4037`
 - Bois clair: `#8D6E63`
@@ -103,11 +113,13 @@ Les liens actuels pointent vers:
 - Or clair: `#F5D061`
 
 ### Typographie
+
 - Titres: Georgia (serif)
 - Texte: System fonts (Apple/Windows)
 - Boutons: Arial, sans-serif
 
 ### Responsive
+
 ✅ Mobile: optimisé pour smartphones
 ✅ Tablette: grilles adaptatives
 ✅ Desktop: mise en page complète
@@ -115,12 +127,14 @@ Les liens actuels pointent vers:
 ## SEO
 
 ### Meta tags inclus
+
 - Title: "Fabriquez votre accordéon diatonique - Stage de lutherie 10 jours"
 - Description: optimisée avec mots-clés
 - Viewport: responsive
 - Charset: UTF-8
 
 ### Recommandations
+
 1. Installez Yoast SEO ou Rank Math
 2. Optimisez le slug de page: `/stages-accordeon-diatonique/`
 3. Ajoutez des images avec attributs `alt`
@@ -130,6 +144,7 @@ Les liens actuels pointent vers:
 ## Performance
 
 ### Optimisations
+
 ✅ CSS inline (pas de fichiers externes)
 ✅ Pas de JavaScript (chargement rapide)
 ✅ Design léger (29 KB)
@@ -137,6 +152,7 @@ Les liens actuels pointent vers:
 ✅ Polices système (pas de web fonts)
 
 ### Tests recommandés
+
 - PageSpeed Insights
 - GTmetrix
 - Test mobile Google
@@ -152,12 +168,14 @@ Les liens actuels pointent vers:
 ## Maintenance
 
 ### Mises à jour à faire
+
 - Dates des sessions: modifier les dates 2026/2027
 - Tarifs: mettre à jour si changement de prix
 - Lieu: si déménagement d'atelier
 - Liens: vérifier que les URLs sont valides
 
 ### Version
+
 - Date de création: 2026-02-12
 - Version: 1.0
 - Compatibilité: WordPress 5.0+
@@ -183,9 +201,11 @@ Les liens actuels pointent vers:
 → Utilisez un CDN
 
 ## Contact
+
 Pour questions ou modifications:
-- Email: contact@ewendaviau.com
-- Site: https://stages.ewendaviau.com
+
+- Email: <contact@ewendaviau.com>
+- Site: <https://stages.ewendaviau.com>
 
 ---
 

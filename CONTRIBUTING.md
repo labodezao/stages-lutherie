@@ -13,11 +13,13 @@ This project is bilingual French/English. All contributions must maintain this p
 ### 1. Documentation
 
 Si vous souhaitez améliorer la documentation :
+
 - Vérifiez que vos modifications sont cohérentes dans les deux langues
 - Respectez le format Markdown existant
 - Ajoutez des descriptions alternatives (alt text) descriptives pour toutes les images
 
 If you want to improve documentation:
+
 - Ensure your changes are consistent in both languages
 - Respect the existing Markdown format
 - Add descriptive alt text for all images
@@ -47,6 +49,7 @@ If you want to improve documentation:
 ## 🔍 Avant de soumettre / Before Submitting
 
 Vérifiez que :
+
 - [ ] Les liens fonctionnent
 - [ ] Les images s'affichent correctement
 - [ ] Le texte est exempt de fautes d'orthographe
@@ -54,6 +57,7 @@ Vérifiez que :
 - [ ] Le format Markdown est valide
 
 Check that:
+
 - [ ] Links work
 - [ ] Images display correctly
 - [ ] Text is free of spelling errors
@@ -64,17 +68,23 @@ Check that:
 
 1. Forkez le projet / Fork the project
 2. Créez une branche pour votre fonctionnalité / Create a branch for your feature
+
    ```bash
    git checkout -b amelioration/ma-feature
    ```
+
 3. Committez vos changements / Commit your changes
+
    ```bash
    git commit -m "Ajout de [description]"
    ```
+
 4. Poussez vers la branche / Push to the branch
+
    ```bash
    git push origin amelioration/ma-feature
    ```
+
 5. Ouvrez une Pull Request / Open a Pull Request
 
 ## ⚠️ Ce qu'il ne faut PAS faire / What NOT to Do
@@ -92,10 +102,11 @@ Check that:
 ## 📞 Questions ?
 
 Pour toute question, contactez / For any questions, contact:
-- Email : contact@ewendaviau.com
+
+- Email : <contact@ewendaviau.com>
 - Ou ouvrez une issue sur GitHub / Or open an issue on GitHub
 
-## 🙏 Merci ! / Thank You!
+## 🙏 Merci ! / Thank You
 
 Toute contribution, aussi petite soit-elle, est appréciée !
 

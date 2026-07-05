@@ -7,7 +7,7 @@
 ## Vue d'ensemble des fichiers
 
 | Fichier | Type | Usage |
-|---------|------|-------|
+| --------- | ------ | ------- |
 | **`page-blocs-gutenberg.txt`** | ⭐ **Blocs Gutenberg natifs** | Coller dans l'éditeur de code → tous les blocs sont éditables visuellement |
 | `commercial-page-wordpress.html` | Page HTML monolithique | Intégrer via un bloc HTML personnalisé (moins flexible) |
 | `visuels-bilingues.html` | **Outil de captures d'écran** | Ouvrir dans le navigateur → faire une capture → uploader l'image |
@@ -24,7 +24,7 @@ Chaque section devient un bloc éditable visuellement : vous pouvez modifier les
 ### Contenu de la page (311 blocs)
 
 | Section | Blocs utilisés |
-|---------|---------------|
+| --------- | --------------- |
 | 🎨 Héro (fond brun) | `wp:cover` + `wp:heading` + `wp:paragraph` |
 | 📅 Dates sessions | `wp:group` + `wp:columns` (2 colonnes) |
 | 👥 À propos | `wp:group` + `wp:columns` (3 colonnes) |
@@ -100,10 +100,10 @@ Moins flexible que les blocs, mais utile si vous avez des problèmes de compatib
 **Étape 3 — Personnaliser le slug (URL)**
 
 Dans les réglages de la page (panneau droit), changez le **Permalien** en :
-```
-/stage-accordeon-diatonique/
-```
 
+```text
+/stage-accordeon-diatonique/
+```text
 ---
 
 ### Méthode alternative — Plugin "WPCode" ou "Insert Headers and Footers"
@@ -133,7 +133,7 @@ Si vous utilisez un page builder :
 
 ### Workflow en 4 étapes
 
-```
+```text
 1. Ouvrir le fichier HTML dans Chrome/Firefox
         ↓
 2. Capturer le visuel à la bonne taille
@@ -141,8 +141,7 @@ Si vous utilisez un page builder :
 3. Uploader l'image dans la Médiathèque WordPress
         ↓
 4. Insérer l'image dans votre page/article ou partager sur les réseaux
-```
-
+```text
 ---
 
 ### Étape 1 — Ouvrir le fichier
@@ -150,6 +149,7 @@ Si vous utilisez un page builder :
 Double-cliquez sur `visuels-bilingues.html` (ou glissez-le dans Chrome/Firefox).
 
 Le fichier s'ouvre et vous voyez tous les visuels organisés par concept, avec :
+
 - 📘 🇫🇷 Facebook 1200×630
 - 📘 🇬🇧 Facebook 1200×630
 - 📸 🇫🇷 Instagram 1080×1080
@@ -199,13 +199,16 @@ Le fichier s'ouvre et vous voyez tous les visuels organisés par concept, avec :
 ### Étape 4 — Utiliser les images
 
 **Pour une page/article WordPress :**
+
 - Insérez le bloc **Image** et sélectionnez votre visuel depuis la Médiathèque
 
 **Pour Facebook :**
+
 - Lors de la création d'un post, cliquez **Photo/Vidéo** et uploadez l'image
 - Format recommandé : `1200 × 630 px` (les fichiers v1, v2fb, etc.)
 
 **Pour Instagram :**
+
 - Uploadez depuis mobile ou avec l'outil de création de contenu Meta
 - Format carré : `1080 × 1080 px` (les fichiers v1ig, v2, etc.)
 - Format Story : `1080 × 1920 px` (les fichiers v4, v9)
@@ -217,7 +220,7 @@ Le fichier s'ouvre et vous voyez tous les visuels organisés par concept, avec :
 Le fichier `visuels-bilingues.html` contient **44 visuels** organisés en 10 thèmes :
 
 | # | Thème FR | Thème EN | Formats disponibles |
-|---|----------|----------|---------------------|
+| --- | ---------- | ---------- | --------------------- |
 | 01 | Urgence & Rareté | Urgency & Scarcity | FB + IG |
 | 02 | Transformation | Life Transformation | FB + IG |
 | 03 | Authenticité | Authenticity | FB + IG |
@@ -241,8 +244,7 @@ Pour créer un **bouton "S'inscrire"** sur votre site WordPress qui pointe vers 
    style="background:#D4A017; color:#3E2723; font-weight:bold; padding:14px 32px; border-radius:30px; text-decoration:none;">
   🌸 S'inscrire au stage d'avril →
 </a>
-```
-
+```text
 Copiez ce code dans un bloc **HTML personnalisé** dans Gutenberg.
 
 ---
@@ -252,19 +254,19 @@ Copiez ce code dans un bloc **HTML personnalisé** dans Gutenberg.
 ### Fréquence de publication suggérée (7 jours avant le stage)
 
 | Jour | Plateforme | Visuel recommandé |
-|------|-----------|-------------------|
-| J-7  | Facebook  | Concept 1 — Urgence (FB 1200×630) |
-| J-7  | Instagram | Concept 1 — Urgence (IG 1080×1080) |
-| J-6  | Facebook  | Concept 2 — Transformation |
-| J-5  | Instagram | Concept 5 — Accessibilité |
-| J-4  | Facebook  | Concept 3 — Authenticité |
-| J-3  | Instagram Story | Concept 4 — Expérience (Story) |
-| J-2  | Facebook + Instagram | Concept 1 — Urgence (relance) |
-| J-1  | Tous | Concept 1 — Urgence finale |
+| ------ | ----------- | ------------------- |
+| J-7 | Facebook | Concept 1 — Urgence (FB 1200×630) |
+| J-7 | Instagram | Concept 1 — Urgence (IG 1080×1080) |
+| J-6 | Facebook | Concept 2 — Transformation |
+| J-5 | Instagram | Concept 5 — Accessibilité |
+| J-4 | Facebook | Concept 3 — Authenticité |
+| J-3 | Instagram Story | Concept 4 — Expérience (Story) |
+| J-2 | Facebook + Instagram | Concept 1 — Urgence (relance) |
+| J-1 | Tous | Concept 1 — Urgence finale |
 
 ### Texte d'accompagnement suggéré (FR)
 
-```
+```text
 🎵 Il ne reste plus que quelques places pour le stage d'avril !
 🔨 10 jours pour fabriquer votre accordéon diatonique de A à Z
 🌿 Guidé par Ewen d'Aviau, luthier professionnel à Saint-Nazaire
@@ -272,23 +274,21 @@ Copiez ce code dans un bloc **HTML personnalisé** dans Gutenberg.
 
 👉 Plus d'infos et inscription : stages.ewendaviau.com
 #lutherie #accordeon #diatonique #stage #fabrication #saintnazaire
-```
-
-```
+```text
+```text
 🎵 Only a few spots left for the April workshop!
-🔨 10 days to build your own diatonic accordion from scratch
+🛠️ 10-day lutherie journey — learn to build a diatonic accordion
 🌿 Led by Ewen d'Aviau, professional luthier in Saint-Nazaire, France
 ✅ No experience needed · Everything included · Max 6 participants
 
 👉 Info & registration: stages.ewendaviau.com
 #lutherie #accordion #diatonic #workshop #handmade #saintnazaire
-```
-
+```text
 ---
 
 ## Résumé rapide
 
-```
+```text
 PAGE DE VENTE WORDPRESS
   → Ouvrir commercial-page-wordpress.html
   → Copier le CSS dans Apparence > CSS additionnel
@@ -299,8 +299,7 @@ IMAGES POUR LES RÉSEAUX SOCIAUX / ARTICLES
   → Ouvrir visuels-bilingues.html dans Chrome
   → Capturer le visuel avec F12 > Capture screenshot
   → Uploader dans Médiathèque WordPress ou directement sur Facebook/Instagram
-```
-
+```text
 ---
 
 *Guide créé pour le projet stages.ewendaviau.com · Saint-Nazaire (44)*

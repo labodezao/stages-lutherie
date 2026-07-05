@@ -3,7 +3,7 @@
 ## Fichiers disponibles
 
 | Fichier | Usage |
-|---|---|
+| --- | --- |
 | `index.html` | **Outil complet offline** — à ouvrir en local dans le navigateur |
 | `gutenberg-widget.html` | **Widget WordPress (source)** — référence HTML pour les versions Gutenberg stagiaires |
 | `clavier-accordeon-admin-gutenberg.txt` | **Import Gutenberg — PAGE ADMIN** — à coller dans l'éditeur de code WordPress |
@@ -16,7 +16,7 @@
 
 Le système utilise **trois types de fichiers** côté serveur, tous dans le même dossier :
 
-```
+```text
 wp-content/
   mu-plugins/
     presets-api.php          ← à copier UNE SEULE FOIS (mu-plugin)
@@ -26,8 +26,7 @@ wp-content/
       index.json             ← liste des présets
       GCD33.json             ← preset Sol/Do 33 boutons
       … autres présets …
-```
-
+```text
 ### Étape 1 — Installer le mu-plugin (une seule fois)
 
 Copier `presets-api.php` dans `wp-content/mu-plugins/` via FTP.  
@@ -36,6 +35,7 @@ Il se chargera automatiquement à chaque page WordPress.
 ### Étape 2 — Uploader `ca-svg.js` dans le dossier presets (une seule fois)
 
 `ca-svg.js` est la **bibliothèque SVG partagée** utilisée par toutes les pages :
+
 - la page outil admin
 - la page stagiaires
 - les formulaires d'inscription
@@ -49,21 +49,21 @@ Il se chargera automatiquement à chaque page WordPress.
 ### Étape 3 — Uploader les présets
 
 Copier le dossier `presets/` de ce dépôt dans `wp-content/uploads/presets/` :
+
 - `index.json` (liste) + tous les fichiers `*.json` (données)
 - Quand vous créez un nouveau préset depuis l'outil admin, il est sauvegardé automatiquement via l'API (pas besoin de FTP)
 
 ---
 
-
-
 | Page | Fichier à importer | Qui y accède ? | Basé sur |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Page admin (privée/protégée) | `clavier-accordeon-admin-gutenberg.txt` | Admin uniquement | `index.html` (outil complet) |
 | Page stagiaires (publique) | `clavier-accordeon-stagiaires-gutenberg.txt` | Tous les stagiaires | `gutenberg-widget.html` (widget) |
 
 ### Fonctionnalités de la page admin
 
 La page admin est la **version complète** de l'outil (`index.html`) :
+
 - 📚 **Bibliothèque d'instruments** — sauvegarde multiple via `localStorage`
 - ✏️ **Éditeur complet** — toutes les fonctionnalités d'édition
 - 📋 **Génération de présets** — bouton "Copier comme préset" pour configurer la page stagiaires
@@ -87,23 +87,23 @@ C'est la méthode la plus simple : les présets vivent en dehors du code WordPre
 5. **Une seule fois** : renseigner `PRESETS_BASE_URL` dans `clavier-accordeon-stagiaires-gutenberg.txt` avec l'URL du dossier `presets/`
 
 **Structure du dossier FTP :**
-```
+
+```text
 presets/
   ca-svg.js           ← ⭐ bibliothèque SVG partagée — OBLIGATOIRE (copie de outils/clavier-accordeon/ca-svg.js)
   index.json          ← liste des présets [{id, label, category}, …]
   GC21.json           ← données du preset Sol/Do 21 boutons
   MonPreset.json      ← vos présets personnalisés
   ...
-```
-
+```text
 **Format `index.json` :**
+
 ```json
 [
   {"id": "GC21",     "label": "Sol/Do — 21 boutons",   "category": "2 rangs"},
   {"id": "MonPreset","label": "Mon accordéon perso",    "category": "Personnalisés"}
 ]
-```
-
+```text
 Le dossier `presets/` du dépôt contient déjà les 36 présets standards. Il suffit de l'uploader tel quel et d'y ajouter les vôtres.
 
 ### Workflow B — Présets inline dans WordPress (méthode manuelle)
@@ -127,9 +127,10 @@ Le dossier `presets/` du dépôt contient déjà les 36 présets standards. Il s
 ### Présets de la page stagiaires — via FTP (Workflow A)
 
 Configurez `PRESETS_BASE_URL` dans `clavier-accordeon-stagiaires-gutenberg.txt` :
+
 ```javascript
 var PRESETS_BASE_URL = 'https://votre-site.com/wp-content/uploads/presets';
-```
+```text
 Le widget chargera automatiquement `index.json` au démarrage pour peupler le menu déroulant, puis chaque preset `.json` à la demande (chargement paresseux, mis en cache localement).
 
 > **Note CORS :** l'URL doit être sur le même domaine WordPress ou avoir les en-têtes CORS appropriés (`Access-Control-Allow-Origin: *`). Les fichiers uploadés via la Médiathèque WordPress ou un sous-dossier FTP du même domaine fonctionnent sans configuration supplémentaire.
@@ -137,12 +138,12 @@ Le widget chargera automatiquement `index.json` au démarrage pour peupler le me
 ### Présets de la page stagiaires — inline WordPress (Workflow B)
 
 Les présets par défaut (GC21, AD33, etc.) sont **intégrés directement** dans le widget (`PRESETS_DATA`). Les présets personnalisés admin peuvent être ajoutés dans le bloc :
+
 ```html
 <script id="cw-custom-presets" type="application/json">
 [ /* coller ici les présets JSON */ ]
 </script>
-```
-
+```text
 ### ⚠️ Note WordPress : opérateur `&&`
 
 WordPress encode automatiquement `&&` en `&#038;&#038;` dans les blocs HTML personnalisés, ce qui casse le JavaScript. Tous les fichiers Gutenberg `.txt` utilisent des ternaires et des `if` imbriqués à la place de `&&` pour éviter ce problème.
@@ -178,9 +179,9 @@ Les fichiers JSON exportés par le widget et par l'outil offline `index.html` so
     "accords": [ {"p":"Sol Maj","t":"Ré Min"}, ... ]
   }
 }
-```
-
+```text
 **Champs clés :**
+
 - `rangees[i].offset` — décalage vertical de la rangée (−30 … +30 demi-pas)
 - `lhRows[i].offset` — décalage vertical de la rangée main gauche
 - `notes.droite[rangée][bouton].p` — note poussée (↓)
@@ -212,14 +213,14 @@ Ce workflow est disponible dans les deux versions : widget WordPress et outil of
 
 Pour l'outil offline `index.html`, les presets sont des fichiers JSON dans le dossier `presets/` :
 
-```
+```text
 presets/
   GC21.json
   AD33.json
   ...
-```
-
+```text
 Pour **ajouter un preset** à l'outil offline :
+
 1. Créer `presets/MONPRESET.json` au format ci-dessus
 2. Ajouter une entrée dans `PRESET_CATALOG` dans `index.html`
 

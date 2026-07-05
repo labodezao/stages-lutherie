@@ -1,6 +1,7 @@
 # Plan d'Action Marketing - 30 Jours pour Démarrer
 
 ## 🎯 Objectif
+
 Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux prochains stages.
 
 ---
@@ -8,6 +9,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 📅 SEMAINE 1 : Fondations & Contenu de Base
 
 ### Jour 1-2 : Collecte de Témoignages ⭐ PRIORITÉ
+
 - [ ] Contacter 10 anciens stagiaires par email/téléphone
 - [ ] Demander :
   - Un témoignage écrit (100-200 mots)
@@ -17,6 +19,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Template email : "Bonjour [Prénom], j'aimerais partager votre belle expérience avec les futurs stagiaires..."
 
 ### Jour 3 : Photos Existantes
+
 - [ ] Rassembler toutes les photos des stages précédents
 - [ ] Sélectionner 50 meilleures photos :
   - 10 photos "avant" (jour 1-2)
@@ -27,6 +30,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Créer dossiers : `/photos-marketing/process/`, `/photos-marketing/resultats/`, `/photos-marketing/ambiance/`
 
 ### Jour 4 : Création Comptes Sociaux
+
 - [ ] **Instagram** :
   - Créer compte @stages_lutherie_ewendaviau
   - Photo de profil : logo ou photo atelier
@@ -42,11 +46,13 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
   - Playlist "Stages 2025-2026"
 
 ### Jour 5 : Premiers Posts
+
 - [ ] Instagram : Post 1 - "Bienvenue ! Découvrez notre atelier" + 3 photos carrousel
 - [ ] Facebook : Post 1 - Annonce complète des sessions 2026
 - [ ] Story Instagram : "Devinez combien de temps pour créer un accordéon ?" (poll)
 
 ### Jour 6-7 : Google Business & Optimisation Locale
+
 - [ ] Créer **Google Business Profile**
   - Nom : "Stages de Lutherie Accordéon Diatonique - Ewen Daviau"
   - Catégorie : École d'artisanat, Atelier de lutherie
@@ -61,7 +67,9 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 📅 SEMAINE 2 : Contenu & Visibilité
 
 ### Jour 8-9 : Shooting Photo Simple
+
 **Si budget limité : faire soi-même avec smartphone**
+
 - [ ] Photos de l'atelier :
   - Vue d'ensemble de l'espace de travail
   - Gros plans sur outils, bois, mécaniques
@@ -71,6 +79,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Éditer avec app gratuite (Snapseed, VSCO)
 
 ### Jour 10 : Création Linktree / Landing Page Simple
+
 - [ ] Créer compte Linktree gratuit
 - [ ] Ajouter liens :
   - 🎵 S'inscrire au stage
@@ -81,7 +90,9 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Design cohérent avec couleurs de la marque
 
 ### Jour 11-12 : Premiers Articles de Blog
+
 **Sur le site ou Medium/LinkedIn**
+
 - [ ] Article 1 : "Pourquoi fabriquer son propre accordéon diatonique ?"
   - 800-1000 mots
   - 3-5 photos
@@ -91,6 +102,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
   - Photos avant/après
 
 ### Jour 13 : Vidéo Simple (Smartphone)
+
 - [ ] Filmer présentation courte (2-3min) :
   - "Bonjour, je suis Ewen Daviau..."
   - Visite rapide de l'atelier
@@ -101,6 +113,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Publier sur YouTube, Facebook, Instagram Reels
 
 ### Jour 14 : Email aux Anciens Stagiaires
+
 - [ ] Créer liste email des anciens (si pas déjà fait)
 - [ ] Email : "Nouvelles sessions 2026 - Parlez-en autour de vous !"
   - Rappel des bons moments
@@ -112,7 +125,9 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 📅 SEMAINE 3 : Activation & Promotion
 
 ### Jour 15-16 : Partenariats Locaux - Phase 1
+
 **Contacts à faire :**
+
 - [ ] Office de Tourisme de Saint-Nazaire
   - Email + appel de suivi
   - Proposer : flyers, affichage, mention sur leur site
@@ -123,6 +138,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
   - Email de présentation + flyer PDF
 
 ### Jour 17 : Lancement Événement Facebook
+
 - [ ] Créer **Événement Facebook** : "Stage Avril 2026"
   - Description complète
   - Belle image de couverture
@@ -131,14 +147,18 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Même chose pour "Stage Octobre 2026"
 
 ### Jour 18-19 : Contenu Réseaux Sociaux (Batch Creation)
+
 **Créer 12 posts à l'avance :**
+
 - [ ] 4 posts Instagram (images + captions)
 - [ ] 4 posts Facebook
 - [ ] 4 stories Instagram
 - [ ] Planifier avec Later ou Hootsuite (gratuit jusqu'à 30 posts/mois)
 
 ### Jour 20 : Premiers Ads (Test Petit Budget)
+
 **Si budget disponible : 50€ pour tester**
+
 - [ ] Facebook Ads : Boost du post annonce
   - Audience : 30-65 ans, France, intérêts musique folk/artisanat
   - Budget : 5€/jour pendant 10 jours
@@ -146,6 +166,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Analyser résultats après 3 jours
 
 ### Jour 21 : Contact Presse Locale
+
 - [ ] Préparer communiqué de presse :
   - Titre accrocheur
   - Qui, quoi, où, quand, pourquoi
@@ -162,6 +183,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 📅 SEMAINE 4 : Optimisation & Accélération
 
 ### Jour 22-23 : Amélioration Site d'Inscription
+
 - [ ] Vérifier que le site est mobile-friendly
 - [ ] Ajouter urgence : "X places restantes pour avril !"
 - [ ] Ajouter témoignages visibles immédiatement
@@ -169,13 +191,16 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Bouton CTA bien visible
 
 ### Jour 24 : Création Bon Cadeau
+
 - [ ] Designer template de bon cadeau (Canva)
 - [ ] Créer page sur site pour achat de bons
 - [ ] Post Facebook/Instagram : "Offrez un stage !"
 - [ ] Cibler : cadeaux Noël, anniversaires, retraite
 
 ### Jour 25-26 : Vidéos Courtes (Reels/Shorts)
+
 **Créer 5 vidéos < 60 secondes :**
+
 - [ ] "Day 1 vs Day 10" (time-lapse)
 - [ ] "Le son d'un accordéon fait main" (test sonore)
 - [ ] "3 raisons de fabriquer son accordéon"
@@ -183,6 +208,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] "Témoignage flash" (un stagiaire, 30s)
 
 ### Jour 27 : Newsletter Initiale
+
 - [ ] Choisir outil (Mailchimp gratuit jusqu'à 500 contacts)
 - [ ] Créer formulaire d'inscription sur site
 - [ ] Email de bienvenue automatique
@@ -190,6 +216,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Promouvoir inscription sur réseaux sociaux
 
 ### Jour 28 : Analyse & Ajustements
+
 - [ ] Vérifier analytics :
   - Google Analytics site web
   - Insights Instagram/Facebook
@@ -201,6 +228,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Ajuster stratégie en conséquence
 
 ### Jour 29 : Journée Portes Ouvertes (Planification)
+
 - [ ] Fixer date : samedi en janvier ou février
 - [ ] Créer événement Facebook
 - [ ] Préparer programme :
@@ -212,8 +240,9 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] Inscription obligatoire (limite 15-20 personnes)
 
 ### Jour 30 : Bilan & Planification Mois 2
+
 - [ ] Faire bilan des 30 jours :
-  - Tâches accomplies : ___/___
+  - Tâches accomplies : _**/**_
   - Abonnés gagnés : ___
   - Visites site : ___
   - Inscriptions : ___
@@ -226,21 +255,25 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 📊 KPIs à Suivre (Tableau de Bord)
 
 ### Semaine 1
+
 - [ ] Témoignages collectés : ___/10
 - [ ] Photos triées : ___/50
 - [ ] Comptes créés : Instagram ☐ Facebook ☐ YouTube ☐
 
 ### Semaine 2
+
 - [ ] Articles publiés : ___/2
 - [ ] Vidéos publiées : ___/1
 - [ ] Google Business : activé ☐
 
 ### Semaine 3
+
 - [ ] Partenariats contactés : ___/10
 - [ ] Posts créés à l'avance : ___/12
 - [ ] Communiqués presse envoyés : ___/5
 
 ### Semaine 4
+
 - [ ] Reels créés : ___/5
 - [ ] Abonnés totaux : ___
 - [ ] Inscriptions reçues : ___
@@ -250,7 +283,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 💰 Budget 30 Jours (Version Économique)
 
 | Poste | Coût | Priorité |
-|-------|------|----------|
+| ------- | ------ | ---------- |
 | Linktree Pro (optionnel) | 5€/mois | Basse |
 | Canva Pro (optionnel) | 11€/mois | Moyenne |
 | Facebook Ads (test) | 50€ | Moyenne |
@@ -266,6 +299,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 🎯 Objectifs Fin 30 Jours
 
 ### Quantitatifs
+
 - [ ] 200+ abonnés Instagram
 - [ ] 150+ likes page Facebook
 - [ ] 50+ abonnés YouTube
@@ -274,6 +308,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 - [ ] **2-3 nouvelles inscriptions minimum**
 
 ### Qualitatifs
+
 - [ ] Présence en ligne établie
 - [ ] Premiers témoignages publiés
 - [ ] Partenariats locaux initiés
@@ -295,6 +330,7 @@ Lancer la stratégie marketing en 30 jours pour augmenter les inscriptions aux p
 ## 📞 Aide & Support
 
 Si vous avez besoin d'aide sur un point :
+
 - Marketing digital : freelances sur Malt.fr (30-50€/h)
 - Photos : photographes locaux ou étudiants en photo
 - Vidéos : monteurs sur Fiverr (à partir de 20€)
@@ -305,12 +341,14 @@ Si vous avez besoin d'aide sur un point :
 ## ✅ Checklist Quotidienne (Routine)
 
 **Chaque jour (15-30 min) :**
+
 - [ ] Répondre aux messages/commentaires
 - [ ] Publier 1 story Instagram
 - [ ] Vérifier stats (rapide)
 - [ ] Noter idées de contenu
 
 **Chaque semaine (2-3h) :**
+
 - [ ] Créer 3-4 posts
 - [ ] Répondre aux emails
 - [ ] Contacter 2 partenaires potentiels
