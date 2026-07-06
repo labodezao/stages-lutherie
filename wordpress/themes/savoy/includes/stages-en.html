@@ -39,6 +39,10 @@
   Workshop          : Jour-9-30-1024x472.jpg
 ====================================================================== -->
 
+<!-- wp:html -->
+<style>.wp-block-columns > .wp-block-column > .wp-block-group{height:100%}</style>
+<!-- /wp:html -->
+
 <!-- wp:paragraph {"align":"right","style":{"color":{"text":"#8D6E63"},"spacing":{"padding":{"top":"8px","bottom":"0","right":"1.5rem"}},"typography":{"fontSize":"0.85rem"}}} -->
 <p class="has-text-align-right has-text-color" style="color:#8D6E63;padding-top:8px;padding-right:1.5rem;padding-bottom:0;font-size:0.85rem"><a href="https://ewendaviau.com/stages-lutherie/" style="color:#8D6E63;">Version française</a></p>
 <!-- /wp:paragraph -->
@@ -1563,4 +1567,38 @@ body.stluth-stage-news-popup-open{overflow:hidden}
 <!-- /wp:group --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"metadata":{"name":"📧 Newsletter signup — salon"},"style":{"spacing":{"padding":{"top":"2.5rem","bottom":"2.5rem"}},"color":{"background":"#2C1810"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-background" style="background-color:#2C1810;padding-top:2.5rem;padding-bottom:2.5rem"><!-- wp:html -->
+<style>
+.stluth-salon-news{max-width:540px;margin:0 auto;text-align:center;padding:0 1rem}
+.stluth-salon-news__eyebrow{color:#D4A017;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 .6rem}
+.stluth-salon-news__title{color:#FAFAFA;font-size:1.75rem;font-weight:700;line-height:1.25;margin:0 0 .5rem}
+.stluth-salon-news__sub{color:rgba(250,250,250,.72);font-size:.97rem;margin:0 0 1.5rem}
+.stluth-salon-news__form{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
+.stluth-salon-news__input{flex:1;min-width:220px;padding:1rem 1.25rem;border:2px solid rgba(212,160,23,.45);border-radius:12px;font-size:1.05rem;background:rgba(255,255,255,.09);color:#FAFAFA;box-sizing:border-box}
+.stluth-salon-news__input::placeholder{color:rgba(255,255,255,.45)}
+.stluth-salon-news__input:focus{outline:none;border-color:#D4A017;background:rgba(255,255,255,.13)}
+.stluth-salon-news__btn{padding:1rem 1.75rem;background:#D4A017;color:#3E2723;font-weight:700;font-size:1rem;border:0;border-radius:12px;cursor:pointer;white-space:nowrap}
+.stluth-salon-news__note{margin:.9rem 0 0;color:rgba(250,250,250,.45);font-size:.8rem}
+.stluth-salon-news__hp{position:absolute;left:-9999px;opacity:0;pointer-events:none}
+</style>
+<div class="stluth-salon-news">
+  <p class="stluth-salon-news__eyebrow">Workshop sessions &amp; news</p>
+  <h3 class="stluth-salon-news__title">Get notified of upcoming dates</h3>
+  <p class="stluth-salon-news__sub">Leave your email to hear about new workshop sessions before they open to the public.</p>
+  <form class="stluth-salon-news__form" action="https://ewendaviau.com/wp-admin/admin-post.php?action=mailpoet_subscription_form" method="post">
+    <input type="hidden" name="data[form_id]" value="1">
+    <input type="hidden" name="token" value="fd154bc989">
+    <input type="hidden" name="api_version" value="v1">
+    <input type="hidden" name="endpoint" value="subscribers">
+    <input type="hidden" name="mailpoet_method" value="subscribe">
+    <label class="stluth-salon-news__hp" aria-hidden="true">Leave blank<input type="email" name="data[email]" tabindex="-1" autocomplete="off"></label>
+    <input type="email" name="data[form_field_ZThjYmJjODk0Mjc5X2VtYWls]" class="stluth-salon-news__input" placeholder="your@email.com" autocomplete="email" required aria-label="Email address">
+    <button type="submit" class="stluth-salon-news__btn">Subscribe</button>
+  </form>
+  <p class="stluth-salon-news__note">No spam — only new sessions and workshop updates.</p>
+</div>
+<!-- /wp:html --></div>
 <!-- /wp:group -->
