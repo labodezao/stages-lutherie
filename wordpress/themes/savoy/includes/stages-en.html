@@ -41,8 +41,8 @@
 
 <!-- wp:html -->
 <style>
-.wp-block-columns > .wp-block-column{display:flex;flex-direction:column}
-.wp-block-columns > .wp-block-column > .wp-block-group{flex:1}
+.wp-block-columns > .wp-block-column:not([style*="flex-basis"]){display:flex;flex-direction:column}
+.wp-block-columns > .wp-block-column:not([style*="flex-basis"]) > .wp-block-group{flex:1}
 </style>
 <!-- /wp:html -->
 

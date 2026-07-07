@@ -35,6 +35,7 @@ function evd_write( int $post_id, string $content ): void {
         [ 'ID' => $post_id ]
     );
     clean_post_cache( $post_id );
+    do_action( 'save_post', $post_id, get_post( $post_id ), true );
 }
 
 /**
