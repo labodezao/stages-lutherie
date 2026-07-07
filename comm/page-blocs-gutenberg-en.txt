@@ -40,7 +40,10 @@
 ====================================================================== -->
 
 <!-- wp:html -->
-<style>.wp-block-columns > .wp-block-column > .wp-block-group{height:100%}</style>
+<style>
+.wp-block-columns > .wp-block-column{display:flex;flex-direction:column}
+.wp-block-columns > .wp-block-column > .wp-block-group{flex:1}
+</style>
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"align":"right","style":{"color":{"text":"#8D6E63"},"spacing":{"padding":{"top":"8px","bottom":"0","right":"1.5rem"}},"typography":{"fontSize":"0.85rem"}}} -->
