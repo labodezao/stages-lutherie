@@ -147,13 +147,13 @@ function evd_seed_stages_en(): int {
 }
 
 function evd_seed_inscriptions(): int {
-    evd_upsert_page( 'Inscription — Stage de lutherie', 'inscription-lutherie',
+    evd_upsert_page( 'Inscription — Stage de lutherie', 'inscriptions-stages',
         evd_apply_params( evd_read_include( 'inscriptions-fr.html' ) ) );
     return 1;
 }
 
 function evd_seed_inscriptions_en(): int {
-    evd_upsert_page( 'Registration — Lutherie Workshop', 'registration-lutherie-workshop',
+    evd_upsert_page( 'Registration — Lutherie Workshop', 'inscriptions-stages-en',
         evd_apply_params( evd_read_include( 'inscriptions-en.html' ) ) );
     return 1;
 }

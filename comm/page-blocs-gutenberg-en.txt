@@ -69,7 +69,7 @@
 
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
 <div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"4px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
-<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:4px;color:#3E2723;background-color:#D4A017;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">Register now</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://ewendaviau.com/inscriptions-stages-en/" style="border-radius:4px;color:#3E2723;background-color:#D4A017;padding-top:14px;padding-right:32px;padding-bottom:14px;padding-left:32px" target="_blank" rel="noreferrer noopener">Register now</a></div>
 <!-- /wp:button -->
 
 <!-- wp:button {"style":{"color":{"text":"#FAFAFA"},"border":{"radius":"4px","color":"rgba(255,255,255,0.6)","width":"1px"},"spacing":{"padding":{"top":"14px","bottom":"14px","left":"32px","right":"32px"}}}} -->
@@ -1248,7 +1248,7 @@
 
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
 <div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#D4A017","text":"#3E2723"},"border":{"radius":"4px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem","fontWeight":"700"}}} -->
-<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://stages.ewendaviau.com" style="border-radius:4px;color:#3E2723;background-color:#D4A017;padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem;font-weight:700" target="_blank" rel="noreferrer noopener">Register now</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="https://ewendaviau.com/inscriptions-stages-en/" style="border-radius:4px;color:#3E2723;background-color:#D4A017;padding-top:16px;padding-right:40px;padding-bottom:16px;padding-left:40px;font-size:1.1rem;font-weight:700" target="_blank" rel="noreferrer noopener">Register now</a></div>
 <!-- /wp:button -->
 
 <!-- wp:button {"style":{"color":{"background":"rgba(255,255,255,0.15)","text":"#FAFAFA"},"border":{"radius":"4px","color":"#FAFAFA","width":"2px"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}},"typography":{"fontSize":"1.1rem"}}} -->
@@ -1285,7 +1285,7 @@
 
     <div class="stluth-stage-news-popup__footer">
       <button type="button" class="stluth-stage-news-popup__later" data-popup-close="later">Maybe later</button>
-      <a class="stluth-stage-news-popup__link" href="https://ewendaviau.com/inscriptions-stages/" target="_blank" rel="noopener noreferrer">See workshops now</a>
+      <a class="stluth-stage-news-popup__link" href="https://ewendaviau.com/inscriptions-stages-en/" target="_blank" rel="noopener noreferrer">See workshops now</a>
     </div>
 
     <p class="stluth-stage-news-popup__note">The popup only appears after real reading time or interest, then stays quiet for several days if you close it.</p>
