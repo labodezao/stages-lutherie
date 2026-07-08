@@ -43,6 +43,12 @@ add_action( 'wp_head', function () {
     echo '<style>.evd-lang-en{display:none}html.lang-en .evd-lang-fr{display:none}html.lang-en .evd-lang-en{display:block}</style>' . "\n";
 }, 1 );
 
+// ── Substitution {{TARIF_RETOUR}} au rendu (fallback si seed n'a pas remplacé) ─
+add_filter( 'the_content', function ( $content ) {
+    if ( strpos( $content, '{{TARIF_RETOUR}}' ) === false ) return $content;
+    return str_replace( '{{TARIF_RETOUR}}', (string) get_option( 'stluth_tarif_retour', 80 ), $content );
+} );
+
 // ── Admin : page Seed + tarif retour ─────────────────────────────────────────
 // Sessions, emails et capacités sont gérés dans inscription-api.php
 // (Stages → Inscriptions dans l'admin WP).

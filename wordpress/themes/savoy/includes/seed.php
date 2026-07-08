@@ -35,7 +35,12 @@ function evd_write( int $post_id, string $content ): void {
         [ 'ID' => $post_id ]
     );
     clean_post_cache( $post_id );
-    do_action( 'save_post', $post_id, get_post( $post_id ), true );
+    $post_obj = get_post( $post_id );
+    do_action( 'save_post', $post_id, $post_obj, true );
+    do_action( 'litespeed_purge_post', $post_id );
+    if ( function_exists( 'rocket_clean_post' ) ) rocket_clean_post( $post_id );
+    if ( function_exists( 'wp_cache_post_change' ) ) wp_cache_post_change( $post_id );
+    if ( function_exists( 'w3tc_flush_post' ) ) w3tc_flush_post( $post_id );
 }
 
 /**
