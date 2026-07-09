@@ -111,7 +111,7 @@ const EVD_APERCU_FALLBACK_COLOR = '#888888';
 
 function evd_apercu_sanitize_hex_color( string $color, string $fallback = EVD_APERCU_FALLBACK_COLOR ): string {
     $sanitized = function_exists( 'sanitize_hex_color' ) ? sanitize_hex_color( $color ) : '';
-    if ( ! $sanitized && preg_match( '/^#(?:[0-9a-fA-F]{3}){1,2}$/', $color ) ) $sanitized = $color;
+    if ( ! $sanitized && preg_match( '/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $color ) ) $sanitized = $color;
     return $sanitized ?: $fallback;
 }
 
