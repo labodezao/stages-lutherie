@@ -30,9 +30,13 @@ var STAGE_CONFIG = (function(){
       apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
     };
   }
+  var fallbackYear = new Date().getFullYear();
   return {
-    annee: new Date().getFullYear(),
-    sessions: [],
+    annee: fallbackYear,
+    sessions: [
+      { id: 'avril', fullId: 'avril' + fallbackYear, icon: '🌸', saison: 'Printemps', dates: 'Session de printemps ' + fallbackYear },
+      { id: 'octobre', fullId: 'octobre' + fallbackYear, icon: '🍂', saison: 'Automne', dates: 'Session d\'automne ' + fallbackYear }
+    ],
     presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
     grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
     apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
