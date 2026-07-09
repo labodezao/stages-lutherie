@@ -47,6 +47,9 @@ var STAGE_CONFIG = (function(){
     if(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
   }
 })();
+/* Aperçu : actif + overrides injectés par evd.php via wp_head */
+if(typeof window.STLUTH_APERCU_ACTIF!=='undefined'){STAGE_CONFIG.apercuActif=window.STLUTH_APERCU_ACTIF;STAGE_CONFIG.apercuImages=window.STLUTH_APERCU_IMAGES||{};}else{STAGE_CONFIG.apercuActif=true;}
+if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',function(){var e=document.getElementById('evd-apercu-section');if(e)e.style.display='none';});}
 </script>
 <!-- /wp:html -->
 
@@ -781,7 +784,7 @@ var STAGE_CONFIG = (function(){
 <!-- /wp:group -->
 
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
-<div class="wp-block-group insc-native-section">
+<div class="wp-block-group insc-native-section" id="evd-apercu-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
 <h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Aperçu de votre accordéon</h2>
 <!-- /wp:heading -->
@@ -1727,6 +1730,9 @@ var STAGE_CONFIG = (function(){
         if (base) {
           if (slug) {
             var src = ACC_IMG_BASE + base + '-' + slug + '.png';
+            if (STAGE_CONFIG.apercuImages && STAGE_CONFIG.apercuImages[base + '-' + slug]) {
+              src = STAGE_CONFIG.apercuImages[base + '-' + slug];
+            }
             var probe = new Image();
             probe.onload = function() {
               el.style.backgroundImage = 'url(' + src + ')';
@@ -1746,6 +1752,7 @@ var STAGE_CONFIG = (function(){
   }
 
   function updateAccordionPreview() {
+    if (STAGE_CONFIG.apercuActif === false) return;
     var boisClavier = document.getElementById('boisClavier').value;
     var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
     var boutons     = document.getElementById('boutonsMD').value;

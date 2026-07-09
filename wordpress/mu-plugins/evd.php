@@ -49,6 +49,21 @@ add_filter( 'the_content', function ( $content ) {
     return str_replace( '{{TARIF_RETOUR}}', (string) get_option( 'stluth_tarif_retour', 80 ), $content );
 } );
 
+// ── Injection aperçu accordéon (avant le contenu de page) ────────────────────
+add_action( 'wp_head', function () {
+    $actif  = (bool) get_option( 'stluth_apercu_actif', false );
+    $images = json_decode( get_option( 'stluth_apercu_images', '{}' ), true ) ?: [];
+    echo '<script>window.STLUTH_APERCU_ACTIF=' . ( $actif ? 'true' : 'false' ) . ';';
+    if ( $images ) {
+        echo 'window.STLUTH_APERCU_IMAGES=' . wp_json_encode( $images ) . ';';
+    }
+    echo '</script>' . "\n";
+}, 2 );
+
+add_action( 'admin_enqueue_scripts', function ( $hook ) {
+    if ( strpos( $hook, 'evd-seed' ) !== false ) wp_enqueue_media();
+} );
+
 // ── Admin : page Seed + tarif retour ─────────────────────────────────────────
 // Sessions, emails et capacités sont gérés dans inscription-api.php
 // (Stages → Inscriptions dans l'admin WP).
@@ -100,7 +115,101 @@ function evd_render_seed_page(): void {
       </tbody></table>
       <p><button type="submit" class="button button-secondary">Enregistrer le tarif</button></p>
     </form>
+
+    <hr>
+    <?php evd_render_apercu_admin(); ?>
     </div>
+    <?php
+}
+
+function evd_render_apercu_admin(): void {
+    $actif  = (bool) get_option( 'stluth_apercu_actif', false );
+    $images = json_decode( get_option( 'stluth_apercu_images', '{}' ), true ) ?: [];
+
+    $layers = [
+        'caisse'   => [ 'Corps (bois clavier)',  [ 'noyer' => 'Noyer', 'erable' => 'Érable', 'cerisier' => 'Cerisier' ] ],
+        'grille'   => [ 'Grille (bois)',          [ 'noyer' => 'Noyer', 'erable' => 'Érable', 'cerisier' => 'Cerisier' ] ],
+        'boutons'  => [ 'Boutons',                [ 'nacrine-noire' => 'Nacrine noire', 'nacrine-blanche' => 'Nacrine blanche', 'noyer' => 'Noyer', 'erable' => 'Érable' ] ],
+        'soufflet' => [ 'Soufflet',               [ 'bleu' => 'Bleu', 'rouge' => 'Rouge', 'orange' => 'Orange', 'noir' => 'Noir' ] ],
+        'sangles'  => [ 'Sangles',                [ 'bleu' => 'Bleu', 'rouge' => 'Rouge', 'cuir-nat' => 'Cuir Nat.', 'noir' => 'Noir' ] ],
+    ];
+    ?>
+    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="evd-apercu-form" style="margin-top:1.5rem">
+      <input type="hidden" name="action" value="evd_apercu_save">
+      <?php wp_nonce_field( 'evd_apercu_save' ); ?>
+
+      <h2 style="margin-top:0">Aperçu accordéon</h2>
+
+      <table class="form-table" style="max-width:520px"><tbody>
+        <tr>
+          <th>Activation</th>
+          <td>
+            <label>
+              <input type="checkbox" name="stluth_apercu_actif" value="1" <?php checked( $actif ); ?>>
+              Afficher la section « Aperçu de votre accordéon » dans le formulaire
+            </label>
+            <p class="description">Si décoché, la section est masquée même après un seed.</p>
+          </td>
+        </tr>
+      </tbody></table>
+
+      <h3>Photos par calque</h3>
+      <p class="description">
+        PNG transparent, même cadre 4:3 pour tous les calques. Les calques se superposent.<br>
+        Si le champ est vide, la couleur indicative s'affiche en fallback.
+      </p>
+
+      <?php foreach ( $layers as $layer_key => [ $layer_label, $options ] ) : ?>
+      <h4 style="margin:1.2rem 0 .4rem"><?php echo esc_html( $layer_label ); ?></h4>
+      <table class="form-table" style="max-width:760px"><tbody>
+        <?php foreach ( $options as $slug => $option_label ) :
+            $key      = $layer_key . '-' . $slug;
+            $url      = $images[ $key ] ?? '';
+            $field_id = 'apercu-' . esc_attr( $key );
+        ?>
+        <tr>
+          <th style="width:150px"><label for="<?php echo $field_id; ?>"><?php echo esc_html( $option_label ); ?></label></th>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <input type="text" id="<?php echo $field_id; ?>"
+                     name="apercu_images[<?php echo esc_attr( $key ); ?>]"
+                     value="<?php echo esc_attr( $url ); ?>"
+                     class="regular-text" style="flex:1;min-width:260px">
+              <button type="button" class="button evd-media-pick"
+                      data-target="<?php echo $field_id; ?>">Choisir</button>
+              <img id="prev-<?php echo $field_id; ?>"
+                   src="<?php echo esc_url( $url ); ?>"
+                   style="height:44px;width:auto;border:1px solid #ddd;border-radius:3px;<?php echo $url ? '' : 'display:none'; ?>">
+            </div>
+            <span class="description">Fichier attendu : <code><?php echo esc_html( $key . '.png' ); ?></code></span>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody></table>
+      <?php endforeach; ?>
+
+      <p style="margin-top:1.5rem"><button type="submit" class="button button-secondary">Enregistrer l'aperçu</button></p>
+    </form>
+
+    <script>
+    jQuery(function($){
+      $('.evd-media-pick').on('click', function(){
+        var tid = $(this).data('target');
+        var frame = wp.media({
+          title: 'Sélectionner une image aperçu',
+          button: { text: 'Utiliser cette image' },
+          multiple: false,
+          library: { type: 'image' }
+        });
+        frame.on('select', function(){
+          var att = frame.state().get('selection').first().toJSON();
+          $('#' + tid).val(att.url);
+          $('#prev-' + tid).attr('src', att.url).show();
+        });
+        frame.open();
+      });
+    });
+    </script>
     <?php
 }
 
@@ -118,6 +227,21 @@ add_action( 'admin_post_evd_tarif_save', function () {
     if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized', 403 );
     check_admin_referer( 'evd_tarif_save' );
     update_option( 'stluth_tarif_retour', max( 0, (int) ( $_POST['stluth_tarif_retour'] ?? 80 ) ) );
+    wp_redirect( admin_url( 'admin.php?page=evd-seed&saved=1' ) );
+    exit;
+} );
+
+add_action( 'admin_post_evd_apercu_save', function () {
+    if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized', 403 );
+    check_admin_referer( 'evd_apercu_save' );
+    update_option( 'stluth_apercu_actif', ! empty( $_POST['stluth_apercu_actif'] ) ? 1 : 0 );
+    $images = [];
+    foreach ( ( $_POST['apercu_images'] ?? [] ) as $k => $v ) {
+        $k = sanitize_key( $k );
+        $v = esc_url_raw( trim( (string) $v ) );
+        if ( $k && $v ) $images[ $k ] = $v;
+    }
+    update_option( 'stluth_apercu_images', wp_json_encode( $images ) );
     wp_redirect( admin_url( 'admin.php?page=evd-seed&saved=1' ) );
     exit;
 } );
