@@ -1631,7 +1631,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
     }
 
     /* Accordion visual preview update */
-    updateAccordionPreview();
+    try { updateAccordionPreview(); } catch(e) {}
   }
 
   /* ── Accordion Visual Preview ── */
@@ -1645,7 +1645,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
 
   /* Aperçu accordéon — piloté par STAGE_CONFIG.apercuConfig */
 
-  document.addEventListener('DOMContentLoaded', function() {
+  ;(function() {
     var cfg = STAGE_CONFIG.apercuConfig;
     if (!cfg || !cfg.layers) return;
     cfg.layers.forEach(function(layer) {
@@ -1677,7 +1677,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
       }
     });
     updateAccordionPreview();
-  });
+  })();
 
   function _layerCfg(formField) {
     var cfg = STAGE_CONFIG.apercuConfig;
