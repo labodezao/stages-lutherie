@@ -107,6 +107,8 @@ function evd_apercu_default_config(): array {
     ];
 }
 
+const EVD_APERCU_FALLBACK_COLOR = '#888888';
+
 function evd_apercu_get_config(): array {
     $saved = get_option( 'stluth_apercu_config', '' );
     if ( $saved ) {
@@ -127,6 +129,16 @@ function evd_apercu_get_config(): array {
     return $config;
 }
 
+/**
+ * Normalize the saved preview config before injecting it into front-end/admin JS.
+ *
+ * This keeps the expected layer metadata from the repository defaults while
+ * preserving user-editable values from the admin UI. It also strips malformed
+ * strings/colors/URLs so a bad saved value cannot break JSON serialization.
+ *
+ * @param array $config Raw config loaded from WordPress options.
+ * @return array Safe config for inline JSON consumption.
+ */
 function evd_apercu_normalize_front_config( array $config ): array {
     $defaults   = evd_apercu_default_config();
     $raw_layers = [];
@@ -155,7 +167,7 @@ function evd_apercu_normalize_front_config( array $config ): array {
                     'slug'     => sanitize_key( $opt['slug'] ?? '' ),
                     'label'    => sanitize_text_field( $opt['label'] ?? '' ),
                     'label_en' => sanitize_text_field( $opt['label_en'] ?? '' ),
-                    'color'    => sanitize_hex_color( $opt['color'] ?? '' ) ?: '#888888',
+                    'color'    => sanitize_hex_color( $opt['color'] ?? '' ) ?: EVD_APERCU_FALLBACK_COLOR,
                     'imageUrl' => esc_url_raw( $opt['imageUrl'] ?? '' ),
                 ];
             }
