@@ -35,10 +35,14 @@ function evd_lang(): string {
     return ( $_COOKIE['evd_lang'] ?? 'fr' ) === 'en' ? 'en' : 'fr';
 }
 
+// Cookie set early (before any HTML output) so headers are never already sent.
+add_action( 'template_redirect', function () {
+    if ( isset( $_GET['lang'] ) )
+        setcookie( 'evd_lang', evd_lang(), time() + 365 * DAY_IN_SECONDS, '/', '', is_ssl(), true );
+} );
+
 add_action( 'wp_head', function () {
     $l = evd_lang();
-    if ( isset( $_GET['lang'] ) )
-        setcookie( 'evd_lang', $l, time() + 365 * DAY_IN_SECONDS, '/', '', is_ssl(), true );
     echo '<script>(function(){document.documentElement.classList.add("lang-' . esc_js( $l ) . '")})();</script>' . "\n";
     echo '<style>.evd-lang-en{display:none}html.lang-en .evd-lang-fr{display:none}html.lang-en .evd-lang-en{display:block}</style>' . "\n";
 }, 1 );

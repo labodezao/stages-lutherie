@@ -1663,7 +1663,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
         var sel = document.getElementById(layer.formField);
         if (sel) {
           while (sel.options.length > 1) sel.remove(1);
-          (layer.options || []).forEach(function(opt) { sel.add(new Option(opt.label, opt.label)); });
+          (layer.options || []).forEach(function(opt) { sel.add(new Option(opt.label_en || opt.label, opt.label)); });
         }
       } else if (layer.formType === 'radio') {
         var cont = document.getElementById(layer.formField + 'Options');
@@ -1674,7 +1674,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
             var inp = document.createElement('input'); inp.type = 'radio'; inp.name = layer.formField; inp.value = opt.label;
             var span = document.createElement('span'); span.className = 'card-label';
             var sw = document.createElement('span'); sw.className = 'color-swatch'; sw.style.background = opt.color || '#888';
-            var ct = document.createElement('span'); ct.className = 'card-title'; ct.style.fontSize = '0.95rem'; ct.textContent = opt.label;
+            var ct = document.createElement('span'); ct.className = 'card-title'; ct.style.fontSize = '0.95rem'; ct.textContent = opt.label_en || opt.label;
             span.appendChild(sw); span.appendChild(ct); lbl.appendChild(inp); lbl.appendChild(span); cont.appendChild(lbl);
           });
         }
