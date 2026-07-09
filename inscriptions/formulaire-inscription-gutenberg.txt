@@ -990,7 +990,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
       var sData = avail.sessions[inp.value];
       var lbl = inp.closest('label') || inp.parentElement;
       var sub = lbl.querySelector('.card-sub');
-      if (sData?.full) {
+      if (sData && sData.full) {
         lbl.classList.add('card-disabled'); inp.disabled = true;
         if (sub) {
           if (!sub.getAttribute('data-orig')) sub.setAttribute('data-orig', sub.innerHTML);
@@ -1006,7 +1006,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
     if (!selSess) { var ci = document.querySelector('#sessionOptions input[type="radio"]:checked'); if (ci) selSess = ci.value; }
     var sData2 = selSess ? avail.sessions[selSess] : null;
     document.querySelectorAll('input[name="modele"]').forEach(function(inp) {
-      var mData = sData2?.models ? sData2.models[inp.value] : null;
+      var mData = (sData2 && sData2.models) ? sData2.models[inp.value] : null;
       var lbl = inp.closest('label') || inp.parentElement;
       var avEl = lbl.querySelector('.card-avail');
       if (!avEl) {
@@ -1014,7 +1014,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
         avEl.style.cssText = 'display:block;font-size:.72rem;font-weight:700;margin-top:4px;';
         var cl = lbl.querySelector('.card-label'); if (cl) cl.appendChild(avEl);
       }
-      if (mData?.full) {
+      if (mData && mData.full) {
         lbl.classList.add('card-disabled'); inp.disabled = true;
         avEl.style.color = '#c0392b'; avEl.textContent = 'Complet';
       } else if (mData) {
@@ -1202,12 +1202,12 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
     if (!planData || !planCategory) return '\u2013';
     if (planCategory === '3 rangs 12b' || planCategory === '3 rangs 12 basses') {
       /* Présets standard ("33 boutons") = Heim ; Spéciaux = label contient l'info */
-      if (planLabel?.indexOf('33 boutons') >= 0) return 'Heim (standard)';
+      if (planLabel && planLabel.indexOf('33 boutons') >= 0) return 'Heim (standard)';
       return planLabel || planCategory;
     }
     if (planCategory === '2 rangs 8b') {
       /* Irlandais vs standard 2 rangs */
-      if (planLabel?.toLowerCase().indexOf('irlandais') >= 0) return 'Irish';
+      if (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) return 'Irish';
       return planLabel || planCategory;
     }
     /* 3 rangs 18b, 3 rangs 24b — le label contient déjà l'info de disposition */
