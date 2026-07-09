@@ -127,10 +127,73 @@ function evd_apercu_get_config(): array {
     return $config;
 }
 
+function evd_apercu_normalize_front_config( array $config ): array {
+    $defaults   = evd_apercu_default_config();
+    $raw_layers = [];
+
+    if ( isset( $config['layers'] ) && is_array( $config['layers'] ) ) {
+        foreach ( $config['layers'] as $layer ) {
+            if ( ! is_array( $layer ) ) continue;
+            $key = sanitize_key( $layer['key'] ?? '' );
+            if ( $key !== '' ) $raw_layers[ $key ] = $layer;
+        }
+    }
+
+    $normalized = [
+        'actif'  => ! empty( $config['actif'] ),
+        'layers' => [],
+    ];
+
+    foreach ( $defaults['layers'] as $default_layer ) {
+        $layer   = $raw_layers[ $default_layer['key'] ] ?? [];
+        $options = [];
+
+        if ( isset( $layer['options'] ) && is_array( $layer['options'] ) ) {
+            foreach ( $layer['options'] as $opt ) {
+                if ( ! is_array( $opt ) ) continue;
+                $options[] = [
+                    'slug'     => sanitize_key( $opt['slug'] ?? '' ),
+                    'label'    => sanitize_text_field( $opt['label'] ?? '' ),
+                    'label_en' => sanitize_text_field( $opt['label_en'] ?? '' ),
+                    'color'    => sanitize_hex_color( $opt['color'] ?? '' ) ?: '#888888',
+                    'imageUrl' => esc_url_raw( $opt['imageUrl'] ?? '' ),
+                ];
+            }
+        }
+
+        if ( ! $options ) $options = $default_layer['options'];
+
+        $normalized['layers'][] = [
+            'key'       => $default_layer['key'],
+            'divId'     => $default_layer['divId'],
+            'formField' => $default_layer['formField'],
+            'formType'  => $default_layer['formType'],
+            'label'     => sanitize_text_field( $layer['label'] ?? $default_layer['label'] ),
+            'label_en'  => sanitize_text_field( $layer['label_en'] ?? $default_layer['label_en'] ),
+            'clipPath'  => sanitize_text_field( $layer['clipPath'] ?? $default_layer['clipPath'] ),
+            'opacity'   => max( 0.0, min( 1.0, (float) ( $layer['opacity'] ?? $default_layer['opacity'] ) ) ),
+            'options'   => $options,
+        ];
+    }
+
+    return $normalized;
+}
+
+function evd_apercu_json_for_script( array $config ): string {
+    $flags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+    $json  = wp_json_encode( evd_apercu_normalize_front_config( $config ), $flags );
+    if ( is_string( $json ) && $json !== '' ) return $json;
+
+    $fallback = wp_json_encode( evd_apercu_default_config(), $flags );
+    if ( is_string( $fallback ) && $fallback !== '' ) return $fallback;
+
+    return '{"actif":false,"layers":[]}';
+}
+
 // ── Injection config aperçu via wp_head ───────────────────────────────────────
 add_action( 'wp_head', function () {
-    $config = evd_apercu_get_config();
-    echo '<script>window.STLUTH_APERCU_CONFIG=' . wp_json_encode( $config ) . ';</script>' . "\n";
+    $config_json = evd_apercu_json_for_script( evd_apercu_get_config() );
+    echo '<script id="stluth-apercu-config" type="application/json">' . $config_json . '</script>' . "\n";
 }, 2 );
 
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
@@ -239,7 +302,7 @@ function evd_render_apercu_admin(): void {
 
     <script>
     jQuery(function($){
-      var cfg = <?php echo wp_json_encode( $config ); ?>;
+      var cfg = <?php echo evd_apercu_json_for_script( $config ); ?>;
 
       /* ── Compositor ────────────────────────────────── */
       function buildCompositor() {

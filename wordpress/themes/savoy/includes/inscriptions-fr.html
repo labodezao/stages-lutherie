@@ -48,7 +48,12 @@ var STAGE_CONFIG = (function(){
   }
 })();
 /* Aperçu : config complète injectée par evd.php via wp_head */
-if(typeof window.STLUTH_APERCU_CONFIG!=='undefined'){STAGE_CONFIG.apercuConfig=window.STLUTH_APERCU_CONFIG;STAGE_CONFIG.apercuActif=window.STLUTH_APERCU_CONFIG.actif;}else{STAGE_CONFIG.apercuConfig={actif:true,layers:[{key:'caisse',divId:'accCaisse',formField:'boisClavier',formType:'select',label:'Bois clavier',label_en:'Keyboard wood',clipPath:'polygon(5% 8%,95% 8%,95% 92%,5% 92%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#8B6F47',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'soufflet',divId:'accSoufflet',formField:'couleurSoufflet',formType:'radio',label:'Soufflet',label_en:'Bellows',clipPath:'polygon(30% 8%,55% 8%,55% 92%,30% 92%)',opacity:1,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'orange',label:'Orange',label_en:'Orange',color:'#e67e22',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]},{key:'grille',divId:'accGrille',formField:'boisGrille',formType:'select',label:'Bois grille',label_en:'Grille wood',clipPath:'polygon(58% 12%,92% 12%,92% 42%,58% 42%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#A0845C',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'boutons',divId:'accBoutons',formField:'boutonsMD',formType:'select',label:'Boutons',label_en:'Buttons',clipPath:'polygon(62% 16%,88% 16%,88% 38%,62% 38%)',opacity:1,options:[{slug:'nacrine-noire',label:'Nacrine noire',label_en:'Black nacre',color:'#333333',imageUrl:''},{slug:'nacrine-blanche',label:'Nacrine blanche',label_en:'White nacre',color:'#F5F0E8',imageUrl:''},{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#6B4226',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''}]},{key:'sangles',divId:'accSangles',formField:'couleurSangles',formType:'select',label:'Sangles',label_en:'Straps',clipPath:'polygon(60% 3%,68% 3%,68% 97%,60% 97%)',opacity:0.75,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'cuir-nat',label:'Cuir Nat.',label_en:'Natural leather',color:'#B5885A',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]}]};STAGE_CONFIG.apercuActif=true;}
+var STLUTH_APERCU_DEFAULT_CONFIG={actif:true,layers:[{key:'caisse',divId:'accCaisse',formField:'boisClavier',formType:'select',label:'Bois clavier',label_en:'Keyboard wood',clipPath:'polygon(5% 8%,95% 8%,95% 92%,5% 92%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#8B6F47',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'soufflet',divId:'accSoufflet',formField:'couleurSoufflet',formType:'radio',label:'Soufflet',label_en:'Bellows',clipPath:'polygon(30% 8%,55% 8%,55% 92%,30% 92%)',opacity:1,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'orange',label:'Orange',label_en:'Orange',color:'#e67e22',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]},{key:'grille',divId:'accGrille',formField:'boisGrille',formType:'select',label:'Bois grille',label_en:'Grille wood',clipPath:'polygon(58% 12%,92% 12%,92% 42%,58% 42%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#A0845C',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'boutons',divId:'accBoutons',formField:'boutonsMD',formType:'select',label:'Boutons',label_en:'Buttons',clipPath:'polygon(62% 16%,88% 16%,88% 38%,62% 38%)',opacity:1,options:[{slug:'nacrine-noire',label:'Nacrine noire',label_en:'Black nacre',color:'#333333',imageUrl:''},{slug:'nacrine-blanche',label:'Nacrine blanche',label_en:'White nacre',color:'#F5F0E8',imageUrl:''},{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#6B4226',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''}]},{key:'sangles',divId:'accSangles',formField:'couleurSangles',formType:'select',label:'Sangles',label_en:'Straps',clipPath:'polygon(60% 3%,68% 3%,68% 97%,60% 97%)',opacity:0.75,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'cuir-nat',label:'Cuir Nat.',label_en:'Natural leather',color:'#B5885A',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]}]};
+function stluthIsArray(v){return Object.prototype.toString.call(v)==='[object Array]';}
+function stluthCloneApercuConfig(cfg){return JSON.parse(JSON.stringify(cfg));}
+function stluthParseApercuConfig(raw){if(!raw||typeof raw!=='object'||!stluthIsArray(raw.layers)){return null;}return raw;}
+function stluthGetApercuConfig(){var cfg=stluthParseApercuConfig(window.STLUTH_APERCU_CONFIG);if(cfg){return stluthCloneApercuConfig(cfg);}var el=document.getElementById('stluth-apercu-config');if(el){try{cfg=stluthParseApercuConfig(JSON.parse(el.textContent||'{}'));if(cfg){return stluthCloneApercuConfig(cfg);}}catch(e){}}return stluthCloneApercuConfig(STLUTH_APERCU_DEFAULT_CONFIG);}
+STAGE_CONFIG.apercuConfig=stluthGetApercuConfig();STAGE_CONFIG.apercuActif=STAGE_CONFIG.apercuConfig.actif!==false;
 if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',function(){var e=document.getElementById('evd-apercu-section');if(e)e.style.display='none';});}
 </script>
 <!-- /wp:html -->
@@ -1645,7 +1650,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
 
   /* Aperçu accordéon — piloté par STAGE_CONFIG.apercuConfig */
 
-  ;(function() {
+  function initApercuDynamicFields() {
     var cfg = STAGE_CONFIG.apercuConfig;
     if (!cfg || !cfg.layers) return;
     cfg.layers.forEach(function(layer) {
@@ -1677,7 +1682,14 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
       }
     });
     updateAccordionPreview();
-  })();
+  }
+  try {
+    initApercuDynamicFields();
+  } catch (e) {
+    STAGE_CONFIG.apercuConfig = stluthCloneApercuConfig(STLUTH_APERCU_DEFAULT_CONFIG);
+    STAGE_CONFIG.apercuActif = STAGE_CONFIG.apercuConfig.actif !== false;
+    try { initApercuDynamicFields(); } catch (e2) {}
+  }
 
   function _layerCfg(formField) {
     var cfg = STAGE_CONFIG.apercuConfig;
@@ -1705,11 +1717,16 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
 
   function updateAccordionPreview() {
     if (STAGE_CONFIG.apercuActif === false) return;
-    var boisClavier = document.getElementById('boisClavier').value;
-    var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
-    var boutons     = document.getElementById('boutonsMD').value;
+    var boisClavierEl = document.getElementById('boisClavier');
+    var boisGrilleEl  = document.getElementById('boisGrille');
+    var boutonsEl     = document.getElementById('boutonsMD');
+    var sanglesEl     = document.getElementById('couleurSangles');
+    if (!boisClavierEl || !boisGrilleEl || !boutonsEl || !sanglesEl) return;
+    var boisClavier = boisClavierEl.value;
+    var boisGrille  = boisGrilleEl.value || boisClavier;
+    var boutons     = boutonsEl.value;
     var soufflet    = getRadioVal('couleurSoufflet');
-    var sangles     = document.getElementById('couleurSangles').value;
+    var sangles     = sanglesEl.value;
 
     setLayerImage(document.getElementById('accCaisse'),   'boisClavier',     boisClavier);
     setLayerImage(document.getElementById('accGrille'),   'boisGrille',      boisGrille);
