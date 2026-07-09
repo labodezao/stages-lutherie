@@ -8,7 +8,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"rgba(255,255,255,0.9)"},"typography":{"fontSize":"1.1rem"}}} -->
-<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.1rem">🎵 Diatonic accordion · Saint-Nazaire · 10 days</p>
+<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.9);font-size:1.1rem">Diatonic accordion · Saint-Nazaire · 10 days</p>
 <!-- /wp:paragraph --></div></div>
 <!-- /wp:cover -->
 
@@ -31,11 +31,8 @@ var STAGE_CONFIG = (function(){
     };
   }
   return {
-    annee: 2026,
-    sessions: [
-      { id: 'avril',   icon: '🌸', saison: 'Printemps', dates: 'Wednesday 8 – Friday 17 April 2026',    fullId: 'avril2026' },
-      { id: 'octobre', icon: '🍂', saison: 'Automne',   dates: 'Wednesday 14 – Friday 23 October 2026', fullId: 'octobre2026' }
-    ],
+    annee: new Date().getFullYear(),
+    sessions: [],
     presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
     grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
     apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
@@ -50,6 +47,9 @@ var STAGE_CONFIG = (function(){
     if(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
   }
 })();
+/* Aperçu : config complète injectée par evd.php via wp_head */
+if(typeof window.STLUTH_APERCU_CONFIG!=='undefined'){STAGE_CONFIG.apercuConfig=window.STLUTH_APERCU_CONFIG;STAGE_CONFIG.apercuActif=window.STLUTH_APERCU_CONFIG.actif;}else{STAGE_CONFIG.apercuConfig={actif:true,layers:[{key:'caisse',divId:'accCaisse',formField:'boisClavier',formType:'select',label:'Bois clavier',label_en:'Keyboard wood',clipPath:'polygon(5% 8%,95% 8%,95% 92%,5% 92%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#8B6F47',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'soufflet',divId:'accSoufflet',formField:'couleurSoufflet',formType:'radio',label:'Soufflet',label_en:'Bellows',clipPath:'polygon(30% 8%,55% 8%,55% 92%,30% 92%)',opacity:1,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'orange',label:'Orange',label_en:'Orange',color:'#e67e22',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]},{key:'grille',divId:'accGrille',formField:'boisGrille',formType:'select',label:'Bois grille',label_en:'Grille wood',clipPath:'polygon(58% 12%,92% 12%,92% 42%,58% 42%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#A0845C',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'boutons',divId:'accBoutons',formField:'boutonsMD',formType:'select',label:'Boutons',label_en:'Buttons',clipPath:'polygon(62% 16%,88% 16%,88% 38%,62% 38%)',opacity:1,options:[{slug:'nacrine-noire',label:'Nacrine noire',label_en:'Black nacre',color:'#333333',imageUrl:''},{slug:'nacrine-blanche',label:'Nacrine blanche',label_en:'White nacre',color:'#F5F0E8',imageUrl:''},{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#6B4226',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''}]},{key:'sangles',divId:'accSangles',formField:'couleurSangles',formType:'select',label:'Sangles',label_en:'Straps',clipPath:'polygon(60% 3%,68% 3%,68% 97%,60% 97%)',opacity:0.75,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'cuir-nat',label:'Cuir Nat.',label_en:'Natural leather',color:'#B5885A',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]}]};STAGE_CONFIG.apercuActif=true;}
+if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',function(){var e=document.getElementById('evd-apercu-section');if(e)e.style.display='none';});}
 </script>
 <!-- /wp:html -->
 
@@ -398,7 +398,7 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">👤 Personal Details</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Personal Details</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -445,28 +445,16 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">📅 Session Selection</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Session Selection</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
 <div class="insc-section-body">
-<div class="insc-options" id="sessionOptions">
-          <!-- ════ UPDATE EVERY YEAR — keep in sync with STAGE_CONFIG above ════ -->
-          <label class="insc-option-card">
-            <input type="radio" name="session" value="avril2026" required>
-            <span class="card-label">
-              <span class="card-title">🌸 Spring</span>
-              <span class="card-sub">Wednesday 8 – Friday 17 April 2026</span>
-            </span>
-          </label>
-          <label class="insc-option-card">
-            <input type="radio" name="session" value="octobre2026">
-            <span class="card-label">
-              <span class="card-title">🍂 Autumn</span>
-              <span class="card-sub">Wednesday 14 – Friday 23 October 2026</span>
-            </span>
-          </label>
-        </div>
+<div class="insc-options" id="sessionOptions"></div>
+<div id="insc-no-sessions" hidden style="padding:1.5rem 1rem;text-align:center">
+  <p style="font-size:1.05rem;font-weight:600;color:#3E2723;margin:0 0 .4rem">Dates coming soon</p>
+  <p style="color:#5D4037;font-size:.92rem;margin:0">Subscribe to the newsletter to be notified first.</p>
+</div>
 </div>
 <!-- /wp:html -->
 </div>
@@ -475,7 +463,7 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎵 Model Selection</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Model Selection</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#666"},"spacing":{"padding":{"top":"20px","bottom":"4px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.9rem"}}} -->
@@ -526,7 +514,7 @@ var STAGE_CONFIG = (function(){
         <div class="insc-field" style="margin-top:20px;">
           <label style="font-weight:600; font-size:0.95rem;">
             <input type="checkbox" id="ancheAMano" name="ancheAMano" value="oui">
-            🎯 Option <strong>Anche a mano Blue Star</strong> (handmade reeds)
+            Option <strong>Anche a mano Blue Star</strong> (handmade reeds)
             <span style="color:var(--gold); font-weight:700;">+ 15 %</span>
           </label>
           <div class="hint" style="margin-left:24px;">
@@ -541,7 +529,7 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎼 Keyboard plan</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Keyboard plan</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"spacing":{"padding":{"top":"20px","bottom":"8px","left":"28px","right":"28px"}}}} -->
@@ -551,8 +539,8 @@ var STAGE_CONFIG = (function(){
 <!-- wp:html -->
 <div class="insc-section-body">
   <div class="plan-mode-bar">
-    <button type="button" class="plan-mode-btn active" id="planModePresetBtn" onclick="setPlanMode('preset')">📋 Standard preset</button>
-    <button type="button" class="plan-mode-btn" id="planModeCustomBtn" onclick="setPlanMode('custom')">✏️ Custom plan (JSON)</button>
+    <button type="button" class="plan-mode-btn active" id="planModePresetBtn" onclick="setPlanMode('preset')">Standard preset</button>
+    <button type="button" class="plan-mode-btn" id="planModeCustomBtn" onclick="setPlanMode('custom')">Custom plan (JSON)</button>
   </div>
 
   <!-- Preset selector -->
@@ -587,7 +575,7 @@ var STAGE_CONFIG = (function(){
     <div class="insc-field" style="margin-top:8px;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
         <label for="planClavier" style="flex:1;margin:0">Keyboard plan (exported JSON)</label>
-        <label style="cursor:pointer;font-size:.78rem;padding:3px 9px;border:1px solid #ccc;border-radius:4px;background:#fff;white-space:nowrap;" title="Import a .json file">📂 Import .json<input type="file" accept=".json,application/json" style="display:none;" onchange="loadCustomPlanFromFile(event)"></label>
+        <label style="cursor:pointer;font-size:.78rem;padding:3px 9px;border:1px solid #ccc;border-radius:4px;background:#fff;white-space:nowrap;" title="Import a .json file">Import .json<input type="file" accept=".json,application/json" style="display:none;" onchange="loadCustomPlanFromFile(event)"></label>
       </div>
       <textarea id="planClavier" name="planClavier" rows="4" placeholder="Paste here the JSON exported from the keyboard plan tool…" style="font-family:monospace; font-size:0.82rem;"></textarea>
       <div class="hint">In the keyboard tool → "Export JSON" button → copy → paste here.</div>
@@ -596,7 +584,7 @@ var STAGE_CONFIG = (function(){
 
   <!-- Aperçu SVG inline du plan de clavier sélectionné -->
   <div id="planPreviewRH" class="insc-conditional" style="margin-top:14px;">
-    <div style="font-size:0.84rem; color:var(--wood-medium); font-weight:600; margin-bottom:6px;">📐 Aperçu du plan de clavier sélectionné :</div>
+    <div style="font-size:0.84rem; color:var(--wood-medium); font-weight:600; margin-bottom:6px;">Aperçu du plan de clavier sélectionné :</div>
     <div id="planSVGInline" style="overflow-x:auto; background:#FAFAFA; border:1px solid #E2E8F0; border-radius:8px; padding:8px;"></div>
   </div>
 
@@ -613,7 +601,7 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎹 Right Hand Side (RH)</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Right Hand Side (RH)</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -670,19 +658,12 @@ var STAGE_CONFIG = (function(){
             <label for="boutonsMD">Buttons (material)</label>
             <select id="boutonsMD" name="boutonsMD">
               <option value="">– Select –</option>
-              <option value="Nacrine noire">Black nacrine</option>
-              <option value="Nacrine blanche">White nacrine</option>
-              <option value="Noyer">Walnut</option>
-              <option value="Erable">Maple</option>
             </select>
           </div>
           <div class="insc-field">
             <label for="boisClavier">Keyboard wood</label>
             <select id="boisClavier" name="boisClavier">
               <option value="">– Select –</option>
-              <option value="Noyer">Walnut</option>
-              <option value="Érable">Maple</option>
-              <option value="Cerisier">Cherry</option>
             </select>
           </div>
         </div>
@@ -692,9 +673,6 @@ var STAGE_CONFIG = (function(){
             <label for="boisGrille">Grille + body wood (if two-tone)</label>
             <select id="boisGrille" name="boisGrille">
               <option value="">– Select –</option>
-              <option value="Noyer">Walnut</option>
-              <option value="Érable">Maple</option>
-              <option value="Cerisier">Cherry</option>
             </select>
           </div>
           <div class="insc-field">
@@ -723,7 +701,7 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🎶 Left Hand Side (LH)</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Left Hand Side (LH)</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -733,10 +711,6 @@ var STAGE_CONFIG = (function(){
             <label for="couleurSangles">LH straps / RH shoulder straps color</label>
             <select id="couleurSangles" name="couleurSangles">
               <option value="">– Select –</option>
-              <option value="Bleu">Blue</option>
-              <option value="Rouge">Red</option>
-              <option value="Cuir Nat.">Natural leather</option>
-              <option value="Noir">Black</option>
             </select>
           </div>
 
@@ -752,43 +726,14 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🌈 Bellows</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Bellows</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
 <div class="insc-section-body">
 <div class="insc-field">
           <label>Bellows color</label>
-          <div class="insc-options">
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Bleu">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#2e6cb5"></span>
-                <span class="card-title" style="font-size:0.95rem">Blue</span>
-              </span>
-            </label>
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Rouge">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#c0392b"></span>
-                <span class="card-title" style="font-size:0.95rem">Red</span>
-              </span>
-            </label>
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Orange">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#e67e22"></span>
-                <span class="card-title" style="font-size:0.95rem">Orange</span>
-              </span>
-            </label>
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Noir">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#222"></span>
-                <span class="card-title" style="font-size:0.95rem">Black</span>
-              </span>
-            </label>
-          </div>
+          <div class="insc-options" id="couleurSouffletOptions"></div>
         </div>
 </div>
 <!-- /wp:html -->
@@ -796,9 +741,9 @@ var STAGE_CONFIG = (function(){
 <!-- /wp:group -->
 
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
-<div class="wp-block-group insc-native-section">
+<div class="wp-block-group insc-native-section" id="evd-apercu-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">🪗 Preview of your accordion</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Preview of your accordion</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -858,7 +803,7 @@ var STAGE_CONFIG = (function(){
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#888"},"spacing":{"padding":{"top":"0","bottom":"16px","left":"28px","right":"28px"}},"typography":{"fontSize":"0.88rem"}}} -->
-<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">The preview updates automatically based on your choices above.<br><em>Real photos will appear once the transparent PNG layers are placed in <code>img/apercu/</code>.</em></p>
+<p class="has-text-align-center" style="color:#888;font-size:0.88rem;padding:0 28px 16px">The preview updates automatically based on your choices above.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -867,7 +812,7 @@ var STAGE_CONFIG = (function(){
 <div class="wp-block-group insc-native-section">
 <!-- Récapitulatif — fond plus sombre intentionnel -->
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#2C1810", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#2C1810">📋 Registration Summary</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#2C1810">Registration Summary</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -906,7 +851,7 @@ var STAGE_CONFIG = (function(){
 <!-- wp:group {"style": {"border": {"radius": "14px"}, "spacing": {"margin": {"bottom": "32px"}}}, "backgroundColor": "white", "layout": {"type": "constrained"}} -->
 <div class="wp-block-group insc-native-section">
 <!-- wp:heading {"level": 2, "style": {"color": {"background": "#3E2723", "text": "#FAFAFA"}, "spacing": {"padding": {"top": "16px", "right": "24px", "bottom": "16px", "left": "24px"}}, "typography": {"fontSize": "1.15rem", "fontWeight": "700"}}} -->
-<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">📜 Terms & Conditions</h2>
+<h2 class="wp-block-heading has-text-color has-background insc-native-heading" style="background-color:#3E2723">Terms & Conditions</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "28px", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
@@ -918,7 +863,7 @@ var STAGE_CONFIG = (function(){
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
-<p style="padding:0 28px 8px">💡 <em>Stand reservation: if you paid €150 at one of our stands, this amount is deducted from your deposit — please mention it in the comment field below.</em></p>
+<p style="padding:0 28px 8px"><em>Stand reservation: if you paid €150 at one of our stands, this amount is deducted from your deposit — please mention it in the comment field below.</em></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style": {"spacing": {"padding": {"top": "0", "bottom": "8px", "left": "28px", "right": "28px"}}}} -->
@@ -931,10 +876,22 @@ var STAGE_CONFIG = (function(){
 
 <!-- wp:html -->
 <div style="padding:0 28px 16px">
+<div style="border:1px solid #c8b59a;border-radius:6px;background:#fdf8f3;padding:14px 18px;margin:0 0 12px">
+  <p style="margin:0 0 8px;font-weight:700;font-size:0.95rem">Terms and Conditions — key points</p>
+  <ul style="margin:0 0 8px;padding-left:18px;font-size:0.88rem;line-height:1.6">
+    <li><strong>Nature of the workshop:</strong> a pedagogical learning journey into lutherie, not an instrument delivery service.</li>
+    <li><strong>No guarantee of completion:</strong> a single 10-day workshop does not guarantee the complete finishing of the accordion.</li>
+    <li><strong>Return sessions:</strong> option to return at <strong>€{{TARIF_RETOUR}}/day</strong> if the instrument is not complete.</li>
+    <li><strong>40% non-refundable deposit</strong> (except if cancelled by the instructor). Balance paid at the start of the workshop.</li>
+    <li><strong>Cancellation by the participant:</strong> deposit is retained; place may be deferred or transferred to another person.</li>
+    <li><strong>Materials:</strong> included in the price (except replacement of a major part after irreparable damage).</li>
+  </ul>
+  <p style="margin:0;font-size:0.9rem"><a href="/cgv/?lang=en" target="_blank" rel="noopener">→ Read the full Terms and Conditions</a></p>
+</div>
 <div class="insc-terms" style="background:#FFF8E1;border-left:4px solid #D4A017;border-radius:6px;padding:14px 18px;margin:8px 0 16px">
-  <p style="margin:0 0 6px"><strong>📌 Learning journey — what you need to know</strong></p>
+  <p style="margin:0 0 6px"><strong>Learning journey — what you need to know</strong></p>
   <p style="margin:0 0 4px;font-size:0.92rem">A 10-day workshop is a <strong>learning journey</strong>, not a delivery guarantee. Completion depends on the model chosen, your pace, and your experience.</p>
-  <p style="margin:0;font-size:0.92rem">If the instrument is not finished within 10 days, you may return for a follow-up session at the <strong>daily workshop rate of €80/day</strong>.</p>
+  <p style="margin:0;font-size:0.92rem">If the instrument is not finished within 10 days, you may return for a follow-up session at the <strong>daily workshop rate of €{{TARIF_RETOUR}}/day</strong>.</p>
 </div>
 <div class="insc-field" style="margin-top:14px;">
   <label>
@@ -945,13 +902,13 @@ var STAGE_CONFIG = (function(){
 <div class="insc-field" style="margin-top:10px;">
   <label>
     <input type="checkbox" id="ackReturnSessions" name="ackReturnSessions" required>
-    I acknowledge that it is possible to return for a follow-up session at the <strong>daily workshop rate of €80/day</strong> <span class="req">*</span>
+    I acknowledge that it is possible to return for a follow-up session at the <strong>daily workshop rate of €{{TARIF_RETOUR}}/day</strong> <span class="req">*</span>
   </label>
 </div>
 <div class="insc-field" style="margin-top:14px;padding-top:14px;border-top:1px solid #e0d5cc;">
   <label>
     <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
-    I have read and accept all of the above terms <span class="req">*</span>
+    I have read and accept the <a href="/cgv/?lang=en" target="_blank" rel="noopener">Terms and Conditions</a> <span class="req">*</span>
   </label>
 </div>
 </div>
@@ -962,10 +919,10 @@ var STAGE_CONFIG = (function(){
 <!-- wp:html -->
 <div class="insc-actions">
       <button type="button" class="insc-btn insc-btn-primary" id="btnPDF">
-        📄 Download PDF Summary
+        Download PDF Summary
       </button>
       <button type="submit" class="insc-btn insc-btn-secondary" id="btnSubmit">
-        ✉️ Submit Registration
+        Submit Registration
       </button>
     </div>
     <div id="sendStatus" class="insc-conditional" style="margin-top:18px; text-align:center;"></div>
@@ -1104,18 +1061,24 @@ var STAGE_CONFIG = (function(){
   document.title = 'Registration Form \u2013 Diatonic Accordion Building Workshop ' + ANNEE;
 
   var sessionContainer = document.getElementById('sessionOptions');
+  var noSessionsEl = document.getElementById('insc-no-sessions');
   if (sessionContainer) {
-    if (sessionContainer.children.length === 0) {
-    STAGE_CONFIG.sessions.forEach(function (s, i) {
-      var label = document.createElement('label');
-      label.className = 'insc-option-card';
-      label.innerHTML = '<input type="radio" name="session" value="' + s.id + ANNEE + '"' + (i === 0 ? ' required' : '') + '>'
-        + '<span class="card-label">'
-        + '<span class="card-title">' + s.icon + ' ' + s.saison + '</span>'
-        + '<span class="card-sub">' + s.dates + '</span>'
-        + '</span>';
-      sessionContainer.appendChild(label);
-    });
+    if (STAGE_CONFIG.sessions.length === 0) {
+      if (noSessionsEl) noSessionsEl.removeAttribute('hidden');
+    } else {
+      if (noSessionsEl) noSessionsEl.setAttribute('hidden', '');
+      if (sessionContainer.children.length === 0) {
+        STAGE_CONFIG.sessions.forEach(function (s, i) {
+          var label = document.createElement('label');
+          label.className = 'insc-option-card';
+          label.innerHTML = '<input type="radio" name="session" value="' + (s.fullId || s.id + ANNEE) + '"' + (i === 0 ? ' required' : '') + '>'
+            + '<span class="card-label">'
+            + '<span class="card-title">' + s.icon + ' ' + s.saison + '</span>'
+            + '<span class="card-sub">' + s.dates + '</span>'
+            + '</span>';
+          sessionContainer.appendChild(label);
+        });
+      }
     }
   }
 
@@ -1663,7 +1626,7 @@ var STAGE_CONFIG = (function(){
     }
 
     /* Accordion visual preview update */
-    updateAccordionPreview();
+    try { updateAccordionPreview(); } catch(e) {}
   }
 
   /* ── Accordion Visual Preview ── */
@@ -1675,79 +1638,79 @@ var STAGE_CONFIG = (function(){
    * Fallback : background-color visible si le PNG n'existe pas encore.
    */
 
-  var ACC_IMG_BASE = 'img/apercu/';
-  if (typeof STAGE_CONFIG !== 'undefined') { if (STAGE_CONFIG.apercuBaseUrl) { ACC_IMG_BASE = STAGE_CONFIG.apercuBaseUrl; } }
+  /* Aperçu accordéon — piloté par STAGE_CONFIG.apercuConfig */
 
-  /* Correspondance valeur option → slug fichier image.
-   * Note : '\u00c9rable' (Érable, avec accent) = bois du clavier/grille.
-   *        'Erable' (sans accent) = valeur du champ boutonsMD. */
-  var VALUE_TO_SLUG = {
-    'Noyer'          : 'noyer',
-    '\u00c9rable'    : 'erable',
-    'Cerisier'       : 'cerisier',
-    'Nacrine noire'  : 'nacrine-noire',
-    'Nacrine blanche': 'nacrine-blanche',
-    'Erable'         : 'erable',
-    'Bleu'           : 'bleu',
-    'Rouge'          : 'rouge',
-    'Orange'         : 'orange',
-    'Noir'           : 'noir',
-    'Cuir Nat.'      : 'cuir-nat'
-  };
-
-  /* Couleurs de fallback (affichées avant que les PNG soient disponibles) */
-  var WOOD_COLORS    = { 'Noyer': '#5C3D2E', '\u00c9rable': '#C8A96E', 'Cerisier': '#8B4513' };
-  var BUTTON_COLORS  = { 'Nacrine noire': '#1a1a1a', 'Nacrine blanche': '#F5F0E8', 'Noyer': '#6B4226', 'Erable': '#C8A96E' };
-  var BELLOWS_COLORS = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Orange': '#e67e22', 'Noir': '#222' };
-  var STRAP_COLORS   = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Cuir Nat.': '#B5885A', 'Noir': '#222' };
-
-  /* setLayerImage: met à jour un calque selon la valeur de l'option.
-   * - Charge le PNG correspondant (probe async — si absent, background-color visible)
-   * - Classe has-img ajoutée quand l'image est disponible (désactive clip-path) */
-  function setLayerImage(el, colorMap, value) {
-    if (el) {
-      if (value) {
-        /* Toujours appliquer la couleur de fallback */
-        if (colorMap) {
-          if (colorMap[value]) {
-            el.style.backgroundColor = colorMap[value];
-          }
+  ;(function() {
+    var cfg = STAGE_CONFIG.apercuConfig;
+    if (!cfg || !cfg.layers) return;
+    cfg.layers.forEach(function(layer) {
+      var divEl = document.getElementById(layer.divId);
+      if (divEl) {
+        if (layer.clipPath) divEl.style.clipPath = layer.clipPath;
+        if (layer.opacity != null) divEl.style.opacity = layer.opacity;
+        if (layer.options && layer.options[0]) divEl.style.backgroundColor = layer.options[0].color || '';
+      }
+      if (layer.formType === 'select') {
+        var sel = document.getElementById(layer.formField);
+        if (sel) {
+          while (sel.options.length > 1) sel.remove(1);
+          (layer.options || []).forEach(function(opt) { sel.add(new Option(opt.label, opt.label)); });
         }
-        /* Construire l'URL et tenter le chargement */
-        var base = el.getAttribute('data-img-base');
-        var slug = VALUE_TO_SLUG[value];
-        if (base) {
-          if (slug) {
-            var src = ACC_IMG_BASE + base + '-' + slug + '.png';
-            var probe = new Image();
-            probe.onload = function() {
-              el.style.backgroundImage = 'url(' + src + ')';
-              el.classList.add('has-img');
-              el.classList.remove('no-img');
-            };
-            probe.onerror = function() {
-              el.style.backgroundImage = '';
-              el.classList.remove('has-img');
-              el.classList.add('no-img');
-            };
-            probe.src = src;
-          }
+      } else if (layer.formType === 'radio') {
+        var cont = document.getElementById(layer.formField + 'Options');
+        if (cont) {
+          cont.innerHTML = '';
+          (layer.options || []).forEach(function(opt) {
+            var lbl = document.createElement('label'); lbl.className = 'insc-option-card'; lbl.style.minWidth = '110px';
+            var inp = document.createElement('input'); inp.type = 'radio'; inp.name = layer.formField; inp.value = opt.label;
+            var span = document.createElement('span'); span.className = 'card-label';
+            var sw = document.createElement('span'); sw.className = 'color-swatch'; sw.style.background = opt.color || '#888';
+            var ct = document.createElement('span'); ct.className = 'card-title'; ct.style.fontSize = '0.95rem'; ct.textContent = opt.label;
+            span.appendChild(sw); span.appendChild(ct); lbl.appendChild(inp); lbl.appendChild(span); cont.appendChild(lbl);
+          });
         }
       }
-    }
+    });
+    updateAccordionPreview();
+  })();
+
+  function _layerCfg(formField) {
+    var cfg = STAGE_CONFIG.apercuConfig;
+    if (!cfg || !cfg.layers) return null;
+    for (var i = 0; i < cfg.layers.length; i++) { if (cfg.layers[i].formField === formField) return cfg.layers[i]; }
+    return null;
+  }
+  function _optCfg(layer, value) {
+    if (!layer || !layer.options) return null;
+    for (var i = 0; i < layer.options.length; i++) { if (layer.options[i].label === value) return layer.options[i]; }
+    return null;
+  }
+
+  function setLayerImage(el, formField, value) {
+    if (!el || !value) return;
+    var layer = _layerCfg(formField), opt = _optCfg(layer, value);
+    if (!opt) return;
+    el.style.backgroundColor = opt.color || '';
+    var src = opt.imageUrl || ((STAGE_CONFIG.apercuBaseUrl || 'img/apercu/') + layer.key + '-' + opt.slug + '.png');
+    var probe = new Image();
+    probe.onload  = function() { el.style.backgroundImage = 'url(' + src + ')'; el.classList.add('has-img'); el.classList.remove('no-img'); };
+    probe.onerror = function() { el.style.backgroundImage = ''; el.classList.remove('has-img'); el.classList.add('no-img'); };
+    probe.src = src;
   }
 
   function updateAccordionPreview() {
+    if (STAGE_CONFIG.apercuActif === false) return;
     var boisClavier = document.getElementById('boisClavier').value;
+    var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
     var boutons     = document.getElementById('boutonsMD').value;
     var soufflet    = getRadioVal('couleurSoufflet');
     var sangles     = document.getElementById('couleurSangles').value;
 
-    setLayerImage(document.getElementById('accCaisse'),    WOOD_COLORS,    boisClavier);
-    setLayerImage(document.getElementById('accGrille'),    WOOD_COLORS,    boisClavier);
-    setLayerImage(document.getElementById('accBoutons'),   BUTTON_COLORS,  boutons);
-    setLayerImage(document.getElementById('accSoufflet'),  BELLOWS_COLORS, soufflet);
-    setLayerImage(document.getElementById('accSangles'),   STRAP_COLORS,   sangles);
+    setLayerImage(document.getElementById('accCaisse'),   'boisClavier',     boisClavier);
+    setLayerImage(document.getElementById('accGrille'),   'boisGrille',      boisGrille);
+    setLayerImage(document.getElementById('accBoutons'),  'boutonsMD',       boutons);
+    setLayerImage(document.getElementById('accSoufflet'), 'couleurSoufflet', soufflet);
+    setLayerImage(document.getElementById('accSangles'),  'couleurSangles',  sangles);
   }
 
   /* Listen on all inputs */
@@ -2165,7 +2128,8 @@ var STAGE_CONFIG = (function(){
     var terms = 'This order form is binding. To be valid, it must be accompanied by a 40% deposit. '
       + 'The deposit cannot be refunded if the participant cancels after the start of fabrication (2 months before the workshop). '
       + '\u2714 I acknowledge that a single 10-day workshop does not guarantee completion of the accordion. '
-      + '\u2714 I acknowledge that it is possible to return for a follow-up session at the daily workshop rate of \u20ac80/day.';
+      + '\u2714 I acknowledge that it is possible to return for a follow-up session at the daily workshop rate of \u20ac80/day. '
+      + 'Full T&C: ewendaviau.com/cgv/?lang=en';
     var splitTerms = doc.splitTextToSize(terms, CW);
     doc.text(splitTerms, MARGIN, y);
     y += splitTerms.length * 4 + 6;

@@ -7,7 +7,7 @@
  * Déploiement : copier ce fichier dans wp-content/mu-plugins/evd.php
  * WordPress le charge automatiquement — aucune activation, functions.php inchangé.
  *
- * Copier aussi assets/block.js et inc/seed.php dans le thème actif.
+ * Copier aussi assets/block.js et includes/seed.php dans le thème actif.
  */
 
 // ── Bloc Gutenberg dynamique bilingue ewendaviau/html-libre ───────────────────
@@ -51,10 +51,10 @@ add_action( 'admin_menu', fn() => add_management_page( 'Seed', 'Seed ewendaviau'
     wp_nonce_field( 'evd_seed_run' );
     echo '<select name="seed">'
        . '<option value="all">Tout le site</option>'
-       . '<option value="accueil">Accueil</option>'
-       . '<option value="stages">Stages</option>'
-       . '<option value="programme">Programme</option>'
-       . '<option value="contact">Contact</option>'
+       . '<option value="stages">Stages FR (Gutenberg)</option>'
+       . '<option value="stages_en">Stages EN (Gutenberg)</option>'
+       . '<option value="inscriptions">Inscriptions FR (Gutenberg)</option>'
+       . '<option value="inscriptions_en">Inscriptions EN (Gutenberg)</option>'
        . '<option value="cgv">CGV</option>'
        . '</select> '
        . '<button class="button button-primary">Lancer</button>'
@@ -64,7 +64,7 @@ add_action( 'admin_menu', fn() => add_management_page( 'Seed', 'Seed ewendaviau'
 add_action( 'admin_post_evd_seed_run', function () {
     if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized', 403 );
     check_admin_referer( 'evd_seed_run' );
-    require_once get_template_directory() . '/inc/seed.php';
+    require_once get_template_directory() . '/includes/seed.php';
     evd_run_seed();
     wp_redirect( admin_url( 'tools.php?page=evd-seed&seeded=1' ) );
     exit;
