@@ -30,9 +30,13 @@ var STAGE_CONFIG = (function(){
       apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
     };
   }
+  var fallbackYear = new Date().getFullYear();
   return {
-    annee: new Date().getFullYear(),
-    sessions: [],
+    annee: fallbackYear,
+    sessions: [
+      { id: 'avril', fullId: 'avril' + fallbackYear, icon: '🌸', saison: 'Spring', dates: 'Spring session ' + fallbackYear },
+      { id: 'octobre', fullId: 'octobre' + fallbackYear, icon: '🍂', saison: 'Autumn', dates: 'Autumn session ' + fallbackYear }
+    ],
     presetsBaseUrl: 'https://ewendaviau.com/wp-content/uploads/presets/',
     grillesBaseUrl: 'https://ewendaviau.com/wp-content/uploads/grilles/',
     apercuBaseUrl:  'https://ewendaviau.com/wp-content/uploads/apercu/'
@@ -48,7 +52,12 @@ var STAGE_CONFIG = (function(){
   }
 })();
 /* Aperçu : config complète injectée par evd.php via wp_head */
-if(typeof window.STLUTH_APERCU_CONFIG!=='undefined'){STAGE_CONFIG.apercuConfig=window.STLUTH_APERCU_CONFIG;STAGE_CONFIG.apercuActif=window.STLUTH_APERCU_CONFIG.actif;}else{STAGE_CONFIG.apercuConfig={actif:true,layers:[{key:'caisse',divId:'accCaisse',formField:'boisClavier',formType:'select',label:'Bois clavier',label_en:'Keyboard wood',clipPath:'polygon(5% 8%,95% 8%,95% 92%,5% 92%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#8B6F47',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'soufflet',divId:'accSoufflet',formField:'couleurSoufflet',formType:'radio',label:'Soufflet',label_en:'Bellows',clipPath:'polygon(30% 8%,55% 8%,55% 92%,30% 92%)',opacity:1,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'orange',label:'Orange',label_en:'Orange',color:'#e67e22',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]},{key:'grille',divId:'accGrille',formField:'boisGrille',formType:'select',label:'Bois grille',label_en:'Grille wood',clipPath:'polygon(58% 12%,92% 12%,92% 42%,58% 42%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#A0845C',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'boutons',divId:'accBoutons',formField:'boutonsMD',formType:'select',label:'Boutons',label_en:'Buttons',clipPath:'polygon(62% 16%,88% 16%,88% 38%,62% 38%)',opacity:1,options:[{slug:'nacrine-noire',label:'Nacrine noire',label_en:'Black nacre',color:'#333333',imageUrl:''},{slug:'nacrine-blanche',label:'Nacrine blanche',label_en:'White nacre',color:'#F5F0E8',imageUrl:''},{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#6B4226',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''}]},{key:'sangles',divId:'accSangles',formField:'couleurSangles',formType:'select',label:'Sangles',label_en:'Straps',clipPath:'polygon(60% 3%,68% 3%,68% 97%,60% 97%)',opacity:0.75,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'cuir-nat',label:'Cuir Nat.',label_en:'Natural leather',color:'#B5885A',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]}]};STAGE_CONFIG.apercuActif=true;}
+var STLUTH_APERCU_DEFAULT_CONFIG={actif:true,layers:[{key:'caisse',divId:'accCaisse',formField:'boisClavier',formType:'select',label:'Bois clavier',label_en:'Keyboard wood',clipPath:'polygon(5% 8%,95% 8%,95% 92%,5% 92%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#8B6F47',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'soufflet',divId:'accSoufflet',formField:'couleurSoufflet',formType:'radio',label:'Soufflet',label_en:'Bellows',clipPath:'polygon(30% 8%,55% 8%,55% 92%,30% 92%)',opacity:1,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'orange',label:'Orange',label_en:'Orange',color:'#e67e22',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]},{key:'grille',divId:'accGrille',formField:'boisGrille',formType:'select',label:'Bois grille',label_en:'Grille wood',clipPath:'polygon(58% 12%,92% 12%,92% 42%,58% 42%)',opacity:1,options:[{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#A0845C',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''},{slug:'cerisier',label:'Cerisier',label_en:'Cherry',color:'#8B4513',imageUrl:''}]},{key:'boutons',divId:'accBoutons',formField:'boutonsMD',formType:'select',label:'Boutons',label_en:'Buttons',clipPath:'polygon(62% 16%,88% 16%,88% 38%,62% 38%)',opacity:1,options:[{slug:'nacrine-noire',label:'Nacrine noire',label_en:'Black nacre',color:'#333333',imageUrl:''},{slug:'nacrine-blanche',label:'Nacrine blanche',label_en:'White nacre',color:'#F5F0E8',imageUrl:''},{slug:'noyer',label:'Noyer',label_en:'Walnut',color:'#6B4226',imageUrl:''},{slug:'erable',label:'Érable',label_en:'Maple',color:'#C8A96E',imageUrl:''}]},{key:'sangles',divId:'accSangles',formField:'couleurSangles',formType:'select',label:'Sangles',label_en:'Straps',clipPath:'polygon(60% 3%,68% 3%,68% 97%,60% 97%)',opacity:0.75,options:[{slug:'bleu',label:'Bleu',label_en:'Blue',color:'#2e6cb5',imageUrl:''},{slug:'rouge',label:'Rouge',label_en:'Red',color:'#c0392b',imageUrl:''},{slug:'cuir-nat',label:'Cuir Nat.',label_en:'Natural leather',color:'#B5885A',imageUrl:''},{slug:'noir',label:'Noir',label_en:'Black',color:'#222222',imageUrl:''}]}]};
+function stluthIsArray(v){return Object.prototype.toString.call(v)==='[object Array]';}
+function stluthCloneApercuConfig(cfg){return JSON.parse(JSON.stringify(cfg));}
+function stluthParseApercuConfig(raw){if(!raw||typeof raw!=='object'||!stluthIsArray(raw.layers)){return null;}return raw;}
+function stluthGetApercuConfig(){var cfg=stluthParseApercuConfig(window.STLUTH_APERCU_CONFIG);if(cfg){return stluthCloneApercuConfig(cfg);}var el=document.getElementById('stluth-apercu-config');if(el){try{cfg=stluthParseApercuConfig(JSON.parse(el.textContent||'{}'));if(cfg){return stluthCloneApercuConfig(cfg);}}catch(e){}}return stluthCloneApercuConfig(STLUTH_APERCU_DEFAULT_CONFIG);}
+STAGE_CONFIG.apercuConfig=stluthGetApercuConfig();STAGE_CONFIG.apercuActif=STAGE_CONFIG.apercuConfig.actif!==false;
 if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',function(){var e=document.getElementById('evd-apercu-section');if(e)e.style.display='none';});}
 </script>
 <!-- /wp:html -->
@@ -988,7 +997,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
       var sData = avail.sessions[inp.value];
       var lbl = inp.closest('label') || inp.parentElement;
       var sub = lbl.querySelector('.card-sub');
-      if (sData?.full) {
+      if (sData && sData.full) {
         lbl.classList.add('card-disabled'); inp.disabled = true;
         if (sub) {
           if (!sub.getAttribute('data-orig')) sub.setAttribute('data-orig', sub.innerHTML);
@@ -1004,7 +1013,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
     if (!selSess) { var ci = document.querySelector('#sessionOptions input[type="radio"]:checked'); if (ci) selSess = ci.value; }
     var sData2 = selSess ? avail.sessions[selSess] : null;
     document.querySelectorAll('input[name="modele"]').forEach(function(inp) {
-      var mData = sData2?.models ? sData2.models[inp.value] : null;
+      var mData = (sData2 && sData2.models) ? sData2.models[inp.value] : null;
       var lbl = inp.closest('label') || inp.parentElement;
       var avEl = lbl.querySelector('.card-avail');
       if (!avEl) {
@@ -1012,7 +1021,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
         avEl.style.cssText = 'display:block;font-size:.72rem;font-weight:700;margin-top:4px;';
         var cl = lbl.querySelector('.card-label'); if (cl) cl.appendChild(avEl);
       }
-      if (mData?.full) {
+      if (mData && mData.full) {
         lbl.classList.add('card-disabled'); inp.disabled = true;
         avEl.style.color = '#c0392b'; avEl.textContent = 'Full';
       } else if (mData) {
@@ -1200,12 +1209,12 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
     if (!planData || !planCategory) return '\u2013';
     if (planCategory === '3 rangs 12b' || planCategory === '3 rangs 12 basses') {
       /* Standard presets ("33 boutons") = Heim; special layouts = label contains info */
-      if (planLabel?.indexOf('33 boutons') >= 0) return 'Heim (standard)';
+      if (planLabel && planLabel.indexOf('33 boutons') >= 0) return 'Heim (standard)';
       return planLabel || planCategory;
     }
     if (planCategory === '2 rangs 8b') {
       /* Irish vs standard 2-row */
-      if (planLabel?.toLowerCase().indexOf('irlandais') >= 0) return 'Irish';
+      if (planLabel && planLabel.toLowerCase().indexOf('irlandais') >= 0) return 'Irish';
       return planLabel || planCategory;
     }
     /* 3 rangs 18b, 3 rangs 24b — label already contains disposition info */
@@ -1640,7 +1649,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
 
   /* Aperçu accordéon — piloté par STAGE_CONFIG.apercuConfig */
 
-  ;(function() {
+  function initApercuDynamicFields() {
     var cfg = STAGE_CONFIG.apercuConfig;
     if (!cfg || !cfg.layers) return;
     cfg.layers.forEach(function(layer) {
@@ -1654,7 +1663,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
         var sel = document.getElementById(layer.formField);
         if (sel) {
           while (sel.options.length > 1) sel.remove(1);
-          (layer.options || []).forEach(function(opt) { sel.add(new Option(opt.label, opt.label)); });
+          (layer.options || []).forEach(function(opt) { sel.add(new Option(opt.label_en || opt.label, opt.label)); });
         }
       } else if (layer.formType === 'radio') {
         var cont = document.getElementById(layer.formField + 'Options');
@@ -1665,14 +1674,22 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
             var inp = document.createElement('input'); inp.type = 'radio'; inp.name = layer.formField; inp.value = opt.label;
             var span = document.createElement('span'); span.className = 'card-label';
             var sw = document.createElement('span'); sw.className = 'color-swatch'; sw.style.background = opt.color || '#888';
-            var ct = document.createElement('span'); ct.className = 'card-title'; ct.style.fontSize = '0.95rem'; ct.textContent = opt.label;
+            var ct = document.createElement('span'); ct.className = 'card-title'; ct.style.fontSize = '0.95rem'; ct.textContent = opt.label_en || opt.label;
             span.appendChild(sw); span.appendChild(ct); lbl.appendChild(inp); lbl.appendChild(span); cont.appendChild(lbl);
           });
         }
       }
     });
     updateAccordionPreview();
-  })();
+  }
+  try {
+    initApercuDynamicFields();
+  } catch (e) {
+    if (window.console && console.warn) console.warn('Invalid dynamic preview config, using default config instead.', e);
+    STAGE_CONFIG.apercuConfig = stluthCloneApercuConfig(STLUTH_APERCU_DEFAULT_CONFIG);
+    STAGE_CONFIG.apercuActif = STAGE_CONFIG.apercuConfig.actif !== false;
+    try { initApercuDynamicFields(); } catch (e2) { if (window.console && console.error) console.error('Preview fallback initialization failed.', e2); }
+  }
 
   function _layerCfg(formField) {
     var cfg = STAGE_CONFIG.apercuConfig;
@@ -1700,11 +1717,16 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
 
   function updateAccordionPreview() {
     if (STAGE_CONFIG.apercuActif === false) return;
-    var boisClavier = document.getElementById('boisClavier').value;
-    var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
-    var boutons     = document.getElementById('boutonsMD').value;
+    var boisClavierEl = document.getElementById('boisClavier');
+    var boisGrilleEl  = document.getElementById('boisGrille');
+    var boutonsEl     = document.getElementById('boutonsMD');
+    var sanglesEl     = document.getElementById('couleurSangles');
+    if (!boisClavierEl || !boisGrilleEl || !boutonsEl || !sanglesEl) return;
+    var boisClavier = boisClavierEl.value;
+    var boisGrille  = boisGrilleEl.value || boisClavier;
+    var boutons     = boutonsEl.value;
     var soufflet    = getRadioVal('couleurSoufflet');
-    var sangles     = document.getElementById('couleurSangles').value;
+    var sangles     = sanglesEl.value;
 
     setLayerImage(document.getElementById('accCaisse'),   'boisClavier',     boisClavier);
     setLayerImage(document.getElementById('accGrille'),   'boisGrille',      boisGrille);
