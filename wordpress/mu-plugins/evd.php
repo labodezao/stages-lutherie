@@ -49,15 +49,88 @@ add_filter( 'the_content', function ( $content ) {
     return str_replace( '{{TARIF_RETOUR}}', (string) get_option( 'stluth_tarif_retour', 80 ), $content );
 } );
 
-// ── Injection aperçu accordéon (avant le contenu de page) ────────────────────
-add_action( 'wp_head', function () {
-    $actif  = (bool) get_option( 'stluth_apercu_actif', false );
-    $images = json_decode( get_option( 'stluth_apercu_images', '{}' ), true ) ?: [];
-    echo '<script>window.STLUTH_APERCU_ACTIF=' . ( $actif ? 'true' : 'false' ) . ';';
-    if ( $images ) {
-        echo 'window.STLUTH_APERCU_IMAGES=' . wp_json_encode( $images ) . ';';
+// ── Config aperçu accordéon ───────────────────────────────────────────────────
+
+function evd_apercu_default_config(): array {
+    return [
+        'actif'  => false,
+        'layers' => [
+            [ 'key' => 'caisse',   'divId' => 'accCaisse',   'formField' => 'boisClavier',     'formType' => 'select',
+              'label' => 'Bois clavier',  'label_en' => 'Keyboard wood',
+              'clipPath' => 'polygon(5% 8%,95% 8%,95% 92%,5% 92%)',    'opacity' => 1.0,
+              'options' => [
+                [ 'slug' => 'noyer',    'label' => 'Noyer',    'label_en' => 'Walnut', 'color' => '#8B6F47', 'imageUrl' => '' ],
+                [ 'slug' => 'erable',   'label' => 'Érable',   'label_en' => 'Maple',  'color' => '#C8A96E', 'imageUrl' => '' ],
+                [ 'slug' => 'cerisier', 'label' => 'Cerisier', 'label_en' => 'Cherry', 'color' => '#8B4513', 'imageUrl' => '' ],
+              ],
+            ],
+            [ 'key' => 'soufflet', 'divId' => 'accSoufflet', 'formField' => 'couleurSoufflet', 'formType' => 'radio',
+              'label' => 'Soufflet',      'label_en' => 'Bellows',
+              'clipPath' => 'polygon(30% 8%,55% 8%,55% 92%,30% 92%)',  'opacity' => 1.0,
+              'options' => [
+                [ 'slug' => 'bleu',   'label' => 'Bleu',   'label_en' => 'Blue',   'color' => '#2e6cb5', 'imageUrl' => '' ],
+                [ 'slug' => 'rouge',  'label' => 'Rouge',  'label_en' => 'Red',    'color' => '#c0392b', 'imageUrl' => '' ],
+                [ 'slug' => 'orange', 'label' => 'Orange', 'label_en' => 'Orange', 'color' => '#e67e22', 'imageUrl' => '' ],
+                [ 'slug' => 'noir',   'label' => 'Noir',   'label_en' => 'Black',  'color' => '#222222', 'imageUrl' => '' ],
+              ],
+            ],
+            [ 'key' => 'grille',   'divId' => 'accGrille',   'formField' => 'boisGrille',      'formType' => 'select',
+              'label' => 'Bois grille',   'label_en' => 'Grille wood',
+              'clipPath' => 'polygon(58% 12%,92% 12%,92% 42%,58% 42%)', 'opacity' => 1.0,
+              'options' => [
+                [ 'slug' => 'noyer',    'label' => 'Noyer',    'label_en' => 'Walnut', 'color' => '#A0845C', 'imageUrl' => '' ],
+                [ 'slug' => 'erable',   'label' => 'Érable',   'label_en' => 'Maple',  'color' => '#C8A96E', 'imageUrl' => '' ],
+                [ 'slug' => 'cerisier', 'label' => 'Cerisier', 'label_en' => 'Cherry', 'color' => '#8B4513', 'imageUrl' => '' ],
+              ],
+            ],
+            [ 'key' => 'boutons',  'divId' => 'accBoutons',  'formField' => 'boutonsMD',       'formType' => 'select',
+              'label' => 'Boutons',       'label_en' => 'Buttons',
+              'clipPath' => 'polygon(62% 16%,88% 16%,88% 38%,62% 38%)', 'opacity' => 1.0,
+              'options' => [
+                [ 'slug' => 'nacrine-noire',   'label' => 'Nacrine noire',   'label_en' => 'Black nacre',  'color' => '#333333', 'imageUrl' => '' ],
+                [ 'slug' => 'nacrine-blanche', 'label' => 'Nacrine blanche', 'label_en' => 'White nacre',  'color' => '#F5F0E8', 'imageUrl' => '' ],
+                [ 'slug' => 'noyer',           'label' => 'Noyer',           'label_en' => 'Walnut',       'color' => '#6B4226', 'imageUrl' => '' ],
+                [ 'slug' => 'erable',          'label' => 'Érable',          'label_en' => 'Maple',        'color' => '#C8A96E', 'imageUrl' => '' ],
+              ],
+            ],
+            [ 'key' => 'sangles',  'divId' => 'accSangles',  'formField' => 'couleurSangles',  'formType' => 'select',
+              'label' => 'Sangles',       'label_en' => 'Straps',
+              'clipPath' => 'polygon(60% 3%,68% 3%,68% 97%,60% 97%)',  'opacity' => 0.75,
+              'options' => [
+                [ 'slug' => 'bleu',     'label' => 'Bleu',      'label_en' => 'Blue',            'color' => '#2e6cb5', 'imageUrl' => '' ],
+                [ 'slug' => 'rouge',    'label' => 'Rouge',     'label_en' => 'Red',             'color' => '#c0392b', 'imageUrl' => '' ],
+                [ 'slug' => 'cuir-nat', 'label' => 'Cuir Nat.', 'label_en' => 'Natural leather', 'color' => '#B5885A', 'imageUrl' => '' ],
+                [ 'slug' => 'noir',     'label' => 'Noir',      'label_en' => 'Black',           'color' => '#222222', 'imageUrl' => '' ],
+              ],
+            ],
+        ],
+    ];
+}
+
+function evd_apercu_get_config(): array {
+    $saved = get_option( 'stluth_apercu_config', '' );
+    if ( $saved ) {
+        $decoded = json_decode( $saved, true );
+        if ( is_array( $decoded ) ) return $decoded;
     }
-    echo '</script>' . "\n";
+    $config          = evd_apercu_default_config();
+    $config['actif'] = (bool) get_option( 'stluth_apercu_actif', false );
+    $old_images      = json_decode( get_option( 'stluth_apercu_images', '{}' ), true ) ?: [];
+    if ( $old_images ) {
+        foreach ( $config['layers'] as &$layer ) {
+            foreach ( $layer['options'] as &$opt ) {
+                $k = $layer['key'] . '-' . $opt['slug'];
+                if ( isset( $old_images[ $k ] ) ) $opt['imageUrl'] = $old_images[ $k ];
+            }
+        }
+    }
+    return $config;
+}
+
+// ── Injection config aperçu via wp_head ───────────────────────────────────────
+add_action( 'wp_head', function () {
+    $config = evd_apercu_get_config();
+    echo '<script>window.STLUTH_APERCU_CONFIG=' . wp_json_encode( $config ) . ';</script>' . "\n";
 }, 2 );
 
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
@@ -123,19 +196,11 @@ function evd_render_seed_page(): void {
 }
 
 function evd_render_apercu_admin(): void {
-    $actif  = (bool) get_option( 'stluth_apercu_actif', false );
-    $images = json_decode( get_option( 'stluth_apercu_images', '{}' ), true ) ?: [];
-
-    $layers = [
-        'caisse'   => [ 'Corps (bois clavier)',  [ 'noyer' => 'Noyer', 'erable' => 'Érable', 'cerisier' => 'Cerisier' ] ],
-        'grille'   => [ 'Grille (bois)',          [ 'noyer' => 'Noyer', 'erable' => 'Érable', 'cerisier' => 'Cerisier' ] ],
-        'boutons'  => [ 'Boutons',                [ 'nacrine-noire' => 'Nacrine noire', 'nacrine-blanche' => 'Nacrine blanche', 'noyer' => 'Noyer', 'erable' => 'Érable' ] ],
-        'soufflet' => [ 'Soufflet',               [ 'bleu' => 'Bleu', 'rouge' => 'Rouge', 'orange' => 'Orange', 'noir' => 'Noir' ] ],
-        'sangles'  => [ 'Sangles',                [ 'bleu' => 'Bleu', 'rouge' => 'Rouge', 'cuir-nat' => 'Cuir Nat.', 'noir' => 'Noir' ] ],
-    ];
+    $config = evd_apercu_get_config();
     ?>
     <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="evd-apercu-form" style="margin-top:1.5rem">
       <input type="hidden" name="action" value="evd_apercu_save">
+      <input type="hidden" name="apercu_config_json" id="apercu-config-json">
       <?php wp_nonce_field( 'evd_apercu_save' ); ?>
 
       <h2 style="margin-top:0">Aperçu accordéon</h2>
@@ -145,69 +210,141 @@ function evd_render_apercu_admin(): void {
           <th>Activation</th>
           <td>
             <label>
-              <input type="checkbox" name="stluth_apercu_actif" value="1" <?php checked( $actif ); ?>>
-              Afficher la section « Aperçu de votre accordéon » dans le formulaire
+              <input type="checkbox" id="evd-apercu-actif" value="1"<?php echo $config['actif'] ? ' checked' : ''; ?>>
+              Afficher la section « Aperçu » dans le formulaire d'inscription
             </label>
-            <p class="description">Si décoché, la section est masquée même après un seed.</p>
+            <p class="description">Si décoché, la section est masquée côté public (sans re-seed).</p>
           </td>
         </tr>
       </tbody></table>
 
-      <h3>Photos par calque</h3>
-      <p class="description">
-        PNG transparent, même cadre 4:3 pour tous les calques. Les calques se superposent.<br>
-        Si le champ est vide, la couleur indicative s'affiche en fallback.
+      <h3>Aperçu composite</h3>
+      <p class="description" style="margin-bottom:.75rem">Les calques se superposent dans l'ordre affiché. Choisissez une option par calque pour prévisualiser.</p>
+      <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;margin-bottom:1.5rem">
+        <div id="evd-compositor" style="position:relative;width:300px;height:225px;background:#f5f0e8;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid #ccc"></div>
+        <div id="evd-comp-selects" style="display:flex;flex-direction:column;gap:8px;padding-top:4px"></div>
+      </div>
+
+      <h3>Calques &amp; options</h3>
+      <p class="description" style="margin-bottom:.75rem">
+        <strong>Clip-path</strong> : format CSS <code>polygon(x% y%, …)</code> — définit la forme ET la position du calque dans le cadre 300×225 px.<br>
+        <strong>Slug</strong> : utilisé dans le nom de fichier image (ex: <code>noyer</code> → <code>caisse-noyer.png</code>). La valeur du champ de formulaire est toujours l'étiquette FR.
       </p>
+      <div id="evd-layers-editor"></div>
 
-      <?php foreach ( $layers as $layer_key => [ $layer_label, $options ] ) : ?>
-      <h4 style="margin:1.2rem 0 .4rem"><?php echo esc_html( $layer_label ); ?></h4>
-      <table class="form-table" style="max-width:760px"><tbody>
-        <?php foreach ( $options as $slug => $option_label ) :
-            $key      = $layer_key . '-' . $slug;
-            $url      = $images[ $key ] ?? '';
-            $field_id = 'apercu-' . esc_attr( $key );
-        ?>
-        <tr>
-          <th style="width:150px"><label for="<?php echo $field_id; ?>"><?php echo esc_html( $option_label ); ?></label></th>
-          <td>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <input type="text" id="<?php echo $field_id; ?>"
-                     name="apercu_images[<?php echo esc_attr( $key ); ?>]"
-                     value="<?php echo esc_attr( $url ); ?>"
-                     class="regular-text" style="flex:1;min-width:260px">
-              <button type="button" class="button evd-media-pick"
-                      data-target="<?php echo $field_id; ?>">Choisir</button>
-              <img id="prev-<?php echo $field_id; ?>"
-                   src="<?php echo esc_url( $url ); ?>"
-                   style="height:44px;width:auto;border:1px solid #ddd;border-radius:3px;<?php echo $url ? '' : 'display:none'; ?>">
-            </div>
-            <span class="description">Fichier attendu : <code><?php echo esc_html( $key . '.png' ); ?></code></span>
-          </td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody></table>
-      <?php endforeach; ?>
-
-      <p style="margin-top:1.5rem"><button type="submit" class="button button-secondary">Enregistrer l'aperçu</button></p>
+      <p style="margin-top:1.5rem">
+        <button type="submit" class="button button-primary">Enregistrer l'aperçu</button>
+      </p>
     </form>
 
     <script>
     jQuery(function($){
-      $('.evd-media-pick').on('click', function(){
-        var tid = $(this).data('target');
-        var frame = wp.media({
-          title: 'Sélectionner une image aperçu',
-          button: { text: 'Utiliser cette image' },
-          multiple: false,
-          library: { type: 'image' }
+      var cfg = <?php echo wp_json_encode( $config ); ?>;
+
+      /* ── Compositor ────────────────────────────────── */
+      function buildCompositor() {
+        var $c = $('#evd-compositor').empty();
+        var $s = $('#evd-comp-selects').empty();
+        cfg.layers.forEach(function(layer, li) {
+          $('<div>').css({position:'absolute',top:0,left:0,width:'100%',height:'100%','background-size':'cover','background-position':'center'}).attr('id','cmp-'+li).appendTo($c);
+          var $row = $('<div>').css({display:'flex',alignItems:'center',gap:'6px'});
+          $('<span>').css({fontSize:'12px',minWidth:'90px'}).text(layer.label).appendTo($row);
+          var $sel = $('<select>').css({fontSize:'12px'}).attr('data-cmp-li', li);
+          (layer.options||[]).forEach(function(opt,oi){ $('<option>').val(oi).text(opt.label).appendTo($sel); });
+          $sel.on('change', function(){ paintLayer(li, parseInt($(this).val())); }).appendTo($row);
+          $row.appendTo($s);
+          paintLayer(li, 0);
         });
-        frame.on('select', function(){
-          var att = frame.state().get('selection').first().toJSON();
-          $('#' + tid).val(att.url);
-          $('#prev-' + tid).attr('src', att.url).show();
+      }
+      function paintLayer(li, oi) {
+        var layer = cfg.layers[li]; if (!layer) return;
+        var opt = layer.options[oi] || {};
+        $('#cmp-'+li).css({'clip-path':layer.clipPath||'', opacity:layer.opacity!=null?layer.opacity:1, 'background-color':opt.color||'transparent', 'background-image':opt.imageUrl?'url('+opt.imageUrl+')':'none'});
+      }
+
+      /* ── Layer editor ──────────────────────────────── */
+      function buildEditor() {
+        var $ed = $('#evd-layers-editor').empty();
+        cfg.layers.forEach(function(layer, li) { $ed.append(layerCard(layer, li)); });
+      }
+      function layerCard(layer, li) {
+        var $card = $('<div>').css({border:'1px solid #ddd',borderRadius:'6px',padding:'14px 14px 10px',marginBottom:'14px',background:'#f9f9f9'});
+        var $hdr = $('<div>').css({display:'flex',flexWrap:'wrap',gap:'10px',alignItems:'center',marginBottom:'10px'});
+        $('<strong>').css({minWidth:'100px'}).text('▸ '+layer.label).appendTo($hdr);
+        $hdr.append(lbl('Clip-path', fld('text','260px',layer.clipPath,li,null,'clipPath','font-family:monospace;font-size:11px')));
+        $hdr.append(lbl('Opacité', fld('number','60px',layer.opacity,li,null,'opacity','')));
+        $card.append($hdr);
+        var $tbl = $('<table>').css({width:'100%',borderCollapse:'collapse',fontSize:'12px'}).append(
+          '<thead><tr style="color:#666"><th style="padding:3px 6px;text-align:left">Étiquette FR</th><th style="padding:3px 6px;text-align:left">EN</th><th style="padding:3px 6px;text-align:left">Slug</th><th style="padding:3px 6px;text-align:left">Couleur</th><th style="padding:3px 6px;text-align:left">Image</th><th></th></tr></thead>'
+        );
+        var $tbody = $('<tbody>');
+        (layer.options||[]).forEach(function(opt,oi){ $tbody.append(optRow(opt,li,oi)); });
+        $tbl.append($tbody);
+        $card.append($tbl);
+        $('<button type="button" class="button" style="margin-top:8px;font-size:12px">+ Option</button>').on('click',function(){
+          var o={slug:'',label:'',label_en:'',color:'#888888',imageUrl:''};
+          layer.options.push(o);
+          $tbody.append(optRow(o, li, layer.options.length-1));
+          buildCompositor();
+        }).appendTo($card);
+        return $card;
+      }
+      function optRow(opt, li, oi) {
+        var fid = 'aimg-'+li+'-'+oi;
+        var $tr = $('<tr>').attr({'data-li':li,'data-oi':oi}).css('border-top','1px solid #eee');
+        $tr.append(td(inp('text','110px',opt.label,        function(v){ cfg.layers[li].options[oi].label=v;    buildCompositor(); })));
+        $tr.append(td(inp('text','90px', opt.label_en,    function(v){ cfg.layers[li].options[oi].label_en=v; })));
+        $tr.append(td(inp('text','70px', opt.slug,        function(v){ cfg.layers[li].options[oi].slug=v; })));
+        var $col = $('<input type="color">').css({width:'38px',height:'28px',padding:'1px',border:'1px solid #ccc'}).val(opt.color||'#888888');
+        $col.on('input',function(){ cfg.layers[li].options[oi].color=this.value; buildCompositor(); });
+        $tr.append(td($col));
+        var $url = $('<input type="text">').css({width:'150px',fontSize:'11px'}).val(opt.imageUrl||'').attr('id',fid);
+        $url.on('input',function(){ cfg.layers[li].options[oi].imageUrl=this.value; buildCompositor(); });
+        var $pick = $('<button type="button" class="button evd-mpick" style="font-size:11px">Choisir</button>').data('li',li).data('oi',oi).data('fid',fid);
+        var $thumb = $('<img>').attr({src:opt.imageUrl||''}).css({height:'28px',width:'auto',border:'1px solid #ddd',borderRadius:'2px',verticalAlign:'middle',display:opt.imageUrl?'':'none'}).attr('id','prev-'+fid);
+        $tr.append($('<td style="padding:3px 6px">').append($('<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">').append($url,$pick,$thumb)));
+        $('<button type="button" class="button" style="font-size:11px;color:#a00;padding:2px 6px">✕</button>').on('click',function(){
+          cfg.layers[li].options.splice(oi,1); buildEditor(); buildCompositor();
+        }).wrap('<td style="padding:3px 6px">').parent().appendTo($tr);
+        return $tr;
+      }
+      function lbl(t,el){ return $('<label>').css({fontSize:'12px'}).text(t+' ').append(el); }
+      function fld(type,w,val,li,oi,f,xs){
+        var $i=$('<input>').attr({type:type,value:val!=null?val:''}).css({width:w}).attr('data-li',li).attr('data-f',f);
+        if(xs) $i.attr('style',($i.attr('style')||'')+';'+xs);
+        return $i;
+      }
+      function inp(type,w,val,cb){ return $('<input>').attr({type:type,value:val||''}).css({width:w}).on('input',function(){ cb(this.value); }); }
+      function td(c){ return $('<td style="padding:3px 6px">').append(c); }
+
+      /* ── Live update for layer-level fields ─────────── */
+      $(document).on('input change','[data-f]',function(){
+        var li=parseInt($(this).attr('data-li')), f=$(this).attr('data-f'), v=$(this).val();
+        if(f==='opacity') v=parseFloat(v)||1;
+        cfg.layers[li][f]=v; buildCompositor();
+      });
+
+      /* ── Media picker ───────────────────────────────── */
+      $(document).on('click','.evd-mpick',function(){
+        var li=$(this).data('li'), oi=$(this).data('oi'), fid=$(this).data('fid');
+        var frame=wp.media({title:'Sélectionner image aperçu',button:{text:'Utiliser'},multiple:false,library:{type:'image'}});
+        frame.on('select',function(){
+          var url=frame.state().get('selection').first().toJSON().url;
+          cfg.layers[li].options[oi].imageUrl=url;
+          $('#'+fid).val(url);
+          $('#prev-'+fid).attr('src',url).show();
+          buildCompositor();
         });
         frame.open();
       });
+
+      /* ── Submit ─────────────────────────────────────── */
+      $('#evd-apercu-form').on('submit',function(){
+        cfg.actif=$('#evd-apercu-actif').is(':checked');
+        $('#apercu-config-json').val(JSON.stringify(cfg));
+      });
+
+      buildCompositor(); buildEditor();
     });
     </script>
     <?php
@@ -234,14 +371,24 @@ add_action( 'admin_post_evd_tarif_save', function () {
 add_action( 'admin_post_evd_apercu_save', function () {
     if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized', 403 );
     check_admin_referer( 'evd_apercu_save' );
-    update_option( 'stluth_apercu_actif', ! empty( $_POST['stluth_apercu_actif'] ) ? 1 : 0 );
-    $images = [];
-    foreach ( ( $_POST['apercu_images'] ?? [] ) as $k => $v ) {
-        $k = sanitize_key( $k );
-        $v = esc_url_raw( trim( (string) $v ) );
-        if ( $k && $v ) $images[ $k ] = $v;
+    $raw    = wp_unslash( $_POST['apercu_config_json'] ?? '{}' );
+    $config = json_decode( $raw, true );
+    if ( ! is_array( $config ) ) wp_die( 'Invalid config JSON', 400 );
+    $config['actif'] = ! empty( $config['actif'] );
+    foreach ( $config['layers'] as &$layer ) {
+        $layer['key']      = sanitize_key( $layer['key'] ?? '' );
+        $layer['clipPath'] = sanitize_text_field( $layer['clipPath'] ?? '' );
+        $layer['opacity']  = max( 0.0, min( 1.0, (float) ( $layer['opacity'] ?? 1 ) ) );
+        foreach ( $layer['options'] as &$opt ) {
+            $opt['slug']     = sanitize_key( $opt['slug'] ?? '' );
+            $opt['label']    = sanitize_text_field( $opt['label'] ?? '' );
+            $opt['label_en'] = sanitize_text_field( $opt['label_en'] ?? '' );
+            $opt['color']    = sanitize_hex_color( $opt['color'] ?? '' ) ?: '#888888';
+            $opt['imageUrl'] = esc_url_raw( $opt['imageUrl'] ?? '' );
+        }
     }
-    update_option( 'stluth_apercu_images', wp_json_encode( $images ) );
+    update_option( 'stluth_apercu_config', wp_json_encode( $config ) );
+    update_option( 'stluth_apercu_actif', $config['actif'] ? 1 : 0 );
     wp_redirect( admin_url( 'admin.php?page=evd-seed&saved=1' ) );
     exit;
 } );

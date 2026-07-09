@@ -47,8 +47,8 @@ var STAGE_CONFIG = (function(){
     if(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
   }
 })();
-/* Aperçu : actif + overrides injectés par evd.php via wp_head */
-if(typeof window.STLUTH_APERCU_ACTIF!=='undefined'){STAGE_CONFIG.apercuActif=window.STLUTH_APERCU_ACTIF;STAGE_CONFIG.apercuImages=window.STLUTH_APERCU_IMAGES||{};}else{STAGE_CONFIG.apercuActif=true;}
+/* Aperçu : config complète injectée par evd.php via wp_head */
+if(typeof window.STLUTH_APERCU_CONFIG!=='undefined'){STAGE_CONFIG.apercuConfig=window.STLUTH_APERCU_CONFIG;STAGE_CONFIG.apercuActif=window.STLUTH_APERCU_CONFIG.actif;}else{STAGE_CONFIG.apercuConfig=null;STAGE_CONFIG.apercuActif=true;}
 if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',function(){var e=document.getElementById('evd-apercu-section');if(e)e.style.display='none';});}
 </script>
 <!-- /wp:html -->
@@ -658,19 +658,12 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
             <label for="boutonsMD">Buttons (material)</label>
             <select id="boutonsMD" name="boutonsMD">
               <option value="">– Select –</option>
-              <option value="Nacrine noire">Black nacrine</option>
-              <option value="Nacrine blanche">White nacrine</option>
-              <option value="Noyer">Walnut</option>
-              <option value="Erable">Maple</option>
             </select>
           </div>
           <div class="insc-field">
             <label for="boisClavier">Keyboard wood</label>
             <select id="boisClavier" name="boisClavier">
               <option value="">– Select –</option>
-              <option value="Noyer">Walnut</option>
-              <option value="Érable">Maple</option>
-              <option value="Cerisier">Cherry</option>
             </select>
           </div>
         </div>
@@ -680,9 +673,6 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
             <label for="boisGrille">Grille + body wood (if two-tone)</label>
             <select id="boisGrille" name="boisGrille">
               <option value="">– Select –</option>
-              <option value="Noyer">Walnut</option>
-              <option value="Érable">Maple</option>
-              <option value="Cerisier">Cherry</option>
             </select>
           </div>
           <div class="insc-field">
@@ -721,10 +711,6 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
             <label for="couleurSangles">LH straps / RH shoulder straps color</label>
             <select id="couleurSangles" name="couleurSangles">
               <option value="">– Select –</option>
-              <option value="Bleu">Blue</option>
-              <option value="Rouge">Red</option>
-              <option value="Cuir Nat.">Natural leather</option>
-              <option value="Noir">Black</option>
             </select>
           </div>
 
@@ -747,36 +733,7 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
 <div class="insc-section-body">
 <div class="insc-field">
           <label>Bellows color</label>
-          <div class="insc-options">
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Bleu">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#2e6cb5"></span>
-                <span class="card-title" style="font-size:0.95rem">Blue</span>
-              </span>
-            </label>
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Rouge">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#c0392b"></span>
-                <span class="card-title" style="font-size:0.95rem">Red</span>
-              </span>
-            </label>
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Orange">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#e67e22"></span>
-                <span class="card-title" style="font-size:0.95rem">Orange</span>
-              </span>
-            </label>
-            <label class="insc-option-card" style="min-width:110px">
-              <input type="radio" name="couleurSoufflet" value="Noir">
-              <span class="card-label">
-                <span class="color-swatch" style="background:#222"></span>
-                <span class="card-title" style="font-size:0.95rem">Black</span>
-              </span>
-            </label>
-          </div>
+          <div class="insc-options" id="couleurSouffletOptions"></div>
         </div>
 </div>
 <!-- /wp:html -->
@@ -1681,83 +1638,79 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
    * Fallback : background-color visible si le PNG n'existe pas encore.
    */
 
-  var ACC_IMG_BASE = 'img/apercu/';
-  if (typeof STAGE_CONFIG !== 'undefined') { if (STAGE_CONFIG.apercuBaseUrl) { ACC_IMG_BASE = STAGE_CONFIG.apercuBaseUrl; } }
+  /* Aperçu accordéon — piloté par STAGE_CONFIG.apercuConfig */
 
-  /* Correspondance valeur option → slug fichier image.
-   * Note : '\u00c9rable' (Érable, avec accent) = bois du clavier/grille.
-   *        'Erable' (sans accent) = valeur du champ boutonsMD. */
-  var VALUE_TO_SLUG = {
-    'Noyer'          : 'noyer',
-    '\u00c9rable'    : 'erable',
-    'Cerisier'       : 'cerisier',
-    'Nacrine noire'  : 'nacrine-noire',
-    'Nacrine blanche': 'nacrine-blanche',
-    'Erable'         : 'erable',
-    'Bleu'           : 'bleu',
-    'Rouge'          : 'rouge',
-    'Orange'         : 'orange',
-    'Noir'           : 'noir',
-    'Cuir Nat.'      : 'cuir-nat'
-  };
-
-  /* Couleurs de fallback (affichées avant que les PNG soient disponibles) */
-  var WOOD_COLORS    = { 'Noyer': '#5C3D2E', '\u00c9rable': '#C8A96E', 'Cerisier': '#8B4513' };
-  var BUTTON_COLORS  = { 'Nacrine noire': '#1a1a1a', 'Nacrine blanche': '#F5F0E8', 'Noyer': '#6B4226', 'Erable': '#C8A96E' };
-  var BELLOWS_COLORS = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Orange': '#e67e22', 'Noir': '#222' };
-  var STRAP_COLORS   = { 'Bleu': '#2e6cb5', 'Rouge': '#c0392b', 'Cuir Nat.': '#B5885A', 'Noir': '#222' };
-
-  /* setLayerImage: met à jour un calque selon la valeur de l'option.
-   * - Charge le PNG correspondant (probe async — si absent, background-color visible)
-   * - Classe has-img ajoutée quand l'image est disponible (désactive clip-path) */
-  function setLayerImage(el, colorMap, value) {
-    if (el) {
-      if (value) {
-        /* Toujours appliquer la couleur de fallback */
-        if (colorMap) {
-          if (colorMap[value]) {
-            el.style.backgroundColor = colorMap[value];
-          }
+  document.addEventListener('DOMContentLoaded', function() {
+    var cfg = STAGE_CONFIG.apercuConfig;
+    if (!cfg || !cfg.layers) return;
+    cfg.layers.forEach(function(layer) {
+      var divEl = document.getElementById(layer.divId);
+      if (divEl) {
+        if (layer.clipPath) divEl.style.clipPath = layer.clipPath;
+        if (layer.opacity != null) divEl.style.opacity = layer.opacity;
+        if (layer.options && layer.options[0]) divEl.style.backgroundColor = layer.options[0].color || '';
+      }
+      if (layer.formType === 'select') {
+        var sel = document.getElementById(layer.formField);
+        if (sel) {
+          while (sel.options.length > 1) sel.remove(1);
+          (layer.options || []).forEach(function(opt) { sel.add(new Option(opt.label, opt.label)); });
         }
-        /* Construire l'URL et tenter le chargement */
-        var base = el.getAttribute('data-img-base');
-        var slug = VALUE_TO_SLUG[value];
-        if (base) {
-          if (slug) {
-            var src = ACC_IMG_BASE + base + '-' + slug + '.png';
-            if (STAGE_CONFIG.apercuImages && STAGE_CONFIG.apercuImages[base + '-' + slug]) {
-              src = STAGE_CONFIG.apercuImages[base + '-' + slug];
-            }
-            var probe = new Image();
-            probe.onload = function() {
-              el.style.backgroundImage = 'url(' + src + ')';
-              el.classList.add('has-img');
-              el.classList.remove('no-img');
-            };
-            probe.onerror = function() {
-              el.style.backgroundImage = '';
-              el.classList.remove('has-img');
-              el.classList.add('no-img');
-            };
-            probe.src = src;
-          }
+      } else if (layer.formType === 'radio') {
+        var cont = document.getElementById(layer.formField + 'Options');
+        if (cont) {
+          cont.innerHTML = '';
+          (layer.options || []).forEach(function(opt) {
+            var lbl = document.createElement('label'); lbl.className = 'insc-option-card'; lbl.style.minWidth = '110px';
+            var inp = document.createElement('input'); inp.type = 'radio'; inp.name = layer.formField; inp.value = opt.label;
+            var span = document.createElement('span'); span.className = 'card-label';
+            var sw = document.createElement('span'); sw.className = 'color-swatch'; sw.style.background = opt.color || '#888';
+            var ct = document.createElement('span'); ct.className = 'card-title'; ct.style.fontSize = '0.95rem'; ct.textContent = opt.label;
+            span.appendChild(sw); span.appendChild(ct); lbl.appendChild(inp); lbl.appendChild(span); cont.appendChild(lbl);
+          });
         }
       }
-    }
+    });
+    updateAccordionPreview();
+  });
+
+  function _layerCfg(formField) {
+    var cfg = STAGE_CONFIG.apercuConfig;
+    if (!cfg || !cfg.layers) return null;
+    for (var i = 0; i < cfg.layers.length; i++) { if (cfg.layers[i].formField === formField) return cfg.layers[i]; }
+    return null;
+  }
+  function _optCfg(layer, value) {
+    if (!layer || !layer.options) return null;
+    for (var i = 0; i < layer.options.length; i++) { if (layer.options[i].label === value) return layer.options[i]; }
+    return null;
+  }
+
+  function setLayerImage(el, formField, value) {
+    if (!el || !value) return;
+    var layer = _layerCfg(formField), opt = _optCfg(layer, value);
+    if (!opt) return;
+    el.style.backgroundColor = opt.color || '';
+    var src = opt.imageUrl || ((STAGE_CONFIG.apercuBaseUrl || 'img/apercu/') + layer.key + '-' + opt.slug + '.png');
+    var probe = new Image();
+    probe.onload  = function() { el.style.backgroundImage = 'url(' + src + ')'; el.classList.add('has-img'); el.classList.remove('no-img'); };
+    probe.onerror = function() { el.style.backgroundImage = ''; el.classList.remove('has-img'); el.classList.add('no-img'); };
+    probe.src = src;
   }
 
   function updateAccordionPreview() {
     if (STAGE_CONFIG.apercuActif === false) return;
     var boisClavier = document.getElementById('boisClavier').value;
+    var boisGrille  = document.getElementById('boisGrille').value || boisClavier;
     var boutons     = document.getElementById('boutonsMD').value;
     var soufflet    = getRadioVal('couleurSoufflet');
     var sangles     = document.getElementById('couleurSangles').value;
 
-    setLayerImage(document.getElementById('accCaisse'),    WOOD_COLORS,    boisClavier);
-    setLayerImage(document.getElementById('accGrille'),    WOOD_COLORS,    boisClavier);
-    setLayerImage(document.getElementById('accBoutons'),   BUTTON_COLORS,  boutons);
-    setLayerImage(document.getElementById('accSoufflet'),  BELLOWS_COLORS, soufflet);
-    setLayerImage(document.getElementById('accSangles'),   STRAP_COLORS,   sangles);
+    setLayerImage(document.getElementById('accCaisse'),   'boisClavier',     boisClavier);
+    setLayerImage(document.getElementById('accGrille'),   'boisGrille',      boisGrille);
+    setLayerImage(document.getElementById('accBoutons'),  'boutonsMD',       boutons);
+    setLayerImage(document.getElementById('accSoufflet'), 'couleurSoufflet', soufflet);
+    setLayerImage(document.getElementById('accSangles'),  'couleurSangles',  sangles);
   }
 
   /* Listen on all inputs */
