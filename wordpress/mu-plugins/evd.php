@@ -109,6 +109,12 @@ function evd_apercu_default_config(): array {
 
 const EVD_APERCU_FALLBACK_COLOR = '#888888';
 
+function evd_apercu_sanitize_hex_color( string $color, string $fallback = EVD_APERCU_FALLBACK_COLOR ): string {
+    $sanitized = function_exists( 'sanitize_hex_color' ) ? sanitize_hex_color( $color ) : '';
+    if ( ! $sanitized && preg_match( '/^#(?:[0-9a-fA-F]{3}){1,2}$/', $color ) ) $sanitized = $color;
+    return $sanitized ?: $fallback;
+}
+
 function evd_apercu_get_config(): array {
     $saved = get_option( 'stluth_apercu_config', '' );
     if ( $saved ) {
@@ -167,7 +173,7 @@ function evd_apercu_normalize_front_config( array $config ): array {
                     'slug'     => sanitize_key( $opt['slug'] ?? '' ),
                     'label'    => sanitize_text_field( $opt['label'] ?? '' ),
                     'label_en' => sanitize_text_field( $opt['label_en'] ?? '' ),
-                    'color'    => sanitize_hex_color( $opt['color'] ?? '' ) ?: EVD_APERCU_FALLBACK_COLOR,
+                    'color'    => evd_apercu_sanitize_hex_color( (string) ( $opt['color'] ?? '' ) ),
                     'imageUrl' => esc_url_raw( $opt['imageUrl'] ?? '' ),
                 ];
             }
@@ -205,7 +211,7 @@ function evd_apercu_json_for_script( array $config ): string {
 // ── Injection config aperçu via wp_head ───────────────────────────────────────
 add_action( 'wp_head', function () {
     $config_json = evd_apercu_json_for_script( evd_apercu_get_config() );
-    echo '<script id="stluth-apercu-config" type="application/json">' . $config_json . '</script>' . "\n";
+    echo '<script id="stluth-apercu-config" type="application/json">' . esc_html( $config_json ) . '</script>' . "\n";
 }, 2 );
 
 add_action( 'admin_enqueue_scripts', function ( $hook ) {

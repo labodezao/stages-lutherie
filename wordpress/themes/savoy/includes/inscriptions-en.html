@@ -1681,10 +1681,10 @@ if(!STAGE_CONFIG.apercuActif){document.addEventListener('DOMContentLoaded',funct
   try {
     initApercuDynamicFields();
   } catch (e) {
-    if (window.console && console.warn) console.warn('Aperçu dynamique invalide, retour à la config par défaut.', e);
+    if (window.console && console.warn) console.warn('Invalid dynamic preview config, using default config instead.', e);
     STAGE_CONFIG.apercuConfig = stluthCloneApercuConfig(STLUTH_APERCU_DEFAULT_CONFIG);
     STAGE_CONFIG.apercuActif = STAGE_CONFIG.apercuConfig.actif !== false;
-    try { initApercuDynamicFields(); } catch (e2) { if (window.console && console.error) console.error('Échec du fallback aperçu.', e2); }
+    try { initApercuDynamicFields(); } catch (e2) { if (window.console && console.error) console.error('Preview fallback initialization failed.', e2); }
   }
 
   function _layerCfg(formField) {
