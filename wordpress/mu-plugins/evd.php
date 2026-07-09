@@ -211,7 +211,7 @@ function evd_apercu_json_for_script( array $config ): string {
 // ── Injection config aperçu via wp_head ───────────────────────────────────────
 add_action( 'wp_head', function () {
     $config_json = evd_apercu_json_for_script( evd_apercu_get_config() );
-    echo '<script id="stluth-apercu-config" type="application/json">' . esc_html( $config_json ) . '</script>' . "\n";
+    echo '<script id="stluth-apercu-config" type="application/json">' . $config_json . '</script>' . "\n";
 }, 2 );
 
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
