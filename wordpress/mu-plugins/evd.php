@@ -53,6 +53,21 @@ add_filter( 'the_content', function ( $content ) {
     return str_replace( '{{TARIF_RETOUR}}', (string) get_option( 'stluth_tarif_retour', 80 ), $content );
 } );
 
+// ── Protège le JS inline des formulaires d'inscription ────────────────────────
+// wptexturize appelle wp_replace_in_html_tags() qui considère toute séquence
+// « <...> » comme une balise HTML et y encode « & » en « &#038; ». Les opérateurs
+// de comparaison JS (<=, >=, <, >) forment de fausses balises : un « && » situé
+// entre un « < » et le « > » suivant devient « &#038;&#038; » → erreur de syntaxe
+// qui casse tout le script du formulaire (options non peuplées, prix figés).
+// Ces pages sont du HTML/JS écrit à la main : on désactive wptexturize dessus.
+add_action( 'wp', function () {
+    if ( is_admin() || ! is_singular() ) return;
+    $post = get_queried_object();
+    if ( $post instanceof WP_Post && strpos( $post->post_content, 'inscriptionForm' ) !== false ) {
+        remove_filter( 'the_content', 'wptexturize' );
+    }
+} );
+
 // ── Config aperçu accordéon ───────────────────────────────────────────────────
 
 function evd_apercu_default_config(): array {
