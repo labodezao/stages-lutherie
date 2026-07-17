@@ -2044,6 +2044,20 @@ function stluth_sanitize_sessions( $input ): array {
 }
 endif; // function_exists stluth_sanitize_sessions
 
+if ( ! function_exists( 'stluth_session_year_from' ) ) :
+/**
+ * Derives a session's calendar year from its end_date (most reliable, works
+ * even if the stored 'year' field is stale), falling back to trailing digits
+ * of its id, then the stored year field.
+ */
+function stluth_session_year_from( array $s ): int {
+	$end = (string) ( $s['end_date'] ?? '' );
+	if ( preg_match( '/^(\d{4})-/', $end, $m ) ) { return (int) $m[1]; }
+	if ( preg_match( '/(\d{4})$/', (string) ( $s['id'] ?? '' ), $m2 ) ) { return (int) $m2[1]; }
+	return (int) ( $s['year'] ?? STLUTH_DEFAULT_YEAR );
+}
+endif; // function_exists stluth_session_year_from
+
 if ( ! function_exists( 'stluth_get_session_date_texts' ) ) :
 /**
  * Returns date texts for the active session pair (spring + autumn).
@@ -2051,16 +2065,14 @@ if ( ! function_exists( 'stluth_get_session_date_texts' ) ) :
  * as a migration path via stluth_get_sessions().
  */
 function stluth_get_session_date_texts(): array {
-	$pair   = function_exists( 'stluth_get_active_session_pair' ) ? stluth_get_active_session_pair() : array();
+	$future = function_exists( 'stluth_get_future_sessions' ) ? stluth_get_future_sessions() : array();
 	$spring = null;
 	$autumn = null;
-	foreach ( $pair as $s ) {
-		if ( 'spring' === ( $s['season'] ?? '' ) ) { $spring = $s; }
-		if ( 'autumn' === ( $s['season'] ?? '' ) ) { $autumn = $s; }
+	foreach ( $future as $s ) {
+		$season = $s['season'] ?? '';
+		if ( 'spring' === $season && ! $spring ) { $spring = $s; }
+		if ( 'autumn' === $season && ! $autumn ) { $autumn = $s; }
 	}
-	/* Fallback: positional */
-	if ( ! $spring && isset( $pair[0] ) ) { $spring = $pair[0]; }
-	if ( ! $autumn && isset( $pair[1] ) ) { $autumn = $pair[1]; }
 	if ( ! $spring ) { $spring = $autumn; }
 	if ( ! $autumn ) { $autumn = $spring; }
 	/* Absolute last resort */
@@ -2069,17 +2081,25 @@ function stluth_get_session_date_texts(): array {
 		$spring   = $defaults[0] ?? array();
 		$autumn   = $defaults[1] ?? array();
 	}
-	$year = (string) ( $spring['year'] ?? STLUTH_DEFAULT_YEAR );
+	$spring_year = (string) stluth_session_year_from( (array) $spring );
+	$autumn_year = (string) stluth_session_year_from( (array) $autumn );
+	/* Generic year = the soonest upcoming session's year. */
+	$year = $spring_year;
+	if ( ( $autumn['end_date'] ?? '9999-12-31' ) < ( $spring['end_date'] ?? '9999-12-31' ) ) {
+		$year = $autumn_year;
+	}
 	return array(
 		'year'             => $year,
+		'spring_year'      => $spring_year,
+		'autumn_year'      => $autumn_year,
 		'spring_fr_short'  => $spring['date_fr_short'] ?? '8 – 17 avril',
 		'autumn_fr_short'  => $autumn['date_fr_short'] ?? '14 – 23 octobre',
 		'spring_en_short'  => $spring['date_en_short'] ?? 'April 8 – 17',
 		'autumn_en_short'  => $autumn['date_en_short'] ?? 'October 14 – 23',
-		'spring_fr_full'   => $spring['date_fr_full']  ?? ( ( $spring['date_fr_short'] ?? '8 – 17 avril' ) . ' ' . $year ),
-		'autumn_fr_full'   => $autumn['date_fr_full']  ?? ( ( $autumn['date_fr_short'] ?? '14 – 23 octobre' ) . ' ' . $year ),
-		'spring_en_full'   => $spring['date_en_full']  ?? ( ( $spring['date_en_short'] ?? 'April 8 – 17' ) . ', ' . $year ),
-		'autumn_en_full'   => $autumn['date_en_full']  ?? ( ( $autumn['date_en_short'] ?? 'October 14 – 23' ) . ', ' . $year ),
+		'spring_fr_full'   => $spring['date_fr_full']  ?? ( ( $spring['date_fr_short'] ?? '8 – 17 avril' ) . ' ' . $spring_year ),
+		'autumn_fr_full'   => $autumn['date_fr_full']  ?? ( ( $autumn['date_fr_short'] ?? '14 – 23 octobre' ) . ' ' . $autumn_year ),
+		'spring_en_full'   => $spring['date_en_full']  ?? ( ( $spring['date_en_short'] ?? 'April 8 – 17' ) . ', ' . $spring_year ),
+		'autumn_en_full'   => $autumn['date_en_full']  ?? ( ( $autumn['date_en_short'] ?? 'October 14 – 23' ) . ', ' . $autumn_year ),
 	);
 }
 endif; // function_exists stluth_get_session_date_texts
@@ -2121,10 +2141,10 @@ function stluth_replace_session_dates_in_content( $content ) {
 		'__STLUTH_AUTUMN_FR_FULL__'   => $d['autumn_fr_full'],
 		'__STLUTH_SPRING_EN_FULL__'   => $d['spring_en_full'],
 		'__STLUTH_AUTUMN_EN_FULL__'   => $d['autumn_en_full'],
-		'__STLUTH_SPRING_FR_META__'   => $d['year'] . ' · Stage de printemps',
-		'__STLUTH_AUTUMN_FR_META__'   => $d['year'] . ' · Stage d\'automne',
-		'__STLUTH_SPRING_EN_META__'   => $d['year'] . ' · Spring workshop',
-		'__STLUTH_AUTUMN_EN_META__'   => $d['year'] . ' · Autumn workshop',
+		'__STLUTH_SPRING_FR_META__'   => $d['spring_year'] . ' · Stage de printemps',
+		'__STLUTH_AUTUMN_FR_META__'   => $d['autumn_year'] . ' · Stage d\'automne',
+		'__STLUTH_SPRING_EN_META__'   => $d['spring_year'] . ' · Spring workshop',
+		'__STLUTH_AUTUMN_EN_META__'   => $d['autumn_year'] . ' · Autumn workshop',
 		'__STLUTH_SPRING_FR_SHORT__'  => $d['spring_fr_short'],
 		'__STLUTH_AUTUMN_FR_SHORT__'  => $d['autumn_fr_short'],
 		'__STLUTH_SPRING_EN_SHORT__'  => $d['spring_en_short'],
