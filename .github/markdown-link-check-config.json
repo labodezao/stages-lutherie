@@ -28,6 +28,9 @@
       "pattern": "^https://www\\.superprof\\.fr"
     },
     {
+      "pattern": "^https?://www\\.franceaccordeon\\.fr"
+    },
+    {
       "pattern": "^https://ewendaviau\\.com"
     },
     {
